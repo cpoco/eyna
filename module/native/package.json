@@ -1,0 +1,10 @@
+{
+	"name": "@module/native",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"install": "node install.js",
+		"win": "node-gyp configure",
+		"mac": "node-gyp configure -- -f xcode"
+	}
+}

@@ -1,0 +1,42 @@
+[
+	{ "when": "filer",  "key": "z",                 "cmd": "list.test" },
+
+	{ "when": "filer",  "key": "up",                "cmd": "list.up"    },
+	{ "when": "filer",  "key": "down",              "cmd": "list.down"  },
+	{ "when": "filer",  "key": "left",              "cmd": "list.left"  },
+	{ "when": "filer",  "key": "right",             "cmd": "list.right" },
+
+	{ "when": "filer",  "key": "[",                 "cmd": "list.pageup"   },
+	{ "when": "filer",  "key": "pageup",            "cmd": "list.pageup"   },
+	{ "when": "filer",  "key": "]",                 "cmd": "list.pagedown" },
+	{ "when": "filer",  "key": "pagedown",          "cmd": "list.pagedown" },
+
+	{ "when": "filer",  "key": "u",                 "cmd": "list.update"              },
+	{ "when": "filer",  "key": "space",             "cmd": ["list.mark", "list.down"] },
+	{ "when": "filer",  "key": "enter",             "cmd": "list.select"              },
+	{ "when": "filer",  "key": "backspace",         "cmd": "list.updir"               },
+
+	{ "when": "filer",  "key": ["shift", "="],      "cmd": "list.targetequal"  },
+	{ "when": "filer",  "key": ["shift", "~"],      "cmd": "list.targetselect" },
+
+	{ "when": "filer",  "key": "k",                 "cmd": "list.extension", "prm": "fs.mkdir" },
+	{ "when": "filer",  "key": "d",                 "cmd": "list.extension", "prm": "fs.trash" },
+	{ "when": "filer",  "key": "c",                 "cmd": "list.extension", "prm": "fs.copy"  },
+	{ "when": "filer",  "key": "m",                 "cmd": "list.extension", "prm": "fs.move"  },
+
+	{ "when": "filer",  "key": "f",                 "cmd": "list.find" },
+	{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },
+	{ "when": "filer",  "key": "x",                 "cmd": "list.extension", "prm": "list.terminal" },
+
+	{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopne"     },
+	{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
+
+	{ "when": "always", "key": ["ctrl", "c"],       "cmd": "system.copy" },
+
+	{ "when": "always", "key": ["ctrl", "q"],       "cmd": "system.exit" },
+	{ "when": "always", "key": ["alt", "f4"],       "cmd": "system.exit" },
+
+	{ "when": "always", "key": "f1",                "cmd": "system.version" },
+	{ "when": "always", "key": "f5",                "cmd": "system.reload"  },
+	{ "when": "always", "key": "f12",               "cmd": "system.devtool" }
+]

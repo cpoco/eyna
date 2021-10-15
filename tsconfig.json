@@ -1,0 +1,71 @@
+// https://www.typescriptlang.org/tsconfig
+// https://github.com/microsoft/TypeScript/blob/main/src/compiler/commandLineParser.ts
+{
+	"files": [
+		"src/browser/Main.ts",
+		"src/renderer/Main.ts",
+	],
+
+	"compilerOptions": {
+		// Diagnostics.Language_and_Environment
+		"target": "ES2020",
+
+		 // Basic
+		// Diagnostics.Modules
+		"module": "ES2020",
+
+		 // Basic
+		// Diagnostics.Emit
+		"removeComments": true,
+		"newLine": "LF",
+
+		// Strict Type Checks
+		// Diagnostics.Type_Checking
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		// "useUnknownInCatchVariables": true,
+		"alwaysStrict": true,
+
+		// Additional Checks
+		// Diagnostics.Type_Checking
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		// "exactOptionalPropertyTypes": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		// "noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		// "noPropertyAccessFromIndexSignature": true,
+
+		// Advanced
+		// Diagnostics.Interop_Constraints
+		"forceConsistentCasingInFileNames": true,
+
+		// Module Resolution
+		// Diagnostics.Modules
+		"moduleResolution": "node",
+		"baseUrl": "./",
+		"paths": {
+			"@module/*": [
+				"./module/*"
+			],
+			"@bridge/*": [
+				"./src/bridge/*"
+			],
+			"@browser/*": [
+				"./src/browser/*"
+			],
+			"@renderer/*": [
+				"./src/renderer/*"
+			]
+		},
+
+		// Experimental
+		// Diagnostics.Language_and_Environment
+		"experimentalDecorators": true,
+	}
+}
