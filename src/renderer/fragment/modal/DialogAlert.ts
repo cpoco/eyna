@@ -20,7 +20,7 @@ export class DialogAlert extends Vue {
 
 	updated() {
 		setTimeout(() => {
-			(<HTMLElement>this.$refs.button).focus()
+			(<HTMLElement>this.$refs.dialog).focus()
 		}, 0)
 	}
 
@@ -46,12 +46,14 @@ export class DialogAlert extends Vue {
 	}
 
 	render(ce: Vue.CreateElement) {
-		return ce(DialogAlert.TAG, { class: { "modal-dialog": true }, on: { keydown: this.keydown } }, [
+		return ce(DialogAlert.TAG, {
+			class: { "modal-dialog": true },
+			attrs: { tabindex: 0 },
+			ref: "dialog",
+			on: { keydown: this.keydown }
+		}, [
 			ce("div", { class: { "modal-title": true }, }, this.title),
 			ce("div", { class: { "modal-alert": true } }, this.text),
-			ce("div", { class: { "modal-action": true } }, [
-				ce("div", { class: { "modal-button": true }, attrs: { tabindex: 0 }, ref: "button" }, "OK"),
-			]),
 		])
 	}
 }

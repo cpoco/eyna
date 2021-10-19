@@ -1,9 +1,5 @@
 import * as path from 'path'
 
-// const AttributeFileType = {
-// 	directory: 1
-// }
-
 export default async (ex: Extension): Promise<void> => {
 	if (ex.active.cursor == null) {
 		return
@@ -23,22 +19,12 @@ export default async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	console.log("\u001b[34m")
+	let dirdst = path.dirname(path.posix.normalize(dst))
+	if (!await ex.filer.exists(dirdst)) {
+		await ex.filer.mkdir(dirdst)
+	}
 
-	await ex.filer.copy(`${src}`, `${dst}`)
-
-	// if (ex.active.cursor[0].file_type == AttributeFileType.directory) {
-	// 	console.log(`copy ${src}/ -> ${dst}/`)
-	// 		let ls: string[] = await ex.filer.findcopy(src)
-	// 	for(let p of ls) {
-	// 		console.log(`copy ${src}/${p} -> ${dst}/${p}`)
-	// 	}
-	// }
-	// else {
-	// 	console.log(`copy ${src} -> ${dst}`)
-	// }
-
-	console.log("\u001b[0m")
+	await ex.filer.copy(src, dst)
 
 	ex.filer.update()
 }

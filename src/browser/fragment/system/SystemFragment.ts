@@ -22,6 +22,18 @@ export class SystemFragment extends AbstractFragment {
 
 	private command() {
 		this
+			.on('system.cut', () => {
+				root.send<Bridge.Root.Clipboard.Send>({
+					ch: 'root-clipboard',
+					args: [
+						-1,
+						{
+							command: "cut"
+						},
+					]
+				})
+				return Promise.resolve()
+			})
 			.on('system.copy', () => {
 				root.send<Bridge.Root.Clipboard.Send>({
 					ch: 'root-clipboard',
@@ -29,6 +41,18 @@ export class SystemFragment extends AbstractFragment {
 						-1,
 						{
 							command: "copy"
+						},
+					]
+				})
+				return Promise.resolve()
+			})
+			.on('system.paste', () => {
+				root.send<Bridge.Root.Clipboard.Send>({
+					ch: 'root-clipboard',
+					args: [
+						-1,
+						{
+							command: "paste"
 						},
 					]
 				})

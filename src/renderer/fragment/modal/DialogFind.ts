@@ -56,7 +56,12 @@ export class DialogFind extends Vue {
 	}
 
 	render(ce: Vue.CreateElement) {
-		return ce(DialogFind.TAG, { class: { "modal-dialog": true }, on: { keydown: this.keydown } }, [
+		return ce(DialogFind.TAG, {
+				class: { "modal-dialog": true },
+				attrs: { tabindex: 0 },
+				ref: "dialog",
+				on: { keydown: this.keydown }
+			}, [
 			ce("div", { class: { "modal-title": true } }, this.title),
 			ce("div", {
 				class: { "modal-prompt": true },
