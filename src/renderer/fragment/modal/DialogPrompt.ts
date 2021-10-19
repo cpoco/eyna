@@ -8,7 +8,6 @@ export class DialogPrompt extends Vue {
 
 	title: string = ""
 	text: [string, string] = ["", ""]
-	dp: [string, string] = ["0", "0"]
 	callbackClose: (text: string) => void = () => { }
 	callbackCancel: () => void = () => { }
 
@@ -51,7 +50,12 @@ export class DialogPrompt extends Vue {
 	}
 
 	render(ce: Vue.CreateElement) {
-		return ce(DialogPrompt.TAG, { class: { "modal-dialog": true }, on: { keydown: this.keydown } }, [
+		return ce(DialogPrompt.TAG, {
+				class: { "modal-dialog": true },
+				attrs: { tabindex: 0 },
+				ref: "dialog",
+				on: { keydown: this.keydown }
+		}, [
 			ce("div", { class: { "modal-title": true } }, this.title),
 			ce("div", {
 				class: { "modal-prompt": true },
@@ -59,9 +63,6 @@ export class DialogPrompt extends Vue {
 				ref: "prompt",
 				on: { input: this.input }
 			}, this.text[1]),
-			ce("div", { class: { "modal-action": true } }, [
-				ce("div", { class: { "modal-button": true }, attrs: { tabindex: 0 }, ref: "button" }, "OK"),
-			]),
 		])
 	}
 }
