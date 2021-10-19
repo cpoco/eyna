@@ -11,7 +11,7 @@ export namespace Root {
 			Data,
 		]
 		export type Data = {
-			command: "copy"
+			command: "cut" | "copy" | "paste"
 		}
 	}
 }
