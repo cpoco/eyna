@@ -19,7 +19,7 @@ static void copy_async(uv_work_t* req)
 	copy_work* work = static_cast<copy_work*>(req->data);
 
 	boost::system::error_code error;
-	boost::filesystem::copy(work->src, work->dst, error); // シンボリックリンクの場合は参照先がコピー元
+	boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks, error);
 
 	if (error) {
 		work->error = true;

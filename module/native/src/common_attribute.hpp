@@ -41,10 +41,10 @@ enum FILE_TYPE {
 
 enum LINK_TYPE {
 	LINK_TYPE_NONE = 0,
-	LINK_TYPE_SYMBOLIC = 1,
-	LINK_TYPE_JUNCTION = 2, // win
-	LINK_TYPE_SHORTCUT = 3, // win
-	LINK_TYPE_BOOKMARK = 4, // mac alias
+	LINK_TYPE_SYMBOLIC = 1, //           (FILE_TYPE_LINK)
+	LINK_TYPE_JUNCTION = 2, // win       (FILE_TYPE_LINK)
+	LINK_TYPE_SHORTCUT = 3, // win       (FILE_TYPE_FILE)
+	LINK_TYPE_BOOKMARK = 4, // mac alias (FILE_TYPE_FILE)
 };
 
 struct _attribute
