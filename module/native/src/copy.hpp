@@ -18,15 +18,28 @@ static void copy_async(uv_work_t* req)
 {
 	copy_work* work = static_cast<copy_work*>(req->data);
 
-	boost::system::error_code error;
-	boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks, error);
+	#if BOOST_OS_WINDOWS
 
-	if (error) {
-		work->error = true;
-	}
-	else {
-		work->error = false;
-	}
+		boost::system::error_code error;
+		boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks, error);
+
+		if (error) {
+			work->error = true;
+		}
+
+	#elif BOOST_OS_MACOS
+
+		NSError* error = nil;
+		BOOL ret = [[NSFileManager defaultManager]
+			copyItemAtPath:[NSString stringWithCString:work->src.c_str() encoding:NSUTF8StringEncoding]
+			toPath:[NSString stringWithCString:work->dst.c_str() encoding:NSUTF8StringEncoding]
+			error:&error];
+
+		if (!ret || error) {
+			work->error = true;
+		}
+
+	#endif
 }
 
 static void copy_complete(uv_work_t* req, int status)
