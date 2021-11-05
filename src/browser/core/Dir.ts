@@ -31,8 +31,8 @@ export class Dir {
 		return this.isRoot(wd) ? wd : path.parse(wd).base
 	}
 
-	static findRltv(ls: Native.Attributes[], index: number): string | null {
-		return _.get(ls, [index, 0, Native.AttributeKey.rltv], null)
+	static findRltv(ls: Native.Attributes[], i: number): string | null {
+		return _.get(ls, [i, 0, Native.AttributeKey.rltv], null)
 	}
 
 	static findIndex(ls: Native.Attributes[], rltv: string | null): number {

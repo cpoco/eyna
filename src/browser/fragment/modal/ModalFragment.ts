@@ -52,7 +52,7 @@ export class ModalFragment extends AbstractFragment {
 
 	private ipc() {
 		root
-			.on(Bridge.Modal.Event.CH, (_index: number, data: Bridge.Modal.Event.Data) => {
+			.on(Bridge.Modal.Event.CH, (_i: number, data: Bridge.Modal.Event.Data) => {
 				if (data.event == "opened") {
 					Command.manager.whenType = Command.When.modal
 				}

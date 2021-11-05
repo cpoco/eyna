@@ -10,16 +10,15 @@
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.5",
 		"electron": "15.1.2",
-		"electron-builder": "22.14.4",
+		"electron-builder": "22.14.5",
 		"electron-rebuild": "3.2.3",
-		"esbuild": "0.13.9",
+		"esbuild": "0.13.12",
 		"lodash": "4.17.21",
 		"lodash-es": "4.17.21",
 		"pug": "3.0.2",
-		"sass": "1.43.3",
+		"sass": "1.43.4",
 		"typescript": "4.4.4",
-		"vue": "2.6.14",
-		"vue-class-component": "7.2.6"
+		"vue": "3.2.20"
 	},
 	"scripts": {
 		"b": "node b.mjs",

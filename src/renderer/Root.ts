@@ -1,13 +1,20 @@
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import * as vue from "vue"
 
 import * as electron from 'electron'
 import * as _ from 'lodash-es'
 
 import * as Bridge from '@bridge/Bridge'
-import { FilerFragment } from '@renderer/fragment/filer/FilerFragment'
-import { ModalFragment } from '@renderer/fragment/modal/ModalFragment'
+import * as FilerFragment from '@renderer/fragment/filer/FilerFragment'
+// import { ModalFragment } from '@renderer/fragment/modal/ModalFragment'
 
+const V = vue.defineComponent({
+	render() {
+		return vue.h("root", {}, [
+			vue.h(FilerFragment.V)
+		])
+	}
+})
+/*
 @Component({
 	components: {
 		[FilerFragment.TAG]: FilerFragment,
@@ -31,14 +38,15 @@ class V extends Vue {
 		return <ModalFragment>this.$refs[ModalFragment.TAG]
 	}
 }
+*/
 class Root {
 
 	create() {
-		Vue.config.ignoredElements = [
-			/.+/,
-		]
+		// Vue.config.ignoredElements = [
+		// 	/.+/,
+		// ]
 		window.onload = () => {
-			new V({ el: document.getElementsByTagName('root')[0] })
+			vue.createApp(V).mount(document.getElementsByTagName('body')[0])
 		}
 
 		this.on(Bridge.Root.Clipboard.CH, (_: number, data: Bridge.Root.Clipboard.Data) => {
@@ -46,7 +54,7 @@ class Root {
 		})
 	}
 
-	on<T, U>(ch: string, listener: (index: T, data: U) => void): Root {
+	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
 		electron.ipcRenderer.on(ch, (_event: electron.IpcRendererEvent, ...args: [T, U]) => {
 			console.log(ch, args[0], args[1])
 			listener(args[0], args[1])

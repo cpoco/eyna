@@ -98,7 +98,7 @@ class Root {
 		}
 	}
 
-	on<T, U>(ch: string, listener: (index: T, data: U) => void): Root {
+	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
 		electron.ipcMain.on(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
 			console.log(ch, args[0], args[1])
 			listener(args[0], args[1])
@@ -106,7 +106,7 @@ class Root {
 		return this
 	}
 
-	handle<T, U, V>(ch: string, listener: (index: T, data: U) => V): Root {
+	handle<T, U, V>(ch: string, listener: (i: T, data: U) => V): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
 			console.log(ch, args[0], args[1])
 			return listener(args[0], args[1])
