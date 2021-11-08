@@ -9,7 +9,7 @@
 		"@module/boost": "file:./module/boost",
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.5",
-		"electron": "15.1.2",
+		"electron": "15.3.0",
 		"electron-builder": "22.14.5",
 		"electron-rebuild": "3.2.3",
 		"esbuild": "0.13.12",
