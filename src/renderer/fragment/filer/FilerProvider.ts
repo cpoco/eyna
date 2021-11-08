@@ -8,10 +8,10 @@ export type List = {
 	i: number
 	data: Bridge.List.Data
 	make: number
-	itrt: Itrt[]
+	cell: Cell[]
 }
 
-export type Itrt = {
+export type Cell = {
 	class: {
 		"filer-cell": boolean,
 		"filer-cell-select": boolean,
@@ -32,19 +32,19 @@ export function create() {
 			i: 0,
 			data: Bridge.List.InitData(),
 			make: 0,
-			itrt: [],
+			cell: [],
 		},
 		{
 			i: 1,
 			data: Bridge.List.InitData(),
 			make: 0,
-			itrt: [],
+			cell: [],
 		},
 		{
 			i: 2,
 			data: Bridge.List.InitData(),
 			make: 0,
-			itrt: [],
+			cell: [],
 		},
 	])
 
@@ -99,9 +99,9 @@ export function create() {
 		reactive[i].make = _.reduce(reactive[i].data.mk, (cnt, mk) => {
 			return mk ? cnt + 1 : cnt
 		}, 0)
-		reactive[i].itrt = _.map<number, Itrt>(
+		reactive[i].cell = _.map<number, Cell>(
 			_.range(reactive[i].data.drawCount),
-			(j): Itrt => {
+			(j): Cell => {
 				let k = reactive[i].data.drawIndex + j
 				let t = reactive[i].data.drawPosition + j * reactive[i].data.drawSize
 				return {

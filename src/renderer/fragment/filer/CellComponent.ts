@@ -8,14 +8,14 @@ import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
 import * as IconComponent from '@renderer/fragment/filer/IconComponent'
 import * as SpinnerComponent from '@renderer/fragment/filer/SpinnerComponent'
 
-export const TAG = "cell"
+const TAG = "cell"
 
 export const V = vue.defineComponent({
 
 	props: {
 		cell: {
 			required: true,
-			type: Object as vue.PropType<FilerProvider.Itrt>,
+			type: Object as vue.PropType<FilerProvider.Cell>,
 		},
 	},
 

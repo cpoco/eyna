@@ -9,7 +9,7 @@ import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
 import * as CellComponent from '@renderer/fragment/filer/CellComponent'
 import * as SpinnerComponent from '@renderer/fragment/filer/SpinnerComponent'
 
-export const TAG = "list"
+const TAG = "list"
 
 export const V = vue.defineComponent({
 
@@ -105,8 +105,8 @@ export const V = vue.defineComponent({
 			]),
 			vue.h('stat', { class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target } }),
 			vue.h('data', { class: { "filer-data": true } }, [
-				_.map(this.list.itrt, (it) => {
-					return vue.h(CellComponent.V, { cell: it })
+				_.map(this.list.cell, (cell) => {
+					return vue.h(CellComponent.V, { cell })
 				})
 			]),
 			vue.h('scroll', { class: { "filer-scroll": true } }, [

@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-export const TAG = "spinner"
+const TAG = "spinner"
 
 export const V = vue.defineComponent({
 

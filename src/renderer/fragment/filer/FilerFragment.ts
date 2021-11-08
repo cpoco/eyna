@@ -7,23 +7,16 @@ import root from '@renderer/Root'
 import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
 import * as ListComponent from '@renderer/fragment/filer/ListComponent'
 
-type reactive = {
-	ready: boolean
-}
-
-export const TAG = "filer"
+const TAG = "filer"
 
 export const V = vue.defineComponent({
 
 	setup() {
 		const el = vue.ref<HTMLElement>()
+		const ready = vue.ref<boolean>(false)
 
 		const provider = FilerProvider.create()
 		// vue.provide(FilerProvider.KEY, provider)
-
-		const reactive = vue.reactive<reactive>({
-			ready: false,
-		})
 
 		root
 			.on(Bridge.List.Change.CH, (i: number, data: Bridge.List.Change.Data) => {
@@ -67,7 +60,7 @@ export const V = vue.defineComponent({
 					let e = document.querySelector<HTMLElement>(":root")
 					e?.style.setProperty("--dynamic-filer-font-size", data.fontSize)
 					e?.style.setProperty("--dynamic-filer-line-height", data.lineHeight)
-					reactive.ready = true
+					ready.value = true
 				})
 		}
 
@@ -77,14 +70,14 @@ export const V = vue.defineComponent({
 
 		return {
 			el,
+			ready,
 			provider,
-			reactive,
 		}
 	},
 
 	render() {
 		return vue.h(TAG, { ref: "el", class: { "filer-fragment": true } },
-			this.reactive.ready
+			this.ready
 				? _.map(_.range(3), (i) => {
 					return vue.h(ListComponent.V, { list: this.provider.reactive[i] })
 				})

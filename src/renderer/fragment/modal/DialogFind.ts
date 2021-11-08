@@ -1,80 +1,105 @@
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import * as vue from "vue"
 
-@Component
-export class DialogFind extends Vue {
+import * as Bridge from '@bridge/Bridge'
 
-	static readonly TAG = 'dialog-find'
-
-	title: string = ""
-	rg: [string, string] = ["", ""]
-	dp: [string, string] = ["0", "0"]
-	callbackClose: (rg: string, dp: string) => void = () => { }
-	callbackCancel: () => void = () => { }
-
-	open(title: string, rg: string, callbackClose: (text: string, dp: string) => void, callbackCancel: () => void) {
-		this.title = title
-		this.rg = [rg, rg]
-		this.dp = ["0", "0"]
-		this.callbackClose = callbackClose
-		this.callbackCancel = callbackCancel
-	}
-
-	updated() {
-		setTimeout(() => {
-			(<HTMLElement>this.$refs.rg).focus()
-		}, 0)
-	}
-
-	private close() {
-		this.callbackClose(this.rg[0], this.dp[0])
-	}
-
-	private cancel() {
-		this.callbackCancel()
-	}
-
-	private keydown(key: KeyboardEvent) {
-		if (key.isComposing) {
-			return
-		}
-
-		if (key.key == "Enter") {
-			this.close()
-		}
-		else if (key.key == "Escape") {
-			this.cancel()
-		}
-	}
-
-	private input1(input: InputEvent) {
-		this.rg[0] = (<HTMLDivElement>input.target).innerText
-	}
-
-	private input2(input: InputEvent) {
-		this.dp[0] = (<HTMLDivElement>input.target).innerText
-	}
-
-	render(ce: Vue.CreateElement) {
-		return ce(DialogFind.TAG, {
-				class: { "modal-dialog": true },
-				attrs: { tabindex: 0 },
-				ref: "dialog",
-				on: { keydown: this.keydown }
-			}, [
-			ce("div", { class: { "modal-title": true } }, this.title),
-			ce("div", {
-				class: { "modal-prompt": true },
-				attrs: { contenteditable: true },
-				ref: "rg",
-				on: { input: this.input1 }
-			}, this.rg[1]),
-			ce("div", {
-				class: { "modal-prompt": true },
-				attrs: { contenteditable: true },
-				ref: "dp",
-				on: { input: this.input2 }
-			}, this.dp[1]),
-		])
-	}
+type reactive = {
+	rg: [string, string]
+	dp: [string, string]
 }
+
+const TAG = "dialog-find"
+
+export const V = vue.defineComponent({
+
+	props: {
+		title: {
+			required: true,
+			type: String,
+		},
+		rg: {
+			required: true,
+			type: String,
+		},
+		dp: {
+			required: true,
+			type: String,
+		},
+		close: {
+			required: true,
+			type: Function as vue.PropType<(_: Bridge.Modal.Event.ResultFind) => void>,
+		},
+		cancel: {
+			required: true,
+			type: Function as vue.PropType<() => void>,
+		},
+	},
+
+	setup(props) {
+		const rg = vue.ref<HTMLElement>()
+		const dp = vue.ref<HTMLElement>()
+
+		const reactive = vue.reactive<reactive>({
+			rg: [props.rg, props.rg],
+			dp: [props.dp, props.dp],
+		})
+
+		const keydown = (key: KeyboardEvent) => {
+			if (key.isComposing) {
+				return
+			}
+
+			if (key.key == "Enter") {
+				props.close({ rg: reactive.rg[0], dp: reactive.dp[0] })
+			}
+			else if (key.key == "Escape") {
+				props.cancel()
+			}
+		}
+
+		const input1 = (input: InputEvent) => {
+			reactive.rg[0] = (<HTMLDivElement>input.target).innerText
+		}
+
+		const input2 = (input: InputEvent) => {
+			reactive.dp[0] = (<HTMLDivElement>input.target).innerText
+		}
+
+		vue.onMounted(() => {
+			setTimeout(() => {
+				rg.value!.focus()
+			}, 0)
+		})
+
+		return {
+			rg,
+			dp,
+			reactive,
+			keydown,
+			input1,
+			input2,
+		}
+	},
+
+	render() {
+		return vue.h(TAG, {
+			class: { "modal-dialog": true },
+			tabindex: 0,
+			onKeydown: this.keydown,
+		}, [
+			vue.h("div", { class: { "modal-title": true } }, this.title),
+			vue.h("div", {
+				ref: "rg",
+				class: { "modal-prompt": true },
+				contenteditable: true,
+				onInput: this.input1,
+			}, this.reactive.rg[1]),
+			vue.h("div", {
+				ref: "dp",
+				class: { "modal-prompt": true },
+				contenteditable: true,
+				onInput: this.input2,
+			}, this.reactive.dp[1]),
+		])
+	},
+
+})

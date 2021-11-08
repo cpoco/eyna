@@ -1,59 +1,68 @@
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import * as vue from "vue"
 
-@Component
-export class DialogAlert extends Vue {
+import * as Bridge from '@bridge/Bridge'
 
-	static readonly TAG = 'dialog-alert'
+const TAG = "dialog-alert"
 
-	title: string = ""
-	text: string = ""
-	callbackClose: () => void = () => { }
-	callbackCancel: () => void = () => { }
+export const V = vue.defineComponent({
 
-	open(title: string, text: string, callbackClose: () => void, callbackCancel: () => void) {
-		this.title = title
-		this.text = text
-		this.callbackClose = callbackClose
-		this.callbackCancel = callbackCancel
-	}
+	props: {
+		title: {
+			required: true,
+			type: String,
+		},
+		text: {
+			required: true,
+			type: String,
+		},
+		close: {
+			required: true,
+			type: Function as vue.PropType<(_: Bridge.Modal.Event.ResultText) => void>,
+		},
+		cancel: {
+			required: true,
+			type: Function as vue.PropType<() => void>,
+		},
+	},
 
-	updated() {
-		setTimeout(() => {
-			(<HTMLElement>this.$refs.dialog).focus()
-		}, 0)
-	}
+	setup(props) {
+		const el = vue.ref<HTMLElement>()
 
-	private close() {
-		this.callbackClose()
-	}
+		const keydown = (key: KeyboardEvent) => {
+			if (key.isComposing) {
+				return
+			}
 
-	private cancel() {
-		this.callbackCancel()
-	}
-
-	private keydown(key: KeyboardEvent) {
-		if (key.isComposing) {
-			return
+			if (key.key == "Enter") {
+				props.close({ text: "" })
+			}
+			else if (key.key == "Escape") {
+				props.cancel()
+			}
 		}
 
-		if (key.key == "Enter") {
-			this.close()
-		}
-		else if (key.key == "Escape") {
-			this.cancel()
-		}
-	}
+		vue.onMounted(() => {
+			setTimeout(() => {
+				el.value!.focus()
+			}, 0)
+		})
 
-	render(ce: Vue.CreateElement) {
-		return ce(DialogAlert.TAG, {
+		return {
+			el,
+			keydown,
+		}
+	},
+
+	render() {
+		return vue.h(TAG, {
+			ref: "el",
 			class: { "modal-dialog": true },
-			attrs: { tabindex: 0 },
-			ref: "dialog",
-			on: { keydown: this.keydown }
+			tabindex: 0,
+			onKeydown: this.keydown,
 		}, [
-			ce("div", { class: { "modal-title": true }, }, this.title),
-			ce("div", { class: { "modal-alert": true } }, this.text),
+			vue.h("div", { class: { "modal-title": true } }, this.title),
+			vue.h("div", { class: { "modal-alert": true } }, this.text),
 		])
-	}
-}
+	},
+
+})
