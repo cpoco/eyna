@@ -28,7 +28,7 @@
 		"newLine": "LF",
 
 		// Basic
-		//  Diagnostics.Specify_an_output_folder_for_all_emitted_files
+		// Diagnostics.Specify_an_output_folder_for_all_emitted_files
 		"outDir": ".",
 
 		// Strict Type Checks
@@ -39,19 +39,19 @@
 		"strictBindCallApply": true,
 		"strictPropertyInitialization": true,
 		"noImplicitThis": true,
-		// "useUnknownInCatchVariables": true,
+		"useUnknownInCatchVariables": true,
 		"alwaysStrict": true,
 
 		// Additional Checks
 		// Diagnostics.Type_Checking
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		// "exactOptionalPropertyTypes": true,
+		"exactOptionalPropertyTypes": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		// "noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
-		// "noPropertyAccessFromIndexSignature": true,
+		"noPropertyAccessFromIndexSignature": true,
 
 		// Advanced
 		// Diagnostics.Interop_Constraints

@@ -67,9 +67,5 @@
 				"./src/renderer/*"
 			]
 		},
-
-		// Experimental
-		// Diagnostics.Language_and_Environment
-		// "experimentalDecorators": true,
 	}
 }
