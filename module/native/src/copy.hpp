@@ -21,7 +21,7 @@ static void copy_async(uv_work_t* req)
 	#if BOOST_OS_WINDOWS
 
 		boost::system::error_code error;
-		boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks, error);
+		boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks | boost::filesystem::copy_options::synchronize, error);
 
 		if (error) {
 			work->error = true;
