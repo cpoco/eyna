@@ -6,11 +6,15 @@
 
 			"include_dirs": [
 				"../boost",
+				"../boost/libs/atomic/src",
 			],
 
 			# common
 			"sources": [
 				"./src/main.cpp",
+				"../boost/libs/atomic/src/find_address_sse2.cpp",
+				"../boost/libs/atomic/src/find_address_sse41.cpp",
+				"../boost/libs/atomic/src/lock_pool.cpp",
 				"../boost/libs/filesystem/src/codecvt_error_category.cpp",
 				"../boost/libs/filesystem/src/directory.cpp",
 				"../boost/libs/filesystem/src/exception.cpp",
@@ -20,24 +24,25 @@
 				"../boost/libs/filesystem/src/portability.cpp",
 				"../boost/libs/filesystem/src/unique_path.cpp",
 				"../boost/libs/filesystem/src/utf8_codecvt_facet.cpp",
-				"../boost/libs/filesystem/src/windows_file_codecvt.cpp",
 			],
 			"defines": [
-				"BOOST_FILESYSTEM_NO_LIB",
-				"BOOST_SYSTEM_NO_LIB",
+				"BOOST_ALL_NO_LIB",
+				"BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF",
 			],
 
 			"conditions": [
 				# win
 				["OS=='win'", {
 					"sources": [
+						"../boost/libs/atomic/src/wait_ops_windows.cpp",
+						"../boost/libs/filesystem/src/windows_file_codecvt.cpp",
 					],
 					"defines": [
 					],
 					"msvs_settings": {
 						"VCCLCompilerTool": {
 							"ExceptionHandling": "2", # /EHa
-							'DisableSpecificWarnings': [
+							"DisableSpecificWarnings": [
 								"4819",
 								"4101",
 								"4996",
