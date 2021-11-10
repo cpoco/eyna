@@ -3,7 +3,7 @@
 
 boost::filesystem::path generic_path(const boost::filesystem::path& path)
 {
-	return boost::filesystem::path(path.generic_string<_string_t>());
+	return boost::filesystem::path(path.generic_string<_char_t>());
 }
 
 boost::filesystem::path generic_path(const _string_t& str)
