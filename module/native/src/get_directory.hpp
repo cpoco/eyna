@@ -80,7 +80,7 @@ static void get_directory_complete(uv_work_t* req, int status)
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
 	for (boost::filesystem::path& p : work->ls) {
-		if (work->bs.size() == 0) {
+		if (work->bs.empty()) {
 			array->Set(CONTEXT, index++, path_to_string(p));
 		}
 		else {

@@ -1,8 +1,6 @@
 #ifndef NATIVE_COMMON_ATTRIBUTE
 #define NATIVE_COMMON_ATTRIBUTE
 
-#include "common.hpp"
-
 #if BOOST_OS_WINDOWS
 	typedef struct _REPARSE_DATA_BUFFER {
 		ULONG  ReparseTag;
@@ -51,11 +49,11 @@ struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
 
-	boost::filesystem::path full; // generic_path
+	boost::filesystem::path full; // generic
 
 	LINK_TYPE link_type = LINK_TYPE::LINK_TYPE_NONE;
 
-	boost::filesystem::path link; // generic_path
+	boost::filesystem::path link; // generic
 
 	int64_t size = 0;
 	int64_t time = 0;

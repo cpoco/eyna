@@ -67,14 +67,14 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("file_type")), v8::Number::New(ISOLATE, a.file_type));
 		obj->Set(CONTEXT, to_string(V("full")),      path_to_string(a.full));
 
-		if (work->base.size() == 0) {
+		if (work->base.empty()) {
 			obj->Set(CONTEXT, to_string(V("rltv")), path_to_string(a.full.filename()));
 		}
 		else {
 			obj->Set(CONTEXT, to_string(V("rltv")), path_to_string(a.full.lexically_relative(work->base).generic_path()));
 		}
 
-		if (a.full.stem().size() == 0) {
+		if (a.full.stem().empty()) {
 			obj->Set(CONTEXT, to_string(V("name")), path_to_string(a.full.filename()));
 			obj->Set(CONTEXT, to_string(V("stem")), path_to_string(a.full.filename()));
 			obj->Set(CONTEXT, to_string(V("ext")),  v8::String::Empty(ISOLATE));

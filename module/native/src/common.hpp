@@ -66,5 +66,6 @@ v8::Local<v8::String> path_to_string(const boost::filesystem::path& path)
 }
 
 #include "common_attribute.hpp"
+#include "common_path.hpp"
 
 #endif // include guard
