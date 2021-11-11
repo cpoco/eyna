@@ -27,19 +27,19 @@
 		"strictBindCallApply": true,
 		"strictPropertyInitialization": true,
 		"noImplicitThis": true,
-		// "useUnknownInCatchVariables": true,
+		"useUnknownInCatchVariables": true,
 		"alwaysStrict": true,
 
 		// Additional Checks
 		// Diagnostics.Type_Checking
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		// "exactOptionalPropertyTypes": true,
+		"exactOptionalPropertyTypes": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		// "noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
-		// "noPropertyAccessFromIndexSignature": true,
+		"noPropertyAccessFromIndexSignature": true,
 
 		// Advanced
 		// Diagnostics.Interop_Constraints
@@ -50,6 +50,10 @@
 		"moduleResolution": "node",
 		"baseUrl": "./",
 		"paths": {
+			"vue": [
+				"./node_modules/vue/dist/vue.d.ts",
+				"./node_modules/vue/dist/vue.runtime.esm-bundler.js",
+			],
 			"@module/*": [
 				"./module/*"
 			],
@@ -63,9 +67,5 @@
 				"./src/renderer/*"
 			]
 		},
-
-		// Experimental
-		// Diagnostics.Language_and_Environment
-		"experimentalDecorators": true,
 	}
 }

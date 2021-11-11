@@ -9,7 +9,7 @@ struct create_directory_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path abst;
+	std::filesystem::path abst;
 	bool error;
 };
 
@@ -17,10 +17,10 @@ static void create_directory_async(uv_work_t* req)
 {
 	create_directory_work* work = static_cast<create_directory_work*>(req->data);
 
-	boost::system::error_code error;
-	bool result = boost::filesystem::create_directories(work->abst, error);
+	std::error_code ec;
+	bool result = std::filesystem::create_directories(work->abst, ec);
 
-	if (!result || error) {
+	if (!result || ec) {
 		work->error = true;
 	}
 }
@@ -56,7 +56,7 @@ void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, create_directory_async, create_directory_complete);

@@ -9,13 +9,13 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	boost::filesystem::path abst = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
+	std::filesystem::path abst = std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
 
-	#if BOOST_OS_WINDOWS
+	#if _OS_WIN_
 
 		SHObjectProperties(NULL, SHOP_FILEPATH, abst.make_preferred().c_str(), NULL);
 
-	#elif BOOST_OS_MACOS
+	#elif _OS_MAC_
 
 		NSPasteboard* pboard = [NSPasteboard pasteboardWithUniqueName];
 		[pboard declareTypes:@[NSPasteboardTypeString] owner:nil];

@@ -67,7 +67,7 @@ export class FilerFragment extends AbstractFragment {
 		const h: number = 18 // --dynamic-filer-line-height
 
 		root
-			.handle(Bridge.Filer.Resize.CH, (_index: number, _data: Bridge.Filer.Resize.Data): Bridge.Filer.Style.Data => {
+			.handle(Bridge.Filer.Resize.CH, (_i: number, _data: Bridge.Filer.Resize.Data): Bridge.Filer.Style.Data => {
 				return {
 					fontSize: `${s}px`,
 					lineHeight: `${h}px`,
@@ -75,12 +75,12 @@ export class FilerFragment extends AbstractFragment {
 			})
 
 		root
-			.on(Bridge.List.Resize.CH, (index: number, data: Bridge.List.Resize.Data) => {
+			.on(Bridge.List.Resize.CH, (i: number, data: Bridge.List.Resize.Data) => {
 				if (data.event == "mounted") {
-					this.core[index].mounted(data.data.h, h)
+					this.core[i].mounted(data.data.h, h)
 				}
 				else if (data.event == "resized") {
-					this.core[index].resized(data.data.h)
+					this.core[i].resized(data.data.h)
 				}
 			})
 	}

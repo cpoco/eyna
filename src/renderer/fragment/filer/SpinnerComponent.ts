@@ -1,13 +1,11 @@
-import Vue from 'vue'
-import Component from 'vue-class-component'
+import * as vue from "vue"
 
-@Component
-export class SpinnerComponent extends Vue {
+const TAG = "spinner"
 
-	static readonly TAG = 'spinner'
+export const V = vue.defineComponent({
 
-	render(ce: Vue.CreateElement) {
-		return ce(SpinnerComponent.TAG, { class: { "spinner": true } })
+	render() {
+		return vue.h(TAG, { class: { "spinner": true } })
 	}
 
-}
+})
