@@ -6,7 +6,6 @@
 	"main": "./app/browser.js",
 	"description": "",
 	"devDependencies": {
-		"@module/boost": "file:./module/boost",
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.5",
 		"electron": "15.3.1",
