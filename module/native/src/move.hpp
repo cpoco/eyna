@@ -9,8 +9,8 @@ struct move_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path src;
-	boost::filesystem::path dst;
+	std::filesystem::path src;
+	std::filesystem::path dst;
 	bool error;
 };
 
@@ -18,14 +18,11 @@ static void move_async(uv_work_t* req)
 {
 	move_work* work = static_cast<move_work*>(req->data);
 
-	boost::system::error_code error;
-	boost::filesystem::rename(work->src, work->dst, error);
+	std::error_code ec;
+	std::filesystem::rename(work->src, work->dst, ec);
 
-	if (error) {
+	if (ec) {
 		work->error = true;
-	}
-	else {
-		work->error = false;
 	}
 }
 
@@ -60,8 +57,8 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->src = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
-	work->dst = boost::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, move_async, move_complete);

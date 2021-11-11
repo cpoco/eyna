@@ -9,7 +9,7 @@ struct get_directory_size_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path wd; // generic_path
+	std::filesystem::path wd; // generic_path
 	int32_t dp;
 	int64_t s;
 	int32_t d;
@@ -17,14 +17,15 @@ struct get_directory_size_work
 	int32_t e;
 };
 
-static void get_directory_size(get_directory_size_work* work, const boost::filesystem::path& wd, int32_t dp)
+static void get_directory_size(get_directory_size_work* work, const std::filesystem::path& wd, int32_t dp)
 {
 	try {
-		std::for_each(boost::filesystem::directory_iterator(wd), boost::filesystem::directory_iterator(),
-			[&](const boost::filesystem::path& path)
+		std::error_code ec;
+		std::for_each(std::filesystem::directory_iterator(wd, ec), std::filesystem::directory_iterator(),
+			[&](const std::filesystem::path& path)
 			{
 				_attribute attr = {};
-				attr.full = path.generic_path();
+				attr.full = generic_path(path);
 				attribute(attr);
 
 				if (dp < work->dp && attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
@@ -37,8 +38,11 @@ static void get_directory_size(get_directory_size_work* work, const boost::files
 				}
 			}
 		);
+		if (ec) {
+			work->e++;
+		}
 	}
-	catch (boost::filesystem::filesystem_error& e) {
+	catch (std::filesystem::filesystem_error& e) {
 		work->e++;
 	}
 }
@@ -55,7 +59,7 @@ static void get_directory_size_complete(uv_work_t* req, int status)
 	get_directory_size_work* work = static_cast<get_directory_size_work*>(req->data);
 
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-	obj->Set(CONTEXT, to_string(V("wd")), path_to_string(work->wd));
+	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->wd));
 	obj->Set(CONTEXT, to_string(V("s")), v8::Number::New(ISOLATE, (double)work->s));
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
@@ -82,7 +86,7 @@ void get_directory_size(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->wd = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->wd = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 
 	work->dp = 1024;
 	work->s = 0;

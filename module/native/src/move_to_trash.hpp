@@ -13,12 +13,11 @@ struct move_to_trash_work
 	bool error;
 };
 
-
 static void move_to_trash_async(uv_work_t* req)
 {
 	move_to_trash_work* work = static_cast<move_to_trash_work*>(req->data);
 
-	#if BOOST_OS_WINDOWS
+	#if _OS_WIN_
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
@@ -39,7 +38,7 @@ static void move_to_trash_async(uv_work_t* req)
 
 		CoUninitialize();
 
-	#elif BOOST_OS_MACOS
+	#elif _OS_MAC_
 
 		NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 

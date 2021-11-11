@@ -1,7 +1,7 @@
 #ifndef NATIVE_COMMON_ATTRIBUTE
 #define NATIVE_COMMON_ATTRIBUTE
 
-#if BOOST_OS_WINDOWS
+#if _OS_WIN_
 	typedef struct _REPARSE_DATA_BUFFER {
 		ULONG  ReparseTag;
 		USHORT ReparseDataLength;
@@ -49,11 +49,11 @@ struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
 
-	boost::filesystem::path full; // generic
+	std::filesystem::path full; // generic_path
 
 	LINK_TYPE link_type = LINK_TYPE::LINK_TYPE_NONE;
 
-	boost::filesystem::path link; // generic
+	std::filesystem::path link; // generic_path
 
 	int64_t size = 0;
 	int64_t time = 0;
@@ -72,7 +72,7 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
-	#if BOOST_OS_WINDOWS
+	#if _OS_WIN_
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
 
@@ -133,7 +133,7 @@ void attribute(_attribute& attribute)
 							}
 
 							attribute.link_type = LINK_TYPE::LINK_TYPE_SYMBOLIC;
-							attribute.link = boost::filesystem::path(str);
+							attribute.link = std::filesystem::path(str);
 						}
 						// ジャンクション
 						else if (reparse_data->ReparseTag == IO_REPARSE_TAG_MOUNT_POINT) {
@@ -151,7 +151,7 @@ void attribute(_attribute& attribute)
 							}
 
 							attribute.link_type = LINK_TYPE::LINK_TYPE_JUNCTION;
-							attribute.link = boost::filesystem::path(str);
+							attribute.link = std::filesystem::path(str);
 						}
 					}
 
@@ -183,13 +183,13 @@ void attribute(_attribute& attribute)
 					int len = wcslen(out);
 					if (0 < len) {
 						attribute.link_type = LINK_TYPE::LINK_TYPE_SHORTCUT;
-						attribute.link = boost::filesystem::path(_string_t(out, len)).generic_path();
+						attribute.link = generic_path(std::filesystem::path(_string_t(out, len)));
 					}
 				}
 			}
 		}
 
-	#elif BOOST_OS_MACOS
+	#elif _OS_MAC_
 
 		struct stat st;
 
@@ -237,7 +237,7 @@ void attribute(_attribute& attribute)
 
 					_char_t link[PATH_MAX] = {};
 					if (-1 != readlink(attribute.full.c_str(), link, PATH_MAX)) {
-						attribute.link = boost::filesystem::path(_string_t(link));
+						attribute.link = std::filesystem::path(_string_t(link));
 					}
 				}
 			}
@@ -248,12 +248,12 @@ void attribute(_attribute& attribute)
 					// int options = NSURLBookmarkResolutionWithoutUI | NSURLBookmarkResolutionWithoutMounting; // マウントボリューム先の場合は自動接続を行わない
 					// NSURL* bookmark = [NSURL URLByResolvingAliasFileAtURL:url options:options error:&error];
 					// if (error == nil) {
-					// 	attribute.link = boost::filesystem::path(_string_t([[bookmark path] UTF8String]));
+					// 	attribute.link = std::filesystem::path(_string_t([[bookmark path] UTF8String]));
 					// }
 					NSData* data = [NSURL bookmarkDataWithContentsOfURL:url error:&error];
 					if (error == nil) {
 						NSDictionary* d = [NSURL resourceValuesForKeys:@[NSURLPathKey] fromBookmarkData:data];
-						attribute.link = boost::filesystem::path(_string_t([[d objectForKey:NSURLPathKey] UTF8String]));
+						attribute.link = std::filesystem::path(_string_t([[d objectForKey:NSURLPathKey] UTF8String]));
 					}
 				}
 			}

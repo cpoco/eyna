@@ -9,8 +9,8 @@ struct copy_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path src;
-	boost::filesystem::path dst;
+	std::filesystem::path src;
+	std::filesystem::path dst;
 	bool error;
 };
 
@@ -18,16 +18,16 @@ static void copy_async(uv_work_t* req)
 {
 	copy_work* work = static_cast<copy_work*>(req->data);
 
-	#if BOOST_OS_WINDOWS
+	#if _OS_WIN_
 
-		boost::system::error_code error;
-		boost::filesystem::copy(work->src, work->dst, boost::filesystem::copy_options::recursive | boost::filesystem::copy_options::copy_symlinks | boost::filesystem::copy_options::synchronize, error);
+		std::error_code ec;
+		std::filesystem::copy(work->src, work->dst, std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks, ec);
 
-		if (error) {
+		if (ec) {
 			work->error = true;
 		}
 
-	#elif BOOST_OS_MACOS
+	#elif _OS_MAC_
 
 		NSError* error = nil;
 		BOOL ret = [[NSFileManager defaultManager]
@@ -73,8 +73,8 @@ void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->src = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
-	work->dst = boost::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, copy_async, copy_complete);

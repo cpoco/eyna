@@ -9,60 +9,59 @@ struct get_directory_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path wd; // generic_path
-	boost::filesystem::path bs; // generic_path
+	std::filesystem::path wd; // generic_path
+	std::filesystem::path bs; // generic_path
 	bool md; // last parent directory
 	int32_t dp;
 	_string_t pt;
-	std::vector<boost::filesystem::path> ls; // generic_path
+	std::vector<std::filesystem::path> ls; // generic_path
 	int32_t e;
 };
 
-static void get_directory(get_directory_work* work, const boost::filesystem::path& wd, int32_t dp)
+static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp)
 {
 	try {
-		std::vector<boost::filesystem::path> sort; // generic_path
+		std::vector<std::filesystem::path> sort; // generic_path
 
-		std::for_each(boost::filesystem::directory_iterator(wd), boost::filesystem::directory_iterator(),
-			[&sort](const boost::filesystem::path& path)
+		std::error_code ec;
+		std::for_each(std::filesystem::directory_iterator(wd, ec), std::filesystem::directory_iterator(),
+			[&sort](const std::filesystem::path& path)
 			{
-				sort.push_back(path.generic_path());
+				sort.push_back(generic_path(path));
 			}
 		);
+		if (ec) {
+			work->e++;
+		}
 
 		std::sort(sort.begin(), sort.end(),
-			[](const boost::filesystem::path& a, const boost::filesystem::path& b)
+			[](const std::filesystem::path& a, const std::filesystem::path& b)
 			{
 				return a < b;
 			}
 		);
 
 		std::for_each(sort.begin(), sort.end(),
-			[&](const boost::filesystem::path& path)
+			[&](const std::filesystem::path& path)
 			{
 				_attribute attr = {};
 				attr.full = path;
 				attribute(attr);
 
-				if (work->md == false && (work->pt.empty() || std::regex_search(attr.full.lexically_relative(work->wd).generic_path().c_str(), _regex_t(work->pt)))) {
+				if (work->md == false && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->wd)).c_str(), _regex_t(work->pt)))) {
 					work->ls.push_back(attr.full);
 				}
 				if (dp < work->dp && attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
 					get_directory(work, attr.full, dp + 1);
 				}
-				if (work->md == true && (work->pt.empty() || std::regex_search(attr.full.lexically_relative(work->wd).generic_path().c_str(), _regex_t(work->pt)))) {
+				if (work->md == true && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->wd)).c_str(), _regex_t(work->pt)))) {
 					work->ls.push_back(attr.full);
 				}
 			}
 		);
 	}
-	catch (boost::filesystem::filesystem_error& e) {
-		if (dp == 0) {
-			work->e = -1;
-		}
-		else {
-			work->e++;
-		}
+	catch (std::filesystem::filesystem_error& e) {
+		work->e++;
 	}
 }
 
@@ -79,17 +78,17 @@ static void get_directory_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
-	for (boost::filesystem::path& p : work->ls) {
+	for (std::filesystem::path& p : work->ls) {
 		if (work->bs.empty()) {
-			array->Set(CONTEXT, index++, path_to_string(p));
+			array->Set(CONTEXT, index++, to_string(p));
 		}
 		else {
-			array->Set(CONTEXT, index++, path_to_string(p.lexically_relative(work->bs).generic_path()));
+			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->bs))));
 		}
 	}
 
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-	obj->Set(CONTEXT, to_string(V("wd")), path_to_string(work->wd));
+	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->wd));
 	obj->Set(CONTEXT, to_string(V("ls")), array);
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
@@ -120,9 +119,9 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->wd = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->wd = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 
-	work->bs = boost::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->bs = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 
 	work->md = info[2]->BooleanValue(ISOLATE);
 

@@ -9,12 +9,12 @@ struct get_attribute_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path abst;
-	boost::filesystem::path base;
+	std::filesystem::path abst;
+	std::filesystem::path base;
 	std::vector<_attribute> attributes;
 };
 
-void get_attribute(const boost::filesystem::path& path, std::vector<_attribute>& vector)
+void get_attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
 {
 	vector.push_back(_attribute());
 
@@ -32,10 +32,10 @@ void get_attribute(const boost::filesystem::path& path, std::vector<_attribute>&
 
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
-			get_attribute(boost::filesystem::path(attr.link), vector);
+			get_attribute(attr.link, vector);
 		}
 		else if (attr.link.is_relative()) {
-			get_attribute((attr.full.parent_path() / attr.link).generic_path().lexically_normal().generic_path(), vector);
+			get_attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
 		}
 		else {
 			vector.push_back(_attribute());
@@ -65,32 +65,25 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 
 		obj->Set(CONTEXT, to_string(V("file_type")), v8::Number::New(ISOLATE, a.file_type));
-		obj->Set(CONTEXT, to_string(V("full")),      path_to_string(a.full));
+		obj->Set(CONTEXT, to_string(V("full")),      to_string(a.full));
 
 		if (work->base.empty()) {
-			obj->Set(CONTEXT, to_string(V("rltv")), path_to_string(a.full.filename()));
+			obj->Set(CONTEXT, to_string(V("rltv")), to_string(a.full.filename()));
 		}
 		else {
-			obj->Set(CONTEXT, to_string(V("rltv")), path_to_string(a.full.lexically_relative(work->base).generic_path()));
+			obj->Set(CONTEXT, to_string(V("rltv")), to_string(generic_path(a.full.lexically_relative(work->base))));
 		}
 
-		if (a.full.stem().empty()) {
-			obj->Set(CONTEXT, to_string(V("name")), path_to_string(a.full.filename()));
-			obj->Set(CONTEXT, to_string(V("stem")), path_to_string(a.full.filename()));
-			obj->Set(CONTEXT, to_string(V("ext")),  v8::String::Empty(ISOLATE));
-		}
-		else {
-			obj->Set(CONTEXT, to_string(V("name")), path_to_string(a.full.filename()));
-			obj->Set(CONTEXT, to_string(V("stem")), path_to_string(a.full.stem()));
-			obj->Set(CONTEXT, to_string(V("ext")),  path_to_string(a.full.extension()));
-		}
+		obj->Set(CONTEXT, to_string(V("name")), to_string(a.full.filename()));
+		obj->Set(CONTEXT, to_string(V("stem")), to_string(a.full.stem()));
+		obj->Set(CONTEXT, to_string(V("ext")),  to_string(a.full.extension()));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, a.link_type));
 		if (a.link_type == 0) {
 			obj->Set(CONTEXT, to_string(V("link")), v8::Null(ISOLATE));
 		}
 		else {
-			obj->Set(CONTEXT, to_string(V("link")), path_to_string(a.link));
+			obj->Set(CONTEXT, to_string(V("link")), to_string(a.link));
 		}
 
 		obj->Set(CONTEXT, to_string(V("size")), v8::Number::New(ISOLATE, (double)a.size));
@@ -125,8 +118,8 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
-	work->base = boost::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 	work->attributes.clear();
 
 	uv_queue_work(uv_default_loop(), &work->request, get_attribute_async, get_attribute_complete);

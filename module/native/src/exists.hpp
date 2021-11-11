@@ -9,7 +9,7 @@ struct exists_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	boost::filesystem::path abst;
+	std::filesystem::path abst;
 	bool exists;
 };
 
@@ -17,10 +17,10 @@ static void exists_async(uv_work_t* req)
 {
 	exists_work* work = static_cast<exists_work*>(req->data);
 
-	boost::system::error_code error;
-	bool result = boost::filesystem::exists(work->abst, error);
+	std::error_code ec;
+	bool result = std::filesystem::exists(work->abst, ec);
 
-	if (!result || error) {
+	if (!result || ec) {
 		work->exists = false;
 	}
 	else {
@@ -53,11 +53,10 @@ void exists(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = boost::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())).generic_path();
+	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	work->exists = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, exists_async, exists_complete);
 }
-
 
 #endif // include guard

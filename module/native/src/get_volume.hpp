@@ -6,7 +6,7 @@
 struct _volume
 {
 	_string_t name;
-	boost::filesystem::path full;
+	std::filesystem::path full;
 };
 
 struct get_volume_work
@@ -22,7 +22,7 @@ static void get_volume_async(uv_work_t *req)
 {
 	get_volume_work* work = static_cast<get_volume_work*>(req->data);
 
-	#if BOOST_OS_WINDOWS
+	#if _OS_WIN_
 		DWORD bit = GetLogicalDrives();
 		for (int i = 0; i< 26; i++) {
 			if (bit & (1 << i)) {
@@ -30,10 +30,10 @@ static void get_volume_async(uv_work_t *req)
 
 				_volume& v = work->volumes.back();
 				v.name.append(1, L'A' + i).append(L":/");
-				v.full = boost::filesystem::path(v.name);
+				v.full = std::filesystem::path(v.name);
 			}
 		}
-	#elif BOOST_OS_MACOS
+	#elif _OS_MAC_
 		NSArray* array = [[NSFileManager defaultManager] mountedVolumeURLsIncludingResourceValuesForKeys:nil options:NSVolumeEnumerationSkipHiddenVolumes];
 
 		for (NSURL* url in array) {
@@ -46,7 +46,7 @@ static void get_volume_async(uv_work_t *req)
 
 			_volume& v = work->volumes.back();
 			v.name = _string_t([[dic objectForKey:NSURLVolumeNameKey] UTF8String]);
-			v.full = boost::filesystem::path(_string_t([[url path] UTF8String]));
+			v.full = std::filesystem::path(_string_t([[url path] UTF8String]));
 		}
 	#endif
 }
@@ -60,7 +60,7 @@ static void get_volume_complete(uv_work_t* req, int status)
 	for (_volume& v : work->volumes) {
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 
-		obj->Set(CONTEXT, to_string(V("full")), path_to_string(v.full));
+		obj->Set(CONTEXT, to_string(V("full")), to_string(v.full));
 		obj->Set(CONTEXT, to_string(V("name")), to_string(v.name));
 
 		array->Set(CONTEXT, array->Length(), obj);
