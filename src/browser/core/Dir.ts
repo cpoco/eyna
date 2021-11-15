@@ -1,13 +1,11 @@
-import * as path from 'path'
+import * as _ from "lodash-es"
+import * as path from "path"
 
-import * as _ from 'lodash-es'
-
-import * as Native from '@module/native/ts/browser'
-
-import { Path } from '@browser/core/Path'
+import { Path } from "@browser/core/Path"
+import * as Native from "@module/native/ts/browser"
 
 export class Dir {
-	static readonly HOME: string = 'home'
+	static readonly HOME: string = "home"
 
 	private wd: string = Dir.HOME
 	private dp: number = 0
@@ -78,10 +76,10 @@ export class Dir {
 						full: v.full,
 						rltv: v.name,
 						name: v.name,
-						stem: '',
-						ext: '',
+						stem: "",
+						ext: "",
 						link_type: Native.AttributeLinkType.none,
-						link: '',
+						link: "",
 						size: 0,
 						time: 0,
 						nsec: 0,
@@ -98,10 +96,10 @@ export class Dir {
 						full: Path.home(),
 						rltv: "user",
 						name: "user",
-						stem: '',
-						ext: '',
+						stem: "",
+						ext: "",
 						link_type: Native.AttributeLinkType.none,
-						link: '',
+						link: "",
 						size: 0,
 						time: 0,
 						nsec: 0,
@@ -119,7 +117,6 @@ export class Dir {
 			this.dp = dp
 			this.rg = rg
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-
 				console.log(this.wd, this.dp, this.rg, dir.e)
 				console.log(this.wd, "Native.getDirectory", `${Date.now() - _time}ms`)
 				_time = Date.now()

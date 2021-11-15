@@ -1,9 +1,9 @@
 export namespace Filer {
 	// renderer -> browser
 	export namespace Resize {
-		export const CH = 'filer-resize'
+		export const CH = "filer-resize"
 		export type Send = {
-			ch: 'filer-resize'
+			ch: "filer-resize"
 			args: Args
 		}
 		export type Args = [

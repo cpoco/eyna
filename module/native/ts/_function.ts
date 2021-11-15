@@ -1,6 +1,6 @@
-const native = require('./native.node')
+const native = require("./native.node")
 
-import * as Type from './_type'
+import * as Type from "./_type"
 
 export function copy(abstract_src: string, abstract_dst: string): Promise<void> {
 	if (native == null) {
@@ -30,7 +30,13 @@ export function getAttribute(abstract: string, base: string = ""): Promise<Type.
 	return native.getAttribute(abstract, base)
 }
 
-export function getDirectory(abstract: string, base: string = "", mode: boolean = false, depth: number = 0, regexp: RegExp | null = null): Promise<Type.Directory> {
+export function getDirectory(
+	abstract: string,
+	base: string = "",
+	mode: boolean = false,
+	depth: number = 0,
+	regexp: RegExp | null = null,
+): Promise<Type.Directory> {
 	if (native == null) {
 		return Promise.reject()
 	}

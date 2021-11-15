@@ -1,5 +1,5 @@
-import * as process from 'process'
-import * as child_process from 'child_process'
+import * as child_process from "child_process"
+import * as process from "process"
 
 export default async (ex: Extension): Promise<void> => {
 	if (ex.active.cursor == null) {
@@ -7,10 +7,10 @@ export default async (ex: Extension): Promise<void> => {
 	}
 	let full = ex.active.cursor[0].full
 
-	if (process.platform == 'win32') {
-		child_process.spawn('C:/Program Files/Microsoft VS Code/Code.exe', ['-n', full], { detached: true })
+	if (process.platform == "win32") {
+		child_process.spawn("C:/Program Files/Microsoft VS Code/Code.exe", ["-n", full], { detached: true })
 	}
-	else if (process.platform == 'darwin') {
-		child_process.spawn('/usr/local/bin/code', ['-n', full])
+	else if (process.platform == "darwin") {
+		child_process.spawn("/usr/local/bin/code", ["-n", full])
 	}
 }

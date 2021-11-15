@@ -1,9 +1,9 @@
 export namespace Modal {
 	// renderer -> browser
 	export namespace Event {
-		export const CH = 'modal-event'
+		export const CH = "modal-event"
 		export type Send = {
-			ch: 'modal-event'
+			ch: "modal-event"
 			args: Args
 		}
 		export type Args = [
@@ -23,15 +23,14 @@ export namespace Modal {
 		}
 		export type Result = ResultText | ResultFind
 		export type ResultText = { text: string }
-		export type ResultFind = { rg: string, dp: string }
-		
+		export type ResultFind = { rg: string; dp: string }
 	}
 
 	// browser -> renderer
 	export namespace Order {
-		export const CH = 'modal-order'
+		export const CH = "modal-order"
 		export type Send = {
-			ch: 'modal-order'
+			ch: "modal-order"
 			args: Args
 		}
 		export type Args = [

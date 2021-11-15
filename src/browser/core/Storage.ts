@@ -1,17 +1,15 @@
-import * as fs from 'fs'
-
-import * as electron from 'electron'
-import * as _ from 'lodash-es'
+import * as electron from "electron"
+import * as fs from "fs"
+import * as _ from "lodash-es"
 
 export namespace Storage {
-
 	type ConfData = {
 		window?: electron.Rectangle
 		wd?: string[]
 	}
 
 	class Manager {
-		private path: string = ''
+		private path: string = ""
 		data: ConfData = {}
 
 		load(path: string) {
@@ -23,7 +21,7 @@ export namespace Storage {
 			this.data = {}
 			try {
 				if (fs.existsSync(this.path)) {
-					this.data = JSON.parse(fs.readFileSync(this.path, 'utf8'))
+					this.data = JSON.parse(fs.readFileSync(this.path, "utf8"))
 				}
 				else {
 					this.data = {}
@@ -39,7 +37,7 @@ export namespace Storage {
 				return
 			}
 			try {
-				fs.writeFileSync(this.path, JSON.stringify(this.data));
+				fs.writeFileSync(this.path, JSON.stringify(this.data))
 			}
 			catch (err) {
 			}

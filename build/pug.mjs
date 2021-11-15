@@ -1,8 +1,7 @@
 import fs from "fs/promises"
 import path from "path"
-import url from "url"
-
 import * as pug from "pug"
+import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
@@ -11,7 +10,7 @@ async function render(file) {
 		try {
 			resolve(pug.renderFile(file))
 		}
-		catch(err) {
+		catch (err) {
 			reject(err)
 		}
 	})

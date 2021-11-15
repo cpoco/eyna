@@ -1,19 +1,16 @@
-import * as electron from 'electron'
-import * as _ from 'lodash-es'
+import * as electron from "electron"
+import * as _ from "lodash-es"
 
-import * as Native from '@module/native/ts/browser'
-
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@browser/Root'
-import { Dir } from '@browser/core/Dir'
-import { Storage } from '@browser/core/Storage'
-import { AbstractFragment } from '@browser/fragment/AbstractFragment'
-import { FilerManager } from '@browser/fragment/filer/FilerManager'
+import * as Bridge from "@bridge/Bridge"
+import { Dir } from "@browser/core/Dir"
+import { Storage } from "@browser/core/Storage"
+import { AbstractFragment } from "@browser/fragment/AbstractFragment"
+import { FilerManager } from "@browser/fragment/filer/FilerManager"
+import root from "@browser/Root"
+import * as Native from "@module/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {
-
-	private index: { active: number, target: number } = { active: -1, target: -1 }
+	private index: { active: number; target: number } = { active: -1, target: -1 }
 	private core: FilerManager[] = []
 
 	private get active(): FilerManager {
@@ -37,17 +34,23 @@ export class FilerFragment extends AbstractFragment {
 		this.index.target = 1
 
 		for (let i = 0; i < 3; i++) {
-			this.core.push(new FilerManager(i, (Storage.manager.data.wd ?? [])[i] ?? null,
-				this.index.active == i ? Bridge.Status.active :
-					this.index.target == i ? Bridge.Status.target :
-						Bridge.Status.none))
+			this.core.push(
+				new FilerManager(
+					i,
+					(Storage.manager.data.wd ?? [])[i] ?? null,
+					this.index.active == i
+						? Bridge.Status.active
+						: this.index.target == i
+						? Bridge.Status.target
+						: Bridge.Status.none,
+				),
+			)
 		}
 
 		this.ipc()
 		this.commandTest()
 		this.commandExtension()
 		this.commandList()
-
 	}
 
 	update() {
@@ -87,8 +90,8 @@ export class FilerFragment extends AbstractFragment {
 
 	private commandTest() {
 		this
-			.on('list.test', () => {
-				root.runExtension('list.test.js', {
+			.on("list.test", () => {
+				root.runExtension("list.test.js", {
 					active: {
 						wd: this.active.data.wd,
 						cursor: this.active.data.ls[this.active.data.cursor] ?? null,
@@ -97,7 +100,7 @@ export class FilerFragment extends AbstractFragment {
 								ret.push(this.active.data.ls[i])
 							}
 							return ret
-						}, [])
+						}, []),
 					},
 					target: {
 						wd: this.target.data.wd,
@@ -107,7 +110,7 @@ export class FilerFragment extends AbstractFragment {
 								ret.push(this.target.data.ls[i])
 							}
 							return ret
-						}, [])
+						}, []),
 					},
 				})
 				/*
@@ -132,7 +135,7 @@ export class FilerFragment extends AbstractFragment {
 
 	private commandExtension() {
 		this
-			.on('list.extension', (file) => {
+			.on("list.extension", (file) => {
 				root.runExtension(`${file}.js`, {
 					active: {
 						wd: this.active.data.wd,
@@ -142,7 +145,7 @@ export class FilerFragment extends AbstractFragment {
 								ret.push(this.active.data.ls[i])
 							}
 							return ret
-						}, [])
+						}, []),
 					},
 					target: {
 						wd: this.target.data.wd,
@@ -152,7 +155,7 @@ export class FilerFragment extends AbstractFragment {
 								ret.push(this.target.data.ls[i])
 							}
 							return ret
-						}, [])
+						}, []),
 					},
 				})
 				return Promise.resolve()
@@ -161,7 +164,7 @@ export class FilerFragment extends AbstractFragment {
 
 	private commandList() {
 		this
-			.on('list.up', () => {
+			.on("list.up", () => {
 				if (this.active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -171,8 +174,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.sendCursor()
 				return Promise.resolve()
 			})
-
-			.on('list.pageup', () => {
+			.on("list.pageup", () => {
 				if (this.active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -182,8 +184,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.sendCursor()
 				return Promise.resolve()
 			})
-
-			.on('list.down', () => {
+			.on("list.down", () => {
 				if (this.active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -193,49 +194,49 @@ export class FilerFragment extends AbstractFragment {
 				this.active.sendCursor()
 				return Promise.resolve()
 			})
-
-			.on('list.pagedown', () => {
+			.on("list.pagedown", () => {
 				if (this.active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 
-				this.active.data.cursor = Math.min(this.active.data.cursor + this.active.mv, this.active.data.ls.length - 1)
+				this.active.data.cursor = Math.min(
+					this.active.data.cursor + this.active.mv,
+					this.active.data.ls.length - 1,
+				)
 				this.active.scroll()
 				this.active.sendCursor()
 				return Promise.resolve()
 			})
-
-			.on('list.left', () => {
+			.on("list.left", () => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + 2) % 3
 				this.core.forEach((fm, i) => {
-					fm.data.status =
-						this.index.active == i ? Bridge.Status.active :
-							this.index.target == i ? Bridge.Status.target :
-								Bridge.Status.none
+					fm.data.status = this.index.active == i
+						? Bridge.Status.active
+						: this.index.target == i
+						? Bridge.Status.target
+						: Bridge.Status.none
 					fm.sendActive()
 				})
 				return Promise.resolve()
 			})
-
-			.on('list.right', () => {
+			.on("list.right", () => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + 1) % 3
 				this.core.forEach((fm, i) => {
-					fm.data.status =
-						this.index.active == i ? Bridge.Status.active :
-							this.index.target == i ? Bridge.Status.target :
-								Bridge.Status.none
+					fm.data.status = this.index.active == i
+						? Bridge.Status.active
+						: this.index.target == i
+						? Bridge.Status.target
+						: Bridge.Status.none
 					fm.sendActive()
 				})
 				return Promise.resolve()
 			})
-
-			.on('list.update', () => {
+			.on("list.update", () => {
 				return this.active.update()
 			})
-
-			.on('list.mark', () => {
+			.on("list.mark", () => {
 				let attr = _.last(this.active.data.ls[this.active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
@@ -245,8 +246,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.sendMark(this.active.data.cursor, this.active.data.cursor + 1)
 				return Promise.resolve()
 			})
-
-			.on('list.find', () => {
+			.on("list.find", () => {
 				return new Promise(async (resolve, _reject) => {
 					let find = await root.find({ type: "find", title: this.active.pwd, text: "^.+$" })
 					if (find == null) {
@@ -263,15 +263,18 @@ export class FilerFragment extends AbstractFragment {
 					})
 				})
 			})
-
-			.on('list.select', () => {
+			.on("list.select", () => {
 				return new Promise((resolve, _reject) => {
 					let attr = _.last(this.active.data.ls[this.active.data.cursor])
 					if (attr == null) {
 						resolve()
 						return
 					}
-					if (attr.file_type == Native.AttributeFileType.home || attr.file_type == Native.AttributeFileType.homeuser || attr.file_type == Native.AttributeFileType.directory) {
+					if (
+						attr.file_type == Native.AttributeFileType.home
+						|| attr.file_type == Native.AttributeFileType.homeuser
+						|| attr.file_type == Native.AttributeFileType.directory
+					) {
 						let wd = attr.full
 						this.active.sendChange(wd)
 						this.active.change(wd, 0, null, null, () => {
@@ -283,8 +286,7 @@ export class FilerFragment extends AbstractFragment {
 					}
 				})
 			})
-
-			.on('list.updir', () => {
+			.on("list.updir", () => {
 				return new Promise((resolve, _reject) => {
 					let wd = Dir.dirname(this.active.data.wd)
 					this.active.sendChange(wd)
@@ -296,8 +298,7 @@ export class FilerFragment extends AbstractFragment {
 					})
 				})
 			})
-
-			.on('list.targetequal', () => {
+			.on("list.targetequal", () => {
 				return new Promise((resolve, _reject) => {
 					let wd = this.active.data.wd
 					this.target.sendChange(wd)
@@ -309,15 +310,18 @@ export class FilerFragment extends AbstractFragment {
 					})
 				})
 			})
-
-			.on('list.targetselect', () => {
+			.on("list.targetselect", () => {
 				return new Promise((resolve, _reject) => {
 					let attr = _.last(this.active.data.ls[this.active.data.cursor])
 					if (attr == null) {
 						resolve()
 						return
 					}
-					if (attr.file_type == Native.AttributeFileType.home || attr.file_type == Native.AttributeFileType.homeuser || attr.file_type == Native.AttributeFileType.directory) {
+					if (
+						attr.file_type == Native.AttributeFileType.home
+						|| attr.file_type == Native.AttributeFileType.homeuser
+						|| attr.file_type == Native.AttributeFileType.directory
+					) {
 						let wd = attr.full
 						this.target.sendChange(wd)
 						this.target.change(wd, 0, null, null, () => {
@@ -329,8 +333,7 @@ export class FilerFragment extends AbstractFragment {
 					}
 				})
 			})
-
-			.on('list.shellopne', () => {
+			.on("list.shellopne", () => {
 				let attr = _.last(this.active.data.ls[this.active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
@@ -338,10 +341,9 @@ export class FilerFragment extends AbstractFragment {
 				electron.shell.openPath(attr.full)
 				return Promise.resolve()
 			})
-
-			.on('list.shellproperty', () => {
+			.on("list.shellproperty", () => {
 				let attr = _.first(this.active.data.ls[this.active.data.cursor])
-				//let attr = _.last(this.active.data.ls[this.active.data.cursor]) // リンク先
+				// let attr = _.last(this.active.data.ls[this.active.data.cursor]) // リンク先
 				if (attr == null) {
 					return Promise.resolve()
 				}

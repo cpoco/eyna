@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Bridge from '@bridge/Bridge'
+import * as Bridge from "@bridge/Bridge"
 
 type reactive = {
 	rg: [string, string]
@@ -10,7 +10,6 @@ type reactive = {
 const TAG = "dialog-find"
 
 export const V = vue.defineComponent({
-
 	props: {
 		title: {
 			required: true,
@@ -57,11 +56,11 @@ export const V = vue.defineComponent({
 		}
 
 		const input1 = (input: InputEvent) => {
-			reactive.rg[0] = (<HTMLDivElement>input.target).innerText
+			reactive.rg[0] = (<HTMLDivElement> input.target).innerText
 		}
 
 		const input2 = (input: InputEvent) => {
-			reactive.dp[0] = (<HTMLDivElement>input.target).innerText
+			reactive.dp[0] = (<HTMLDivElement> input.target).innerText
 		}
 
 		vue.onMounted(() => {
@@ -101,5 +100,4 @@ export const V = vue.defineComponent({
 			}, this.reactive.dp[1]),
 		])
 	},
-
 })

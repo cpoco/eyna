@@ -1,4 +1,4 @@
-import * as path from 'path'
+import * as path from "path"
 
 export default async (ex: Extension): Promise<void> => {
 	if (ex.active.cursor == null) {

@@ -1,16 +1,14 @@
+import * as _ from "lodash-es"
 import * as vue from "vue"
-import * as _ from 'lodash-es'
 
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@renderer/Root'
-import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
-import * as ListComponent from '@renderer/fragment/filer/ListComponent'
+import * as Bridge from "@bridge/Bridge"
+import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
+import * as ListComponent from "@renderer/fragment/filer/ListComponent"
+import root from "@renderer/Root"
 
 const TAG = "filer"
 
 export const V = vue.defineComponent({
-
 	setup() {
 		const el = vue.ref<HTMLElement>()
 		const ready = vue.ref<boolean>(false)
@@ -42,7 +40,7 @@ export const V = vue.defineComponent({
 			let r: DOMRect = el.value!.getBoundingClientRect()
 			root
 				.invoke<Bridge.Filer.Resize.Send, Bridge.Filer.Style.Data>({
-					ch: 'filer-resize',
+					ch: "filer-resize",
 					args: [
 						-1,
 						{
@@ -52,9 +50,9 @@ export const V = vue.defineComponent({
 								y: r.y,
 								w: r.width,
 								h: r.height,
-							}
-						}
-					]
+							},
+						},
+					],
 				})
 				.then((data: Bridge.Filer.Style.Data) => {
 					let e = document.querySelector<HTMLElement>(":root")
@@ -76,12 +74,14 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		return vue.h(TAG, { ref: "el", class: { "filer-fragment": true } },
+		return vue.h(
+			TAG,
+			{ ref: "el", class: { "filer-fragment": true } },
 			this.ready
 				? _.map(_.range(3), (i) => {
 					return vue.h(ListComponent.V, { list: this.provider.reactive[i] })
 				})
-				: [])
-	}
-
+				: [],
+		)
+	},
 })

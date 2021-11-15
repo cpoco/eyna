@@ -1,11 +1,10 @@
 import * as vue from "vue"
 
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@renderer/Root'
-import * as DialogAlert from '@renderer/fragment/modal/DialogAlert'
-import * as DialogPrompt from '@renderer/fragment/modal/DialogPrompt'
-import * as DialogFind from '@renderer/fragment/modal/DialogFind'
+import * as Bridge from "@bridge/Bridge"
+import * as DialogAlert from "@renderer/fragment/modal/DialogAlert"
+import * as DialogFind from "@renderer/fragment/modal/DialogFind"
+import * as DialogPrompt from "@renderer/fragment/modal/DialogPrompt"
+import root from "@renderer/Root"
 
 type reactive = {
 	type: "find" | "alert" | "prompt" | null
@@ -16,7 +15,6 @@ type reactive = {
 const TAG = "modal"
 
 export const V = vue.defineComponent({
-
 	setup() {
 		const reactive = vue.reactive<reactive>({
 			type: null,
@@ -28,7 +26,7 @@ export const V = vue.defineComponent({
 			root.on(Bridge.Modal.Order.CH, (_: number, data: Bridge.Modal.Order.Data) => {
 				if (data.order == "open") {
 					root.send<Bridge.Modal.Event.Send>({
-						ch: 'modal-event',
+						ch: "modal-event",
 						args: [-1, { event: "opened" }],
 					})
 					reactive.type = data.type
@@ -43,7 +41,7 @@ export const V = vue.defineComponent({
 
 		const close = (result: Bridge.Modal.Event.Result) => {
 			root.send<Bridge.Modal.Event.Send>({
-				ch: 'modal-event',
+				ch: "modal-event",
 				args: [-1, { event: "closed", result: result }],
 			})
 			reactive.type = null
@@ -53,7 +51,7 @@ export const V = vue.defineComponent({
 
 		const cancel = () => {
 			root.send<Bridge.Modal.Event.Send>({
-				ch: 'modal-event',
+				ch: "modal-event",
 				args: [-1, { event: "canceled" }],
 			})
 			reactive.type = null
@@ -76,7 +74,7 @@ export const V = vue.defineComponent({
 					text: this.reactive.text,
 					close: this.close,
 					cancel: this.cancel,
-				})
+				}),
 			])
 		}
 		else if (this.reactive.type == "prompt") {
@@ -86,7 +84,7 @@ export const V = vue.defineComponent({
 					text: this.reactive.text,
 					close: this.close,
 					cancel: this.cancel,
-				})
+				}),
 			])
 		}
 		else if (this.reactive.type == "find") {
@@ -97,11 +95,10 @@ export const V = vue.defineComponent({
 					dp: "0",
 					close: this.close,
 					cancel: this.cancel,
-				})
+				}),
 			])
 		}
 
 		return null
 	},
-
 })
