@@ -1,9 +1,8 @@
+import esbuild from "esbuild"
 import fs from "fs/promises"
 import path from "path"
-import url from "url"
-
 import ts from "typescript"
-import esbuild from "esbuild"
+import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
@@ -27,10 +26,14 @@ export async function Check() {
 		const program = ts.createProgram(fileNames, options)
 		const diagnostics = [
 			...program.getSemanticDiagnostics(),
-			...program.getSyntacticDiagnostics()
+			...program.getSyntacticDiagnostics(),
 		]
 		diagnostics.forEach((d) => {
-			console.log(d.file.fileName, d.file.getLineAndCharacterOfPosition(d.start).line + 1, ts.flattenDiagnosticMessageText(d.messageText, "\n"))
+			console.log(
+				d.file.fileName,
+				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
+				ts.flattenDiagnosticMessageText(d.messageText, "\n"),
+			)
 		})
 		resolve()
 	})
@@ -39,7 +42,7 @@ export async function Check() {
 export async function Build() {
 	return esbuild.build({
 		define: {
-			"process.env.NODE_ENV": '"production"',
+			"process.env.NODE_ENV": "\"production\"",
 		},
 		entryPoints: {
 			browser: path.join(__dirname, "../src/browser/Main.ts"),

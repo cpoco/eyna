@@ -1,10 +1,9 @@
-import * as _ from 'lodash-es'
+import * as _ from "lodash-es"
 
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@browser/Root'
-import { Dir } from '@browser/core/Dir'
-import { Scroll } from '@browser/core/Scroll'
+import * as Bridge from "@bridge/Bridge"
+import { Dir } from "@browser/core/Dir"
+import { Scroll } from "@browser/core/Scroll"
+import root from "@browser/Root"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
@@ -104,7 +103,7 @@ export class FilerManager {
 
 	sendChange(wd: string) {
 		root.send<Bridge.List.Change.Send>({
-			ch: 'filer-change',
+			ch: "filer-change",
 			args: [
 				this.id,
 				{
@@ -122,14 +121,14 @@ export class FilerManager {
 					knobPosition: 0,
 					knobSize: 0,
 					error: 0,
-				}
-			]
+				},
+			],
 		})
 	}
 
 	sendScan() {
 		root.send<Bridge.List.Scan.Send>({
-			ch: 'filer-scan',
+			ch: "filer-scan",
 			args: [
 				this.id,
 				{
@@ -147,26 +146,26 @@ export class FilerManager {
 					knobPosition: this.sc.knobPosition,
 					knobSize: this.sc.knobSize,
 					error: this.data.error,
-				}
-			]
+				},
+			],
 		})
 	}
 
 	sendActive() {
 		root.send<Bridge.List.Active.Send>({
-			ch: 'filer-status',
+			ch: "filer-status",
 			args: [
 				this.id,
 				{
 					status: this.data.status,
-				}
-			]
+				},
+			],
 		})
 	}
 
 	sendCursor() {
 		root.send<Bridge.List.Cursor.Send>({
-			ch: 'filer-cursor',
+			ch: "filer-cursor",
 			args: [
 				this.id,
 				{
@@ -177,38 +176,38 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: this.sc.knobPosition,
 					knobSize: this.sc.knobSize,
-				}
-			]
+				},
+			],
 		})
 	}
 
 	sendAttribute(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
-			ch: 'filer-attribute',
+			ch: "filer-attribute",
 			args: [
 				this.id,
 				{
 					update: this.data.update,
 					_slice: _.reduce(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { ls: this.data.ls[it] } })
-					}, {})
-				}
-			]
+					}, {}),
+				},
+			],
 		})
 	}
 
 	sendMark(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Mark.Send>({
-			ch: 'filer-mark',
+			ch: "filer-mark",
 			args: [
 				this.id,
 				{
 					update: this.data.update,
 					_slice: _.reduce(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { mk: this.data.mk[it] } })
-					}, {})
-				}
-			]
+					}, {}),
+				},
+			],
 		})
 	}
 }

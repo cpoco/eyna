@@ -17,7 +17,10 @@ export class Scroll {
 
 	public update() {
 		// 表示位置更新
-		this.contentsPosition = Math.max(0, Math.min(this.contentsPosition, (this.contentsSize * this.contentsCount) - this.screenSize))
+		this.contentsPosition = Math.max(
+			0,
+			Math.min(this.contentsPosition, (this.contentsSize * this.contentsCount) - this.screenSize),
+		)
 
 		let r = Math.min(1, (this.screenSize - Scroll.KnobMinSize) / (this.contentsSize * this.contentsCount))
 		this.knobPosition = this.contentsPosition * r

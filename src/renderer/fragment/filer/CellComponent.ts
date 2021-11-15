@@ -1,17 +1,14 @@
+import * as _ from "lodash-es"
 import * as vue from "vue"
 
-import * as _ from 'lodash-es'
-
-import * as Native from '@module/native/ts/renderer'
-
-import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
-import * as IconComponent from '@renderer/fragment/filer/IconComponent'
-import * as SpinnerComponent from '@renderer/fragment/filer/SpinnerComponent'
+import * as Native from "@module/native/ts/renderer"
+import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
+import * as IconComponent from "@renderer/fragment/filer/IconComponent"
+import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
 
 const TAG = "cell"
 
 export const V = vue.defineComponent({
-
 	props: {
 		cell: {
 			required: true,
@@ -32,11 +29,15 @@ export const V = vue.defineComponent({
 		})
 
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
-			return _.map(props.cell.attr, (it) => { return it ? it.file_type : Native.AttributeFileType.none })
+			return _.map(props.cell.attr, (it) => {
+				return it ? it.file_type : Native.AttributeFileType.none
+			})
 		})
 
 		const link_type = vue.computed((): Native.AttributeLinkType[] => {
-			return _.map(props.cell.attr, (it) => { return it ? it.link_type : Native.AttributeLinkType.none })
+			return _.map(props.cell.attr, (it) => {
+				return it ? it.link_type : Native.AttributeLinkType.none
+			})
 		})
 
 		const is_link = vue.computed((): boolean => {
@@ -93,7 +94,6 @@ export const V = vue.defineComponent({
 			is_size,
 			is_date,
 		}
-
 	},
 
 	render() {
@@ -149,41 +149,44 @@ export const V = vue.defineComponent({
 
 		let node: vue.VNode[] = [
 			vue.h(IconComponent.V, { type: this.cell.attr[0].file_type }),
-			vue.h('span', name, this.cell.attr[0].rltv),
-			vue.h('span', link, '->'),
+			vue.h("span", name, this.cell.attr[0].rltv),
+			vue.h("span", link, "->"),
 			vue.h(IconComponent.V, { type: this.cell.attr[1]?.file_type ?? Native.AttributeFileType.none }),
-			vue.h('span', trgt, [this.cell.attr[0].link]),
+			vue.h("span", trgt, [this.cell.attr[0].link]),
 		]
 		return vue.h(TAG, this.node, [
-			vue.h('span', { class: { "filer-cname": true } }, this.is_link ? node : node.slice(0, 2)),
-			vue.h('span', { class: { "filer-csize": true } }, this.is_size ? [this.cell.attr[0].size.toLocaleString()] : [null]),
-			vue.h('span', { class: { "filer-cdate": true } }, this.is_date ? date(this.cell.attr[0].time) : [null]),
-			vue.h('span', { class: { "filer-ctime": true } }, this.is_date ? time(this.cell.attr[0].time) : [null]),
+			vue.h("span", { class: { "filer-cname": true } }, this.is_link ? node : node.slice(0, 2)),
+			vue.h(
+				"span",
+				{ class: { "filer-csize": true } },
+				this.is_size ? [this.cell.attr[0].size.toLocaleString()] : [null],
+			),
+			vue.h("span", { class: { "filer-cdate": true } }, this.is_date ? date(this.cell.attr[0].time) : [null]),
+			vue.h("span", { class: { "filer-ctime": true } }, this.is_date ? time(this.cell.attr[0].time) : [null]),
 		])
 	},
-
 })
 
 function date(sec: number): string {
 	if (sec == 0) {
-		return '----/--/--'
+		return "----/--/--"
 	}
 	let d = new Date(sec * 1000)
 	return [
 		d.getFullYear(),
 		(`0${d.getMonth() + 1}`).slice(-2),
 		(`0${d.getDate()}`).slice(-2),
-	].join('/')
+	].join("/")
 }
 
 function time(sec: number): string {
 	if (sec == 0) {
-		return '--:--:--'
+		return "--:--:--"
 	}
 	let d = new Date(sec * 1000)
 	return [
 		(`0${d.getHours()}`).slice(-2),
 		(`0${d.getMinutes()}`).slice(-2),
 		(`0${d.getSeconds()}`).slice(-2),
-	].join(':')
+	].join(":")
 }

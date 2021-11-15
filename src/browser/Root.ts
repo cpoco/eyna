@@ -1,23 +1,19 @@
-import * as fs from 'fs'
-import * as vm from 'vm'
+import * as electron from "electron"
+import * as fs from "fs"
+import * as _ from "lodash-es"
+import * as vm from "vm"
 
-import * as electron from 'electron'
-import * as _ from 'lodash-es'
-
-import * as Native from '@module/native/ts/browser'
-
-import * as Bridge from '@bridge/Bridge'
-
-import { Command } from '@browser/core/Command'
-import { Path } from '@browser/core/Path'
-import { Storage } from '@browser/core/Storage'
-
-import { FilerFragment } from '@browser/fragment/filer/FilerFragment'
-import { ModalFragment } from '@browser/fragment/modal/ModalFragment'
-import { SystemFragment } from '@browser/fragment/system/SystemFragment'
+import * as Bridge from "@bridge/Bridge"
+import { Command } from "@browser/core/Command"
+import { Path } from "@browser/core/Path"
+import { Storage } from "@browser/core/Storage"
+import { FilerFragment } from "@browser/fragment/filer/FilerFragment"
+import { ModalFragment } from "@browser/fragment/modal/ModalFragment"
+import { SystemFragment } from "@browser/fragment/system/SystemFragment"
+import * as Native from "@module/native/ts/browser"
 
 class Root {
-	private url: string = ''
+	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment]
 	private browser!: electron.BrowserWindow
 
@@ -29,8 +25,8 @@ class Root {
 			new ModalFragment(),
 		]
 		electron.app
-			.on('ready', this._ready)
-			.on('window-all-closed', this._window_all_closed)
+			.on("ready", this._ready)
+			.on("window-all-closed", this._window_all_closed)
 		electron.Menu.setApplicationMenu(null)
 	}
 
@@ -43,16 +39,16 @@ class Root {
 				contextIsolation: false,
 				spellcheck: false,
 			},
-			backgroundColor: '#222',
+			backgroundColor: "#222",
 		}, Storage.manager.data.window))
 		this.browser.loadURL(this.url)
-		this.browser.on('close', (_event: electron.Event) => {
+		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getBounds()
 			Storage.manager.data.wd = this.fragment[1].pwd
 			Storage.manager.save()
 		})
-		this.browser.webContents.on('before-input-event', (_event: electron.Event, input: electron.Input) => {
-			if (input.type == 'keyDown') {
+		this.browser.webContents.on("before-input-event", (_event: electron.Event, input: electron.Input) => {
+			if (input.type == "keyDown") {
 				let conf = Command.manager.get(input)
 				if (conf == null) {
 					return
@@ -119,7 +115,7 @@ class Root {
 		this.browser.webContents.send(send.ch, ...send.args)
 	}
 
-	find(option: { type: "find", title: string, text: string }): Promise<Bridge.Modal.Event.ResultFind | null> {
+	find(option: { type: "find"; title: string; text: string }): Promise<Bridge.Modal.Event.ResultFind | null> {
 		return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
@@ -130,7 +126,7 @@ class Root {
 		console.log("------------------------------------------------------------")
 		console.log("\u001b[0m")
 		try {
-			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, 'utf8')
+			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
 			let func = vm.runInNewContext(code, { console: console, exports: {}, require: require })
 			func(Object.assign({
 				filer: {
@@ -162,20 +158,21 @@ class Root {
 					},
 				},
 				dialog: {
-					opne: (option: { type: "alert" | "prompt", title: string, text: string }): Promise<Bridge.Modal.Event.ResultText | null> => {
+					opne: (
+						option: { type: "alert" | "prompt"; title: string; text: string },
+					): Promise<Bridge.Modal.Event.ResultText | null> => {
 						return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultText | null>
 					},
 					cancel: () => {
 						this.fragment[2].cancel()
-					}
-				}
+					},
+				},
 			}, option))
 		}
 		catch (err) {
 			console.error(err)
 		}
 	}
-
 }
 
 export default new Root()

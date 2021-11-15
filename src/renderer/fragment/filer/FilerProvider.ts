@@ -1,8 +1,8 @@
+import * as _ from "lodash-es"
 import * as vue from "vue"
-import * as _ from 'lodash-es'
 
-import * as Bridge from '@bridge/Bridge'
-import * as Native from '@module/native/ts/renderer'
+import * as Bridge from "@bridge/Bridge"
+import * as Native from "@module/native/ts/renderer"
 
 export type List = {
 	i: number
@@ -13,9 +13,9 @@ export type List = {
 
 export type Cell = {
 	class: {
-		"filer-cell": boolean,
-		"filer-cell-select": boolean,
-		"filer-cell-cursor": boolean,
+		"filer-cell": boolean
+		"filer-cell-select": boolean
+		"filer-cell-cursor": boolean
 	}
 	style: {
 		top: string
@@ -26,7 +26,6 @@ export type Cell = {
 export const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
 
 export function create() {
-
 	const reactive = vue.reactive<List[]>([
 		{
 			i: 0,
@@ -108,12 +107,13 @@ export function create() {
 					class: {
 						"filer-cell": true,
 						"filer-cell-select": reactive[i].data.mk[k],
-						"filer-cell-cursor": reactive[i].data.status == Bridge.Status.active && reactive[i].data.cursor == k,
+						"filer-cell-cursor": reactive[i].data.status == Bridge.Status.active
+							&& reactive[i].data.cursor == k,
 					},
 					style: { top: `${t}px` },
 					attr: reactive[i].data.ls[k],
 				}
-			}
+			},
 		)
 	}
 
@@ -126,5 +126,4 @@ export function create() {
 		updateAttribute,
 		updateMark,
 	}
-
 }

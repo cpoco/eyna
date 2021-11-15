@@ -1,18 +1,15 @@
+import * as _ from "lodash-es"
 import * as vue from "vue"
 
-import * as _ from 'lodash-es'
-
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@renderer/Root'
-import * as FilerProvider from '@renderer/fragment/filer/FilerProvider'
-import * as CellComponent from '@renderer/fragment/filer/CellComponent'
-import * as SpinnerComponent from '@renderer/fragment/filer/SpinnerComponent'
+import * as Bridge from "@bridge/Bridge"
+import * as CellComponent from "@renderer/fragment/filer/CellComponent"
+import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
+import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
+import root from "@renderer/Root"
 
 const TAG = "list"
 
 export const V = vue.defineComponent({
-
 	props: {
 		list: {
 			required: true,
@@ -25,7 +22,7 @@ export const V = vue.defineComponent({
 
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName('data')[0].getBoundingClientRect()
+			let d: DOMRect = el.value!.getElementsByTagName("data")[0].getBoundingClientRect()
 			root.send<Bridge.List.Resize.Send>({
 				ch: "filer-resize",
 				args: [
@@ -43,15 +40,15 @@ export const V = vue.defineComponent({
 							y: d.y,
 							w: d.width,
 							h: d.height,
-						}
-					}
-				]
+						},
+					},
+				],
 			})
 		}
 
 		const _resized = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName('data')[0].getBoundingClientRect()
+			let d: DOMRect = el.value!.getElementsByTagName("data")[0].getBoundingClientRect()
 			root.send<Bridge.List.Resize.Send>({
 				ch: "filer-resize",
 				args: [
@@ -69,9 +66,9 @@ export const V = vue.defineComponent({
 							y: d.y,
 							w: d.width,
 							h: d.height,
-						}
-					}
-				]
+						},
+					},
+				],
 			})
 		}
 
@@ -80,10 +77,10 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onBeforeUnmount(() => {
-			window.removeEventListener('resize', _resized)
+			window.removeEventListener("resize", _resized)
 		})
 
-		window.addEventListener('resize', _resized)
+		window.addEventListener("resize", _resized)
 
 		return {
 			el,
@@ -95,26 +92,30 @@ export const V = vue.defineComponent({
 		let target = this.list.data.status == Bridge.Status.target
 
 		return vue.h(TAG, { ref: "el", class: { "filer-list": true } }, [
-			vue.h('info', { class: { "filer-info": true } }, [
-				vue.h('dir', { class: { "filer-dir": true } }, `${this.list.data.wd}`),
-				vue.h('cnt', { class: { "filer-cnt": true } },
+			vue.h("info", { class: { "filer-info": true } }, [
+				vue.h("dir", { class: { "filer-dir": true } }, `${this.list.data.wd}`),
+				vue.h(
+					"cnt",
+					{ class: { "filer-cnt": true } },
 					0 <= this.list.data.length
 						? `[${this.list.data.error}] ${this.list.make}/${this.list.data.length}`
-						: vue.h(SpinnerComponent.V)
+						: vue.h(SpinnerComponent.V),
 				),
 			]),
-			vue.h('stat', { class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target } }),
-			vue.h('data', { class: { "filer-data": true } }, [
+			vue.h("stat", { class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target } }),
+			vue.h("data", { class: { "filer-data": true } }, [
 				_.map(this.list.cell, (cell) => {
 					return vue.h(CellComponent.V, { cell })
-				})
+				}),
 			]),
-			vue.h('scroll', { class: { "filer-scroll": true } }, [
+			vue.h("scroll", { class: { "filer-scroll": true } }, [
 				active
-					? vue.h('knob', { class: { "filer-knob": true }, style: { top: `${this.list.data.knobPosition}px`, height: `${this.list.data.knobSize}px` } })
-					: null
+					? vue.h("knob", {
+						class: { "filer-knob": true },
+						style: { top: `${this.list.data.knobPosition}px`, height: `${this.list.data.knobSize}px` },
+					})
+					: null,
 			]),
 		])
-	}
-
+	},
 })

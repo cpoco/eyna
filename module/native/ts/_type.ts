@@ -17,7 +17,7 @@ export enum AttributeLinkType {
 }
 
 export enum AttributeKey {
-	rltv = "rltv"
+	rltv = "rltv",
 }
 
 export type Attributes = Attribute[]

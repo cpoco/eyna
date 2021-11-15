@@ -1,12 +1,10 @@
-import * as fs from 'fs'
+import * as electron from "electron"
+import * as fs from "fs"
+import * as _ from "lodash-es"
 
-import * as electron from 'electron'
-import * as _ from 'lodash-es'
-
-import { Platform } from '@browser/core/Platform'
+import { Platform } from "@browser/core/Platform"
 
 export namespace Command {
-
 	export type KeyData = {
 		[code: number]: {
 			[when: string]: Config
@@ -24,13 +22,13 @@ export namespace Command {
 	}
 
 	export enum When {
-		always = 'always',
-		filer = 'filer',
-		modal = 'modal'
+		always = "always",
+		filer = "filer",
+		modal = "modal",
 	}
 
 	class Manager {
-		private path: string = ''
+		private path: string = ""
 		private when: string = When.filer
 		private keyData: KeyData = {}
 
@@ -53,7 +51,7 @@ export namespace Command {
 			this.whenType = When.filer
 			this.keyData = {}
 			try {
-				let loadConfig: LoadConfig[] = JSON.parse(fs.readFileSync(this.path, 'utf8'))
+				let loadConfig: LoadConfig[] = JSON.parse(fs.readFileSync(this.path, "utf8"))
 
 				console.log(JSON.stringify(loadConfig, null, 2))
 
@@ -64,7 +62,7 @@ export namespace Command {
 							if (0 < code) {
 								_.set(this.keyData, [code, conf.when], {
 									cmd: _.isString(conf.cmd) ? [conf.cmd] : _.isArray(conf.cmd) ? conf.cmd : [],
-									prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : []
+									prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : [],
 								})
 							}
 						}
@@ -99,13 +97,13 @@ export namespace Command {
 		let ret = 0
 
 		if (i.shift) {
-			ret |= (EventFlags.EF_SHIFT_DOWN << 12)
+			ret |= EventFlags.EF_SHIFT_DOWN << 12
 		}
 		if (Platform.win && i.control || Platform.mac && i.meta) {
-			ret |= (EventFlags.EF_CONTROL_DOWN << 12)
+			ret |= EventFlags.EF_CONTROL_DOWN << 12
 		}
 		if (i.alt) {
-			ret |= (EventFlags.EF_ALT_DOWN << 12)
+			ret |= EventFlags.EF_ALT_DOWN << 12
 		}
 
 		ret |= CodeMap[i.code.toLowerCase()] ?? KeyMap[i.key.toLowerCase()] ?? 0
@@ -201,7 +199,7 @@ export namespace Command {
 
 		VKEY_NUMLOCK = 0x90,
 		VKEY_SCROLL = 0x91,
-	};
+	}
 
 	interface map {
 		[key: string]: EventFlags | KeyboardCode | number
@@ -214,7 +212,6 @@ export namespace Command {
 		"ctrl": EventFlags.EF_CONTROL_DOWN,
 
 		"alt": EventFlags.EF_ALT_DOWN,
-
 		// "command": EventFlags.EF_COMMAND_DOWN,
 		// "cmd": EventFlags.EF_COMMAND_DOWN,
 	}
@@ -281,7 +278,6 @@ export namespace Command {
 
 		"numlock": KeyboardCode.VKEY_NUMLOCK,
 		"scrolllock": KeyboardCode.VKEY_SCROLL,
-
 		/*
 		"semicolon":	KeyboardCode.VKEY_OEM_1,		// ; ;
 		"equal":		KeyboardCode.VKEY_OEM_PLUS,		// = ^

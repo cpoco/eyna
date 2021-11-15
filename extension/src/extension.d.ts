@@ -7,7 +7,7 @@ type Extension = {
 		wd: string
 		cursor: Attributes | null
 		select: Attributes[]
-	},
+	}
 	target: {
 		wd: string
 		cursor: Attributes | null
@@ -24,7 +24,7 @@ type Extension = {
 		findmove: (full: string) => Promise<string[]>
 	}
 	dialog: {
-		opne: (option: { type: "alert" | "prompt", title: string, text: string }) => Promise<{ text: string } | null>
+		opne: (option: { type: "alert" | "prompt"; title: string; text: string }) => Promise<{ text: string } | null>
 		cancel: () => void
 	}
 }

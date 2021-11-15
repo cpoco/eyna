@@ -1,8 +1,7 @@
 import fs from "fs/promises"
 import path from "path"
-import url from "url"
-
 import sass from "sass"
+import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
@@ -10,7 +9,7 @@ async function render(file) {
 	return new Promise((resolve, reject) => {
 		sass.render({
 			file: file,
-			outputStyle: 'compressed'
+			outputStyle: "compressed",
 		}, (err, result) => {
 			if (err) {
 				reject(err)

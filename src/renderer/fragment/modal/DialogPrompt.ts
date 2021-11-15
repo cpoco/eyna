@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Bridge from '@bridge/Bridge'
+import * as Bridge from "@bridge/Bridge"
 
 type reactive = {
 	prompt: [string, string]
@@ -9,7 +9,6 @@ type reactive = {
 const TAG = "dialog-prompt"
 
 export const V = vue.defineComponent({
-
 	props: {
 		title: {
 			required: true,
@@ -50,7 +49,7 @@ export const V = vue.defineComponent({
 		}
 
 		const input = (input: InputEvent) => {
-			reactive.prompt[0] = (<HTMLDivElement>input.target).innerText
+			reactive.prompt[0] = (<HTMLDivElement> input.target).innerText
 		}
 
 		vue.onMounted(() => {
@@ -82,5 +81,4 @@ export const V = vue.defineComponent({
 			}, this.reactive.prompt[1]),
 		])
 	},
-
 })

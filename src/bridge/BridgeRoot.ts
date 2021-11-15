@@ -1,9 +1,9 @@
 export namespace Root {
 	// renderer -> browser
 	export namespace Clipboard {
-		export const CH = 'root-clipboard'
+		export const CH = "root-clipboard"
 		export type Send = {
-			ch: 'root-clipboard'
+			ch: "root-clipboard"
 			args: Args
 		}
 		export type Args = [

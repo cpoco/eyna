@@ -1,3 +1,3 @@
-import root from '@renderer/Root'
+import root from "@renderer/Root"
 
 root.create()

@@ -19,7 +19,7 @@ void get_attribute(const std::filesystem::path& path, std::vector<_attribute>& v
 	vector.push_back(_attribute());
 
 	for (_attribute& a : vector) {
-		if (a.full == path) {
+		if (!a.full.empty() && a.full == path) {
 			return;
 		}
 	}
@@ -32,7 +32,7 @@ void get_attribute(const std::filesystem::path& path, std::vector<_attribute>& v
 
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
-			get_attribute(attr.link, vector);
+			get_attribute(std::filesystem::path(attr.link), vector);
 		}
 		else if (attr.link.is_relative()) {
 			get_attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);

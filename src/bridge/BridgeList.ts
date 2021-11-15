@@ -1,6 +1,5 @@
-import * as Native from '@module/native/ts/renderer'
-
-import { Status } from '@bridge/Status'
+import { Status } from "@bridge/Status"
+import * as Native from "@module/native/ts/renderer"
 
 export namespace List {
 	export type Data = {
@@ -25,7 +24,7 @@ export namespace List {
 			update: 0,
 			cursor: 0,
 			length: 0,
-			wd: '',
+			wd: "",
 			ls: [],
 			mk: [],
 			drawCount: 0,
@@ -40,9 +39,9 @@ export namespace List {
 
 	// renderer -> browser
 	export namespace Resize {
-		export const CH = 'filer-resize'
+		export const CH = "filer-resize"
 		export type Send = {
-			ch: 'filer-resize'
+			ch: "filer-resize"
 			args: Args
 		}
 		export type Args = [
@@ -68,9 +67,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Change {
-		export const CH = 'filer-change'
+		export const CH = "filer-change"
 		export type Send = {
-			ch: 'filer-change'
+			ch: "filer-change"
 			args: Args
 		}
 		export type Args = [
@@ -82,9 +81,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Scan {
-		export const CH = 'filer-scan'
+		export const CH = "filer-scan"
 		export type Send = {
-			ch: 'filer-scan'
+			ch: "filer-scan"
 			args: Args
 		}
 		export type Args = [
@@ -96,9 +95,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Active {
-		export const CH = 'filer-status'
+		export const CH = "filer-status"
 		export type Send = {
-			ch: 'filer-status'
+			ch: "filer-status"
 			args: Args
 		}
 		export type Args = [
@@ -112,9 +111,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Cursor {
-		export const CH = 'filer-cursor'
+		export const CH = "filer-cursor"
 		export type Send = {
-			ch: 'filer-cursor'
+			ch: "filer-cursor"
 			args: Args
 		}
 		export type Args = [
@@ -134,9 +133,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Attribute {
-		export const CH = 'filer-attribute'
+		export const CH = "filer-attribute"
 		export type Send = {
-			ch: 'filer-attribute'
+			ch: "filer-attribute"
 			args: Args
 		}
 		export type Args = [
@@ -147,7 +146,7 @@ export namespace List {
 			update: number
 			_slice: {
 				[index: number]: {
-					ls: Native.Attributes,
+					ls: Native.Attributes
 				}
 			}
 		}
@@ -155,9 +154,9 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Mark {
-		export const CH = 'filer-mark'
+		export const CH = "filer-mark"
 		export type Send = {
-			ch: 'filer-mark'
+			ch: "filer-mark"
 			args: Args
 		}
 		export type Args = [

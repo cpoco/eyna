@@ -1,2 +1,2 @@
-export * from './_type'
-export * from './_function'
+export * from "./_function"
+export * from "./_type"

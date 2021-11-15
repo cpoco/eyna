@@ -1,15 +1,11 @@
-import * as electron from 'electron'
+import * as electron from "electron"
 
-import * as Native from '@module/native/ts/browser'
-
-import * as Bridge from '@bridge/Bridge'
-
-import root from '@browser/Root'
-
-import { AbstractFragment } from '@browser/fragment/AbstractFragment'
+import * as Bridge from "@bridge/Bridge"
+import { AbstractFragment } from "@browser/fragment/AbstractFragment"
+import root from "@browser/Root"
+import * as Native from "@module/native/ts/browser"
 
 export class SystemFragment extends AbstractFragment {
-
 	constructor() {
 		super()
 
@@ -22,51 +18,51 @@ export class SystemFragment extends AbstractFragment {
 
 	private command() {
 		this
-			.on('system.cut', () => {
+			.on("system.cut", () => {
 				root.send<Bridge.Root.Clipboard.Send>({
-					ch: 'root-clipboard',
+					ch: "root-clipboard",
 					args: [
 						-1,
 						{
-							command: "cut"
+							command: "cut",
 						},
-					]
+					],
 				})
 				return Promise.resolve()
 			})
-			.on('system.copy', () => {
+			.on("system.copy", () => {
 				root.send<Bridge.Root.Clipboard.Send>({
-					ch: 'root-clipboard',
+					ch: "root-clipboard",
 					args: [
 						-1,
 						{
-							command: "copy"
+							command: "copy",
 						},
-					]
+					],
 				})
 				return Promise.resolve()
 			})
-			.on('system.paste', () => {
+			.on("system.paste", () => {
 				root.send<Bridge.Root.Clipboard.Send>({
-					ch: 'root-clipboard',
+					ch: "root-clipboard",
 					args: [
 						-1,
 						{
-							command: "paste"
+							command: "paste",
 						},
-					]
+					],
 				})
 				return Promise.resolve()
 			})
-			.on('system.exit', () => {
+			.on("system.exit", () => {
 				root.quit()
 				return Promise.resolve()
 			})
-			.on('system.reload', () => {
+			.on("system.reload", () => {
 				root.reload()
 				return Promise.resolve()
 			})
-			.on('system.version', () => {
+			.on("system.version", () => {
 				root.showMessageBox([
 					`version: ${electron.app.getVersion()}`,
 					`admin: ${Native.isElevated()}`,
@@ -75,10 +71,10 @@ export class SystemFragment extends AbstractFragment {
 					`node: ${process.versions.node}`,
 					`chrome: ${process.versions.chrome}`,
 					`v8: ${process.versions.v8}`,
-				].join('\n'))
+				].join("\n"))
 				return Promise.resolve()
 			})
-			.on('system.devtool', () => {
+			.on("system.devtool", () => {
 				root.devTools()
 				return Promise.resolve()
 			})
