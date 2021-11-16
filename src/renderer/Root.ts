@@ -8,7 +8,7 @@ import * as ModalFragment from "@renderer/fragment/modal/ModalFragment"
 
 const V = vue.defineComponent({
 	render() {
-		return vue.h("root", {}, [
+		return vue.h("root", undefined, [
 			vue.h(FilerFragment.V),
 			vue.h(ModalFragment.V),
 		])

@@ -22,7 +22,7 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	get pwd(): string[] {
-		return _.map(this.core, (f) => {
+		return _.map<FilerManager, string>(this.core, (f) => {
 			return f.pwd
 		})
 	}

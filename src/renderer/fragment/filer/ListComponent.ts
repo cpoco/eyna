@@ -93,7 +93,7 @@ export const V = vue.defineComponent({
 
 		return vue.h(TAG, { ref: "el", class: { "filer-list": true } }, [
 			vue.h("info", { class: { "filer-info": true } }, [
-				vue.h("dir", { class: { "filer-dir": true } }, `${this.list.data.wd}`),
+				vue.h("dir", { class: { "filer-dir": true } }, this.list.data.wd),
 				vue.h(
 					"cnt",
 					{ class: { "filer-cnt": true } },
@@ -104,18 +104,20 @@ export const V = vue.defineComponent({
 			]),
 			vue.h("stat", { class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target } }),
 			vue.h("data", { class: { "filer-data": true } }, [
-				_.map(this.list.cell, (cell) => {
+				_.map<FilerProvider.Cell, vue.VNode>(this.list.cell, (cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
 			]),
-			vue.h("scroll", { class: { "filer-scroll": true } }, [
+			vue.h(
+				"scroll",
+				{ class: { "filer-scroll": true } },
 				active
 					? vue.h("knob", {
 						class: { "filer-knob": true },
 						style: { top: `${this.list.data.knobPosition}px`, height: `${this.list.data.knobSize}px` },
 					})
-					: null,
-			]),
+					: undefined,
+			),
 		])
 	},
 })

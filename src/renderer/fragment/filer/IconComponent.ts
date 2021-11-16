@@ -57,10 +57,6 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		return vue.h(TAG, { class: { "filer-cicon": true } }, [
-			vue.h("svg", this.svg, [
-				vue.h("path", this.path),
-			]),
-		])
+		return vue.h(TAG, { class: { "filer-cicon": true } }, vue.h("svg", this.svg, vue.h("path", this.path)))
 	},
 })

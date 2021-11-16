@@ -54,8 +54,8 @@ export function create() {
 
 	const updateScan = (i: number, data: Bridge.List.Change.Data) => {
 		reactive[i].data = data
-		reactive[i].data.ls = _.map(_.range(data.length), () => [])
-		reactive[i].data.mk = _.map(_.range(data.length), () => false)
+		reactive[i].data.ls = _.map<number, Native.Attributes>(_.range(data.length), () => [])
+		reactive[i].data.mk = _.map<number, boolean>(_.range(data.length), () => false)
 		_update(i)
 	}
 

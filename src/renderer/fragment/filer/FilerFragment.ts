@@ -78,10 +78,10 @@ export const V = vue.defineComponent({
 			TAG,
 			{ ref: "el", class: { "filer-fragment": true } },
 			this.ready
-				? _.map(_.range(3), (i) => {
+				? _.map<number, vue.VNode>(_.range(3), (i) => {
 					return vue.h(ListComponent.V, { list: this.provider.reactive[i] })
 				})
-				: [],
+				: undefined,
 		)
 	},
 })

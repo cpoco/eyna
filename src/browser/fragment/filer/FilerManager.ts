@@ -29,7 +29,7 @@ export class FilerManager {
 			this.data.length = ls.length
 			this.data.wd = wd
 			this.data.ls = ls
-			this.data.mk = _.map(_.range(ls.length), () => false)
+			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
 			this.data.error = e
 		})
 	}
@@ -95,7 +95,7 @@ export class FilerManager {
 			this.data.length = ls.length
 			this.data.wd = wd
 			this.data.ls = ls
-			this.data.mk = _.map(_.range(ls.length), () => false)
+			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
 			this.data.error = e
 			cb()
 		})
