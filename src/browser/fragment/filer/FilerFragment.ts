@@ -266,13 +266,15 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
+					// home
+					// homeuser
+					// directory
+					// link(symbolic or junction) -> directory
 					if (
 						attr.file_type == Native.AttributeFileType.home
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.symbolic
-							&& trgt.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.junction
+						|| attr.file_type == Native.AttributeFileType.link
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = attr.full
@@ -284,10 +286,9 @@ export class FilerFragment extends AbstractFragment {
 							resolve()
 						})
 					}
+					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.link_type == Native.AttributeLinkType.shortcut
-							&& trgt.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.bookmark
+						attr.file_type == Native.AttributeFileType.file
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = trgt.full
@@ -333,13 +334,15 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
+					// home
+					// homeuser
+					// directory
+					// link(symbolic or junction) -> directory
 					if (
 						attr.file_type == Native.AttributeFileType.home
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.symbolic
-							&& trgt.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.junction
+						|| attr.file_type == Native.AttributeFileType.link
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = attr.full
@@ -351,10 +354,9 @@ export class FilerFragment extends AbstractFragment {
 							resolve()
 						})
 					}
+					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.link_type == Native.AttributeLinkType.shortcut
-							&& trgt.file_type == Native.AttributeFileType.directory
-						|| attr.link_type == Native.AttributeLinkType.bookmark
+						attr.file_type == Native.AttributeFileType.file
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = trgt.full
