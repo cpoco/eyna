@@ -98,9 +98,9 @@ export const V = vue.defineComponent({
 
 		return vue.h(TAG, { ref: "el", class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h("dir", { class: { "filer-dir": true } }, this.list.data.wd),
+				vue.h("div", { class: { "filer-dir": true } }, this.list.data.wd),
 				vue.h(
-					"cnt",
+					"div",
 					{ class: { "filer-cnt": true } },
 					0 <= this.list.data.length
 						? `[${this.list.data.error}] ${this.list.make}/${this.list.data.length}`
@@ -119,7 +119,7 @@ export const V = vue.defineComponent({
 				TAG_SCROLL,
 				{ class: { "filer-scroll": true } },
 				active
-					? vue.h("knob", {
+					? vue.h("div", {
 						class: { "filer-knob": true },
 						style: { top: `${this.list.data.knobPosition}px`, height: `${this.list.data.knobSize}px` },
 					})
