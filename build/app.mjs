@@ -56,5 +56,6 @@ export async function Build() {
 			"*.node",
 		],
 		outdir: path.join(__dirname, "../app"),
+		legalComments: "external",
 	})
 }
