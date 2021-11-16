@@ -5,9 +5,18 @@ import * as _ from "lodash-es"
 import { Platform } from "@browser/core/Platform"
 
 export namespace Command {
+	export enum When {
+		always = "always",
+		filer = "filer",
+		modal = "modal",
+	}
+	export type WhenType = When.always | When.filer | When.modal
+
 	export type KeyData = {
 		[code: number]: {
-			[when: string]: Config
+			[When.always]?: Config
+			[When.filer]?: Config
+			[When.modal]?: Config
 		}
 	}
 	export type LoadConfig = {
@@ -21,15 +30,9 @@ export namespace Command {
 		prm: string[]
 	}
 
-	export enum When {
-		always = "always",
-		filer = "filer",
-		modal = "modal",
-	}
-
 	class Manager {
 		private path: string = ""
-		private when: string = When.filer
+		private when: WhenType = When.filer
 		private keyData: KeyData = {}
 
 		set whenType(when: string | undefined) {
@@ -81,13 +84,7 @@ export namespace Command {
 
 		get(input: electron.Input): Config | null {
 			let code = inputToCode(input)
-			if (_.has(this.keyData, [code, When.always])) {
-				return this.keyData[code][When.always]
-			}
-			if (_.has(this.keyData, [code, this.when])) {
-				return this.keyData[code][this.when]
-			}
-			return null
+			return this.keyData[code]?.[When.always] ?? this.keyData[code]?.[this.when] ?? null
 		}
 	}
 
@@ -99,12 +96,19 @@ export namespace Command {
 		if (i.shift) {
 			ret |= EventFlags.EF_SHIFT_DOWN << 12
 		}
+		// win ctrl
+		// mac command
 		if (Platform.win && i.control || Platform.mac && i.meta) {
 			ret |= EventFlags.EF_CONTROL_DOWN << 12
 		}
+		// win alt
+		// mac option
 		if (i.alt) {
 			ret |= EventFlags.EF_ALT_DOWN << 12
 		}
+		// mac control
+		// if (Platform.mac && i.control) {
+		// }
 
 		ret |= CodeMap[i.code.toLowerCase()] ?? KeyMap[i.key.toLowerCase()] ?? 0
 
@@ -131,7 +135,6 @@ export namespace Command {
 		EF_SHIFT_DOWN = 1 << 1,
 		EF_CONTROL_DOWN = 1 << 2,
 		EF_ALT_DOWN = 1 << 3,
-		// EF_COMMAND_DOWN = 1 << 4,
 	}
 
 	// https://chromium.googlesource.com/chromium/src.git/+/master/ui/events/keycodes/keyboard_codes_posix.h
@@ -208,12 +211,9 @@ export namespace Command {
 	const FlagMap: map = {
 		"shift": EventFlags.EF_SHIFT_DOWN,
 
-		// "control": EventFlags.EF_CONTROL_DOWN,
 		"ctrl": EventFlags.EF_CONTROL_DOWN,
 
 		"alt": EventFlags.EF_ALT_DOWN,
-		// "command": EventFlags.EF_COMMAND_DOWN,
-		// "cmd": EventFlags.EF_COMMAND_DOWN,
 	}
 
 	const CodeMap: map = {

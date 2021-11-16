@@ -13,10 +13,7 @@ export abstract class AbstractFragment {
 
 	emit(cmd: string, ...args: string[]): Promise<void> {
 		try {
-			if (_.has(this.func, [cmd])) {
-				return this.func[cmd](...args)
-			}
-			return Promise.resolve()
+			return this.func[cmd]?.(...args) ?? Promise.resolve()
 		}
 		catch (err) {
 			return Promise.reject(err)
