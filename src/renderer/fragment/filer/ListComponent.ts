@@ -9,6 +9,11 @@ import root from "@renderer/Root"
 
 const TAG = "list"
 
+const TAG_INFO = "info"
+const TAG_STAT = "stat"
+const TAG_DATA = "data"
+const TAG_SCROLL = "scroll"
+
 export const V = vue.defineComponent({
 	props: {
 		list: {
@@ -22,7 +27,7 @@ export const V = vue.defineComponent({
 
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName("data")[0].getBoundingClientRect()
+			let d: DOMRect = el.value!.getElementsByTagName("data")[0]!.getBoundingClientRect()
 			root.send<Bridge.List.Resize.Send>({
 				ch: "filer-resize",
 				args: [
@@ -48,7 +53,7 @@ export const V = vue.defineComponent({
 
 		const _resized = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName("data")[0].getBoundingClientRect()
+			let d: DOMRect = el.value!.getElementsByTagName(TAG_DATA)[0]!.getBoundingClientRect()
 			root.send<Bridge.List.Resize.Send>({
 				ch: "filer-resize",
 				args: [
@@ -92,7 +97,7 @@ export const V = vue.defineComponent({
 		let target = this.list.data.status == Bridge.Status.target
 
 		return vue.h(TAG, { ref: "el", class: { "filer-list": true } }, [
-			vue.h("info", { class: { "filer-info": true } }, [
+			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
 				vue.h("dir", { class: { "filer-dir": true } }, this.list.data.wd),
 				vue.h(
 					"cnt",
@@ -102,14 +107,16 @@ export const V = vue.defineComponent({
 						: vue.h(SpinnerComponent.V),
 				),
 			]),
-			vue.h("stat", { class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target } }),
-			vue.h("data", { class: { "filer-data": true } }, [
+			vue.h(TAG_STAT, {
+				class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target },
+			}),
+			vue.h(TAG_DATA, { class: { "filer-data": true } }, [
 				_.map<FilerProvider.Cell, vue.VNode>(this.list.cell, (cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
 			]),
 			vue.h(
-				"scroll",
+				TAG_SCROLL,
 				{ class: { "filer-scroll": true } },
 				active
 					? vue.h("knob", {

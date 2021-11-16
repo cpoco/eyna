@@ -18,7 +18,7 @@ const V = vue.defineComponent({
 class Root {
 	create() {
 		window.onload = () => {
-			vue.createApp(V).mount(document.getElementsByTagName("body")[0])
+			vue.createApp(V).mount(document.getElementsByTagName("body")[0]!)
 		}
 
 		this.on(Bridge.Root.Clipboard.CH, (_: number, data: Bridge.Root.Clipboard.Data) => {

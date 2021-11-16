@@ -153,36 +153,36 @@ export const V = vue.defineComponent({
 				{ class: { "filer-cname": true } },
 				this.is_link
 					? [
-						vue.h(IconComponent.V, { type: this.cell.attr[0].file_type }),
-						vue.h("span", name, this.cell.attr[0].rltv),
+						vue.h(IconComponent.V, { type: this.cell.attr[0]?.file_type ?? Native.AttributeFileType.none }),
+						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
 						vue.h("span", link, "->"),
 						vue.h(IconComponent.V, { type: this.cell.attr[1]?.file_type ?? Native.AttributeFileType.none }),
-						vue.h("span", trgt, [this.cell.attr[0].link]),
+						vue.h("span", trgt, this.cell.attr[0]?.link ?? undefined),
 					]
 					: [
-						vue.h(IconComponent.V, { type: this.cell.attr[0].file_type }),
-						vue.h("span", name, this.cell.attr[0].rltv),
+						vue.h(IconComponent.V, { type: this.cell.attr[0]?.file_type ?? Native.AttributeFileType.none }),
+						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
 					],
 			),
 			vue.h(
 				"span",
 				{ class: { "filer-csize": true } },
 				this.is_size
-					? this.cell.attr[0].size.toLocaleString()
+					? this.cell.attr[0]?.size.toLocaleString() ?? undefined
 					: undefined,
 			),
 			vue.h(
 				"span",
 				{ class: { "filer-cdate": true } },
 				this.is_date
-					? date(this.cell.attr[0].time)
+					? date(this.cell.attr[0]?.time ?? 0)
 					: undefined,
 			),
 			vue.h(
 				"span",
 				{ class: { "filer-ctime": true } },
 				this.is_date
-					? time(this.cell.attr[0].time)
+					? time(this.cell.attr[0]?.time ?? 0)
 					: undefined,
 			),
 		])

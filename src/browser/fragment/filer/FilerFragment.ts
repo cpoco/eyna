@@ -1,6 +1,7 @@
 import * as electron from "electron"
 import * as _ from "lodash-es"
 
+import * as Conf from "@app/Conf"
 import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
 import { Storage } from "@browser/core/Storage"
@@ -10,15 +11,15 @@ import root from "@browser/Root"
 import * as Native from "@module/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {
-	private index: { active: number; target: number } = { active: -1, target: -1 }
-	private core: FilerManager[] = []
+	private index!: { active: number; target: number }
+	private core!: FilerManager[]
 
 	private get active(): FilerManager {
-		return this.core[this.index.active]
+		return this.core[this.index.active]!
 	}
 
 	private get target(): FilerManager {
-		return this.core[this.index.target]
+		return this.core[this.index.target]!
 	}
 
 	get pwd(): string[] {
@@ -30,22 +31,19 @@ export class FilerFragment extends AbstractFragment {
 	constructor() {
 		super()
 
-		this.index.active = 0
-		this.index.target = 1
+		this.index = { active: 0, target: 1 }
 
-		for (let i = 0; i < 3; i++) {
-			this.core.push(
-				new FilerManager(
-					i,
-					(Storage.manager.data.wd ?? [])[i] ?? null,
-					this.index.active == i
-						? Bridge.Status.active
-						: this.index.target == i
-						? Bridge.Status.target
-						: Bridge.Status.none,
-				),
+		this.core = _.map<number, FilerManager>(_.range(Conf.LIST_COUNT), (i) => {
+			return new FilerManager(
+				i,
+				(Storage.manager.data.wd ?? [])[i] ?? null,
+				this.index.active == i
+					? Bridge.Status.active
+					: this.index.target == i
+					? Bridge.Status.target
+					: Bridge.Status.none,
 			)
-		}
+		})
 
 		this.ipc()
 		this.commandTest()
@@ -66,24 +64,21 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	private ipc() {
-		const s: number = 14 // --dynamic-filer-font-size
-		const h: number = 18 // --dynamic-filer-line-height
-
 		root
 			.handle(Bridge.Filer.Resize.CH, (_i: number, _data: Bridge.Filer.Resize.Data): Bridge.Filer.Style.Data => {
 				return {
-					fontSize: `${s}px`,
-					lineHeight: `${h}px`,
+					fontSize: `${Conf.DYNAMIC_FILER_FONT_SIZE}px`,
+					lineHeight: `${Conf.DYNAMIC_FILER_FONT_HEIGHT}px`,
 				}
 			})
 
 		root
 			.on(Bridge.List.Resize.CH, (i: number, data: Bridge.List.Resize.Data) => {
 				if (data.event == "mounted") {
-					this.core[i].mounted(data.data.h, h)
+					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_FILER_FONT_HEIGHT)
 				}
 				else if (data.event == "resized") {
-					this.core[i].resized(data.data.h)
+					this.core[i]?.resized(data.data.h)
 				}
 			})
 	}
@@ -97,7 +92,7 @@ export class FilerFragment extends AbstractFragment {
 						cursor: this.active.data.ls[this.active.data.cursor] ?? null,
 						select: _.reduce<number, Native.Attributes[]>(_.range(0, this.active.data.length), (ret, i) => {
 							if (this.active.data.mk[i]) {
-								ret.push(this.active.data.ls[i])
+								ret.push(this.active.data.ls[i]!)
 							}
 							return ret
 						}, []),
@@ -107,7 +102,7 @@ export class FilerFragment extends AbstractFragment {
 						cursor: this.target.data.ls[this.target.data.cursor] ?? null,
 						select: _.reduce<number, Native.Attributes[]>(_.range(0, this.target.data.length), (ret, i) => {
 							if (this.target.data.mk[i]) {
-								ret.push(this.target.data.ls[i])
+								ret.push(this.target.data.ls[i]!)
 							}
 							return ret
 						}, []),
@@ -142,7 +137,7 @@ export class FilerFragment extends AbstractFragment {
 						cursor: this.active.data.ls[this.active.data.cursor] ?? null,
 						select: _.reduce<number, Native.Attributes[]>(_.range(0, this.active.data.length), (ret, i) => {
 							if (this.active.data.mk[i]) {
-								ret.push(this.active.data.ls[i])
+								ret.push(this.active.data.ls[i]!)
 							}
 							return ret
 						}, []),
@@ -152,7 +147,7 @@ export class FilerFragment extends AbstractFragment {
 						cursor: this.target.data.ls[this.target.data.cursor] ?? null,
 						select: _.reduce<number, Native.Attributes[]>(_.range(0, this.target.data.length), (ret, i) => {
 							if (this.target.data.mk[i]) {
-								ret.push(this.target.data.ls[i])
+								ret.push(this.target.data.ls[i]!)
 							}
 							return ret
 						}, []),
@@ -209,7 +204,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on("list.left", () => {
 				this.index.target = this.index.active
-				this.index.active = (this.index.active + 2) % 3
+				this.index.active = (this.index.active + Conf.LIST_COUNT - 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.active
@@ -222,7 +217,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on("list.right", () => {
 				this.index.target = this.index.active
-				this.index.active = (this.index.active + 1) % 3
+				this.index.active = (this.index.active + 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.active
