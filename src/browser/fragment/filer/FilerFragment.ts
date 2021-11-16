@@ -232,7 +232,7 @@ export class FilerFragment extends AbstractFragment {
 				return this.active.update()
 			})
 			.on("list.mark", () => {
-				let attr = _.last(this.active.data.ls[this.active.data.cursor])
+				let attr = _.first(this.active.data.ls[this.active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -260,8 +260,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on("list.select", () => {
 				return new Promise((resolve, _reject) => {
-					let attr = _.last(this.active.data.ls[this.active.data.cursor])
-					if (attr == null) {
+					let attr = _.first(this.active.data.ls[this.active.data.cursor])
+					let trgt = _.last(this.active.data.ls[this.active.data.cursor])
+					if (attr == null || trgt == null) {
 						resolve()
 						return
 					}
@@ -269,8 +270,27 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.home
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.symbolic
+							&& trgt.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.junction
+							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = attr.full
+						this.active.sendChange(wd)
+						this.active.change(wd, 0, null, null, () => {
+							this.active.scroll()
+							this.active.sendScan()
+							this.active.sendAttribute()
+							resolve()
+						})
+					}
+					else if (
+						attr.link_type == Native.AttributeLinkType.shortcut
+							&& trgt.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.bookmark
+							&& trgt.file_type == Native.AttributeFileType.directory
+					) {
+						let wd = trgt.full
 						this.active.sendChange(wd)
 						this.active.change(wd, 0, null, null, () => {
 							this.active.scroll()
@@ -307,8 +327,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on("list.targetselect", () => {
 				return new Promise((resolve, _reject) => {
-					let attr = _.last(this.active.data.ls[this.active.data.cursor])
-					if (attr == null) {
+					let attr = _.first(this.active.data.ls[this.active.data.cursor])
+					let trgt = _.last(this.active.data.ls[this.active.data.cursor])
+					if (attr == null || trgt == null) {
 						resolve()
 						return
 					}
@@ -316,8 +337,27 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.home
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.symbolic
+							&& trgt.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.junction
+							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = attr.full
+						this.target.sendChange(wd)
+						this.target.change(wd, 0, null, null, () => {
+							this.target.scroll()
+							this.target.sendScan()
+							this.target.sendAttribute()
+							resolve()
+						})
+					}
+					else if (
+						attr.link_type == Native.AttributeLinkType.shortcut
+							&& trgt.file_type == Native.AttributeFileType.directory
+						|| attr.link_type == Native.AttributeLinkType.bookmark
+							&& trgt.file_type == Native.AttributeFileType.directory
+					) {
+						let wd = trgt.full
 						this.target.sendChange(wd)
 						this.target.change(wd, 0, null, null, () => {
 							this.target.scroll()
@@ -329,7 +369,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on("list.shellopne", () => {
-				let attr = _.last(this.active.data.ls[this.active.data.cursor])
+				let attr = _.first(this.active.data.ls[this.active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -338,7 +378,6 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on("list.shellproperty", () => {
 				let attr = _.first(this.active.data.ls[this.active.data.cursor])
-				// let attr = _.last(this.active.data.ls[this.active.data.cursor]) // リンク先
 				if (attr == null) {
 					return Promise.resolve()
 				}
