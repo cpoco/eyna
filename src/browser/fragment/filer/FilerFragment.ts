@@ -289,7 +289,7 @@ export class FilerFragment extends AbstractFragment {
 					// file(shortcut or bookmark) -> directory
 					else if (
 						attr.file_type == Native.AttributeFileType.file
-							&& trgt.file_type == Native.AttributeFileType.directory
+						&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = trgt.full
 						this.active.sendChange(wd)
@@ -357,7 +357,7 @@ export class FilerFragment extends AbstractFragment {
 					// file(shortcut or bookmark) -> directory
 					else if (
 						attr.file_type == Native.AttributeFileType.file
-							&& trgt.file_type == Native.AttributeFileType.directory
+						&& trgt.file_type == Native.AttributeFileType.directory
 					) {
 						let wd = trgt.full
 						this.target.sendChange(wd)
