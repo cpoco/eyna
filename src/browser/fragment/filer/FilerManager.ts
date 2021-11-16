@@ -188,7 +188,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce(_.range(start, end), (ret, it) => {
+					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { ls: this.data.ls[it] } })
 					}, {}),
 				},
@@ -203,7 +203,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce(_.range(start, end), (ret, it) => {
+					_slice: _.reduce<number, Bridge.List.Mark.Slice>(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { mk: this.data.mk[it] } })
 					}, {}),
 				},

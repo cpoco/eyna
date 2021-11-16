@@ -67,7 +67,7 @@ export function create(count: number) {
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		if (reactive[i]!.data.update == data.update) {
-			_.forEach(data._slice, (v: { ls: Native.Attributes }, j: string) => {
+			_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
 				reactive[i]!.data.ls[Number(j)]!.length = 0
 				reactive[i]!.data.ls[Number(j)]!.push(...v.ls)
 			})
@@ -77,7 +77,7 @@ export function create(count: number) {
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
 		if (reactive[i]!.data.update == data.update) {
-			_.forEach(data._slice, (v: { mk: boolean }, j: string) => {
+			_.forEach<Bridge.List.Mark.Slice>(data._slice, (v, j) => {
 				reactive[i]!.data.mk[Number(j)] = v.mk
 			})
 			_update(i)
@@ -85,7 +85,7 @@ export function create(count: number) {
 	}
 
 	const _update = (i: number) => {
-		reactive[i]!.make = _.reduce(reactive[i]!.data.mk, (cnt, mk) => {
+		reactive[i]!.make = _.reduce<boolean, number>(reactive[i]!.data.mk, (cnt, mk) => {
 			return mk ? cnt + 1 : cnt
 		}, 0)
 		reactive[i]!.cell = _.map<number, Cell>(
