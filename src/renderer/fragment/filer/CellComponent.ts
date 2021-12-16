@@ -17,7 +17,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const node = vue.computed((): Object => {
+		const node = vue.computed((): vue.AllowedComponentProps => {
 			return {
 				class: props.cell.class,
 				style: props.cell.style,
@@ -29,13 +29,13 @@ export const V = vue.defineComponent({
 		})
 
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
-			return _.map(props.cell.attr, (it) => {
+			return _.map<Native.Attribute, Native.AttributeFileType>(props.cell.attr, (it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
 			})
 		})
 
 		const link_type = vue.computed((): Native.AttributeLinkType[] => {
-			return _.map(props.cell.attr, (it) => {
+			return _.map<Native.Attribute, Native.AttributeLinkType>(props.cell.attr, (it) => {
 				return it ? it.link_type : Native.AttributeLinkType.none
 			})
 		})
@@ -101,9 +101,9 @@ export const V = vue.defineComponent({
 			return vue.h(TAG, this.node, vue.h(SpinnerComponent.V))
 		}
 
-		let name: { class: Object } = { class: { "filer-cfile": true } }
-		let link: { class: Object } = { class: { "filer-clink": true } }
-		let trgt: { class: Object } = { class: { "filer-ctrgt": true } }
+		let name: vue.AllowedComponentProps = { class: { "filer-cfile": true } }
+		let link: vue.AllowedComponentProps = { class: { "filer-clink": true } }
+		let trgt: vue.AllowedComponentProps = { class: { "filer-ctrgt": true } }
 
 		let ftype = this.file_type[0] ?? Native.AttributeFileType.none
 		if (ftype == Native.AttributeFileType.file) {
@@ -147,22 +147,44 @@ export const V = vue.defineComponent({
 			}
 		}
 
-		let node: vue.VNode[] = [
-			vue.h(IconComponent.V, { type: this.cell.attr[0].file_type }),
-			vue.h("span", name, this.cell.attr[0].rltv),
-			vue.h("span", link, "->"),
-			vue.h(IconComponent.V, { type: this.cell.attr[1]?.file_type ?? Native.AttributeFileType.none }),
-			vue.h("span", trgt, [this.cell.attr[0].link]),
-		]
 		return vue.h(TAG, this.node, [
-			vue.h("span", { class: { "filer-cname": true } }, this.is_link ? node : node.slice(0, 2)),
+			vue.h(
+				"span",
+				{ class: { "filer-cname": true } },
+				this.is_link
+					? [
+						vue.h(IconComponent.V, { type: this.cell.attr[0]?.file_type ?? Native.AttributeFileType.none }),
+						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+						vue.h("span", link, "->"),
+						vue.h(IconComponent.V, { type: this.cell.attr[1]?.file_type ?? Native.AttributeFileType.none }),
+						vue.h("span", trgt, this.cell.attr[0]?.link ?? undefined),
+					]
+					: [
+						vue.h(IconComponent.V, { type: this.cell.attr[0]?.file_type ?? Native.AttributeFileType.none }),
+						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+					],
+			),
 			vue.h(
 				"span",
 				{ class: { "filer-csize": true } },
-				this.is_size ? [this.cell.attr[0].size.toLocaleString()] : [null],
+				this.is_size
+					? this.cell.attr[0]?.size.toLocaleString() ?? undefined
+					: undefined,
 			),
-			vue.h("span", { class: { "filer-cdate": true } }, this.is_date ? date(this.cell.attr[0].time) : [null]),
-			vue.h("span", { class: { "filer-ctime": true } }, this.is_date ? time(this.cell.attr[0].time) : [null]),
+			vue.h(
+				"span",
+				{ class: { "filer-cdate": true } },
+				this.is_date
+					? date(this.cell.attr[0]?.time ?? 0)
+					: undefined,
+			),
+			vue.h(
+				"span",
+				{ class: { "filer-ctime": true } },
+				this.is_date
+					? time(this.cell.attr[0]?.time ?? 0)
+					: undefined,
+			),
 		])
 	},
 })

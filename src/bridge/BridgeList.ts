@@ -144,10 +144,11 @@ export namespace List {
 		]
 		export type Data = {
 			update: number
-			_slice: {
-				[index: number]: {
-					ls: Native.Attributes
-				}
+			_slice: Slice
+		}
+		export type Slice = {
+			[index: number]: {
+				ls: Native.Attributes
 			}
 		}
 	}
@@ -165,10 +166,11 @@ export namespace List {
 		]
 		export type Data = {
 			update: number
-			_slice: {
-				[index: number]: {
-					mk: boolean
-				}
+			_slice: Slice
+		}
+		export type Slice = {
+			[index: number]: {
+				mk: boolean
 			}
 		}
 	}

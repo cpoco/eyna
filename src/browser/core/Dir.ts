@@ -170,13 +170,13 @@ function _type(a: Native.Attributes, b: Native.Attributes): number {
 }
 
 function _ext(a: Native.Attributes, b: Native.Attributes): number {
-	let aa: string = a[0].ext.toLocaleLowerCase()
-	let bb: string = b[0].ext.toLocaleLowerCase()
+	let aa: string = a[0]?.ext.toLocaleLowerCase() ?? ""
+	let bb: string = b[0]?.ext.toLocaleLowerCase() ?? ""
 	return aa.localeCompare(bb)
 }
 
 function _name(a: Native.Attributes, b: Native.Attributes): number {
-	let aa: string = a[0].rltv.toLocaleLowerCase()
-	let bb: string = b[0].rltv.toLocaleLowerCase()
+	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
+	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
 	return aa.localeCompare(bb, undefined, { numeric: true })
 }

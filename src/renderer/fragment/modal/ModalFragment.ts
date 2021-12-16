@@ -68,27 +68,33 @@ export const V = vue.defineComponent({
 
 	render() {
 		if (this.reactive.type == "alert") {
-			return vue.h(TAG, { class: { "modal-fragment": true } }, [
+			return vue.h(
+				TAG,
+				{ class: { "modal-fragment": true } },
 				vue.h(DialogAlert.V, {
 					title: this.reactive.title,
 					text: this.reactive.text,
 					close: this.close,
 					cancel: this.cancel,
 				}),
-			])
+			)
 		}
 		else if (this.reactive.type == "prompt") {
-			return vue.h(TAG, { class: { "modal-fragment": true } }, [
+			return vue.h(
+				TAG,
+				{ class: { "modal-fragment": true } },
 				vue.h(DialogPrompt.V, {
 					title: this.reactive.title,
 					text: this.reactive.text,
 					close: this.close,
 					cancel: this.cancel,
 				}),
-			])
+			)
 		}
 		else if (this.reactive.type == "find") {
-			return vue.h(TAG, { class: { "modal-fragment": true } }, [
+			return vue.h(
+				TAG,
+				{ class: { "modal-fragment": true } },
 				vue.h(DialogFind.V, {
 					title: this.reactive.title,
 					rg: this.reactive.text,
@@ -96,7 +102,7 @@ export const V = vue.defineComponent({
 					close: this.close,
 					cancel: this.cancel,
 				}),
-			])
+			)
 		}
 
 		return null

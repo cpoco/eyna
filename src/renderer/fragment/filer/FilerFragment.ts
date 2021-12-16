@@ -1,6 +1,7 @@
 import * as _ from "lodash-es"
 import * as vue from "vue"
 
+import * as Conf from "@app/Conf"
 import * as Bridge from "@bridge/Bridge"
 import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as ListComponent from "@renderer/fragment/filer/ListComponent"
@@ -13,7 +14,7 @@ export const V = vue.defineComponent({
 		const el = vue.ref<HTMLElement>()
 		const ready = vue.ref<boolean>(false)
 
-		const provider = FilerProvider.create()
+		const provider = FilerProvider.create(Conf.LIST_COUNT)
 		// vue.provide(FilerProvider.KEY, provider)
 
 		root
@@ -78,10 +79,10 @@ export const V = vue.defineComponent({
 			TAG,
 			{ ref: "el", class: { "filer-fragment": true } },
 			this.ready
-				? _.map(_.range(3), (i) => {
-					return vue.h(ListComponent.V, { list: this.provider.reactive[i] })
+				? _.map<FilerProvider.List, vue.VNode>(this.provider.reactive, (list) => {
+					return vue.h(ListComponent.V, { list })
 				})
-				: [],
+				: undefined,
 		)
 	},
 })

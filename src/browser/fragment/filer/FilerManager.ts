@@ -29,7 +29,7 @@ export class FilerManager {
 			this.data.length = ls.length
 			this.data.wd = wd
 			this.data.ls = ls
-			this.data.mk = _.map(_.range(ls.length), () => false)
+			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
 			this.data.error = e
 		})
 	}
@@ -95,7 +95,7 @@ export class FilerManager {
 			this.data.length = ls.length
 			this.data.wd = wd
 			this.data.ls = ls
-			this.data.mk = _.map(_.range(ls.length), () => false)
+			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
 			this.data.error = e
 			cb()
 		})
@@ -188,7 +188,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce(_.range(start, end), (ret, it) => {
+					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { ls: this.data.ls[it] } })
 					}, {}),
 				},
@@ -203,7 +203,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce(_.range(start, end), (ret, it) => {
+					_slice: _.reduce<number, Bridge.List.Mark.Slice>(_.range(start, end), (ret, it) => {
 						return _.assign(ret, { [it]: { mk: this.data.mk[it] } })
 					}, {}),
 				},

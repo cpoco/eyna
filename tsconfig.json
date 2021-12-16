@@ -37,7 +37,7 @@
 		"exactOptionalPropertyTypes": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
-		// "noUncheckedIndexedAccess": true,
+		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 
@@ -53,6 +53,9 @@
 			"vue": [
 				"./node_modules/vue/dist/vue.d.ts",
 				"./node_modules/vue/dist/vue.runtime.esm-bundler.js",
+			],
+			"@app/*": [
+				"./src/app/*"
 			],
 			"@module/*": [
 				"./module/*"
