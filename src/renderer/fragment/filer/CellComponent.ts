@@ -124,6 +124,9 @@ export const V = vue.defineComponent({
 		else if (ftype == Native.AttributeFileType.directory) {
 			name.class = _.assign(name.class, { "c-directory": true })
 		}
+		else if (ftype == Native.AttributeFileType.special) {
+			name.class = _.assign(name.class, { "c-special": true })
+		}
 
 		if (this.is_link) {
 			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.none
@@ -144,6 +147,9 @@ export const V = vue.defineComponent({
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
 				trgt.class = _.assign(trgt.class, { "c-directory": true })
+			}
+			else if (ftype2 == Native.AttributeFileType.special) {
+				trgt.class = _.assign(trgt.class, { "c-special": true })
 			}
 		}
 

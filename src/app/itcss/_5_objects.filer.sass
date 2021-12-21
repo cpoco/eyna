@@ -1,17 +1,18 @@
 :root
 	--file: var(--color)
-	--link: #{$lightCyan}
-	--directory: #{$lightBlue}
-	--shortcut: #{$lightGreen}
-	--bookmark: #{$lightGreen}
-	--error: #{$lightRed}
+	--link: #{$cyan}
+	--directory: #{$blue}
+	--shortcut: #{$green}
+	--bookmark: #{$green}
+	--special: #{$yellow}
+	--error: #{$red}
 
 	--stat-none: rgba(255, 255, 255, 0.1)
-	--stat-active: rgba(32, 144, 255, 1)
-	--stat-target: rgba(32, 144, 255, 0.5)
+	--stat-active: rgba(30, 145, 255, 1)
+	--stat-target: rgba(30, 145, 255, 0.5)
 
-	--cell-select-cursor: rgba(32, 144, 255, 0.2)
-	--cell-select: rgba(32, 144, 255, 0.1)
+	--cell-select-cursor: rgba(30, 145, 255, 0.2)
+	--cell-select: rgba(30, 145, 255, 0.1)
 	--cell-cursor: rgba(255, 255, 255, 0.1)
 
 	--dynamic-filer-font-size: 14px
@@ -35,6 +36,8 @@
 	color: var(--shortcut)
 .c-bookmark
 	color: var(--bookmark)
+.c-special
+	color: var(--special)
 .c-error
 	color: var(--error)
 
@@ -69,12 +72,12 @@
 			top: calc(var(--dynamic-filer-line-height) * 2)
 			width: 100%
 			height: var(--filer-stat-height)
-			background: var(--stat-none)
+			background-color: var(--stat-none)
 			@at-root
 				#{&}-active
-					background: var(--stat-active)
+					background-color: var(--stat-active)
 				#{&}-target
-					background: var(--stat-target)
+					background-color: var(--stat-target)
 
 		#{&}-data
 			position: absolute
@@ -92,11 +95,11 @@
 			line-height: var(--dynamic-filer-line-height)
 			@at-root
 				#{&}-select#{&}-cursor
-					background: var(--cell-select-cursor)
+					background-color: var(--cell-select-cursor)
 				#{&}-select
-					background: var(--cell-select)
+					background-color: var(--cell-select)
 				#{&}-cursor
-					background: var(--cell-cursor)
+					background-color: var(--cell-cursor)
 
 		#{&}-cname
 			font-size: var(--dynamic-filer-font-size)
@@ -139,4 +142,4 @@
 		#{&}-knob
 			position: absolute
 			width: 100%
-			background: var(--scroll-knob)
+			background-color: var(--scroll-knob)
