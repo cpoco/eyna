@@ -11,7 +11,7 @@
 		"electron": "16.0.5",
 		"electron-builder": "22.14.10",
 		"electron-rebuild": "3.2.5",
-		"esbuild": "0.14.6",
+		"esbuild": "0.14.8",
 		"lodash": "4.17.21",
 		"lodash-es": "4.17.21",
 		"pug": "3.0.2",
