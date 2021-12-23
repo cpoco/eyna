@@ -23,24 +23,15 @@ export class FilerManager {
 
 	constructor(public id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
 		this.dir.cd(wd)
-		this.dir.list(0, null, (wd, ls, e) => {
-			this.data.update = Date.now()
-			this.data.status = status
-			this.data.length = ls.length
-			this.data.wd = wd
-			this.data.ls = ls
-			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
-			this.data.error = e
-		})
+		this.data.status = status
 	}
 
-	mounted(screenSize: number, contentsSize: number) {
+	mounted(screenSize: number, contentsSize: number): Promise<void> {
 		this.sc.screenSize = screenSize
 		this.sc.contentsSize = contentsSize
 		this.sc.contentsCount = 0
-		this.scroll()
-		this.sendScan()
-		this.sendAttribute()
+
+		return this.update()
 	}
 
 	resized(h: number) {
@@ -52,15 +43,14 @@ export class FilerManager {
 	}
 
 	update(): Promise<void> {
-		return new Promise((resolve, _reject) => {
+		return new Promise(async (resolve, _reject) => {
 			let wd = this.pwd
 			this.sendChange(wd)
-			this.change(wd, 0, null, this.data.cursor, () => {
-				this.scroll()
-				this.sendScan()
-				this.sendAttribute()
-				resolve()
-			})
+			await this.change(wd, 0, null, this.data.cursor)
+			this.scroll()
+			this.sendScan()
+			this.sendAttribute()
+			resolve()
 		})
 	}
 
@@ -83,21 +73,24 @@ export class FilerManager {
 		this.sc.update()
 	}
 
-	change(cd: string, dp: number, rg: RegExp | null, cursor: number | string | null, cb: () => void) {
-		_.unset(this.history, this.data.wd)
-		_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
-		this.dir.cd(cd)
-		this.dir.list(dp, rg, (wd, ls, e) => {
-			this.data.update = Date.now()
-			this.data.cursor = _.isNumber(cursor)
-				? Math.max(0, Math.min(cursor, ls.length - 1))
-				: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
-			this.data.length = ls.length
-			this.data.wd = wd
-			this.data.ls = ls
-			this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
-			this.data.error = e
-			cb()
+	change(cd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<void> {
+		this.data.length = 0
+		return new Promise((resolve, _reject) => {
+			_.unset(this.history, this.data.wd)
+			_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
+			this.dir.cd(cd)
+			this.dir.list(dp, rg, (wd, ls, e) => {
+				this.data.update = Date.now()
+				this.data.cursor = _.isNumber(cursor)
+					? Math.max(0, Math.min(cursor, ls.length - 1))
+					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+				this.data.length = ls.length
+				this.data.wd = wd
+				this.data.ls = ls
+				this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
+				this.data.error = e
+				resolve()
+			})
 		})
 	}
 

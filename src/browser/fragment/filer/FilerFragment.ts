@@ -52,7 +52,9 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	update() {
-		this.active.update()
+		this.active.update().then(() => {
+			this.title()
+		})
 		this.target.update()
 		this.core.forEach((fm) => {
 			if (fm.data.status == Bridge.Status.none) {
@@ -61,6 +63,11 @@ export class FilerFragment extends AbstractFragment {
 				}
 			}
 		})
+	}
+
+	private title() {
+		let a = this.active.data.ls[this.active.data.cursor] ?? []
+		root.setTitle(a[0]?.full ?? "")
 	}
 
 	private ipc() {
@@ -75,7 +82,11 @@ export class FilerFragment extends AbstractFragment {
 		root
 			.on(Bridge.List.Resize.CH, (i: number, data: Bridge.List.Resize.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_FILER_FONT_HEIGHT)
+					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_FILER_FONT_HEIGHT).then(() => {
+						if (this.index.active == i) {
+							this.title()
+						}
+					})
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.data.h)
@@ -153,6 +164,7 @@ export class FilerFragment extends AbstractFragment {
 						}, []),
 					},
 				})
+				this.title()
 				return Promise.resolve()
 			})
 	}
@@ -167,6 +179,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.data.cursor = Math.max(this.active.data.cursor - 1, 0)
 				this.active.scroll()
 				this.active.sendCursor()
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.pageup", () => {
@@ -177,6 +190,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.data.cursor = Math.max(this.active.data.cursor - this.active.mv, 0)
 				this.active.scroll()
 				this.active.sendCursor()
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.down", () => {
@@ -187,6 +201,7 @@ export class FilerFragment extends AbstractFragment {
 				this.active.data.cursor = Math.min(this.active.data.cursor + 1, this.active.data.ls.length - 1)
 				this.active.scroll()
 				this.active.sendCursor()
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.pagedown", () => {
@@ -200,6 +215,7 @@ export class FilerFragment extends AbstractFragment {
 				)
 				this.active.scroll()
 				this.active.sendCursor()
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.left", () => {
@@ -213,6 +229,7 @@ export class FilerFragment extends AbstractFragment {
 						: Bridge.Status.none
 					fm.sendActive()
 				})
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.right", () => {
@@ -226,10 +243,15 @@ export class FilerFragment extends AbstractFragment {
 						: Bridge.Status.none
 					fm.sendActive()
 				})
+				this.title()
 				return Promise.resolve()
 			})
 			.on("list.update", () => {
-				return this.active.update()
+				return new Promise(async (resolve, _reject) => {
+					await this.active.update()
+					this.title()
+					resolve()
+				})
 			})
 			.on("list.mark", () => {
 				let attr = _.first(this.active.data.ls[this.active.data.cursor])
@@ -250,16 +272,16 @@ export class FilerFragment extends AbstractFragment {
 					}
 					let wd = this.active.pwd
 					this.active.sendChange(wd)
-					this.active.change(wd, Number(find.dp), new RegExp(find.rg), null, () => {
-						this.active.scroll()
-						this.active.sendScan()
-						this.active.sendAttribute()
-						resolve()
-					})
+					await this.active.change(wd, Number(find.dp), new RegExp(find.rg), null)
+					this.active.scroll()
+					this.active.sendScan()
+					this.active.sendAttribute()
+					this.title()
+					resolve()
 				})
 			})
 			.on("list.select", () => {
-				return new Promise((resolve, _reject) => {
+				return new Promise(async (resolve, _reject) => {
 					let attr = _.first(this.active.data.ls[this.active.data.cursor])
 					let trgt = _.last(this.active.data.ls[this.active.data.cursor])
 					if (attr == null || trgt == null) {
@@ -279,12 +301,12 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						let wd = attr.full
 						this.active.sendChange(wd)
-						this.active.change(wd, 0, null, null, () => {
-							this.active.scroll()
-							this.active.sendScan()
-							this.active.sendAttribute()
-							resolve()
-						})
+						await this.active.change(wd, 0, null, null)
+						this.active.scroll()
+						this.active.sendScan()
+						this.active.sendAttribute()
+						this.title()
+						resolve()
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
@@ -293,41 +315,40 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						let wd = trgt.full
 						this.active.sendChange(wd)
-						this.active.change(wd, 0, null, null, () => {
-							this.active.scroll()
-							this.active.sendScan()
-							this.active.sendAttribute()
-							resolve()
-						})
+						await this.active.change(wd, 0, null, null)
+						this.active.scroll()
+						this.active.sendScan()
+						this.active.sendAttribute()
+						this.title()
+						resolve()
 					}
 				})
 			})
 			.on("list.updir", () => {
-				return new Promise((resolve, _reject) => {
+				return new Promise(async (resolve, _reject) => {
 					let wd = Dir.dirname(this.active.data.wd)
 					this.active.sendChange(wd)
-					this.active.change(wd, 0, null, Dir.basename(this.active.data.wd), () => {
-						this.active.scroll()
-						this.active.sendScan()
-						this.active.sendAttribute()
-						resolve()
-					})
+					await this.active.change(wd, 0, null, Dir.basename(this.active.data.wd))
+					this.active.scroll()
+					this.active.sendScan()
+					this.active.sendAttribute()
+					this.title()
+					resolve()
 				})
 			})
 			.on("list.targetequal", () => {
-				return new Promise((resolve, _reject) => {
+				return new Promise(async (resolve, _reject) => {
 					let wd = this.active.data.wd
 					this.target.sendChange(wd)
-					this.target.change(wd, 0, null, null, () => {
-						this.target.scroll()
-						this.target.sendScan()
-						this.target.sendAttribute()
-						resolve()
-					})
+					await this.target.change(wd, 0, null, null)
+					this.target.scroll()
+					this.target.sendScan()
+					this.target.sendAttribute()
+					resolve()
 				})
 			})
 			.on("list.targetselect", () => {
-				return new Promise((resolve, _reject) => {
+				return new Promise(async (resolve, _reject) => {
 					let attr = _.first(this.active.data.ls[this.active.data.cursor])
 					let trgt = _.last(this.active.data.ls[this.active.data.cursor])
 					if (attr == null || trgt == null) {
@@ -347,12 +368,11 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						let wd = attr.full
 						this.target.sendChange(wd)
-						this.target.change(wd, 0, null, null, () => {
-							this.target.scroll()
-							this.target.sendScan()
-							this.target.sendAttribute()
-							resolve()
-						})
+						await this.target.change(wd, 0, null, null)
+						this.target.scroll()
+						this.target.sendScan()
+						this.target.sendAttribute()
+						resolve()
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
@@ -361,12 +381,11 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						let wd = trgt.full
 						this.target.sendChange(wd)
-						this.target.change(wd, 0, null, null, () => {
-							this.target.scroll()
-							this.target.sendScan()
-							this.target.sendAttribute()
-							resolve()
-						})
+						await this.target.change(wd, 0, null, null)
+						this.target.scroll()
+						this.target.sendScan()
+						this.target.sendAttribute()
+						resolve()
 					}
 				})
 			})

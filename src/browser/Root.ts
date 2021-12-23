@@ -81,6 +81,10 @@ class Root {
 		this.browser.reload()
 	}
 
+	setTitle(title: string) {
+		this.browser.setTitle(title)
+	}
+
 	showMessageBox(message: string) {
 		electron.dialog.showMessageBox(this.browser, { "message": message })
 	}
