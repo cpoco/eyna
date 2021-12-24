@@ -263,12 +263,11 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					let wd = active.pwd
-					active.sendChange(wd)
-					await active.change(wd, Number(find.dp), new RegExp(find.rg), null)
-					active.scroll()
-					active.sendScan()
-					active.sendAttribute()
+					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null)) {
+						active.scroll()
+						active.sendScan()
+						active.sendAttribute()
+					}
 					this.title()
 					resolve()
 				})
@@ -292,12 +291,11 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type == Native.AttributeFileType.link
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
-						let wd = attr.full
-						active.sendChange(wd)
-						await active.change(wd, 0, null, null)
-						active.scroll()
-						active.sendScan()
-						active.sendAttribute()
+						if (await active.sendChange(attr.full, 0, null, null)) {
+							active.scroll()
+							active.sendScan()
+							active.sendAttribute()
+						}
 						this.title()
 						resolve()
 					}
@@ -306,12 +304,11 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.file
 						&& trgt.file_type == Native.AttributeFileType.directory
 					) {
-						let wd = trgt.full
-						active.sendChange(wd)
-						await active.change(wd, 0, null, null)
-						active.scroll()
-						active.sendScan()
-						active.sendAttribute()
+						if (await active.sendChange(trgt.full, 0, null, null)) {
+							active.scroll()
+							active.sendScan()
+							active.sendAttribute()
+						}
 						this.title()
 						resolve()
 					}
@@ -319,24 +316,22 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.updir", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
-					let wd = Dir.dirname(active.pwd)
-					active.sendChange(wd)
-					await active.change(wd, 0, null, Dir.basename(active.pwd))
-					active.scroll()
-					active.sendScan()
-					active.sendAttribute()
+					if (await active.sendChange(Dir.dirname(active.pwd), 0, null, Dir.basename(active.pwd))) {
+						active.scroll()
+						active.sendScan()
+						active.sendAttribute()
+					}
 					this.title()
 					resolve()
 				})
 			})
 			.on2("list.targetequal", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					let wd = active.pwd
-					target.sendChange(wd)
-					await target.change(wd, 0, null, null)
-					target.scroll()
-					target.sendScan()
-					target.sendAttribute()
+					if (await target.sendChange(active.pwd, 0, null, null)) {
+						target.scroll()
+						target.sendScan()
+						target.sendAttribute()
+					}
 					resolve()
 				})
 			})
@@ -359,12 +354,11 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type == Native.AttributeFileType.link
 							&& trgt.file_type == Native.AttributeFileType.directory
 					) {
-						let wd = attr.full
-						target.sendChange(wd)
-						await target.change(wd, 0, null, null)
-						target.scroll()
-						target.sendScan()
-						target.sendAttribute()
+						if (await target.sendChange(attr.full, 0, null, null)) {
+							target.scroll()
+							target.sendScan()
+							target.sendAttribute()
+						}
 						resolve()
 					}
 					// file(shortcut or bookmark) -> directory
@@ -372,12 +366,11 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.file
 						&& trgt.file_type == Native.AttributeFileType.directory
 					) {
-						let wd = trgt.full
-						target.sendChange(wd)
-						await target.change(wd, 0, null, null)
-						target.scroll()
-						target.sendScan()
-						target.sendAttribute()
+						if (await target.sendChange(trgt.full, 0, null, null)) {
+							target.scroll()
+							target.sendScan()
+							target.sendAttribute()
+						}
 						resolve()
 					}
 				})

@@ -10,7 +10,6 @@ export class Dir {
 	private wd: string = Dir.HOME
 	private dp: number = 0
 	private rg: RegExp | null = null
-	private ls: Native.Attributes[] = []
 
 	get pwd(): string {
 		return this.wd
@@ -68,7 +67,7 @@ export class Dir {
 			this.dp = 0
 			this.rg = null
 			Native.getVolume().then((vol: Native.Volume[]) => {
-				this.ls = []
+				let ls: Native.Attributes[] = []
 				vol.forEach((v) => {
 					let attr: Native.Attributes = []
 					attr.push({
@@ -87,7 +86,7 @@ export class Dir {
 						hidden: false,
 						system: false,
 					})
-					this.ls.push(attr)
+					ls.push(attr)
 				})
 				{
 					let attr: Native.Attributes = []
@@ -107,9 +106,9 @@ export class Dir {
 						hidden: false,
 						system: false,
 					})
-					this.ls.push(attr)
+					ls.push(attr)
 				}
-				cb(this.wd, this.ls, 0)
+				cb(this.wd, ls, 0)
 			})
 		}
 		else {
@@ -117,19 +116,19 @@ export class Dir {
 			this.dp = dp
 			this.rg = rg
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				console.log(this.wd, this.dp, this.rg, dir.e)
+				console.log(this.wd, { dp: this.dp, rg: this.rg, len: dir.ls.length, err: dir.e })
 				console.log(this.wd, "Native.getDirectory", `${Date.now() - _time}ms`)
 				_time = Date.now()
 
-				this.ls = []
+				let ls: Native.Attributes[] = []
 				for (let absolute of dir.ls) {
-					this.ls.push(await Native.getAttribute(absolute, this.wd))
+					ls.push(await Native.getAttribute(absolute, this.wd))
 				}
 
 				console.log(this.wd, "Native.getAttribute", `${Date.now() - _time}ms`)
 				_time = Date.now()
 
-				this.ls.sort((a, b) => {
+				ls.sort((a, b) => {
 					let type = _type(a, b)
 					if (type == 1024) {
 						return _name(a, b)
@@ -146,7 +145,7 @@ export class Dir {
 
 				console.log(this.wd, "sort", `${Date.now() - _time}ms`)
 
-				cb(this.wd, this.ls, dir.e)
+				cb(this.wd, ls, dir.e)
 			})
 		}
 	}

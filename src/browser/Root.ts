@@ -115,7 +115,7 @@ class Root {
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		console.log(send.ch, send.args[0], send.args[1])
+		console.log(send.ch, send.args[0] /*, send.args[1]*/)
 		this.browser.webContents.send(send.ch, ...send.args)
 	}
 

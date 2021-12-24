@@ -66,22 +66,18 @@ export function create(count: number) {
 	}
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
-		if (reactive[i]!.data.update == data.update) {
-			_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
-				reactive[i]!.data.ls[Number(j)]!.length = 0
-				reactive[i]!.data.ls[Number(j)]!.push(...v.ls)
-			})
-			_update(i)
-		}
+		_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
+			reactive[i]!.data.ls[Number(j)]!.length = 0
+			reactive[i]!.data.ls[Number(j)]!.push(...v.ls)
+		})
+		_update(i)
 	}
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
-		if (reactive[i]!.data.update == data.update) {
-			_.forEach<Bridge.List.Mark.Slice>(data._slice, (v, j) => {
-				reactive[i]!.data.mk[Number(j)] = v.mk
-			})
-			_update(i)
-		}
+		_.forEach<Bridge.List.Mark.Slice>(data._slice, (v, j) => {
+			reactive[i]!.data.mk[Number(j)] = v.mk
+		})
+		_update(i)
 	}
 
 	const _update = (i: number) => {
