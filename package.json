@@ -9,7 +9,7 @@
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.5",
 		"electron": "16.0.5",
-		"electron-builder": "22.14.10",
+		"electron-builder": "22.14.11",
 		"electron-rebuild": "3.2.5",
 		"esbuild": "0.14.8",
 		"lodash": "4.17.21",
