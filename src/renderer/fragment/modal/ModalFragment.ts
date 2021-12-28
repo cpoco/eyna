@@ -23,8 +23,8 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onMounted(() => {
-			root.on(Bridge.Modal.Order.CH, (_: number, data: Bridge.Modal.Order.Data) => {
-				if (data.order == "open") {
+			root
+				.on(Bridge.Modal.Open.CH, (_: number, data: Bridge.Modal.Open.Data) => {
 					root.send<Bridge.Modal.Event.Send>({
 						ch: "modal-event",
 						args: [-1, { event: "opened" }],
@@ -32,11 +32,10 @@ export const V = vue.defineComponent({
 					reactive.type = data.type
 					reactive.title = data.title
 					reactive.text = data.text
-				}
-				else if (data.order == "cancel") {
+				})
+				.on(Bridge.Modal.Cancel.CH, (_: number, _data: Bridge.Modal.Cancel.Data) => {
 					cancel()
-				}
-			})
+				})
 		})
 
 		const close = (result: Bridge.Modal.Event.Result) => {

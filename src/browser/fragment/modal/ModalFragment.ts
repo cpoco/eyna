@@ -13,21 +13,11 @@ export class ModalFragment extends AbstractFragment {
 		this.ipc()
 	}
 
-	opne(
-		option: { type: "find" | "alert" | "prompt"; title: string; text: string },
-	): Promise<Bridge.Modal.Event.Result | null> {
+	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.Result | null> {
 		Command.manager.whenType = Command.When.modal
-		root.send<Bridge.Modal.Order.Send>({
-			ch: "modal-order",
-			args: [
-				-1,
-				{
-					order: "open",
-					type: option.type,
-					title: option.title,
-					text: option.text,
-				},
-			],
+		root.send<Bridge.Modal.Open.Send>({
+			ch: Bridge.Modal.Open.CH,
+			args: [-1, option],
 		})
 
 		this.deferred = new DeferredPromise<Bridge.Modal.Event.Result>()
@@ -36,14 +26,9 @@ export class ModalFragment extends AbstractFragment {
 
 	cancel() {
 		Command.manager.whenType = Command.When.filer
-		root.send<Bridge.Modal.Order.Send>({
-			ch: "modal-order",
-			args: [
-				-1,
-				{
-					order: "cancel",
-				},
-			],
+		root.send<Bridge.Modal.Cancel.Send>({
+			ch: Bridge.Modal.Cancel.CH,
+			args: [-1, {}],
 		})
 	}
 

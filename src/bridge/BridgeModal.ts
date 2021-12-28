@@ -27,25 +27,45 @@ export namespace Modal {
 	}
 
 	// browser -> renderer
-	export namespace Order {
-		export const CH = "modal-order"
+	export namespace Open {
+		export const CH = "modal-open"
 		export type Send = {
-			ch: "modal-order"
+			ch: "modal-open"
 			args: Args
 		}
 		export type Args = [
 			number,
 			Data,
 		]
-		export type Data = open | cancel
-		type open = {
-			order: "open"
-			type: "find" | "alert" | "prompt"
+		export type Data = Find | Alert | Prompt
+		export type Find = {
+			type: "find"
 			title: string
 			text: string
 		}
-		type cancel = {
-			order: "cancel"
+		export type Alert = {
+			type: "alert"
+			title: string
+			text: string
 		}
+		export type Prompt = {
+			type: "prompt"
+			title: string
+			text: string
+		}
+	}
+
+	// browser -> renderer
+	export namespace Cancel {
+		export const CH = "modal-cancel"
+		export type Send = {
+			ch: "modal-cancel"
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = {}
 	}
 }

@@ -119,7 +119,7 @@ class Root {
 		this.browser.webContents.send(send.ch, ...send.args)
 	}
 
-	find(option: { type: "find"; title: string; text: string }): Promise<Bridge.Modal.Event.ResultFind | null> {
+	find(option: Bridge.Modal.Open.Find): Promise<Bridge.Modal.Event.ResultFind | null> {
 		return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
@@ -163,7 +163,7 @@ class Root {
 				},
 				dialog: {
 					opne: (
-						option: { type: "alert" | "prompt"; title: string; text: string },
+						option: Bridge.Modal.Open.Alert | Bridge.Modal.Open.Prompt,
 					): Promise<Bridge.Modal.Event.ResultText | null> => {
 						return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultText | null>
 					},
