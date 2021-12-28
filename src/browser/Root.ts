@@ -132,7 +132,8 @@ class Root {
 		try {
 			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
 			let func = vm.runInNewContext(code, { console: console, exports: {}, require: require })
-			func(Object.assign({
+
+			let promise: Promise<void> = func(Object.assign({
 				filer: {
 					update: () => {
 						this.fragment[1].update()
@@ -172,6 +173,14 @@ class Root {
 					},
 				},
 			}, option))
+
+			promise.then(() => {
+				console.log("\u001b[35m")
+				console.log("end extension ----------------------------------------------")
+				console.log(`${file}`)
+				console.log("------------------------------------------------------------")
+				console.log("\u001b[0m")
+			})
 		}
 		catch (err) {
 			console.error(err)
