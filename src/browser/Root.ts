@@ -12,6 +12,19 @@ import { ModalFragment } from "@browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@browser/fragment/system/SystemFragment"
 import * as Native from "@module/native/ts/browser"
 
+type Option = {
+	active: {
+		wd: string
+		cursor: Native.Attributes | null
+		select: Native.Attributes[]
+	}
+	target: {
+		wd: string
+		cursor: Native.Attributes | null
+		select: Native.Attributes[]
+	}
+}
+
 class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment]
@@ -30,7 +43,7 @@ class Root {
 		electron.Menu.setApplicationMenu(null)
 	}
 
-	private _ready = (_launchInfo: any) => {
+	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
 		this.browser = new electron.BrowserWindow(Object.assign({
 			minWidth: 400,
 			minHeight: 200,
@@ -119,11 +132,11 @@ class Root {
 		this.browser.webContents.send(send.ch, ...send.args)
 	}
 
-	find(option: Bridge.Modal.Open.Find): Promise<Bridge.Modal.Event.ResultFind | null> {
+	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
 		return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
-	runExtension(file: string, option: any) {
+	runExtension(file: string, option: Option) {
 		console.log("\u001b[35m")
 		console.log("run extension ----------------------------------------------")
 		console.log(`${file}`)
@@ -133,7 +146,9 @@ class Root {
 			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
 			let func = vm.runInNewContext(code, { console: console, exports: {}, require: require })
 
-			let promise: Promise<void> = func(Object.assign({
+			func({
+				active: option.active,
+				target: option.target,
 				filer: {
 					update: () => {
 						this.fragment[1].update()
@@ -164,23 +179,24 @@ class Root {
 				},
 				dialog: {
 					opne: (
-						option: Bridge.Modal.Open.Alert | Bridge.Modal.Open.Prompt,
-					): Promise<Bridge.Modal.Event.ResultText | null> => {
-						return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultText | null>
+						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
+					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
+						return this.fragment[2].opne(option) as Promise<
+							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
+						>
 					},
 					cancel: () => {
 						this.fragment[2].cancel()
 					},
 				},
-			}, option))
-
-			promise.then(() => {
-				console.log("\u001b[35m")
-				console.log("end extension ----------------------------------------------")
-				console.log(`${file}`)
-				console.log("------------------------------------------------------------")
-				console.log("\u001b[0m")
 			})
+				.then(() => {
+					console.log("\u001b[35m")
+					console.log("end extension ----------------------------------------------")
+					console.log(`${file}`)
+					console.log("------------------------------------------------------------")
+					console.log("\u001b[0m")
+				})
 		}
 		catch (err) {
 			console.error(err)

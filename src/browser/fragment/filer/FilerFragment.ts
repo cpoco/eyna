@@ -258,7 +258,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.find", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
-					let find = await root.find({ type: "find", title: active.pwd, text: "^.+$" })
+					let find = await root.find({ type: "find", title: active.pwd, rg: "^.+$", dp: "0" })
 					if (find == null) {
 						resolve()
 						return

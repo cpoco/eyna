@@ -16,14 +16,17 @@ export namespace Modal {
 		}
 		type closed = {
 			event: "closed"
-			result: Result
+			result: ResultClose
 		}
 		type canceled = {
 			event: "canceled"
+			result: ResultCancel
 		}
-		export type Result = ResultText | ResultFind
-		export type ResultText = { text: string }
+		export type ResultClose = ResultAlert | ResultPrompt | ResultFind
+		export type ResultAlert = { text: string }
+		export type ResultPrompt = { text: string }
 		export type ResultFind = { rg: string; dp: string }
+		export type ResultCancel = null
 	}
 
 	// browser -> renderer
@@ -37,21 +40,22 @@ export namespace Modal {
 			number,
 			Data,
 		]
-		export type Data = Find | Alert | Prompt
-		export type Find = {
-			type: "find"
-			title: string
-			text: string
-		}
-		export type Alert = {
+		export type Data = DataAlert | DataPrompt | DataFind
+		export type DataAlert = {
 			type: "alert"
 			title: string
 			text: string
 		}
-		export type Prompt = {
+		export type DataPrompt = {
 			type: "prompt"
 			title: string
 			text: string
+		}
+		export type DataFind = {
+			type: "find"
+			title: string
+			rg: string
+			dp: string
 		}
 	}
 

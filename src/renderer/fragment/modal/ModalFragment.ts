@@ -51,19 +51,21 @@ export const V = vue.defineComponent({
 						ch: "modal-event",
 						args: [-1, { event: "opened" }],
 					})
-					reactive.type = data.type
-					if (reactive.type == "alert") {
+					if (data.type == "alert") {
+						reactive.type = data.type
 						reactive.alert.title = data.title
 						reactive.alert.text = data.text
 					}
-					else if (reactive.type == "prompt") {
+					else if (data.type == "prompt") {
+						reactive.type = data.type
 						reactive.prompt.title = data.title
 						reactive.prompt.text = data.text
 					}
-					else if (reactive.type == "find") {
+					else if (data.type == "find") {
+						reactive.type = data.type
 						reactive.find.title = data.title
-						reactive.find.rg = data.text
-						reactive.find.dp = "0"
+						reactive.find.rg = data.rg
+						reactive.find.dp = data.dp
 					}
 				})
 				.on(Bridge.Modal.Cancel.CH, (_: number, _data: Bridge.Modal.Cancel.Data) => {
@@ -71,7 +73,7 @@ export const V = vue.defineComponent({
 				})
 		})
 
-		const close = (result: Bridge.Modal.Event.Result) => {
+		const close = (result: Bridge.Modal.Event.ResultClose) => {
 			root.send<Bridge.Modal.Event.Send>({
 				ch: "modal-event",
 				args: [-1, { event: "closed", result: result }],
@@ -82,7 +84,7 @@ export const V = vue.defineComponent({
 		const cancel = () => {
 			root.send<Bridge.Modal.Event.Send>({
 				ch: "modal-event",
-				args: [-1, { event: "canceled" }],
+				args: [-1, { event: "canceled", result: null }],
 			})
 			reactive.type = null
 		}

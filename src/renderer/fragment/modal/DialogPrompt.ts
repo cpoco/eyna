@@ -20,7 +20,7 @@ export const V = vue.defineComponent({
 		},
 		close: {
 			required: true,
-			type: Function as vue.PropType<(_: Bridge.Modal.Event.ResultText) => void>,
+			type: Function as vue.PropType<(_: Bridge.Modal.Event.ResultPrompt) => void>,
 		},
 		cancel: {
 			required: true,

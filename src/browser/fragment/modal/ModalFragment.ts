@@ -5,7 +5,7 @@ import root from "@browser/Root"
 import { DeferredPromise } from "@browser/util/DeferredPromise"
 
 export class ModalFragment extends AbstractFragment {
-	private deferred: DeferredPromise<Bridge.Modal.Event.Result | null> | null = null
+	private deferred: DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null = null
 
 	constructor() {
 		super()
@@ -13,14 +13,14 @@ export class ModalFragment extends AbstractFragment {
 		this.ipc()
 	}
 
-	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.Result | null> {
+	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
 		Command.manager.whenType = Command.When.modal
 		root.send<Bridge.Modal.Open.Send>({
 			ch: Bridge.Modal.Open.CH,
 			args: [-1, option],
 		})
 
-		this.deferred = new DeferredPromise<Bridge.Modal.Event.Result>()
+		this.deferred = new DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
 		return this.deferred.promise
 	}
 
@@ -38,17 +38,10 @@ export class ModalFragment extends AbstractFragment {
 				if (data.event == "opened") {
 					Command.manager.whenType = Command.When.modal
 				}
-				else if (data.event == "closed") {
+				else if (data.event == "closed" || data.event == "canceled") {
 					Command.manager.whenType = Command.When.filer
 					if (this.deferred?.resolve) {
 						this.deferred?.resolve(data.result)
-					}
-					this.deferred = null
-				}
-				else if (data.event == "canceled") {
-					Command.manager.whenType = Command.When.filer
-					if (this.deferred?.resolve) {
-						this.deferred?.resolve(null)
 					}
 					this.deferred = null
 				}
