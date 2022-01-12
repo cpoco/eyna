@@ -44,12 +44,11 @@ export class FilerManager {
 
 	update(): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			let wd = this.pwd
-			this.sendChange(wd)
-			await this.change(wd, 0, null, this.data.cursor)
-			this.scroll()
-			this.sendScan()
-			this.sendAttribute()
+			if (await this.sendChange(this.pwd, 0, null, this.data.cursor)) {
+				this.scroll()
+				this.sendScan()
+				this.sendAttribute()
+			}
 			resolve()
 		})
 	}
@@ -73,35 +72,19 @@ export class FilerManager {
 		this.sc.update()
 	}
 
-	change(cd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<void> {
-		this.data.length = 0
-		return new Promise((resolve, _reject) => {
-			_.unset(this.history, this.data.wd)
-			_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
-			this.dir.cd(cd)
-			this.dir.list(dp, rg, (wd, ls, e) => {
-				this.data.update = Date.now()
-				this.data.cursor = _.isNumber(cursor)
-					? Math.max(0, Math.min(cursor, ls.length - 1))
-					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
-				this.data.length = ls.length
-				this.data.wd = wd
-				this.data.ls = ls
-				this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
-				this.data.error = e
-				resolve()
-			})
-		})
-	}
+	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
+		let update = Date.now()
 
-	sendChange(wd: string) {
+		this.data.update = update
+		this.data.length = 0
+
 		root.send<Bridge.List.Change.Send>({
 			ch: "filer-change",
 			args: [
 				this.id,
 				{
 					status: this.data.status,
-					update: 0,
+					update: this.data.update,
 					cursor: 0,
 					length: -1, // スピナー表示
 					wd: wd,
@@ -116,6 +99,28 @@ export class FilerManager {
 					error: 0,
 				},
 			],
+		})
+
+		return new Promise((resolve, _reject) => {
+			_.unset(this.history, this.data.wd)
+			_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
+			this.dir.cd(wd)
+			this.dir.list(dp, rg, (wd, ls, e) => {
+				if (update == this.data.update) {
+					this.data.cursor = _.isNumber(cursor)
+						? Math.max(0, Math.min(cursor, ls.length - 1))
+						: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+					this.data.length = ls.length
+					this.data.wd = wd
+					this.data.ls = ls
+					this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
+					this.data.error = e
+					resolve(true)
+				}
+				else {
+					resolve(false)
+				}
+			})
 		})
 	}
 

@@ -7,9 +7,20 @@ import * as DialogPrompt from "@renderer/fragment/modal/DialogPrompt"
 import root from "@renderer/Root"
 
 type reactive = {
-	type: "find" | "alert" | "prompt" | null
-	title: string
-	text: string
+	type: "alert" | "prompt" | "find" | null
+	alert: {
+		title: string
+		text: string
+	}
+	prompt: {
+		title: string
+		text: string
+	}
+	find: {
+		title: string
+		rg: string
+		dp: string
+	}
 }
 
 const TAG = "modal"
@@ -18,45 +29,64 @@ export const V = vue.defineComponent({
 	setup() {
 		const reactive = vue.reactive<reactive>({
 			type: null,
-			title: "",
-			text: "",
+			alert: {
+				title: "",
+				text: "",
+			},
+			prompt: {
+				title: "",
+				text: "",
+			},
+			find: {
+				title: "",
+				rg: "",
+				dp: "",
+			},
 		})
 
 		vue.onMounted(() => {
-			root.on(Bridge.Modal.Order.CH, (_: number, data: Bridge.Modal.Order.Data) => {
-				if (data.order == "open") {
+			root
+				.on(Bridge.Modal.Open.CH, (_: number, data: Bridge.Modal.Open.Data) => {
 					root.send<Bridge.Modal.Event.Send>({
 						ch: "modal-event",
 						args: [-1, { event: "opened" }],
 					})
-					reactive.type = data.type
-					reactive.title = data.title
-					reactive.text = data.text
-				}
-				else if (data.order == "cancel") {
+					if (data.type == "alert") {
+						reactive.type = data.type
+						reactive.alert.title = data.title
+						reactive.alert.text = data.text
+					}
+					else if (data.type == "prompt") {
+						reactive.type = data.type
+						reactive.prompt.title = data.title
+						reactive.prompt.text = data.text
+					}
+					else if (data.type == "find") {
+						reactive.type = data.type
+						reactive.find.title = data.title
+						reactive.find.rg = data.rg
+						reactive.find.dp = data.dp
+					}
+				})
+				.on(Bridge.Modal.Cancel.CH, (_: number, _data: Bridge.Modal.Cancel.Data) => {
 					cancel()
-				}
-			})
+				})
 		})
 
-		const close = (result: Bridge.Modal.Event.Result) => {
+		const close = (result: Bridge.Modal.Event.ResultClose) => {
 			root.send<Bridge.Modal.Event.Send>({
 				ch: "modal-event",
 				args: [-1, { event: "closed", result: result }],
 			})
 			reactive.type = null
-			reactive.title = ""
-			reactive.text = ""
 		}
 
 		const cancel = () => {
 			root.send<Bridge.Modal.Event.Send>({
 				ch: "modal-event",
-				args: [-1, { event: "canceled" }],
+				args: [-1, { event: "canceled", result: null }],
 			})
 			reactive.type = null
-			reactive.title = ""
-			reactive.text = ""
 		}
 
 		return {
@@ -72,8 +102,8 @@ export const V = vue.defineComponent({
 				TAG,
 				{ class: { "modal-fragment": true } },
 				vue.h(DialogAlert.V, {
-					title: this.reactive.title,
-					text: this.reactive.text,
+					title: this.reactive.alert.title,
+					text: this.reactive.alert.text,
 					close: this.close,
 					cancel: this.cancel,
 				}),
@@ -84,8 +114,8 @@ export const V = vue.defineComponent({
 				TAG,
 				{ class: { "modal-fragment": true } },
 				vue.h(DialogPrompt.V, {
-					title: this.reactive.title,
-					text: this.reactive.text,
+					title: this.reactive.prompt.title,
+					text: this.reactive.prompt.text,
 					close: this.close,
 					cancel: this.cancel,
 				}),
@@ -96,9 +126,9 @@ export const V = vue.defineComponent({
 				TAG,
 				{ class: { "modal-fragment": true } },
 				vue.h(DialogFind.V, {
-					title: this.reactive.title,
-					rg: this.reactive.text,
-					dp: "0",
+					title: this.reactive.find.title,
+					rg: this.reactive.find.rg,
+					dp: this.reactive.find.dp,
 					close: this.close,
 					cancel: this.cancel,
 				}),

@@ -16,36 +16,60 @@ export namespace Modal {
 		}
 		type closed = {
 			event: "closed"
-			result: Result
+			result: ResultClose
 		}
 		type canceled = {
 			event: "canceled"
+			result: ResultCancel
 		}
-		export type Result = ResultText | ResultFind
-		export type ResultText = { text: string }
+		export type ResultClose = ResultAlert | ResultPrompt | ResultFind
+		export type ResultAlert = { text: string }
+		export type ResultPrompt = { text: string }
 		export type ResultFind = { rg: string; dp: string }
+		export type ResultCancel = null
 	}
 
 	// browser -> renderer
-	export namespace Order {
-		export const CH = "modal-order"
+	export namespace Open {
+		export const CH = "modal-open"
 		export type Send = {
-			ch: "modal-order"
+			ch: "modal-open"
 			args: Args
 		}
 		export type Args = [
 			number,
 			Data,
 		]
-		export type Data = open | cancel
-		type open = {
-			order: "open"
-			type: "find" | "alert" | "prompt"
+		export type Data = DataAlert | DataPrompt | DataFind
+		export type DataAlert = {
+			type: "alert"
 			title: string
 			text: string
 		}
-		type cancel = {
-			order: "cancel"
+		export type DataPrompt = {
+			type: "prompt"
+			title: string
+			text: string
 		}
+		export type DataFind = {
+			type: "find"
+			title: string
+			rg: string
+			dp: string
+		}
+	}
+
+	// browser -> renderer
+	export namespace Cancel {
+		export const CH = "modal-cancel"
+		export type Send = {
+			ch: "modal-cancel"
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = {}
 	}
 }
