@@ -5,8 +5,10 @@
 		"src/extension.d.ts",
 
 		"src/fs.copy.ts",
+		"src/fs.duplicate.ts",
 		"src/fs.mkdir.ts",
 		"src/fs.move.ts",
+		"src/fs.rename.ts",
 		"src/fs.trash.ts",
 
 		"src/list.code.ts",

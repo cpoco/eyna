@@ -19,10 +19,12 @@
 	{ "when": "filer",  "key": ["shift", "="],      "cmd": "list.targetequal"  },
 	{ "when": "filer",  "key": ["shift", "~"],      "cmd": "list.targetselect" },
 
-	{ "when": "filer",  "key": "k",                 "cmd": "list.extension", "prm": "fs.mkdir" },
-	{ "when": "filer",  "key": "d",                 "cmd": "list.extension", "prm": "fs.trash" },
-	{ "when": "filer",  "key": "c",                 "cmd": "list.extension", "prm": "fs.copy"  },
-	{ "when": "filer",  "key": "m",                 "cmd": "list.extension", "prm": "fs.move"  },
+	{ "when": "filer",  "key": "k",                 "cmd": "list.extension", "prm": "fs.mkdir"     },
+	{ "when": "filer",  "key": "d",                 "cmd": "list.extension", "prm": "fs.trash"     },
+	{ "when": "filer",  "key": "c",                 "cmd": "list.extension", "prm": "fs.copy"      },
+	{ "when": "filer",  "key": "w",                 "cmd": "list.extension", "prm": "fs.duplicate" },
+	{ "when": "filer",  "key": "m",                 "cmd": "list.extension", "prm": "fs.move"      },
+	{ "when": "filer",  "key": "r",                 "cmd": "list.extension", "prm": "fs.rename"    },
 
 	{ "when": "filer",  "key": "f",                 "cmd": "list.find" },
 	{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },
