@@ -7,17 +7,17 @@
 	"description": "",
 	"devDependencies": {
 		"@module/native": "file:./module/native",
-		"@types/lodash-es": "4.17.5",
-		"electron": "16.0.7",
+		"@types/lodash-es": "4.17.6",
+		"electron": "16.0.8",
 		"electron-builder": "22.14.13",
 		"electron-rebuild": "3.2.7",
-		"esbuild": "0.14.12",
+		"esbuild": "0.14.21",
 		"lodash": "4.17.21",
 		"lodash-es": "4.17.21",
 		"pug": "3.0.2",
-		"sass": "1.49.0",
+		"sass": "1.49.7",
 		"typescript": "4.5.5",
-		"vue": "3.2.27"
+		"vue": "3.2.30"
 	},
 	"scripts": {
 		"b": "node b.mjs",
