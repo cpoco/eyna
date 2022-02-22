@@ -8,7 +8,7 @@ export default async (ex: Extension): Promise<void> => {
 	let src = ex.active.cursor[0].full
 	let dst = path.join(ex.active.wd, ex.active.cursor[0].rltv)
 
-	let prompt = await ex.dialog.opne({ type: "prompt", title: "move", text: dst })
+	let prompt = await ex.dialog.opne({ type: "prompt", title: "rename", text: dst })
 	if (prompt == null || prompt.text == "") {
 		return
 	}
