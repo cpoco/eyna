@@ -77,7 +77,7 @@ export class FilerFragment extends AbstractFragment {
 
 	private title() {
 		let a = this.active.data.ls[this.active.data.cursor] ?? []
-		root.setTitle(a[0]?.full ?? "")
+		root.setTitle(a[0]?.full ?? this.active.data.wd)
 	}
 
 	private ipc() {
