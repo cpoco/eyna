@@ -4,26 +4,12 @@ import sass from "sass"
 import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-
-async function render(file) {
-	return new Promise((resolve, reject) => {
-		sass.render({
-			file: file,
-			outputStyle: "compressed",
-		}, (err, result) => {
-			if (err) {
-				reject(err)
-			}
-			else {
-				resolve(result.css)
-			}
-		})
-	})
-}
+const file = path.join(__dirname, "../src/app/style.sass")
+const out = path.join(__dirname, "../app/style.css")
 
 export async function Build() {
-	return render(path.join(__dirname, "../src/app/style.sass"))
-		.then((css) => {
-			return fs.writeFile(path.join(__dirname, "../app/style.css"), css)
+	return sass.compileAsync(file, { style: "compressed" })
+		.then((result) => {
+			return fs.writeFile(out, result.css)
 		})
 }
