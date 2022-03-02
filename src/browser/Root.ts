@@ -48,8 +48,8 @@ class Root {
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
-				nodeIntegration: true,
-				contextIsolation: false,
+				preload: `${Path.appPath()}/app/preload.js`,
+				sandbox: true,
 				spellcheck: false,
 			},
 			backgroundColor: "#222",

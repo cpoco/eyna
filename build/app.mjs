@@ -45,6 +45,7 @@ export async function Build() {
 			"process.env.NODE_ENV": "\"production\"",
 		},
 		entryPoints: {
+			preload: path.join(__dirname, "../src/browser/Preload.ts"),
 			browser: path.join(__dirname, "../src/browser/Main.ts"),
 			renderer: path.join(__dirname, "../src/renderer/Main.ts"),
 		},
