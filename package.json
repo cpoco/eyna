@@ -8,6 +8,7 @@
 	"devDependencies": {
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.6",
+		"dprint": "0.23.0",
 		"electron": "17.0.1",
 		"electron-builder": "22.14.13",
 		"electron-rebuild": "3.2.7",
@@ -20,6 +21,7 @@
 		"vue": "3.2.31"
 	},
 	"scripts": {
+		"f": "npx dprint fmt",
 		"b": "node b.mjs",
 		"p": "node p.mjs",
 		"s": "electron ."
