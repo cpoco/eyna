@@ -54,6 +54,8 @@ static void move_to_trash_async(uv_work_t* req)
 
 static void move_to_trash_complete(uv_work_t* req, int status)
 {
+	v8::HandleScope handleScope(ISOLATE);
+
 	move_to_trash_work* work = static_cast<move_to_trash_work*>(req->data);
 
 	if (work->error) {
@@ -70,6 +72,8 @@ static void move_to_trash_complete(uv_work_t* req, int status)
 
 void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
+	v8::HandleScope handleScope(ISOLATE);
+
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
 

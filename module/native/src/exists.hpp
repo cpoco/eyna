@@ -30,6 +30,8 @@ static void exists_async(uv_work_t* req)
 
 static void exists_complete(uv_work_t* req, int status)
 {
+	v8::HandleScope handleScope(ISOLATE);
+
 	exists_work* work = static_cast<exists_work*>(req->data);
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Boolean::New(ISOLATE, work->exists));
@@ -40,6 +42,8 @@ static void exists_complete(uv_work_t* req, int status)
 
 void exists(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
+	v8::HandleScope handleScope(ISOLATE);
+
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
 
