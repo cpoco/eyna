@@ -1,9 +1,10 @@
 #ifndef NATIVE_COMMON
 #define NATIVE_COMMON
 
-#include <string>
 #include <filesystem>
+#include <map>
 #include <regex>
+#include <string>
 
 #include <node.h>
 #include <uv.h>
