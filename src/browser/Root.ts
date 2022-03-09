@@ -85,6 +85,18 @@ class Root {
 		this.quit()
 	}
 
+	cut() {
+		this.browser.webContents.cut()
+	}
+
+	copy() {
+		this.browser.webContents.copy()
+	}
+
+	paste() {
+		this.browser.webContents.paste()
+	}
+
 	quit() {
 		electron.app.quit()
 	}
