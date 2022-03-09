@@ -54,11 +54,7 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 	data->event->data = data;
 
 	uv_fs_event_init(uv_default_loop(), data->event);
-	#if _OS_WIN_
-		// TODO
-	#elif _OS_MAC_
-		uv_fs_event_start(data->event, &fs_event_callback, data->path.c_str(), UV_FS_EVENT_RECURSIVE);
-	#endif
+	uv_fs_event_start(data->event, &fs_event_callback, to_mbstring(data->path).c_str(), UV_FS_EVENT_RECURSIVE);
 }
 
 void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
