@@ -1,3 +1,4 @@
+import fs from "fs/promises"
 import path from "path"
 import url from "url"
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
@@ -25,6 +26,14 @@ native.watch(
 		console.log("watch callback", dir, file)
 	}
 )
+
+setTimeout(async() => {
+	await fs.writeFile(path.join(__dirname, "__testfile"), "")
+}, 1000)
+
+setTimeout(async () => {
+	await fs.rm(path.join(__dirname, "__testfile"))
+}, 2000)
 
 setTimeout(() => {
 	native.unwatch(ID)
