@@ -40,13 +40,24 @@
 	typedef std::basic_regex<_char_t>	_regex_t;
 #endif
 
-std::basic_string<char> to_mbstring(const _string_t& str)
+std::basic_string<char> string_to_char(const _string_t& str)
 {
 	#if _OS_WIN_
 		int len = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0, NULL, NULL);
 		std::basic_string<char> buff(len, '\0');
 		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len, NULL, NULL);
 		return buff;
+	#elif _OS_MAC_
+		return str;
+	#endif
+}
+
+_string_t char_to_string(const std::basic_string<char>& str)
+{
+	#if _OS_WIN_
+		int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0, NULL, NULL);
+		std::basic_string<wchar_t> buff(len, '\0');
+		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len, NULL, NULL);
 	#elif _OS_MAC_
 		return str;
 	#endif

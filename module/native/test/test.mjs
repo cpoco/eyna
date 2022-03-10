@@ -21,8 +21,11 @@ const ID = "unique_id"
 native.watch(
 	ID,
 	__dirname,
-	() => {
-		console.log("j watch callback")
-		native.unwatch(ID)
+	(dir, file) => {
+		console.log("watch callback", dir, file)
 	}
 )
+
+setTimeout(() => {
+	native.unwatch(ID)
+}, 3000)
