@@ -115,4 +115,3 @@ void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
 }
 
 #endif // include guard
-

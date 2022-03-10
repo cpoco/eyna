@@ -29,15 +29,15 @@
 #endif
 
 #if _OS_WIN_
-	#define V(s)						L ## s
-	typedef wchar_t						_char_t;
-	typedef std::basic_string<_char_t>	_string_t;
-	typedef std::basic_regex<_char_t>	_regex_t;
+	#define V(s)                        L ## s
+	typedef wchar_t                     _char_t;
+	typedef std::basic_string<_char_t>  _string_t;
+	typedef std::basic_regex<_char_t>   _regex_t;
 #elif _OS_MAC_
-	#define V(s)						s
-	typedef char						_char_t;
-	typedef std::basic_string<_char_t>	_string_t;
-	typedef std::basic_regex<_char_t>	_regex_t;
+	#define V(s)                        s
+	typedef char                        _char_t;
+	typedef std::basic_string<_char_t>  _string_t;
+	typedef std::basic_regex<_char_t>   _regex_t;
 #endif
 
 std::basic_string<char> string_to_char(const _string_t& str)
@@ -55,9 +55,10 @@ std::basic_string<char> string_to_char(const _string_t& str)
 _string_t char_to_string(const std::basic_string<char>& str)
 {
 	#if _OS_WIN_
-		int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0, NULL, NULL);
+		int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0);
 		std::basic_string<wchar_t> buff(len, '\0');
-		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len, NULL, NULL);
+		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len);
+		return buff;
 	#elif _OS_MAC_
 		return str;
 	#endif
