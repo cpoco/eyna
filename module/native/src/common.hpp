@@ -40,6 +40,7 @@
 	typedef std::basic_regex<_char_t>   _regex_t;
 #endif
 
+/*
 std::basic_string<char> string_to_char(const _string_t& str)
 {
 	#if _OS_WIN_
@@ -63,6 +64,7 @@ _string_t char_to_string(const std::basic_string<char>& str)
 		return str;
 	#endif
 }
+*/
 
 _string_t to_string(const v8::Local<v8::String>& str)
 {

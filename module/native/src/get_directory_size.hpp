@@ -56,7 +56,7 @@ static void get_directory_size_async(uv_work_t* req)
 
 static void get_directory_size_complete(uv_work_t* req, int status)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	get_directory_size_work* work = static_cast<get_directory_size_work*>(req->data);
 
@@ -75,7 +75,7 @@ static void get_directory_size_complete(uv_work_t* req, int status)
 
 void get_directory_size(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());

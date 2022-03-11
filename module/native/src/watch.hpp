@@ -10,7 +10,8 @@ class _watch_map
 	struct _data
 	{
 		uv_fs_event_t* event;
-		_string_t path;
+		_string_t id;
+		std::filesystem::path path; // generic_path
 		v8::Persistent<v8::Function> callback;
 	};
 
@@ -27,36 +28,37 @@ public:
 		}
 	}
 
-	void add(const _string_t& _key, const _string_t& _path, const v8::Local<v8::Function>& _callback)
+	void add(const _string_t& _id, const _string_t& _path, const v8::Local<v8::Function>& _callback)
 	{
-		if (map.count(_key) != 0) {
+		if (map.count(_id) != 0) {
 			return;
 		}
 
-		v8::HandleScope handleScope(ISOLATE);
+		v8::HandleScope _(ISOLATE);
 
 		_data* data = new _data();
 
-		map.insert(std::make_pair(_key, data));
+		map.insert(std::make_pair(_id, data));
 
 		data->event = new uv_fs_event_t();
 		data->event->data = data;
-		data->path = _path;
+		data->id = _id;
+		data->path = generic_path(std::filesystem::path(_path));
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
-		uv_fs_event_start(data->event, &_watch_map::callback, string_to_char(data->path).c_str(), UV_FS_EVENT_RECURSIVE);
+		uv_fs_event_start(data->event, &_watch_map::callback, data->path.u8string().c_str(), UV_FS_EVENT_RECURSIVE);
 	}
 
-	void remove(const _string_t& _key)
+	void remove(const _string_t& _id)
 	{
-		if (map.count(_key) == 0) {
+		if (map.count(_id) == 0) {
 			return;
 		}
 
-		_data* data = map.at(_key);
+		_data* data = map.at(_id);
 
-		map.erase(_key);
+		map.erase(_id);
 
 		uv_fs_event_stop(data->event);
 
@@ -67,15 +69,15 @@ public:
 
 	static void callback(uv_fs_event_t* _event, const char* _filename, int _events, int _status)
 	{
-		v8::HandleScope handleScope(ISOLATE);
+		v8::HandleScope _(ISOLATE);
 
 		_data* data = static_cast<_data*>(_event->data);
 
 		if (_event == data->event) {
 			const int argc = 2;
 			v8::Local<v8::Value> argv[argc] = {
-				to_string(data->path),
-				to_string(char_to_string(_filename))
+				to_string(data->id),
+				to_string(generic_path(data->path / std::filesystem::path(_filename)))
 			};
 			data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
 		}
@@ -85,7 +87,7 @@ public:
 
 void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 3
 			|| !info[0]->IsString()
@@ -95,23 +97,23 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	_string_t key = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	_string_t id = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
 	_string_t path = to_string(info[1]->ToString(CONTEXT).ToLocalChecked());
 
-	watch_map.add(key, path, v8::Local<v8::Function>::Cast(info[2]));
+	watch_map.add(id, path, v8::Local<v8::Function>::Cast(info[2]));
 }
 
 void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 1 || !info[0]->IsString()) {
 		return;
 	}
 
-	_string_t key = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	_string_t id = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
 
-	watch_map.remove(key);
+	watch_map.remove(id);
 }
 
 #endif // include guard

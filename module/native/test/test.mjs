@@ -1,4 +1,3 @@
-import fs from "fs/promises"
 import path from "path"
 import url from "url"
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
@@ -18,23 +17,22 @@ console.log("getDirectory", d)
 const a = await native.getAttribute(d.ls[0], "")
 console.log("getAttribute", a)
 
-const ID = "unique_id"
+const ID = "watch_id"
 native.watch(
 	ID,
 	__dirname,
-	(dir, file) => {
-		console.log("watch callback", dir, file)
+	(id, path) => {
+		console.log("watch callback", id, path)
 	}
 )
-
-setTimeout(async() => {
-	await fs.writeFile(path.join(__dirname, "__testfile"), "")
-}, 1000)
-
-setTimeout(async () => {
-	await fs.rm(path.join(__dirname, "__testfile"))
-}, 2000)
-
 setTimeout(() => {
 	native.unwatch(ID)
 }, 3000)
+
+await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
+await native.moveToTrash(    path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
+await native.moveToTrash(    path.join(__dirname, "__test🌈", "aaaa🍣"))
+await native.moveToTrash(    path.join(__dirname, "__test🌈"))
+
+await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
+await native.moveToTrash(    path.join(__dirname, "__test🌈"))

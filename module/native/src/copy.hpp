@@ -9,8 +9,8 @@ struct copy_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	std::filesystem::path src;
-	std::filesystem::path dst;
+	std::filesystem::path src; // generic_path
+	std::filesystem::path dst; // generic_path
 	bool error;
 };
 
@@ -44,7 +44,7 @@ static void copy_async(uv_work_t* req)
 
 static void copy_complete(uv_work_t* req, int status)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	copy_work* work = static_cast<copy_work*>(req->data);
 
@@ -62,7 +62,7 @@ static void copy_complete(uv_work_t* req, int status)
 
 void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
-	v8::HandleScope handleScope(ISOLATE);
+	v8::HandleScope _(ISOLATE);
 
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
