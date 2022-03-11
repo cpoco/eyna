@@ -31,7 +31,7 @@ public:
 	void add(const _string_t& _id, const _string_t& _path, const v8::Local<v8::Function>& _callback)
 	{
 		if (map.count(_id) != 0) {
-			return;
+			remove(_id);
 		}
 
 		v8::HandleScope _(ISOLATE);
