@@ -3,6 +3,7 @@
 
 #include "common.hpp"
 
+// http://docs.libuv.org/en/v1.x/handle.html
 // http://docs.libuv.org/en/v1.x/fs_event.html
 
 class _watch_map
@@ -22,9 +23,7 @@ public:
 	~_watch_map()
 	{
 		for (auto& [key, data] : map) {
-			data->callback.Reset();
-			delete data->event;
-			delete data;
+			uv_close((uv_handle_t*)data->event, &_watch_map::release);
 		}
 	}
 
@@ -62,11 +61,10 @@ public:
 
 		uv_fs_event_stop(data->event);
 
-		data->callback.Reset();
-		delete data->event;
-		delete data;
+		uv_close((uv_handle_t*)data->event, &_watch_map::release);
 	}
 
+	// uv_fs_event_cb
 	static void callback(uv_fs_event_t* _event, const char* _filename, int _events, int _status)
 	{
 		v8::HandleScope _(ISOLATE);
@@ -81,6 +79,16 @@ public:
 			};
 			data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
 		}
+	}
+
+	// uv_close_cb
+	static void release(uv_handle_t* _event)
+	{
+		_data* data = static_cast<_data*>(_event->data);
+
+		data->callback.Reset();
+		delete data->event;
+		delete data;
 	}
 
 } watch_map = _watch_map();
