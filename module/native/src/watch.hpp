@@ -11,12 +11,12 @@ class _watch_map
 	struct _data
 	{
 		uv_fs_event_t* event;
-		_string_t id;
+		int32_t id;
 		std::filesystem::path path; // generic_path
 		v8::Persistent<v8::Function> callback;
 	};
 
-	std::map<_string_t, _data*> map;
+	std::map<int32_t, _data*> map;
 
 public:
 
@@ -27,7 +27,7 @@ public:
 		}
 	}
 
-	void add(const _string_t& _id, const _string_t& _path, const v8::Local<v8::Function>& _callback)
+	void add(const int32_t _id, const _string_t& _path, const v8::Local<v8::Function>& _callback)
 	{
 		if (map.count(_id) != 0) {
 			remove(_id);
@@ -49,7 +49,7 @@ public:
 		uv_fs_event_start(data->event, &_watch_map::callback, data->path.u8string().c_str(), UV_FS_EVENT_RECURSIVE);
 	}
 
-	void remove(const _string_t& _id)
+	void remove(const int32_t _id)
 	{
 		if (map.count(_id) == 0) {
 			return;
@@ -74,7 +74,7 @@ public:
 		if (_event == data->event) {
 			const int argc = 2;
 			v8::Local<v8::Value> argv[argc] = {
-				to_string(data->id),
+				v8::Number::New(ISOLATE, data->id),
 				to_string(generic_path(data->path / std::filesystem::path(_filename)))
 			};
 			data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
@@ -98,14 +98,14 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 3
-			|| !info[0]->IsString()
+			|| !info[0]->IsNumber()
 			|| !info[1]->IsString()
 			|| !info[2]->IsFunction())
 	{
 		return;
 	}
 
-	_string_t id = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
 	_string_t path = to_string(info[1]->ToString(CONTEXT).ToLocalChecked());
 
 	watch_map.add(id, path, v8::Local<v8::Function>::Cast(info[2]));
@@ -115,11 +115,11 @@ void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	v8::HandleScope _(ISOLATE);
 
-	if (info.Length() != 1 || !info[0]->IsString()) {
+	if (info.Length() != 1 || !info[0]->IsNumber()) {
 		return;
 	}
 
-	_string_t id = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
 
 	watch_map.remove(id);
 }

@@ -17,22 +17,22 @@ console.log("getDirectory", d)
 const a = await native.getAttribute(d.ls[0], "")
 console.log("getAttribute", a)
 
-const ID = "watch_id"
+const ID = 0
 native.watch(
 	ID,
 	__dirname,
 	(id, path) => {
 		console.log("watch callback", id, path)
-	}
+	},
 )
 setTimeout(() => {
 	native.unwatch(ID)
 }, 3000)
 
 await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
-await native.moveToTrash(    path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
-await native.moveToTrash(    path.join(__dirname, "__test🌈", "aaaa🍣"))
-await native.moveToTrash(    path.join(__dirname, "__test🌈"))
+await native.moveToTrash(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
+await native.moveToTrash(path.join(__dirname, "__test🌈", "aaaa🍣"))
+await native.moveToTrash(path.join(__dirname, "__test🌈"))
 
 await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
-await native.moveToTrash(    path.join(__dirname, "__test🌈"))
+await native.moveToTrash(path.join(__dirname, "__test🌈"))
