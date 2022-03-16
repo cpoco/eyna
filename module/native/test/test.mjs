@@ -21,8 +21,8 @@ const ID = 0
 native.watch(
 	ID,
 	__dirname,
-	(id, path) => {
-		console.log("watch callback", id, path)
+	(id, depth, path) => {
+		console.log("watch callback", id, depth, path)
 	},
 )
 setTimeout(() => {

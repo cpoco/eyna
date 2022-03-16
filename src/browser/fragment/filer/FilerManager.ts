@@ -126,8 +126,8 @@ export class FilerManager {
 			{
 				if (this.pwd != Dir.HOME) {
 					console.log("watch", this.id, this.pwd)
-					Native.watch(this.id, this.pwd, (id, abstract) => {
-						console.log(id, abstract)
+					Native.watch(this.id, this.pwd, (id, depth, abstract) => {
+						console.log(id, depth, abstract)
 					})
 				}
 				else {

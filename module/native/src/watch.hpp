@@ -72,10 +72,18 @@ public:
 		_data* data = static_cast<_data*>(_event->data);
 
 		if (_event == data->event) {
-			const int argc = 2;
+			std::basic_string<char> u8filename(_filename);
+			#if _OS_WIN_
+			int depth = std::count(u8filename.cbegin(), u8filename.cend(), '\\');
+			#elif _OS_MAC_
+			int depth = std::count(u8filename.cbegin(), u8filename.cend(), '/');
+			#endif
+
+			const int argc = 3;
 			v8::Local<v8::Value> argv[argc] = {
 				v8::Number::New(ISOLATE, data->id),
-				to_string(generic_path(data->path / std::filesystem::path(_filename)))
+				v8::Number::New(ISOLATE, depth),
+				to_string(generic_path(data->path / std::filesystem::u8path(u8filename)))
 			};
 			data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
 		}
