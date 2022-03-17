@@ -2,7 +2,7 @@
 	"private": true,
 	"scripts": {
 		"install": "node install.js",
-		"win": "node-gyp configure",
-		"mac": "node-gyp configure -- -f xcode"
+		"ide:win": "node-gyp configure",
+		"ide:mac": "node-gyp configure -- -f xcode"
 	}
 }
