@@ -20,10 +20,13 @@ export namespace Command {
 		}
 	}
 	export type LoadConfig = {
-		when?: When
-		key?: string | string[]
-		cmd?: string | string[]
-		prm?: string | string[]
+		ver: string
+		key: {
+			when: When
+			key: string | string[]
+			cmd: string | string[]
+			prm?: string | string[]
+		}[]
 	}
 	export type Config = {
 		cmd: string[]
@@ -54,20 +57,18 @@ export namespace Command {
 			this.whenType = When.filer
 			this.keyData = {}
 			try {
-				let loadConfig: LoadConfig[] = JSON.parse(fs.readFileSync(this.path, "utf8"))
+				let loadConfig: LoadConfig = JSON.parse(fs.readFileSync(this.path, "utf8"))
 
 				console.log(JSON.stringify(loadConfig, null, 2))
 
-				loadConfig.forEach((conf) => {
+				loadConfig.key.forEach((conf) => {
 					try {
-						if (conf.when && conf.key) {
-							let code: number = acceleratorToCode(conf.key)
-							if (0 < code) {
-								_.set(this.keyData, [code, conf.when], {
-									cmd: _.isString(conf.cmd) ? [conf.cmd] : _.isArray(conf.cmd) ? conf.cmd : [],
-									prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : [],
-								})
-							}
+						let code: number = acceleratorToCode(conf.key)
+						if (0 < code) {
+							_.set(this.keyData, [code, conf.when], {
+								cmd: _.isString(conf.cmd) ? [conf.cmd] : _.isArray(conf.cmd) ? conf.cmd : [],
+								prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : [],
+							})
 						}
 					}
 					catch (err) {
