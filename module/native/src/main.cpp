@@ -10,9 +10,16 @@
 #include "move.hpp"
 #include "move_to_trash.hpp"
 #include "open_properties.hpp"
+#include "watch.hpp"
+
+// void cleanup(void* arg)
+// {
+// }
 
 void init(v8::Local<v8::Object> exports)
 {
+	// node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
+
 	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
 	NODE_SET_METHOD(exports, "exists", exists);
@@ -24,6 +31,8 @@ void init(v8::Local<v8::Object> exports)
 	NODE_SET_METHOD(exports, "move", move);
 	NODE_SET_METHOD(exports, "moveToTrash", move_to_trash);
 	NODE_SET_METHOD(exports, "openProperties", open_properties);
+	NODE_SET_METHOD(exports, "watch", watch);
+	NODE_SET_METHOD(exports, "unwatch", unwatch);
 }
 
 NODE_MODULE(native, init)

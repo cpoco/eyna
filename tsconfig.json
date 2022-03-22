@@ -2,6 +2,7 @@
 // https://github.com/microsoft/TypeScript/blob/main/src/compiler/commandLineParser.ts
 {
 	"files": [
+		"src/browser/Preload.ts",
 		"src/browser/Main.ts",
 		"src/renderer/Main.ts",
 	],

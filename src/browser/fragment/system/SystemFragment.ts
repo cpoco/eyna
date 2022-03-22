@@ -1,6 +1,5 @@
 import * as electron from "electron"
 
-import * as Bridge from "@bridge/Bridge"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import root from "@browser/Root"
 import * as Native from "@module/native/ts/browser"
@@ -19,39 +18,15 @@ export class SystemFragment extends AbstractFragment {
 	private command() {
 		this
 			.on("system.cut", () => {
-				root.send<Bridge.Root.Clipboard.Send>({
-					ch: "root-clipboard",
-					args: [
-						-1,
-						{
-							command: "cut",
-						},
-					],
-				})
+				root.cut()
 				return Promise.resolve()
 			})
 			.on("system.copy", () => {
-				root.send<Bridge.Root.Clipboard.Send>({
-					ch: "root-clipboard",
-					args: [
-						-1,
-						{
-							command: "copy",
-						},
-					],
-				})
+				root.copy()
 				return Promise.resolve()
 			})
 			.on("system.paste", () => {
-				root.send<Bridge.Root.Clipboard.Send>({
-					ch: "root-clipboard",
-					args: [
-						-1,
-						{
-							command: "paste",
-						},
-					],
-				})
+				root.paste()
 				return Promise.resolve()
 			})
 			.on("system.exit", () => {

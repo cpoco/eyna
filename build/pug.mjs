@@ -4,21 +4,11 @@ import * as pug from "pug"
 import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-
-async function render(file) {
-	return new Promise((resolve, reject) => {
-		try {
-			resolve(pug.renderFile(file))
-		}
-		catch (err) {
-			reject(err)
-		}
-	})
-}
+const file = path.join(__dirname, "../src/app/index.pug")
+const out = path.join(__dirname, "../app/index.html")
 
 export async function Build() {
-	return render(path.join(__dirname, "../src/app/index.pug"))
-		.then((html) => {
-			return fs.writeFile(path.join(__dirname, "../app/index.html"), html)
-		})
+	return new Promise((resolve, _) => {
+		resolve(fs.writeFile(out, pug.renderFile(file)))
+	})
 }

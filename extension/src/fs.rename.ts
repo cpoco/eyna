@@ -14,7 +14,7 @@ export default async (ex: Extension): Promise<void> => {
 	}
 	dst = prompt.text
 
-	if (await ex.filer.exists(dst)) {
+	if (src.toLocaleLowerCase() != dst.toLocaleLowerCase() && await ex.filer.exists(dst)) {
 		await ex.dialog.opne({ type: "alert", title: "rename", text: "exists" })
 		return
 	}

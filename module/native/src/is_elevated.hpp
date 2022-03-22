@@ -5,6 +5,8 @@
 
 void is_elevated(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
+	v8::HandleScope _(ISOLATE);
+
 	if (info.Length() != 0) {
 		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;

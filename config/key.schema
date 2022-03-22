@@ -1,0 +1,67 @@
+{
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"ver",
+		"key"
+	],
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"ver": {
+			"type": "string",
+			"enum": [
+				"0.1"
+			]
+		},
+		"key": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": [
+					"when",
+					"key",
+					"cmd"
+				],
+				"properties": {
+					"when": {
+						"type": "string",
+						"enum": [
+							"always",
+							"filer"
+						]
+					},
+					"key": {
+						"$ref": "#/$defs/strings"
+					},
+					"cmd": {
+						"$ref": "#/$defs/strings"
+					},
+					"prm": {
+						"$ref": "#/$defs/strings"
+					}
+				}
+			}
+		}
+	},
+	"$defs": {
+		"strings": {
+			"oneOf": [
+				{
+					"type": "string",
+					"minLength": 1
+				},
+				{
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "string",
+						"minLength": 1
+					}
+				}
+			]
+		}
+	}
+}

@@ -9,7 +9,7 @@ struct create_directory_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	std::filesystem::path abst;
+	std::filesystem::path abst; // generic_path
 	bool error;
 };
 
@@ -27,6 +27,8 @@ static void create_directory_async(uv_work_t* req)
 
 static void create_directory_complete(uv_work_t* req, int status)
 {
+	v8::HandleScope _(ISOLATE);
+
 	create_directory_work* work = static_cast<create_directory_work*>(req->data);
 
 	if (work->error) {
@@ -43,6 +45,8 @@ static void create_directory_complete(uv_work_t* req, int status)
 
 void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
+	v8::HandleScope _(ISOLATE);
+
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
 

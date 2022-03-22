@@ -3,15 +3,13 @@ import ts from "typescript"
 import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
+const conf = path.join(__dirname, "../extension/tsconfig.json")
+const base = path.join(__dirname, "../extension")
 
 export async function Build() {
 	return new Promise((resolve, _) => {
-		const { config } = ts.readConfigFile(path.join(__dirname, "../extension/tsconfig.json"), ts.sys.readFile)
-		const { options, fileNames } = ts.parseJsonConfigFileContent(
-			config,
-			ts.sys,
-			path.join(__dirname, "../extension"),
-		)
+		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
+		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
 		const program = ts.createProgram(fileNames, options)
 		const diagnostics = [
 			...program.getSemanticDiagnostics(),

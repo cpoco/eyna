@@ -48,8 +48,8 @@ class Root {
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
-				nodeIntegration: true,
-				contextIsolation: false,
+				preload: `${Path.appPath()}/app/preload.js`,
+				sandbox: true,
 				spellcheck: false,
 			},
 			backgroundColor: "#222",
@@ -83,6 +83,18 @@ class Root {
 
 	private _window_all_closed = () => {
 		this.quit()
+	}
+
+	cut() {
+		this.browser.webContents.cut()
+	}
+
+	copy() {
+		this.browser.webContents.copy()
+	}
+
+	paste() {
+		this.browser.webContents.paste()
 	}
 
 	quit() {

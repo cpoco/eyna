@@ -1,9 +1,10 @@
 #ifndef NATIVE_COMMON
 #define NATIVE_COMMON
 
-#include <string>
 #include <filesystem>
+#include <map>
 #include <regex>
+#include <string>
 
 #include <node.h>
 #include <uv.h>
@@ -28,16 +29,42 @@
 #endif
 
 #if _OS_WIN_
-	#define V(s)						L ## s
-	typedef wchar_t						_char_t;
-	typedef std::basic_string<_char_t>	_string_t;
-	typedef std::basic_regex<_char_t>	_regex_t;
+	#define V(s)                        L ## s
+	typedef wchar_t                     _char_t;
+	typedef std::basic_string<_char_t>  _string_t;
+	typedef std::basic_regex<_char_t>   _regex_t;
 #elif _OS_MAC_
-	#define V(s)						s
-	typedef char						_char_t;
-	typedef std::basic_string<_char_t>	_string_t;
-	typedef std::basic_regex<_char_t>	_regex_t;
+	#define V(s)                        s
+	typedef char                        _char_t;
+	typedef std::basic_string<_char_t>  _string_t;
+	typedef std::basic_regex<_char_t>   _regex_t;
 #endif
+
+/*
+std::basic_string<char> string_to_char(const _string_t& str)
+{
+	#if _OS_WIN_
+		int len = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0, NULL, NULL);
+		std::basic_string<char> buff(len, '\0');
+		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len, NULL, NULL);
+		return buff;
+	#elif _OS_MAC_
+		return str;
+	#endif
+}
+
+_string_t char_to_string(const std::basic_string<char>& str)
+{
+	#if _OS_WIN_
+		int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0);
+		std::basic_string<wchar_t> buff(len, '\0');
+		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len);
+		return buff;
+	#elif _OS_MAC_
+		return str;
+	#endif
+}
+*/
 
 _string_t to_string(const v8::Local<v8::String>& str)
 {

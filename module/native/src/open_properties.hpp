@@ -5,6 +5,8 @@
 
 void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
+	v8::HandleScope _(ISOLATE);
+
 	if (info.Length() != 1 || !info[0]->IsString()) {
 		return;
 	}

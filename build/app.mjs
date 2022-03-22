@@ -5,9 +5,12 @@ import ts from "typescript"
 import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
+const outdir = path.join(__dirname, "../app")
+const conf = path.join(__dirname, "../tsconfig.json")
+const base = path.join(__dirname, "..")
 
 export async function Init() {
-	return fs.mkdir(path.join(__dirname, "../app"))
+	return fs.mkdir(outdir)
 		.then(() => {
 			return Promise.resolve()
 		})
@@ -21,8 +24,8 @@ export async function Init() {
 
 export async function Check() {
 	return new Promise((resolve, _) => {
-		const { config } = ts.readConfigFile(path.join(__dirname, "../tsconfig.json"), ts.sys.readFile)
-		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, path.join(__dirname, ".."))
+		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
+		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
 		const program = ts.createProgram(fileNames, options)
 		const diagnostics = [
 			...program.getSemanticDiagnostics(),
@@ -45,6 +48,7 @@ export async function Build() {
 			"process.env.NODE_ENV": "\"production\"",
 		},
 		entryPoints: {
+			preload: path.join(__dirname, "../src/browser/Preload.ts"),
 			browser: path.join(__dirname, "../src/browser/Main.ts"),
 			renderer: path.join(__dirname, "../src/renderer/Main.ts"),
 		},
@@ -55,7 +59,7 @@ export async function Build() {
 			"electron",
 			"*.node",
 		],
-		outdir: path.join(__dirname, "../app"),
+		outdir: outdir,
 		legalComments: "external",
 	})
 }

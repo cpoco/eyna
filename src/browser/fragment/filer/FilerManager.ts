@@ -4,6 +4,7 @@ import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
 import { Scroll } from "@browser/core/Scroll"
 import root from "@browser/Root"
+import * as Native from "@module/native/ts/browser"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
@@ -121,6 +122,19 @@ export class FilerManager {
 					resolve(false)
 				}
 			})
+			// watch test
+			{
+				if (this.pwd != Dir.HOME) {
+					console.log("watch", this.id, this.pwd)
+					Native.watch(this.id, this.pwd, (id, depth, abstract) => {
+						console.log(id, depth, abstract)
+					})
+				}
+				else {
+					console.log("unwatch", this.id)
+					Native.unwatch(this.id)
+				}
+			}
 		})
 	}
 

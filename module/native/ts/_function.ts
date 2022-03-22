@@ -84,3 +84,17 @@ export function openProperties(abstract: string) {
 	}
 	native.openProperties(abstract)
 }
+
+export function watch(id: number, abstract: string, callback: (id: number, depth: number, abstract: string) => void) {
+	if (native == null) {
+		return
+	}
+	native.watch(id, abstract, callback)
+}
+
+export function unwatch(id: number) {
+	if (native == null) {
+		return
+	}
+	native.unwatch(id)
+}
