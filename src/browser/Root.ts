@@ -49,7 +49,7 @@ class Root {
 			minHeight: 200,
 			webPreferences: {
 				preload: `${Path.appPath()}/app/preload.js`,
-				sandbox: true,
+				// sandbox: true,
 				spellcheck: false,
 			},
 			backgroundColor: "#222",
