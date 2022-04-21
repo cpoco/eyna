@@ -85,14 +85,14 @@ export class FilerFragment extends AbstractFragment {
 			.handle(Bridge.Filer.Resize.CH, (_i: number, _data: Bridge.Filer.Resize.Data): Bridge.Filer.Style.Data => {
 				return {
 					fontSize: `${Conf.DYNAMIC_FILER_FONT_SIZE}px`,
-					lineHeight: `${Conf.DYNAMIC_FILER_FONT_HEIGHT}px`,
+					lineHeight: `${Conf.DYNAMIC_FILER_LINE_HEIGHT}px`,
 				}
 			})
 
 		root
 			.on(Bridge.List.Resize.CH, (i: number, data: Bridge.List.Resize.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_FILER_FONT_HEIGHT).then(() => {
+					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_FILER_LINE_HEIGHT).then(() => {
 						if (this.index.active == i) {
 							this.title()
 						}
