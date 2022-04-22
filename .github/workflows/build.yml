@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+# https://github.com/actions/checkout
+# https://github.com/actions/setup-node
+# https://github.com/actions/upload-artifact
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -13,9 +16,9 @@ jobs:
         os: [windows-latest, macos-latest]
     steps: 
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: setup-node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
       - name: install
@@ -25,7 +28,7 @@ jobs:
       - name: package
         run: npm run p
       - name: upload-artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}
           path: dist/*.7z
