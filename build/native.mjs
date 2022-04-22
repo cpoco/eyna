@@ -1,8 +1,8 @@
 import * as electron_rebuild from "electron-rebuild"
-import fs from "fs/promises"
-import module from "module"
-import path from "path"
-import url from "url"
+import fs from "node:fs/promises"
+import module from "node:module"
+import path from "node:path"
+import url from "node:url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const electron = module.createRequire(import.meta.url)(path.join(__dirname, "../node_modules/electron/package.json"))

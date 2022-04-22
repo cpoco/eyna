@@ -1,4 +1,4 @@
-import * as path from "path"
+import * as path from "node:path"
 
 export default async (ex: Extension): Promise<void> => {
 	let dir = await ex.dialog.opne({ type: "prompt", title: "mkdir", text: "new folder" })

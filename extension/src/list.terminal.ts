@@ -1,5 +1,5 @@
-import * as child_process from "child_process"
-import * as process from "process"
+import * as child_process from "node:child_process"
+import * as process from "node:process"
 
 export default async (ex: Extension): Promise<void> => {
 	if (process.platform == "win32") {

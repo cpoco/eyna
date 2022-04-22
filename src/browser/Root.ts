@@ -1,7 +1,7 @@
 import * as electron from "electron"
-import * as fs from "fs"
 import * as _ from "lodash-es"
-import * as vm from "vm"
+import * as fs from "node:fs"
+import * as vm from "node:vm"
 
 import * as Bridge from "@bridge/Bridge"
 import { Command } from "@browser/core/Command"

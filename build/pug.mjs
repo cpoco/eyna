@@ -1,7 +1,7 @@
-import fs from "fs/promises"
-import path from "path"
+import fs from "node:fs/promises"
+import path from "node:path"
+import url from "node:url"
 import * as pug from "pug"
-import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const file = path.join(__dirname, "../src/app/index.pug")

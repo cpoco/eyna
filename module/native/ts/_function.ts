@@ -1,4 +1,5 @@
-const native = require("./native.node")
+// @ts-ignore
+import * as native from "./native.node"
 
 import * as Type from "./_type"
 

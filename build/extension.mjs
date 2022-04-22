@@ -1,6 +1,6 @@
-import path from "path"
+import path from "node:path"
+import url from "node:url"
 import ts from "typescript"
-import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const conf = path.join(__dirname, "../extension/tsconfig.json")

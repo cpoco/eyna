@@ -1,5 +1,5 @@
 import * as electron from "electron"
-import * as fs from "fs/promises"
+import * as fs from "node:fs/promises"
 
 electron.contextBridge.exposeInMainWorld("fs", {
 	read,

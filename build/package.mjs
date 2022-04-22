@@ -1,5 +1,5 @@
 import electron_builder from "electron-builder"
-import process from "process"
+import process from "node:process"
 
 export async function Package() {
 	let op = { x64: true }
