@@ -1,6 +1,6 @@
 import * as electron from "electron"
-import * as fs from "fs"
 import * as _ from "lodash-es"
+import * as fs from "node:fs"
 
 import { Platform } from "@browser/core/Platform"
 

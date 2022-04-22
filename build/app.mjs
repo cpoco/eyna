@@ -1,8 +1,8 @@
 import esbuild from "esbuild"
-import fs from "fs/promises"
-import path from "path"
+import fs from "node:fs/promises"
+import path from "node:path"
+import url from "node:url"
 import ts from "typescript"
-import url from "url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const outdir = path.join(__dirname, "../app")
