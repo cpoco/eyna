@@ -36,8 +36,11 @@
 		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopne"     },
 		{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
 
-		{ "when": "always", "key": ["ctrl", "x"],       "cmd": "system.cut" },
-		{ "when": "always", "key": ["ctrl", "c"],       "cmd": "system.copy" },
+		{ "when": "viewer", "key": "enter",             "cmd": "viewer.close" },
+		{ "when": "viewer", "key": "esc",               "cmd": "viewer.close" },
+
+		{ "when": "always", "key": ["ctrl", "x"],       "cmd": "system.cut"   },
+		{ "when": "always", "key": ["ctrl", "c"],       "cmd": "system.copy"  },
 		{ "when": "always", "key": ["ctrl", "v"],       "cmd": "system.paste" },
 
 		{ "when": "always", "key": ["ctrl", "q"],       "cmd": "system.exit" },

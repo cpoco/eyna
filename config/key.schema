@@ -30,7 +30,8 @@
 						"type": "string",
 						"enum": [
 							"always",
-							"filer"
+							"filer",
+							"viewer"
 						]
 					},
 					"key": {

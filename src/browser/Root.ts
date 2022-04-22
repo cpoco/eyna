@@ -10,6 +10,7 @@ import { Storage } from "@browser/core/Storage"
 import { FilerFragment } from "@browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@browser/fragment/system/SystemFragment"
+import { ViewerFragment } from "@browser/fragment/viewer/ViewerFragment"
 import * as Native from "@module/native/ts/browser"
 
 type Option = {
@@ -27,7 +28,7 @@ type Option = {
 
 class Root {
 	private url: string = ""
-	private fragment!: [SystemFragment, FilerFragment, ModalFragment]
+	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
 
 	create(url: string) {
@@ -36,6 +37,7 @@ class Root {
 			new SystemFragment(),
 			new FilerFragment(),
 			new ModalFragment(),
+			new ViewerFragment(),
 		]
 		electron.app
 			.on("ready", this._ready)
@@ -146,6 +148,10 @@ class Root {
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
 		return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
+	}
+
+	viewer(option: Bridge.Viewer.Open.Data) {
+		this.fragment[3].opne(option)
 	}
 
 	runExtension(file: string, option: Option) {

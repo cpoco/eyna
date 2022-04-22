@@ -312,6 +312,15 @@ export class FilerFragment extends AbstractFragment {
 						this.title()
 						resolve()
 					}
+					// file
+					// file(shortcut or bookmark) -> file
+					// link(symbolic or junction) -> file
+					else if (
+						trgt.file_type == Native.AttributeFileType.file
+					) {
+						root.viewer({ type: "text", path: trgt.full, size: trgt.size })
+						resolve()
+					}
 				})
 			})
 			.on2("list.updir", (active, _target) => {
