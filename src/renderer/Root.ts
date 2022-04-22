@@ -4,6 +4,7 @@ import * as vue from "vue"
 import * as Bridge from "@bridge/Bridge"
 import * as FilerFragment from "@renderer/fragment/filer/FilerFragment"
 import * as ModalFragment from "@renderer/fragment/modal/ModalFragment"
+import * as ViewerFragment from "@renderer/fragment/viewer/ViewerFragment"
 
 declare global {
 	interface Window {
@@ -23,6 +24,7 @@ const V = vue.defineComponent({
 		return vue.h("root", undefined, [
 			vue.h(FilerFragment.V),
 			vue.h(ModalFragment.V),
+			vue.h(ViewerFragment.V),
 		])
 	},
 })

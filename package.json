@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"license": "MIT",
 	"private": true,
 	"main": "./app/browser.js",
@@ -11,7 +11,7 @@
 		"electron": "18.0.4",
 		"electron-builder": "23.0.3",
 		"electron-rebuild": "3.2.7",
-		"esbuild": "0.14.36",
+		"esbuild": "0.14.38",
 		"lodash": "4.17.21",
 		"lodash-es": "4.17.21",
 		"pug": "3.0.2",

@@ -9,14 +9,16 @@ export namespace Command {
 		always = "always",
 		filer = "filer",
 		modal = "modal",
+		viewer = "viewer",
 	}
-	export type WhenType = When.always | When.filer | When.modal
+	export type WhenType = When.always | When.filer | When.modal | When.viewer
 
 	export type KeyData = {
 		[code: number]: {
 			[When.always]?: Config
 			[When.filer]?: Config
 			[When.modal]?: Config
+			[When.viewer]?: Config
 		}
 	}
 	export type LoadConfig = {
@@ -43,7 +45,8 @@ export namespace Command {
 				case When.always:
 					break
 				case When.filer: // fallthrough
-				case When.modal:
+				case When.modal: // fallthrough
+				case When.viewer:
 					this.when = when
 			}
 		}
