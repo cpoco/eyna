@@ -8,7 +8,7 @@
 	"devDependencies": {
 		"@module/native": "file:./module/native",
 		"@types/lodash-es": "4.17.6",
-		"electron": "18.0.4",
+		"electron": "18.1.0",
 		"electron-builder": "23.0.3",
 		"electron-rebuild": "3.2.7",
 		"esbuild": "0.14.38",
