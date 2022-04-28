@@ -1,3 +1,4 @@
+import * as Conf from "@app/Conf"
 import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
 import * as vue from "vue"
 declare global {
@@ -38,20 +39,17 @@ export const V = vue.defineComponent({
 				// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions
 				{
 					model: model,
+					readOnly: true,
+					domReadOnly: true,
 
 					automaticLayout: true,
-					minimap: {
-						enabled: false,
-					},
+
 					renderWhitespace: "all",
 					theme: "vs-dark",
-					fontSize: 14,
-
+					fontSize: Conf.DYNAMIC_FILER_FONT_SIZE,
+					lineHeight: Conf.DYNAMIC_FILER_LINE_HEIGHT,
 					wordWrap: "on",
 					wrappingIndent: "same",
-
-					domReadOnly: true,
-					readOnly: true,
 				},
 			)
 			editor.focus()
