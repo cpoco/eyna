@@ -21,8 +21,11 @@ export const V = vue.defineComponent({
 		vue.onMounted(() => {
 			root
 				.on(Bridge.Viewer.Open.CH, (_: number, data: Bridge.Viewer.Open.Data) => {
+					root.send<Bridge.Viewer.Event.Send>({
+						ch: "viewer-event",
+						args: [-1, { event: "opened" }],
+					})
 					reactive.type = data.type
-
 					if (data.size <= 1_000_000) {
 						window.fs.read(data.path).then((buff) => {
 							reactive.data = (new TextDecoder()).decode(buff)
@@ -33,6 +36,10 @@ export const V = vue.defineComponent({
 					}
 				})
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
+					root.send<Bridge.Viewer.Event.Send>({
+						ch: "viewer-event",
+						args: [-1, { event: "closed" }],
+					})
 					reactive.type = null
 					reactive.data = ""
 				})
