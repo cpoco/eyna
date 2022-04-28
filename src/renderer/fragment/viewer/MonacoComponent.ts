@@ -1,5 +1,5 @@
-import * as vue from "vue"
 import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
+import * as vue from "vue"
 declare global {
 	interface Window {
 		monaco: {

@@ -1,8 +1,8 @@
 import * as vue from "vue"
 
 import * as Bridge from "@bridge/Bridge"
-import root from "@renderer/Root"
 import * as MonacoComponent from "@renderer/fragment/viewer/MonacoComponent"
+import root from "@renderer/Root"
 
 type reactive = {
 	type: "text" | null
@@ -46,7 +46,7 @@ export const V = vue.defineComponent({
 	render() {
 		if (this.reactive.type == "text") {
 			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
-				vue.h(MonacoComponent.V, { class: {"viewer-monaco": true }, value: this.reactive.data }, undefined)
+				vue.h(MonacoComponent.V, { class: { "viewer-monaco": true }, value: this.reactive.data }, undefined),
 			])
 		}
 		return null
