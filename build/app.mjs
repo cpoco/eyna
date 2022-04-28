@@ -1,4 +1,5 @@
 import esbuild from "esbuild"
+import fse from "fs-extra"
 import fs from "node:fs/promises"
 import path from "node:path"
 import url from "node:url"
@@ -43,6 +44,10 @@ export async function Check() {
 }
 
 export async function Build() {
+	fse.copySync(
+		path.join(__dirname, "../node_modules/monaco-editor/min/vs"),
+		path.join(__dirname, "../app/vs"),
+	)
 	return esbuild.build({
 		define: {
 			"process.env.NODE_ENV": "\"production\"",
