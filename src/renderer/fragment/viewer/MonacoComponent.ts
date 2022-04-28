@@ -54,6 +54,7 @@ export const V = vue.defineComponent({
 					readOnly: true,
 				},
 			)
+			editor.focus()
 		})
 
 		vue.onUnmounted(() => {
