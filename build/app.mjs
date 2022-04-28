@@ -57,6 +57,7 @@ export async function Build() {
 		platform: "node",
 		external: [
 			"electron",
+			"monaco-editor",
 			"*.node",
 		],
 		outdir: outdir,
