@@ -9,13 +9,17 @@ function create() {
 	const styleFontSize = vue.ref<number>(Conf.DYNAMIC_FONT_SIZE)
 	const styleLineHeight = vue.ref<number>(Conf.DYNAMIC_LINE_HEIGHT)
 
+	const e = document.querySelector<HTMLElement>(":root")
+	e?.style.setProperty(Conf.STYLE_DYNAMIC_FONT_SIZE, `${Conf.DYNAMIC_FONT_SIZE}px`)
+	e?.style.setProperty(Conf.STYLE_DYNAMIC_LINE_HEIGHT, `${Conf.DYNAMIC_LINE_HEIGHT}px`)
+
 	vue.watch(styleFontSize, (v) => {
-		let e = document.querySelector<HTMLElement>(":root")
-		e?.style.setProperty(Conf.STYLE_DYNAMIC_FONT_SIZE, `0${v}px`)
+		const e = document.querySelector<HTMLElement>(":root")
+		e?.style.setProperty(Conf.STYLE_DYNAMIC_FONT_SIZE, `${v}px`)
 	})
 
 	vue.watch(styleLineHeight, (v) => {
-		let e = document.querySelector<HTMLElement>(":root")
+		const e = document.querySelector<HTMLElement>(":root")
 		e?.style.setProperty(Conf.STYLE_DYNAMIC_LINE_HEIGHT, `${v}px`)
 	})
 
