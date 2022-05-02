@@ -1,6 +1,5 @@
 import esbuild from "esbuild"
 import fse from "fs-extra"
-import fs from "node:fs/promises"
 import path from "node:path"
 import url from "node:url"
 import ts from "typescript"
@@ -11,16 +10,7 @@ const conf = path.join(__dirname, "../tsconfig.json")
 const base = path.join(__dirname, "..")
 
 export async function Init() {
-	return fs.mkdir(outdir)
-		.then(() => {
-			return Promise.resolve()
-		})
-		.catch((err) => {
-			if (err.code === "EEXIST") {
-				return Promise.resolve()
-			}
-			return Promise.reject(err)
-		})
+	return fse.ensureDir(outdir)
 }
 
 export async function Check() {
