@@ -1,9 +1,9 @@
-export namespace Filer {
+export namespace System {
 	// renderer -> browser
-	export namespace Resize {
-		export const CH = "filer-resize"
+	export namespace Dom {
+		export const CH = "system-dom"
 		export type Send = {
-			ch: "filer-resize"
+			ch: "system-dom"
 			args: Args
 		}
 		export type Args = [
@@ -11,7 +11,7 @@ export namespace Filer {
 			Data,
 		]
 		export type Data = {
-			event: "mounted" | "resized"
+			event: "mounted"
 			root: {
 				x: number
 				y: number
@@ -24,8 +24,8 @@ export namespace Filer {
 	// browser -> renderer
 	export namespace Style {
 		export type Data = {
-			fontSize: string
-			lineHeight: string
+			fontSize: number
+			lineHeight: number
 		}
 	}
 }

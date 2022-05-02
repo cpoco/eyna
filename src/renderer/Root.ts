@@ -4,6 +4,8 @@ import * as vue from "vue"
 import * as Bridge from "@bridge/Bridge"
 import * as FilerFragment from "@renderer/fragment/filer/FilerFragment"
 import * as ModalFragment from "@renderer/fragment/modal/ModalFragment"
+import * as SystemFragment from "@renderer/fragment/system/SystemFragment"
+import * as SystemProvider from "@renderer/fragment/system/SystemProvider"
 import * as ViewerFragment from "@renderer/fragment/viewer/ViewerFragment"
 
 declare global {
@@ -20,12 +22,28 @@ declare global {
 }
 
 const V = vue.defineComponent({
+	setup() {
+		const provider = SystemProvider.provide()
+
+		return {
+			provider,
+		}
+	},
+
 	render() {
-		return vue.h("root", undefined, [
-			vue.h(FilerFragment.V),
-			vue.h(ModalFragment.V),
-			vue.h(ViewerFragment.V),
-		])
+		const node = [
+			vue.h(SystemFragment.V),
+		]
+
+		if (this.provider.ready.value) {
+			node.push(
+				vue.h(FilerFragment.V),
+				vue.h(ModalFragment.V),
+				vue.h(ViewerFragment.V),
+			)
+		}
+
+		return vue.h("root", undefined, node)
 	},
 })
 

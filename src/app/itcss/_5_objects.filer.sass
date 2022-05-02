@@ -15,13 +15,10 @@
 	--cell-select: rgba(30, 145, 255, 0.2)
 	--cell-cursor: rgba(255, 255, 255, 0.1)
 
-	--dynamic-filer-font-size: 14px
-	--dynamic-filer-line-height: 18px
-
 	--scroll-width: 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
 
-	--filer-info-height: calc(var(--dynamic-filer-line-height) * 2)
+	--filer-info-height: calc(var(--dynamic-line-height) * 2)
 	--filer-stat-height: 2px
 	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
 	--filer-data-height: calc(100% - var(--filer-data-top))
@@ -45,10 +42,12 @@
 	@at-root
 		#{&}-fragment
 			position: absolute
-			display: flex
-			flex-direction: row
+			overflow: hidden
 			width: 100%
 			height: 100%
+
+			display: flex
+			flex-direction: row
 
 		#{&}-list
 			position: relative
@@ -63,14 +62,14 @@
 
 		#{&}-dir,
 		#{&}-cnt
-			height: var(--dynamic-filer-line-height)
-			line-height: var(--dynamic-filer-line-height)
-			font-size: var(--dynamic-filer-font-size)
+			height: var(--dynamic-line-height)
+			line-height: var(--dynamic-line-height)
+			font-size: var(--dynamic-font-size)
 			margin: 0px 4px
 
 		#{&}-stat
 			position: absolute
-			top: calc(var(--dynamic-filer-line-height) * 2)
+			top: calc(var(--dynamic-line-height) * 2)
 			width: 100%
 			height: var(--filer-stat-height)
 			background-color: var(--stat-none)
@@ -93,8 +92,8 @@
 			flex-direction: row
 			width: 100%
 			min-width: 300px
-			height: var(--dynamic-filer-line-height)
-			line-height: var(--dynamic-filer-line-height)
+			height: var(--dynamic-line-height)
+			line-height: var(--dynamic-line-height)
 			@at-root
 				#{&}-select#{&}-cursor
 					background-color: var(--cell-select-cursor)
@@ -104,7 +103,7 @@
 					background-color: var(--cell-cursor)
 
 		#{&}-cname
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 			overflow: hidden
 			text-overflow: ellipsis
 			flex: 1
@@ -112,27 +111,27 @@
 		#{&}-cicon
 			display: inline-block
 			vertical-align: middle
-			width: var(--dynamic-filer-line-height)
-			height: var(--dynamic-filer-line-height)
+			width: var(--dynamic-line-height)
+			height: var(--dynamic-line-height)
 			margin-right: 2px
 		#{&}-cfile
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 		#{&}-clink
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 			margin: 0 2px
 		#{&}-ctrgt
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 
 		#{&}-csize
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 			margin-left: 6px
 
 		#{&}-cdate
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 			margin-left: 6px
 
 		#{&}-ctime
-			font-size: var(--dynamic-filer-font-size)
+			font-size: var(--dynamic-font-size)
 			margin-left: 6px
 			margin-right: var(--scroll-width)
 

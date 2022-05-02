@@ -23,9 +23,9 @@ export type Cell = {
 	attr: Native.Attributes
 }
 
-export const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
+const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
 
-export function create(count: number) {
+function create(count: number) {
 	const reactive = vue.reactive<List[]>(
 		_.map<number, List>(_.range(count), (i) => {
 			return {
@@ -112,4 +112,10 @@ export function create(count: number) {
 		updateAttribute,
 		updateMark,
 	}
+}
+
+export function provide(count: number): ReturnType<typeof create> {
+	const v = create(count)
+	vue.provide(KEY, v)
+	return v
 }

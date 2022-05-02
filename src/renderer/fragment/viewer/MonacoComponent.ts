@@ -55,8 +55,8 @@ export const V = vue.defineComponent({
 
 					renderWhitespace: "all",
 					theme: "vs-dark",
-					fontSize: Conf.DYNAMIC_FILER_FONT_SIZE,
-					lineHeight: Conf.DYNAMIC_FILER_LINE_HEIGHT,
+					fontSize: Conf.DYNAMIC_FONT_SIZE,
+					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 					wordWrap: "on",
 					wrappingIndent: "same",
 				},
