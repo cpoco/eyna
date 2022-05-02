@@ -1,11 +1,13 @@
+@use "./1_settings.sass" as *
+
 :root
 	--file: var(--color)
-	--link: settings.$cyan
-	--directory: settings.$blue
-	--shortcut: settings.$green
-	--bookmark: settings.$green
-	--special: settings.$yellow
-	--error: settings.$red
+	--link: #{$cyan}
+	--directory: #{$blue}
+	--shortcut: #{$green}
+	--bookmark: #{$green}
+	--special: #{$yellow}
+	--error: #{$red}
 
 	--stat-none: rgba(255, 255, 255, 0.1)
 	--stat-active: rgba(30, 145, 255, 1)
