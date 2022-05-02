@@ -37,6 +37,7 @@
 		{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
 
 		{ "when": "viewer", "key": "enter",             "cmd": "viewer.close" },
+		{ "when": "viewer", "key": "backspace",         "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "esc",               "cmd": "viewer.close" },
 
 		{ "when": "always", "key": ["ctrl", "x"],       "cmd": "system.cut"   },

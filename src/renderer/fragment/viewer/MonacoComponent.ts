@@ -1,16 +1,19 @@
 import * as Conf from "@app/Conf"
 import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
 import * as vue from "vue"
+
 declare global {
 	interface Window {
-		monaco: {
-			editor: typeof _monaco.editor
-		}
+		monaco: typeof _monaco
 	}
 }
 
 export const V = vue.defineComponent({
 	props: {
+		"path": {
+			required: true,
+			type: String,
+		},
 		"value": {
 			required: true,
 			type: String,
@@ -33,7 +36,11 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onMounted(() => {
-			model = window.monaco.editor.createModel(props.value)
+			model = window.monaco.editor.createModel(
+				props.value,
+				undefined,
+				window.monaco.Uri.file(props.path),
+			)
 			editor = window.monaco.editor.create(
 				el.value!,
 				// https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IStandaloneEditorConstructionOptions
@@ -43,6 +50,8 @@ export const V = vue.defineComponent({
 					domReadOnly: true,
 
 					automaticLayout: true,
+					contextmenu: false,
+					links: false,
 
 					renderWhitespace: "all",
 					theme: "vs-dark",

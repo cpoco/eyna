@@ -6,6 +6,7 @@ import root from "@renderer/Root"
 
 type reactive = {
 	type: "text" | null
+	path: string
 	data: string
 }
 
@@ -15,6 +16,7 @@ export const V = vue.defineComponent({
 	setup() {
 		const reactive = vue.reactive<reactive>({
 			type: null,
+			path: "",
 			data: "",
 		})
 
@@ -26,6 +28,7 @@ export const V = vue.defineComponent({
 						args: [-1, { event: "opened" }],
 					})
 					reactive.type = data.type
+					reactive.path = data.path
 					if (data.size <= 1_000_000) {
 						window.fs.read(data.path).then((buff) => {
 							reactive.data = (new TextDecoder()).decode(buff)
@@ -41,6 +44,7 @@ export const V = vue.defineComponent({
 						args: [-1, { event: "closed" }],
 					})
 					reactive.type = null
+					reactive.path = ""
 					reactive.data = ""
 				})
 		})
@@ -53,7 +57,11 @@ export const V = vue.defineComponent({
 	render() {
 		if (this.reactive.type == "text") {
 			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
-				vue.h(MonacoComponent.V, { class: { "viewer-monaco": true }, value: this.reactive.data }, undefined),
+				vue.h(MonacoComponent.V, {
+					class: { "viewer-monaco": true },
+					path: this.reactive.path,
+					value: this.reactive.data,
+				}, undefined),
 			])
 		}
 		return null
