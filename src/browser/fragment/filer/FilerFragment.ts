@@ -1,5 +1,6 @@
 import * as electron from "electron"
 import * as _ from "lodash-es"
+import * as fs from "node:fs"
 
 import * as Conf from "@app/Conf"
 import * as Bridge from "@bridge/Bridge"
@@ -310,7 +311,19 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.file
 					) {
-						root.viewer({ type: "text", path: trgt.full, size: trgt.size })
+						let data = ""
+						if (trgt.size <= 1_000_000) {
+							data = fs.readFileSync(trgt.full, "utf8")
+						}
+						else {
+							data = "file too large"
+						}
+						root.viewer({
+							type: "text",
+							path: trgt.full,
+							size: trgt.size,
+							data: data,
+						})
 						resolve()
 					}
 				})

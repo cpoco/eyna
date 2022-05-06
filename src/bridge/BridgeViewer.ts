@@ -35,6 +35,7 @@ export namespace Viewer {
 			type: "text"
 			path: string
 			size: number
+			data: string
 		}
 	}
 

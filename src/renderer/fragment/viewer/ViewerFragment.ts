@@ -29,14 +29,7 @@ export const V = vue.defineComponent({
 					})
 					reactive.type = data.type
 					reactive.path = data.path
-					if (data.size <= 1_000_000) {
-						window.fs.read(data.path).then((buff) => {
-							reactive.data = (new TextDecoder()).decode(buff)
-						})
-					}
-					else {
-						reactive.data = "file too large"
-					}
+					reactive.data = data.data
 				})
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
 					root.send<Bridge.Viewer.Event.Send>({

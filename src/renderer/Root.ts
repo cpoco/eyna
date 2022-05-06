@@ -10,9 +10,6 @@ import * as ViewerFragment from "@renderer/fragment/viewer/ViewerFragment"
 
 declare global {
 	interface Window {
-		fs: {
-			read: (abstract: string) => Promise<ArrayBuffer>
-		}
 		ipc: {
 			on: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void
 			send: (channel: string, ...args: any[]) => void
