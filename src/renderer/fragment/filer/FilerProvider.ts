@@ -14,6 +14,7 @@ export type List = {
 export type Cell = {
 	class: {
 		"filer-cell": boolean
+		"filer-cell-selcur": boolean
 		"filer-cell-select": boolean
 		"filer-cell-cursor": boolean
 	}
@@ -87,14 +88,16 @@ function create(count: number) {
 		reactive[i]!.cell = _.map<number, Cell>(
 			_.range(reactive[i]!.data.drawCount),
 			(j): Cell => {
-				let k = reactive[i]!.data.drawIndex + j
-				let t = reactive[i]!.data.drawPosition + j * reactive[i]!.data.drawSize
+				const k = reactive[i]!.data.drawIndex + j
+				const t = reactive[i]!.data.drawPosition + j * reactive[i]!.data.drawSize
+				const s = reactive[i]!.data.mk[k]!
+				const c = reactive[i]!.data.status == Bridge.Status.active && reactive[i]!.data.cursor == k
 				return {
 					class: {
 						"filer-cell": true,
-						"filer-cell-select": reactive[i]!.data.mk[k]!,
-						"filer-cell-cursor": reactive[i]!.data.status == Bridge.Status.active
-							&& reactive[i]!.data.cursor == k,
+						"filer-cell-selcur": s && c,
+						"filer-cell-select": s && !c,
+						"filer-cell-cursor": !s && c,
 					},
 					style: { top: `${t}px` },
 					attr: reactive[i]!.data.ls[k]!,
