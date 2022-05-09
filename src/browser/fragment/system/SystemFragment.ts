@@ -1,5 +1,7 @@
 import * as electron from "electron"
 
+import * as Conf from "@app/Conf"
+import * as Bridge from "@bridge/Bridge"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import root from "@browser/Root"
 import * as Native from "@module/native/ts/browser"
@@ -13,6 +15,13 @@ export class SystemFragment extends AbstractFragment {
 	}
 
 	private ipc() {
+		root
+			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Style.Data => {
+				return {
+					fontSize: Conf.DYNAMIC_FONT_SIZE,
+					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+				}
+			})
 	}
 
 	private command() {

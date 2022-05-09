@@ -23,23 +23,16 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const el = vue.ref<HTMLElement>()
+		const el = vue.ref<HTMLElement>() // data.filer-data
 
 		const _mounted = () => {
-			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName("data")[0]!.getBoundingClientRect()
-			root.send<Bridge.List.Resize.Send>({
-				ch: "filer-resize",
+			let d: DOMRect = el.value!.getBoundingClientRect()
+			root.send<Bridge.List.Dom.Send>({
+				ch: "filer-dom",
 				args: [
 					props.list.i,
 					{
 						event: "mounted",
-						root: {
-							x: r.x,
-							y: r.y,
-							w: r.width,
-							h: r.height,
-						},
 						data: {
 							x: d.x,
 							y: d.y,
@@ -52,20 +45,13 @@ export const V = vue.defineComponent({
 		}
 
 		const _resized = () => {
-			let r: DOMRect = el.value!.getBoundingClientRect()
-			let d: DOMRect = el.value!.getElementsByTagName(TAG_DATA)[0]!.getBoundingClientRect()
-			root.send<Bridge.List.Resize.Send>({
-				ch: "filer-resize",
+			let d: DOMRect = el.value!.getBoundingClientRect()
+			root.send<Bridge.List.Dom.Send>({
+				ch: "filer-dom",
 				args: [
 					props.list.i,
 					{
 						event: "resized",
-						root: {
-							x: r.x,
-							y: r.y,
-							w: r.width,
-							h: r.height,
-						},
 						data: {
 							x: d.x,
 							y: d.y,
@@ -96,7 +82,7 @@ export const V = vue.defineComponent({
 		let active = this.list.data.status == Bridge.Status.active
 		let target = this.list.data.status == Bridge.Status.target
 
-		return vue.h(TAG, { ref: "el", class: { "filer-list": true } }, [
+		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
 				vue.h("div", { class: { "filer-dir": true } }, this.list.data.wd),
 				vue.h(
@@ -110,7 +96,7 @@ export const V = vue.defineComponent({
 			vue.h(TAG_STAT, {
 				class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target },
 			}),
-			vue.h(TAG_DATA, { class: { "filer-data": true } }, [
+			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
 				_.map<FilerProvider.Cell, vue.VNode>(this.list.cell, (cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),

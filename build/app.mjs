@@ -1,5 +1,5 @@
 import esbuild from "esbuild"
-import fs from "node:fs/promises"
+import fse from "fs-extra"
 import path from "node:path"
 import url from "node:url"
 import ts from "typescript"
@@ -10,16 +10,7 @@ const conf = path.join(__dirname, "../tsconfig.json")
 const base = path.join(__dirname, "..")
 
 export async function Init() {
-	return fs.mkdir(outdir)
-		.then(() => {
-			return Promise.resolve()
-		})
-		.catch((err) => {
-			if (err.code === "EEXIST") {
-				return Promise.resolve()
-			}
-			return Promise.reject(err)
-		})
+	return fse.ensureDir(outdir)
 }
 
 export async function Check() {
@@ -43,6 +34,10 @@ export async function Check() {
 }
 
 export async function Build() {
+	fse.copySync(
+		path.join(__dirname, "../node_modules/monaco-editor/min/vs"),
+		path.join(__dirname, "../app/vs"),
+	)
 	return esbuild.build({
 		define: {
 			"process.env.NODE_ENV": "\"production\"",
@@ -57,6 +52,7 @@ export async function Build() {
 		platform: "node",
 		external: [
 			"electron",
+			"monaco-editor",
 			"*.node",
 		],
 		outdir: outdir,

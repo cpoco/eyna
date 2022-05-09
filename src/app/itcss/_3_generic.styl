@@ -4,13 +4,16 @@
 	--background: rgba(30, 30, 30, 1)
 	--focus: rgba(0, 125, 210, 1)
 
+	// set js
+	--dynamic-font-size: initial
+	--dynamic-line-height: initial
+
 *
 	font-family: var(--font-family)
-	font-size: 14px
+	font-size: var(--dynamic-font-size)
 	box-sizing: border-box
 	margin: 0
 	padding: 0
-	overflow: hidden
 	white-space: pre
 
 :focus

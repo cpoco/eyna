@@ -1,13 +1,4 @@
 import * as electron from "electron"
-import * as fs from "node:fs/promises"
-
-electron.contextBridge.exposeInMainWorld("fs", {
-	read,
-})
-
-function read(abstract: string): Promise<ArrayBuffer> {
-	return fs.readFile(abstract)
-}
 
 electron.contextBridge.exposeInMainWorld("ipc", {
 	on,

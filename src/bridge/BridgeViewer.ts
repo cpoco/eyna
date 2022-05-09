@@ -1,4 +1,24 @@
 export namespace Viewer {
+	// renderer -> browser
+	export namespace Event {
+		export const CH = "viewer-event"
+		export type Send = {
+			ch: "viewer-event"
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = opened | closed
+		type opened = {
+			event: "opened"
+		}
+		type closed = {
+			event: "closed"
+		}
+	}
+
 	// browser -> renderer
 	export namespace Open {
 		export const CH = "viewer-open"
@@ -15,6 +35,7 @@ export namespace Viewer {
 			type: "text"
 			path: string
 			size: number
+			data: string
 		}
 	}
 

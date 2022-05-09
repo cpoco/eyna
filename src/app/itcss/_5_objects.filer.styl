@@ -1,0 +1,144 @@
+:root
+	--file: var(--color)
+	--link: _cyan
+	--directory: _blue
+	--shortcut: _green
+	--bookmark: _green
+	--special: _yellow
+	--error: _red
+
+	--stat-none: rgba(255, 255, 255, 0.1)
+	--stat-active: rgba(30, 145, 255, 1)
+	--stat-target: rgba(30, 145, 255, 0.5)
+
+	--cell-select-cursor: rgba(30, 145, 255, 0.4)
+	--cell-select: rgba(30, 145, 255, 0.2)
+	--cell-cursor: rgba(255, 255, 255, 0.1)
+
+	--scroll-width: 6px
+	--scroll-knob: rgba(255, 255, 255, 0.2)
+
+	--filer-info-height: calc(var(--dynamic-line-height) * 2)
+	--filer-stat-height: 2px
+	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
+	--filer-data-height: calc(100% - var(--filer-data-top))
+
+.c-file
+	color: var(--file)
+.c-link
+	color: var(--link)
+.c-directory
+	color: var(--directory)
+.c-shortcut
+	color: var(--shortcut)
+.c-bookmark
+	color: var(--bookmark)
+.c-special
+	color: var(--special)
+.c-error
+	color: var(--error)
+
+.filer
+	&-fragment
+		position: absolute
+		overflow: hidden
+		width: 100%
+		height: 100%
+
+		display: flex
+		flex-direction: row
+
+	&-list
+		position: relative
+		flex: 1
+
+	&-info
+		position: absolute
+		overflow: hidden
+		top: 0px
+		width: 100%
+		height: var(--filer-info-height)
+
+	&-dir,
+	&-cnt
+		height: var(--dynamic-line-height)
+		line-height: var(--dynamic-line-height)
+		font-size: var(--dynamic-font-size)
+		margin: 0px 4px
+
+	&-stat
+		position: absolute
+		top: calc(var(--dynamic-line-height) * 2)
+		width: 100%
+		height: var(--filer-stat-height)
+		background-color: var(--stat-none)
+		&-active
+			background-color: var(--stat-active)
+		&-target
+			background-color: var(--stat-target)
+
+	&-data
+		position: absolute
+		overflow: hidden
+		top: var(--filer-data-top)
+		width: 100%
+		height: var(--filer-data-height)
+
+	&-cell
+		position: absolute
+		display: flex
+		flex-direction: row
+		width: 100%
+		min-width: 300px
+		height: var(--dynamic-line-height)
+		line-height: var(--dynamic-line-height)
+		&-selcur
+			background-color: var(--cell-select-cursor)
+		&-select
+			background-color: var(--cell-select)
+		&-cursor
+			background-color: var(--cell-cursor)
+
+	&-cname
+		font-size: var(--dynamic-font-size)
+		overflow: hidden
+		text-overflow: ellipsis
+		flex: 1
+		margin-left: 4px
+	&-cicon
+		display: inline-block
+		vertical-align: middle
+		width: var(--dynamic-line-height)
+		height: var(--dynamic-line-height)
+		margin-right: 2px
+	&-cfile
+		font-size: var(--dynamic-font-size)
+	&-clink
+		font-size: var(--dynamic-font-size)
+		margin: 0 2px
+	&-ctrgt
+		font-size: var(--dynamic-font-size)
+
+	&-csize
+		font-size: var(--dynamic-font-size)
+		margin-left: 6px
+
+	&-cdate
+		font-size: var(--dynamic-font-size)
+		margin-left: 6px
+
+	&-ctime
+		font-size: var(--dynamic-font-size)
+		margin-left: 6px
+		margin-right: var(--scroll-width)
+
+	&-scroll
+		position: absolute
+		top: var(--filer-data-top)
+		right: 0px
+		width: var(--scroll-width)
+		height: var(--filer-data-height)
+	&-knob
+		position: absolute
+		width: 100%
+		background-color: var(--scroll-knob)

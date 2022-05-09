@@ -38,10 +38,10 @@ export namespace List {
 	}
 
 	// renderer -> browser
-	export namespace Resize {
-		export const CH = "filer-resize"
+	export namespace Dom {
+		export const CH = "filer-dom"
 		export type Send = {
-			ch: "filer-resize"
+			ch: "filer-dom"
 			args: Args
 		}
 		export type Args = [
@@ -50,12 +50,6 @@ export namespace List {
 		]
 		export type Data = {
 			event: "mounted" | "resized"
-			root: {
-				x: number
-				y: number
-				w: number
-				h: number
-			}
 			data: {
 				x: number
 				y: number

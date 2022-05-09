@@ -14,6 +14,7 @@ export type List = {
 export type Cell = {
 	class: {
 		"filer-cell": boolean
+		"filer-cell-selcur": boolean
 		"filer-cell-select": boolean
 		"filer-cell-cursor": boolean
 	}
@@ -23,9 +24,9 @@ export type Cell = {
 	attr: Native.Attributes
 }
 
-export const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
+const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
 
-export function create(count: number) {
+function create(count: number) {
 	const reactive = vue.reactive<List[]>(
 		_.map<number, List>(_.range(count), (i) => {
 			return {
@@ -87,14 +88,16 @@ export function create(count: number) {
 		reactive[i]!.cell = _.map<number, Cell>(
 			_.range(reactive[i]!.data.drawCount),
 			(j): Cell => {
-				let k = reactive[i]!.data.drawIndex + j
-				let t = reactive[i]!.data.drawPosition + j * reactive[i]!.data.drawSize
+				const k = reactive[i]!.data.drawIndex + j
+				const t = reactive[i]!.data.drawPosition + j * reactive[i]!.data.drawSize
+				const s = reactive[i]!.data.mk[k]!
+				const c = reactive[i]!.data.status == Bridge.Status.active && reactive[i]!.data.cursor == k
 				return {
 					class: {
 						"filer-cell": true,
-						"filer-cell-select": reactive[i]!.data.mk[k]!,
-						"filer-cell-cursor": reactive[i]!.data.status == Bridge.Status.active
-							&& reactive[i]!.data.cursor == k,
+						"filer-cell-selcur": s && c,
+						"filer-cell-select": s && !c,
+						"filer-cell-cursor": !s && c,
 					},
 					style: { top: `${t}px` },
 					attr: reactive[i]!.data.ls[k]!,
@@ -112,4 +115,10 @@ export function create(count: number) {
 		updateAttribute,
 		updateMark,
 	}
+}
+
+export function provide(count: number): ReturnType<typeof create> {
+	const v = create(count)
+	vue.provide(KEY, v)
+	return v
 }
