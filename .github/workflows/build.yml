@@ -8,6 +8,7 @@ on:
 # https://github.com/actions/checkout
 # https://github.com/actions/setup-node
 # https://github.com/actions/upload-artifact
+# https://github.com/softprops/action-gh-release
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -32,3 +33,10 @@ jobs:
         with:
           name: ${{ matrix.os }}
           path: dist/*.7z
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.sha }}
+          draft: true
+          prerelease: true
+          files: dist/*.7z
