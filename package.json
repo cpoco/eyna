@@ -25,16 +25,5 @@
 		"b": "node b.mjs",
 		"p": "node p.mjs",
 		"s": "electron ."
-	},
-	"build": {
-		"asar": false,
-		"files": [
-			"./app/**/*",
-			"./config/*.json",
-			"./extension/*.js"
-		],
-		"mac": {
-			"identity": null
-		}
 	}
 }
