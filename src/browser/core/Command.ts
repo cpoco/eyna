@@ -31,6 +31,7 @@ export namespace Command {
 		}[]
 	}
 	export type Config = {
+		when: When
 		cmd: string[]
 		prm: string[]
 	}
@@ -61,14 +62,14 @@ export namespace Command {
 			this.keyData = {}
 			try {
 				let loadConfig: LoadConfig = JSON.parse(fs.readFileSync(this.path, "utf8"))
-
-				console.log(JSON.stringify(loadConfig, null, 2))
+				// console.log(JSON.stringify(loadConfig, null, 2))
 
 				loadConfig.key.forEach((conf) => {
 					try {
 						let code: number = acceleratorToCode(conf.key)
 						if (0 < code) {
 							_.set(this.keyData, [code, conf.when], {
+								when: conf.when,
 								cmd: _.isString(conf.cmd) ? [conf.cmd] : _.isArray(conf.cmd) ? conf.cmd : [],
 								prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : [],
 							})
@@ -78,8 +79,7 @@ export namespace Command {
 						console.error(err)
 					}
 				})
-
-				console.log(JSON.stringify(this.keyData, null, 2))
+				// console.log(JSON.stringify(this.keyData, null, 2))
 			}
 			catch (err) {
 				console.error(err)

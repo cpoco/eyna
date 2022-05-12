@@ -7,6 +7,7 @@ import * as Bridge from "@bridge/Bridge"
 import { Command } from "@browser/core/Command"
 import { Path } from "@browser/core/Path"
 import { Storage } from "@browser/core/Storage"
+import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import { FilerFragment } from "@browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@browser/fragment/system/SystemFragment"
@@ -62,23 +63,36 @@ class Root {
 			Storage.manager.data.wd = this.fragment[1].pwd
 			Storage.manager.save()
 		})
-		this.browser.webContents.on("before-input-event", (_event: electron.Event, input: electron.Input) => {
+		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
 			if (input.type == "keyDown") {
 				let conf = Command.manager.get(input)
 				if (conf == null) {
 					return
 				}
-				this.fragment.forEach((f) => {
-					let promise = Promise.resolve()
-					conf!.cmd.forEach((c) => {
-						promise.then(() => {
-							return f.emit(c, ...conf!.prm)
+
+				let f: AbstractFragment | null = null
+				switch (conf.when) {
+					case Command.When.always:
+						f = this.fragment[0]
+						break
+					case Command.When.filer:
+						f = this.fragment[1]
+						break
+					case Command.When.modal:
+						f = this.fragment[2]
+						break
+					case Command.When.viewer:
+						f = this.fragment[3]
+						break
+					default:
+						return
+				}
+				for (const c of conf.cmd) {
+					await f.emit(c, ...conf.prm)
+						.catch((err) => {
+							console.error(err)
 						})
-					})
-					promise.catch((err) => {
-						console.error(err)
-					})
-				})
+				}
 			}
 		})
 	}
