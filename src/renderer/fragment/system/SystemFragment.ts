@@ -30,9 +30,9 @@ export const V = vue.defineComponent({
 					],
 				})
 				.then((data: Bridge.System.Style.Data) => {
-					sys.ready.value = true
-					sys.styleFontSize.value = data.fontSize
-					sys.styleLineHeight.value = data.lineHeight
+					sys.reactive.ready = true
+					sys.reactive.styleFontSize = data.fontSize
+					sys.reactive.styleLineHeight = data.lineHeight
 				})
 		}
 

@@ -24,11 +24,11 @@ export type Cell = {
 	attr: Native.Attributes
 }
 
-const KEY: vue.InjectionKey<ReturnType<typeof create>> = Symbol("FilerProvider")
+const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
 
-function create(count: number) {
-	const reactive = vue.reactive<List[]>(
-		_.map<number, List>(_.range(count), (i) => {
+function _create(count: number) {
+	const reactive = vue.reactive({
+		list: _.map<number, List>(_.range(count), (i) => {
 			return {
 				i,
 				data: Bridge.List.InitData(),
@@ -36,62 +36,62 @@ function create(count: number) {
 				cell: [],
 			}
 		}),
-	)
+	})
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
-		reactive[i]!.data = data
+		reactive.list[i]!.data = data
 		_update(i)
 	}
 
 	const updateScan = (i: number, data: Bridge.List.Change.Data) => {
-		reactive[i]!.data = data
-		reactive[i]!.data.ls = _.map<number, Native.Attributes>(_.range(data.length), () => [])
-		reactive[i]!.data.mk = _.map<number, boolean>(_.range(data.length), () => false)
+		reactive.list[i]!.data = data
+		reactive.list[i]!.data.ls = _.map<number, Native.Attributes>(_.range(data.length), () => [])
+		reactive.list[i]!.data.mk = _.map<number, boolean>(_.range(data.length), () => false)
 		_update(i)
 	}
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
-		reactive[i]!.data.status = data.status
+		reactive.list[i]!.data.status = data.status
 		_update(i)
 	}
 
 	const updateCursor = (i: number, data: Bridge.List.Cursor.Data) => {
-		reactive[i]!.data.cursor = data.cursor
-		reactive[i]!.data.drawCount = data.drawCount
-		reactive[i]!.data.drawIndex = data.drawIndex
-		reactive[i]!.data.drawPosition = data.drawPosition
-		reactive[i]!.data.drawSize = data.drawSize
-		reactive[i]!.data.knobPosition = data.knobPosition
-		reactive[i]!.data.knobSize = data.knobSize
+		reactive.list[i]!.data.cursor = data.cursor
+		reactive.list[i]!.data.drawCount = data.drawCount
+		reactive.list[i]!.data.drawIndex = data.drawIndex
+		reactive.list[i]!.data.drawPosition = data.drawPosition
+		reactive.list[i]!.data.drawSize = data.drawSize
+		reactive.list[i]!.data.knobPosition = data.knobPosition
+		reactive.list[i]!.data.knobSize = data.knobSize
 		_update(i)
 	}
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
-			reactive[i]!.data.ls[Number(j)]!.length = 0
-			reactive[i]!.data.ls[Number(j)]!.push(...v.ls)
+			reactive.list[i]!.data.ls[Number(j)]!.length = 0
+			reactive.list[i]!.data.ls[Number(j)]!.push(...v.ls)
 		})
 		_update(i)
 	}
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
 		_.forEach<Bridge.List.Mark.Slice>(data._slice, (v, j) => {
-			reactive[i]!.data.mk[Number(j)] = v.mk
+			reactive.list[i]!.data.mk[Number(j)] = v.mk
 		})
 		_update(i)
 	}
 
 	const _update = (i: number) => {
-		reactive[i]!.make = _.reduce<boolean, number>(reactive[i]!.data.mk, (cnt, mk) => {
+		reactive.list[i]!.make = _.reduce<boolean, number>(reactive.list[i]!.data.mk, (cnt, mk) => {
 			return mk ? cnt + 1 : cnt
 		}, 0)
-		reactive[i]!.cell = _.map<number, Cell>(
-			_.range(reactive[i]!.data.drawCount),
+		reactive.list[i]!.cell = _.map<number, Cell>(
+			_.range(reactive.list[i]!.data.drawCount),
 			(j): Cell => {
-				const k = reactive[i]!.data.drawIndex + j
-				const t = reactive[i]!.data.drawPosition + j * reactive[i]!.data.drawSize
-				const s = reactive[i]!.data.mk[k]!
-				const c = reactive[i]!.data.status == Bridge.Status.active && reactive[i]!.data.cursor == k
+				const k = reactive.list[i]!.data.drawIndex + j
+				const t = reactive.list[i]!.data.drawPosition + j * reactive.list[i]!.data.drawSize
+				const s = reactive.list[i]!.data.mk[k]!
+				const c = reactive.list[i]!.data.status == Bridge.Status.active && reactive.list[i]!.data.cursor == k
 				return {
 					class: {
 						"filer-cell": true,
@@ -100,7 +100,7 @@ function create(count: number) {
 						"filer-cell-cursor": !s && c,
 					},
 					style: { top: `${t}px` },
-					attr: reactive[i]!.data.ls[k]!,
+					attr: reactive.list[i]!.data.ls[k]!,
 				}
 			},
 		)
@@ -117,8 +117,12 @@ function create(count: number) {
 	}
 }
 
-export function provide(count: number): ReturnType<typeof create> {
-	const v = create(count)
+export function create(count: number): ReturnType<typeof _create> {
+	const v = _create(count)
 	vue.provide(KEY, v)
 	return v
 }
+
+// export function inject(): ReturnType<typeof _create> {
+// 	return vue.inject(KEY)!
+// }

@@ -17,13 +17,6 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const node = vue.computed((): vue.AllowedComponentProps => {
-			return {
-				class: props.cell.class,
-				style: props.cell.style,
-			}
-		})
-
 		const is_empty = vue.computed((): boolean => {
 			return _.isEmpty(props.cell.attr)
 		})
@@ -86,7 +79,6 @@ export const V = vue.defineComponent({
 		})
 
 		return {
-			node,
 			is_empty,
 			file_type,
 			link_type,
@@ -97,8 +89,13 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
+		let node: vue.AllowedComponentProps = {
+			class: this.cell.class,
+			style: this.cell.style,
+		}
+
 		if (this.is_empty) {
-			return vue.h(TAG, this.node, vue.h(SpinnerComponent.V))
+			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
 		}
 
 		let name: vue.AllowedComponentProps = { class: { "filer-cfile": true } }
@@ -153,7 +150,7 @@ export const V = vue.defineComponent({
 			}
 		}
 
-		return vue.h(TAG, this.node, [
+		return vue.h(TAG, node, [
 			vue.h(
 				"span",
 				{ class: { "filer-cname": true } },

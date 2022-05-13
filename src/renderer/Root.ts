@@ -1,5 +1,6 @@
 import * as _ from "lodash-es"
 import * as vue from "vue"
+// import * as dev from "@vue/devtools"
 
 import * as Bridge from "@bridge/Bridge"
 import * as FilerFragment from "@renderer/fragment/filer/FilerFragment"
@@ -20,10 +21,10 @@ declare global {
 
 const V = vue.defineComponent({
 	setup() {
-		const provider = SystemProvider.provide()
+		const sys = SystemProvider.create()
 
 		return {
-			provider,
+			sys: sys.reactive,
 		}
 	},
 
@@ -32,7 +33,7 @@ const V = vue.defineComponent({
 			vue.h(SystemFragment.V),
 		]
 
-		if (this.provider.ready.value) {
+		if (this.sys.ready) {
 			node.push(
 				vue.h(FilerFragment.V),
 				vue.h(ModalFragment.V),
@@ -48,6 +49,7 @@ class Root {
 	create() {
 		window.onload = () => {
 			vue.createApp(V).mount(document.getElementsByTagName("body")[0]!)
+			// dev.connect()
 		}
 	}
 
