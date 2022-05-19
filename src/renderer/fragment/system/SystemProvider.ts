@@ -26,7 +26,6 @@ function _create() {
 		e?.style.setProperty(Conf.STYLE_DYNAMIC_LINE_HEIGHT, `${v}px`)
 	})
 
-
 	return {
 		reactive,
 	}
