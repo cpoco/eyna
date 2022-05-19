@@ -52,7 +52,6 @@ function _create(count: number) {
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
 		reactive.list[i]!.data.status = data.status
-		_update(i)
 	}
 
 	const updateCursor = (i: number, data: Bridge.List.Cursor.Data) => {
@@ -79,6 +78,10 @@ function _create(count: number) {
 			reactive.list[i]!.data.mk[Number(j)] = v.mk
 		})
 		_update(i)
+	}
+
+	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
+		reactive.list[i]!.data.watch = data.watch
 	}
 
 	const _update = (i: number) => {
@@ -114,6 +117,7 @@ function _create(count: number) {
 		updateCursor,
 		updateAttribute,
 		updateMark,
+		updateWatch,
 	}
 }
 

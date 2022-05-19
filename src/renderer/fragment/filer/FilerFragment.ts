@@ -32,6 +32,9 @@ export const V = vue.defineComponent({
 			.on(Bridge.List.Mark.CH, (i: number, data: Bridge.List.Mark.Data) => {
 				filer.updateMark(i, data)
 			})
+			.on(Bridge.List.Watch.CH, (i: number, data: Bridge.List.Watch.Data) => {
+				filer.updateWatch(i, data)
+			})
 
 		return {
 			filer: filer.reactive,

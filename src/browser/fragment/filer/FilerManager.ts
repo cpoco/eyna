@@ -79,6 +79,9 @@ export class FilerManager {
 		this.data.update = update
 		this.data.length = 0
 
+		console.log("unwatch", this.id)
+		Native.unwatch(this.id)
+
 		root.send<Bridge.List.Change.Send>({
 			ch: "filer-change",
 			args: [
@@ -97,6 +100,7 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: 0,
 					knobSize: 0,
+					watch: 0,
 					error: 0,
 				},
 			],
@@ -116,25 +120,32 @@ export class FilerManager {
 					this.data.ls = ls
 					this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
 					this.data.error = e
+
+					if (wd != Dir.HOME) {
+						console.log(wd, "watch", this.id)
+						Native.watch(this.id, wd, (_id, depth, _abstract) => {
+							if (update == this.data.update && depth == 0) {
+								this.data.watch = 1
+								root.send<Bridge.List.Watch.Send>({
+									ch: "filer-watch",
+									args: [
+										this.id,
+										{
+											update: this.data.update,
+											watch: this.data.watch,
+										},
+									],
+								})
+							}
+						})
+					}
+
 					resolve(true)
 				}
 				else {
 					resolve(false)
 				}
 			})
-			// watch test
-			{
-				if (this.pwd != Dir.HOME) {
-					console.log("watch", this.id, this.pwd)
-					Native.watch(this.id, this.pwd, (id, depth, abstract) => {
-						console.log(id, depth, abstract)
-					})
-				}
-				else {
-					console.log("unwatch", this.id)
-					Native.unwatch(this.id)
-				}
-			}
 		})
 	}
 
@@ -157,6 +168,7 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: this.sc.knobPosition,
 					knobSize: this.sc.knobSize,
+					watch: this.data.watch,
 					error: this.data.error,
 				},
 			],

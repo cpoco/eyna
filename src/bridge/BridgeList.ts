@@ -16,6 +16,7 @@ export namespace List {
 		drawSize: number
 		knobPosition: number
 		knobSize: number
+		watch: number
 		error: number
 	}
 	export function InitData(): Data {
@@ -33,6 +34,7 @@ export namespace List {
 			drawSize: 0,
 			knobPosition: 0,
 			knobSize: 0,
+			watch: 0,
 			error: 0,
 		}
 	}
@@ -41,7 +43,7 @@ export namespace List {
 	export namespace Dom {
 		export const CH = "filer-dom"
 		export type Send = {
-			ch: "filer-dom"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -63,7 +65,7 @@ export namespace List {
 	export namespace Change {
 		export const CH = "filer-change"
 		export type Send = {
-			ch: "filer-change"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -77,7 +79,7 @@ export namespace List {
 	export namespace Scan {
 		export const CH = "filer-scan"
 		export type Send = {
-			ch: "filer-scan"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -91,7 +93,7 @@ export namespace List {
 	export namespace Active {
 		export const CH = "filer-status"
 		export type Send = {
-			ch: "filer-status"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -107,7 +109,7 @@ export namespace List {
 	export namespace Cursor {
 		export const CH = "filer-cursor"
 		export type Send = {
-			ch: "filer-cursor"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -129,7 +131,7 @@ export namespace List {
 	export namespace Attribute {
 		export const CH = "filer-attribute"
 		export type Send = {
-			ch: "filer-attribute"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -151,7 +153,7 @@ export namespace List {
 	export namespace Mark {
 		export const CH = "filer-mark"
 		export type Send = {
-			ch: "filer-mark"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -166,6 +168,23 @@ export namespace List {
 			[index: number]: {
 				mk: boolean
 			}
+		}
+	}
+
+	// browser -> renderer
+	export namespace Watch {
+		export const CH = "filer-watch"
+		export type Send = {
+			ch: typeof CH
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = {
+			update: number
+			watch: number
 		}
 	}
 }
