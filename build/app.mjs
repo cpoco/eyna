@@ -40,8 +40,8 @@ export async function Build() {
 	)
 	return esbuild.build({
 		define: {
-			"process.env.NODE_ENV": "\"production\"",
-			// "process.env.NODE_ENV": "\"development\"",
+			"process.env.NODE_ENV": JSON.stringify("production"),
+			// "process.env.NODE_ENV": JSON.stringify("development"),
 		},
 		entryPoints: {
 			preload: path.join(__dirname, "../src/browser/Preload.ts"),
