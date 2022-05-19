@@ -3,7 +3,7 @@ export namespace Viewer {
 	export namespace Event {
 		export const CH = "viewer-event"
 		export type Send = {
-			ch: "viewer-event"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -23,7 +23,7 @@ export namespace Viewer {
 	export namespace Open {
 		export const CH = "viewer-open"
 		export type Send = {
-			ch: "viewer-open"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -43,7 +43,7 @@ export namespace Viewer {
 	export namespace Close {
 		export const CH = "viewer-close"
 		export type Send = {
-			ch: "viewer-close"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
