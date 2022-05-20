@@ -52,6 +52,7 @@ function _create(count: number) {
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
 		reactive.list[i]!.data.status = data.status
+		_update(i)
 	}
 
 	const updateCursor = (i: number, data: Bridge.List.Cursor.Data) => {
