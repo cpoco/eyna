@@ -69,7 +69,7 @@ function _create(count: number) {
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
 			reactive.list[i]!.data.ls[Number(j)]!.length = 0
-			reactive.list[i]!.data.ls[Number(j)]!.push(...v.ls)
+			reactive.list[i]!.data.ls[Number(j)]!.push(...v)
 		})
 		_update(i)
 	}

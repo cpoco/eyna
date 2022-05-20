@@ -143,9 +143,7 @@ export namespace List {
 			_slice: Slice
 		}
 		export type Slice = {
-			[index: number]: {
-				ls: Native.Attributes
-			}
+			[index: number]: Native.Attributes
 		}
 	}
 

@@ -215,7 +215,7 @@ export class FilerManager {
 				{
 					update: this.data.update,
 					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
-						return _.assign(ret, { [it]: { ls: this.data.ls[it] } })
+						return _.assign(ret, { [it]: this.data.ls[it] })
 					}, {}),
 				},
 			],
