@@ -71,7 +71,7 @@ export class Dir {
 				vol.forEach((v) => {
 					let attr: Native.Attributes = []
 					attr.push({
-						file_type: Native.AttributeFileType.home,
+						file_type: Native.AttributeFileType.drive,
 						full: v.full,
 						rltv: v.name,
 						name: v.name,

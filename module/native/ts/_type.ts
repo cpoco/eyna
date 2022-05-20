@@ -1,6 +1,6 @@
 export enum AttributeFileType {
 	homeuser = -2,
-	home = -1,
+	drive = -1,
 	none = 0,
 	directory = 1,
 	link = 2,

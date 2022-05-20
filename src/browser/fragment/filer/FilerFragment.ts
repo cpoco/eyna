@@ -273,12 +273,12 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					// home
+					// drive
 					// homeuser
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.home
+						attr.file_type == Native.AttributeFileType.drive
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
 						|| attr.file_type == Native.AttributeFileType.link
@@ -357,12 +357,12 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					// home
+					// drive
 					// homeuser
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.home
+						attr.file_type == Native.AttributeFileType.drive
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
 						|| attr.file_type == Native.AttributeFileType.link
