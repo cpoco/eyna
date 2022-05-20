@@ -207,7 +207,13 @@ export class FilerManager {
 		})
 	}
 
-	sendAttribute(start: number = 0, end: number = this.data.length) {
+	sendAttribute() {
+		for (let i = 0; i < this.data.length; i += 1000) {
+			this._sendAttribute(i, Math.min(i + 1000, this.data.length))
+		}
+	}
+
+	_sendAttribute(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
 			ch: "filer-attribute",
 			args: [
