@@ -78,6 +78,8 @@ export class FilerManager {
 
 		this.data.update = update
 		this.data.length = 0
+		this.data.watch = 0
+		this.data.error = 0
 
 		console.log("unwatch", this.id)
 		Native.unwatch(this.id)
@@ -100,8 +102,8 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: 0,
 					knobSize: 0,
-					watch: 0,
-					error: 0,
+					watch: this.data.watch,
+					error: this.data.error,
 				},
 			],
 		})

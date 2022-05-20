@@ -111,18 +111,20 @@ export const V = vue.defineComponent({
 			let ltype = this.link_type[0] ?? Native.AttributeLinkType.none
 			if (ltype == Native.AttributeLinkType.shortcut) {
 				name.class = _.assign(name.class, { "c-shortcut": true })
+				fraw = Font.link_external
 			}
 			else if (ltype == Native.AttributeLinkType.bookmark) {
 				name.class = _.assign(name.class, { "c-bookmark": true })
+				fraw = Font.link_external
 			}
 			else {
 				name.class = _.assign(name.class, { "c-file": true })
+				fraw = Font.file
 			}
-			fraw = Font.file
 		}
 		else if (ftype == Native.AttributeFileType.link) {
 			name.class = _.assign(name.class, { "c-link": true })
-			fraw = Font.file_symlink_file
+			fraw = Font.link_external
 		}
 		else if (ftype == Native.AttributeFileType.directory) {
 			name.class = _.assign(name.class, { "c-directory": true })
@@ -136,7 +138,11 @@ export const V = vue.defineComponent({
 		}
 		else if (ftype == Native.AttributeFileType.special) {
 			name.class = _.assign(name.class, { "c-special": true })
-			fraw = Font.question
+			fraw = Font.gear
+		}
+		else {
+			name.class = _.assign(name.class, { "c-error": true })
+			fraw = Font.error
 		}
 
 		if (this.is_link) {
@@ -157,7 +163,7 @@ export const V = vue.defineComponent({
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
 				trgt.class = _.assign(trgt.class, { "c-link": true })
-				traw = Font.file_symlink_file
+				traw = Font.link_external
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
 				trgt.class = _.assign(trgt.class, { "c-directory": true })
@@ -165,7 +171,7 @@ export const V = vue.defineComponent({
 			}
 			else if (ftype2 == Native.AttributeFileType.special) {
 				trgt.class = _.assign(trgt.class, { "c-special": true })
-				traw = Font.question
+				traw = Font.gear
 			}
 		}
 
