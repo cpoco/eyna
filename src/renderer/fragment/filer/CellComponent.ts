@@ -18,7 +18,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const is_empty = vue.computed((): boolean => {
-			return _.isEmpty(props.cell.attr)
+			return props.cell.attr.length == 0
 		})
 
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
