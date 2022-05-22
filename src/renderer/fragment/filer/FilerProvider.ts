@@ -1,8 +1,8 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 
 import * as Bridge from "@bridge/Bridge"
 import * as Native from "@module/native/ts/renderer"
+import * as Util from "@browser/util/Util"
 
 export type List = {
 	i: number
@@ -28,7 +28,7 @@ const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider"
 
 function _create(count: number) {
 	const reactive = vue.reactive({
-		list: _.map<number, List>(_.range(count), (i) => {
+		list: Util.array<List>(0, count, (i) => {
 			return {
 				i,
 				data: Bridge.List.InitData(),
@@ -45,8 +45,8 @@ function _create(count: number) {
 
 	const updateScan = (i: number, data: Bridge.List.Change.Data) => {
 		reactive.list[i]!.data = data
-		reactive.list[i]!.data.ls = _.map<number, Native.Attributes>(_.range(data.length), () => [])
-		reactive.list[i]!.data.mk = _.map<number, boolean>(_.range(data.length), () => false)
+		reactive.list[i]!.data.ls = Util.array<Native.Attributes>(0, data.length, () => [])
+		reactive.list[i]!.data.mk = Util.array<boolean>(0, data.length, () => false)
 		_update(i)
 	}
 
@@ -67,17 +67,17 @@ function _create(count: number) {
 	}
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
-		_.forEach<Bridge.List.Attribute.Slice>(data._slice, (v, j) => {
-			reactive.list[i]!.data.ls[Number(j)]!.length = 0
-			reactive.list[i]!.data.ls[Number(j)]!.push(...v)
-		})
+		for (const [k, v] of Object.entries(data._slice)) {
+			reactive.list[i]!.data.ls[Number(k)]!.length = 0
+			reactive.list[i]!.data.ls[Number(k)]!.push(...v)
+		}
 		_update(i)
 	}
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
-		_.forEach<Bridge.List.Mark.Slice>(data._slice, (v, j) => {
-			reactive.list[i]!.data.mk[Number(j)] = v.mk
-		})
+		for (const [k, v] of Object.entries(data._slice)) {
+			reactive.list[i]!.data.mk[Number(k)] = v.mk
+		}
 		_update(i)
 	}
 
@@ -86,12 +86,10 @@ function _create(count: number) {
 	}
 
 	const _update = (i: number) => {
-		reactive.list[i]!.make = _.reduce<boolean, number>(reactive.list[i]!.data.mk, (cnt, mk) => {
-			return mk ? cnt + 1 : cnt
-		}, 0)
-		reactive.list[i]!.cell = _.map<number, Cell>(
-			_.range(reactive.list[i]!.data.drawCount),
-			(j): Cell => {
+		reactive.list[i]!.make = Util.count(reactive.list[i]!.data.mk, (mk) => mk)
+		reactive.list[i]!.cell = Util.array<Cell>(
+			0, reactive.list[i]!.data.drawCount,
+			(j) => {
 				const k = reactive.list[i]!.data.drawIndex + j
 				const t = reactive.list[i]!.data.drawPosition + j * reactive.list[i]!.data.drawSize
 				const s = reactive.list[i]!.data.mk[k]!

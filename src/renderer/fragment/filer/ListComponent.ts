@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 
 import * as Bridge from "@bridge/Bridge"
@@ -101,7 +100,7 @@ export const V = vue.defineComponent({
 				class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target },
 			}),
 			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
-				_.map<FilerProvider.Cell, vue.VNode>(this.list.cell, (cell) => {
+				this.list.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
 			]),

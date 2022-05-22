@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 
 import * as Conf from "@app/Conf"
@@ -45,7 +44,7 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ class: { "filer-fragment": true } },
-			_.map<FilerProvider.List, vue.VNode>(this.filer.list, (list) => {
+			this.filer.list.map((list) => {
 				return vue.h(ListComponent.V, { list })
 			}),
 		)

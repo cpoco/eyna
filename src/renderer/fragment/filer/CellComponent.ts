@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 
 import * as Native from "@module/native/ts/renderer"
@@ -22,13 +21,13 @@ export const V = vue.defineComponent({
 		})
 
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
-			return _.map<Native.Attribute, Native.AttributeFileType>(props.cell.attr, (it) => {
+			return props.cell.attr.map((it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
 			})
 		})
 
 		const link_type = vue.computed((): Native.AttributeLinkType[] => {
-			return _.map<Native.Attribute, Native.AttributeLinkType>(props.cell.attr, (it) => {
+			return props.cell.attr.map((it) => {
 				return it ? it.link_type : Native.AttributeLinkType.none
 			})
 		})
@@ -98,10 +97,27 @@ export const V = vue.defineComponent({
 			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
 		}
 
-		let icon: vue.AllowedComponentProps = { class: { "filer-cicon": true } }
-		let name: vue.AllowedComponentProps = { class: { "filer-cfile": true } }
-		let link: vue.AllowedComponentProps = { class: { "filer-clink": true } }
-		let trgt: vue.AllowedComponentProps = { class: { "filer-ctrgt": true } }
+		type style = {
+			class: {
+				"filer-cicon"?: boolean
+				"filer-cfile"?: boolean
+				"filer-clink"?: boolean
+				"filer-ctrgt"?: boolean
+
+				"c-error"?: boolean
+				"c-directory"?: boolean
+				"c-link"?: boolean
+				"c-file"?: boolean
+				"c-special"?: boolean
+				"c-shortcut"?: boolean
+				"c-bookmark"?: boolean
+			}
+		} & vue.AllowedComponentProps
+
+		let icon: style = { class: { "filer-cicon": true } }
+		let name: style = { class: { "filer-cfile": true } }
+		let link: style = { class: { "filer-clink": true } }
+		let trgt: style = { class: { "filer-ctrgt": true } }
 
 		let fraw = Font.error
 		let traw = Font.error
@@ -110,24 +126,24 @@ export const V = vue.defineComponent({
 		if (ftype == Native.AttributeFileType.file) {
 			let ltype = this.link_type[0] ?? Native.AttributeLinkType.none
 			if (ltype == Native.AttributeLinkType.shortcut) {
-				name.class = _.assign(name.class, { "c-shortcut": true })
+				name.class["c-shortcut"] = true
 				fraw = Font.link_external
 			}
 			else if (ltype == Native.AttributeLinkType.bookmark) {
-				name.class = _.assign(name.class, { "c-bookmark": true })
+				name.class["c-bookmark"] = true
 				fraw = Font.link_external
 			}
 			else {
-				name.class = _.assign(name.class, { "c-file": true })
+				name.class["c-file"] = true
 				fraw = Font.file
 			}
 		}
 		else if (ftype == Native.AttributeFileType.link) {
-			name.class = _.assign(name.class, { "c-link": true })
+			name.class["c-link"] = true
 			fraw = Font.link_external
 		}
 		else if (ftype == Native.AttributeFileType.directory) {
-			name.class = _.assign(name.class, { "c-directory": true })
+			name.class["c-directory"] = true
 			fraw = Font.folder
 		}
 		else if (ftype == Native.AttributeFileType.drive) {
@@ -137,41 +153,41 @@ export const V = vue.defineComponent({
 			fraw = Font.home
 		}
 		else if (ftype == Native.AttributeFileType.special) {
-			name.class = _.assign(name.class, { "c-special": true })
+			name.class["c-special"] = true
 			fraw = Font.gear
 		}
 		else {
-			name.class = _.assign(name.class, { "c-error": true })
+			name.class["c-error"] = true
 			fraw = Font.error
 		}
 
 		if (this.is_link) {
 			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.none
-			if (ftype2 == Native.AttributeFileType.none) {
-				trgt.class = _.assign(trgt.class, { "c-error": true })
-				traw = Font.error
-			}
-			else if (ftype2 == Native.AttributeFileType.file) {
+			if (ftype2 == Native.AttributeFileType.file) {
 				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.none
 				if (ltype2 == Native.AttributeLinkType.shortcut) {
-					trgt.class = _.assign(trgt.class, { "c-shortcut": true })
+					trgt.class["c-shortcut"] = true
 				}
 				else if (ltype2 == Native.AttributeLinkType.bookmark) {
-					trgt.class = _.assign(trgt.class, { "c-bookmark": true })
+					trgt.class["c-bookmark"] = true
 				}
 				traw = Font.file
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
-				trgt.class = _.assign(trgt.class, { "c-link": true })
+				trgt.class["c-link"] = true
 				traw = Font.link_external
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
-				trgt.class = _.assign(trgt.class, { "c-directory": true })
+				trgt.class["c-directory"] = true
 				traw = Font.folder
 			}
 			else if (ftype2 == Native.AttributeFileType.special) {
-				trgt.class = _.assign(trgt.class, { "c-special": true })
+				trgt.class["c-special"] = true
 				traw = Font.gear
+			}
+			else {
+				trgt.class["c-error"] = true
+				traw = Font.error
 			}
 		}
 

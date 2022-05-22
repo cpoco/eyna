@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 // import * as dev from "@vue/devtools"
 
