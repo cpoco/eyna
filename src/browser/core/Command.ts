@@ -75,7 +75,7 @@ export namespace Command {
 									when: conf.when,
 									cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
 									prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
-								}
+								},
 							}
 							if (this.keyData[code]) {
 								Object.assign(this.keyData[code], wc)

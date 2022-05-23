@@ -2,7 +2,6 @@
 // https://github.com/microsoft/vscode-codicons/blob/main/dist/codicon.csv
 // https://microsoft.github.io/vscode-codicons/dist/codicon.html
 
-
 export const symbol_method = "\u{ea8c}"
 export const home = "\u{eb06}"
 

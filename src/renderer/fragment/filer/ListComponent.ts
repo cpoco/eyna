@@ -4,8 +4,8 @@ import * as Bridge from "@bridge/Bridge"
 import * as CellComponent from "@renderer/fragment/filer/CellComponent"
 import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
-import * as Font from "@renderer/util/Font"
 import root from "@renderer/Root"
+import * as Font from "@renderer/util/Font"
 
 const TAG = "list"
 
@@ -83,11 +83,11 @@ export const V = vue.defineComponent({
 		let target = this.list.data.status == Bridge.Status.target
 
 		let cnt = this.list.data.length < 0
-			? vue.h(SpinnerComponent.V) 
+			? vue.h(SpinnerComponent.V)
 			: [
-				vue.h("span", { class: { "filer-cicon": true }}, this.list.data.watch ? Font.sync_ignored : Font.sync),
+				vue.h("span", { class: { "filer-cicon": true } }, this.list.data.watch ? Font.sync_ignored : Font.sync),
 				vue.h("span", {}, `${this.list.make}/${this.list.data.length} `),
-				vue.h("span", { class: { "filer-cicon": true }}, Font.circle_slash),
+				vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
 				vue.h("span", {}, this.list.data.error),
 			]
 

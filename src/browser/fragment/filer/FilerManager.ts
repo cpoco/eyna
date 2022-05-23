@@ -224,7 +224,7 @@ export class FilerManager {
 					update: this.data.update,
 					_slice: Util.object<Native.Attributes>(start, end, (i) => {
 						return this.data.ls[i]
-					})
+					}),
 				},
 			],
 		})
@@ -239,7 +239,7 @@ export class FilerManager {
 					update: this.data.update,
 					_slice: Util.object<boolean>(start, end, (i) => {
 						return this.data.mk[i]
-					})
+					}),
 				},
 			],
 		})

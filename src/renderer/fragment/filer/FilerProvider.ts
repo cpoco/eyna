@@ -1,8 +1,8 @@
 import * as vue from "vue"
 
 import * as Bridge from "@bridge/Bridge"
-import * as Native from "@module/native/ts/renderer"
 import * as Util from "@browser/util/Util"
+import * as Native from "@module/native/ts/renderer"
 
 export type List = {
 	i: number
@@ -88,7 +88,8 @@ function _create(count: number) {
 	const _update = (i: number) => {
 		reactive.list[i]!.make = Util.count(reactive.list[i]!.data.mk, (mk) => mk)
 		reactive.list[i]!.cell = Util.array<Cell>(
-			0, reactive.list[i]!.data.drawCount,
+			0,
+			reactive.list[i]!.data.drawCount,
 			(j) => {
 				const k = reactive.list[i]!.data.drawIndex + j
 				const t = reactive.list[i]!.data.drawPosition + j * reactive.list[i]!.data.drawSize
