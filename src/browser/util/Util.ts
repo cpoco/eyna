@@ -11,7 +11,7 @@ export function first<T>(a: T[] | undefined): T | null {
 }
 
 export function last<T>(a: T[] | undefined): T | null {
-	return a ? a[a.length] ?? null : null
+	return a ? a[a.length - 1] ?? null : null
 }
 
 export function count<T>(it: Iterable<T>, func: (t: T) => boolean): number {
