@@ -4,6 +4,7 @@ import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
 import { Scroll } from "@browser/core/Scroll"
 import root from "@browser/Root"
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
 
 export class FilerManager {
@@ -114,7 +115,7 @@ export class FilerManager {
 			this.dir.cd(wd)
 			this.dir.list(dp, rg, (wd, ls, e) => {
 				if (update == this.data.update) {
-					this.data.cursor = _.isNumber(cursor)
+					this.data.cursor = Util.isNumber(cursor)
 						? Math.max(0, Math.min(cursor, ls.length - 1))
 						: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
 					this.data.length = ls.length

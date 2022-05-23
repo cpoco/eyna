@@ -1,3 +1,11 @@
+export function isNumber(v: unknown): v is number {
+	return typeof v === "number"
+}
+
+export function isString(v: unknown): v is string {
+	return typeof v === "string"
+}
+
 export function first<T>(a: T[] | undefined): T | null {
 	return a ? a[0] ?? null : null
 }

@@ -3,6 +3,7 @@ import * as _ from "lodash-es"
 import * as fs from "node:fs"
 
 import { Platform } from "@browser/core/Platform"
+import * as Util from "@browser/util/Util"
 
 export namespace Command {
 	export enum When {
@@ -70,8 +71,8 @@ export namespace Command {
 						if (0 < code) {
 							_.set(this.keyData, [code, conf.when], {
 								when: conf.when,
-								cmd: _.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
-								prm: _.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
+								cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
+								prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
 							})
 						}
 					}
@@ -121,7 +122,7 @@ export namespace Command {
 
 	function acceleratorToCode(key: string | string[]): number {
 		let ret: number = 0
-		let ary: string[] = _.isString(key) ? [key] : Array.isArray(key) ? key : []
+		let ary: string[] = Util.isString(key) ? [key] : Array.isArray(key) ? key : []
 
 		ary.forEach((key: string) => {
 			key = key.toLowerCase()
