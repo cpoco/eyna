@@ -45,8 +45,8 @@ function _create(count: number) {
 
 	const updateScan = (i: number, data: Bridge.List.Change.Data) => {
 		reactive.list[i]!.data = data
-		reactive.list[i]!.data.ls = Util.array<Native.Attributes>(0, data.length, () => [])
-		reactive.list[i]!.data.mk = Util.array<boolean>(0, data.length, () => false)
+		reactive.list[i]!.data.ls = new Array(data.length).fill([])
+		reactive.list[i]!.data.mk = new Array(data.length).fill(false)
 		_update(i)
 	}
 
@@ -68,8 +68,7 @@ function _create(count: number) {
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive.list[i]!.data.ls[Number(k)]!.length = 0
-			reactive.list[i]!.data.ls[Number(k)]!.push(...v)
+			reactive.list[i]!.data.ls[Number(k)] = v
 		}
 		_update(i)
 	}
