@@ -57,6 +57,7 @@ export const V = vue.defineComponent({
 					theme: "vs-dark",
 					fontSize: Conf.DYNAMIC_FONT_SIZE,
 					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+					matchBrackets: "never",
 					wordWrap: "on",
 					wrappingIndent: "same",
 				},

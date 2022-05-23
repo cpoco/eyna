@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 
 import { Platform } from "@browser/core/Platform"
 

@@ -1,9 +1,8 @@
-import * as _ from "lodash-es"
-
 import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
 import { Scroll } from "@browser/core/Scroll"
 import root from "@browser/Root"
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
 
 export class FilerManager {
@@ -22,7 +21,7 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
-	constructor(public id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -78,6 +77,11 @@ export class FilerManager {
 
 		this.data.update = update
 		this.data.length = 0
+		this.data.watch = 0
+		this.data.error = 0
+
+		console.log("unwatch", this.id)
+		Native.unwatch(this.id)
 
 		root.send<Bridge.List.Change.Send>({
 			ch: "filer-change",
@@ -97,44 +101,55 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: 0,
 					knobSize: 0,
-					error: 0,
+					watch: this.data.watch,
+					error: this.data.error,
 				},
 			],
 		})
 
 		return new Promise((resolve, _reject) => {
-			_.unset(this.history, this.data.wd)
-			_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
+			let history = Dir.findRltv(this.data.ls, this.data.cursor)
+			if (history) {
+				this.history[this.data.wd] = history
+			}
+
 			this.dir.cd(wd)
 			this.dir.list(dp, rg, (wd, ls, e) => {
 				if (update == this.data.update) {
-					this.data.cursor = _.isNumber(cursor)
+					this.data.cursor = Util.isNumber(cursor)
 						? Math.max(0, Math.min(cursor, ls.length - 1))
 						: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
 					this.data.length = ls.length
 					this.data.wd = wd
 					this.data.ls = ls
-					this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
+					this.data.mk = Util.array(0, ls.length, () => false)
 					this.data.error = e
+
+					if (wd != Dir.HOME) {
+						console.log(wd, "watch", this.id)
+						Native.watch(this.id, wd, (_id, depth, _abstract) => {
+							if (update == this.data.update && depth == 0) {
+								this.data.watch = 1
+								root.send<Bridge.List.Watch.Send>({
+									ch: "filer-watch",
+									args: [
+										this.id,
+										{
+											update: this.data.update,
+											watch: this.data.watch,
+										},
+									],
+								})
+							}
+						})
+					}
+
 					resolve(true)
 				}
 				else {
 					resolve(false)
 				}
 			})
-			// watch test
-			{
-				if (this.pwd != Dir.HOME) {
-					console.log("watch", this.id, this.pwd)
-					Native.watch(this.id, this.pwd, (id, depth, abstract) => {
-						console.log(id, depth, abstract)
-					})
-				}
-				else {
-					console.log("unwatch", this.id)
-					Native.unwatch(this.id)
-				}
-			}
 		})
 	}
 
@@ -157,6 +172,7 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: this.sc.knobPosition,
 					knobSize: this.sc.knobSize,
+					watch: this.data.watch,
 					error: this.data.error,
 				},
 			],
@@ -193,16 +209,22 @@ export class FilerManager {
 		})
 	}
 
-	sendAttribute(start: number = 0, end: number = this.data.length) {
+	sendAttribute() {
+		for (let i = 0; i < this.data.length; i += 1000) {
+			this._sendAttribute(i, Math.min(i + 1000, this.data.length))
+		}
+	}
+
+	_sendAttribute(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
 			ch: "filer-attribute",
 			args: [
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
-						return _.assign(ret, { [it]: { ls: this.data.ls[it] } })
-					}, {}),
+					_slice: Util.object<Native.Attributes>(start, end, (i) => {
+						return this.data.ls[i]
+					}),
 				},
 			],
 		})
@@ -215,9 +237,9 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce<number, Bridge.List.Mark.Slice>(_.range(start, end), (ret, it) => {
-						return _.assign(ret, { [it]: { mk: this.data.mk[it] } })
-					}, {}),
+					_slice: Util.object<boolean>(start, end, (i) => {
+						return this.data.mk[i]
+					}),
 				},
 			],
 		})

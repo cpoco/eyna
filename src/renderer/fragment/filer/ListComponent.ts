@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as vue from "vue"
 
 import * as Bridge from "@bridge/Bridge"
@@ -6,6 +5,7 @@ import * as CellComponent from "@renderer/fragment/filer/CellComponent"
 import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
 import root from "@renderer/Root"
+import * as Font from "@renderer/util/Font"
 
 const TAG = "list"
 
@@ -82,22 +82,25 @@ export const V = vue.defineComponent({
 		let active = this.list.data.status == Bridge.Status.active
 		let target = this.list.data.status == Bridge.Status.target
 
+		let cnt = this.list.data.length < 0
+			? vue.h(SpinnerComponent.V)
+			: [
+				vue.h("span", { class: { "filer-cicon": true } }, this.list.data.watch ? Font.sync_ignored : Font.sync),
+				vue.h("span", {}, `${this.list.make}/${this.list.data.length} `),
+				vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
+				vue.h("span", {}, this.list.data.error),
+			]
+
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
 				vue.h("div", { class: { "filer-dir": true } }, this.list.data.wd),
-				vue.h(
-					"div",
-					{ class: { "filer-cnt": true } },
-					0 <= this.list.data.length
-						? `[${this.list.data.error}] ${this.list.make}/${this.list.data.length}`
-						: vue.h(SpinnerComponent.V),
-				),
+				vue.h("div", { class: { "filer-cnt": true } }, cnt),
 			]),
 			vue.h(TAG_STAT, {
 				class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target },
 			}),
 			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
-				_.map<FilerProvider.Cell, vue.VNode>(this.list.cell, (cell) => {
+				this.list.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
 			]),

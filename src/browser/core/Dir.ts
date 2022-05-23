@@ -1,7 +1,7 @@
-import * as _ from "lodash-es"
 import * as path from "node:path"
 
 import { Path } from "@browser/core/Path"
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
 
 export class Dir {
@@ -29,7 +29,7 @@ export class Dir {
 	}
 
 	static findRltv(ls: Native.Attributes[], i: number): string | null {
-		return _.get(ls, [i, 0, Native.AttributeKey.rltv], null)
+		return ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null
 	}
 
 	static findIndex(ls: Native.Attributes[], rltv: string | null): number {
@@ -38,7 +38,7 @@ export class Dir {
 		}
 
 		for (let i = 0; i < ls.length; i++) {
-			if (_.get(ls, [i, 0, Native.AttributeKey.rltv], null) == rltv) {
+			if ((ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null) == rltv) {
 				return i
 			}
 		}
@@ -71,7 +71,7 @@ export class Dir {
 				vol.forEach((v) => {
 					let attr: Native.Attributes = []
 					attr.push({
-						file_type: Native.AttributeFileType.home,
+						file_type: Native.AttributeFileType.drive,
 						full: v.full,
 						rltv: v.name,
 						name: v.name,
@@ -152,8 +152,8 @@ export class Dir {
 }
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = _.last(a)?.file_type ?? Native.AttributeFileType.none
-	let bb = _.last(b)?.file_type ?? Native.AttributeFileType.none
+	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.none
+	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.none
 
 	if (aa == Native.AttributeFileType.none) {
 		aa = Native.AttributeFileType.file

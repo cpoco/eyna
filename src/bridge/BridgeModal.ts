@@ -3,7 +3,7 @@ export namespace Modal {
 	export namespace Event {
 		export const CH = "modal-event"
 		export type Send = {
-			ch: "modal-event"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -33,7 +33,7 @@ export namespace Modal {
 	export namespace Open {
 		export const CH = "modal-open"
 		export type Send = {
-			ch: "modal-open"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [
@@ -63,7 +63,7 @@ export namespace Modal {
 	export namespace Cancel {
 		export const CH = "modal-cancel"
 		export type Send = {
-			ch: "modal-cancel"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [

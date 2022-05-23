@@ -1,4 +1,9 @@
+@font-face
+	font-family: icon
+	src: url("./vs/base/browser/ui/codicons/codicon/codicon.ttf") format("truetype")
+
 :root
+	--icon: #EEE
 	--file: var(--color)
 	--link: _cyan
 	--directory: _blue
@@ -106,11 +111,12 @@
 		flex: 1
 		margin-left: 4px
 	&-cicon
-		display: inline-block
-		vertical-align: middle
-		width: var(--dynamic-line-height)
-		height: var(--dynamic-line-height)
+		font-family: icon
+		font-size: calc(var(--dynamic-font-size) + 2px)
+		vertical-align: bottom
 		margin-right: 2px
+		color: var(--icon)
+
 	&-cfile
 		font-size: var(--dynamic-font-size)
 	&-clink

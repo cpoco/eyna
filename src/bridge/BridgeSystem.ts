@@ -3,7 +3,7 @@ export namespace System {
 	export namespace Dom {
 		export const CH = "system-dom"
 		export type Send = {
-			ch: "system-dom"
+			ch: typeof CH
 			args: Args
 		}
 		export type Args = [

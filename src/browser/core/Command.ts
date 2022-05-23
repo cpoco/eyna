@@ -1,8 +1,8 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 import * as fs from "node:fs"
 
 import { Platform } from "@browser/core/Platform"
+import * as Util from "@browser/util/Util"
 
 export namespace Command {
 	export enum When {
@@ -13,14 +13,6 @@ export namespace Command {
 	}
 	export type WhenType = When.always | When.filer | When.modal | When.viewer
 
-	export type KeyData = {
-		[code: number]: {
-			[When.always]?: Config
-			[When.filer]?: Config
-			[When.modal]?: Config
-			[When.viewer]?: Config
-		}
-	}
 	export type LoadConfig = {
 		ver: string
 		key: {
@@ -30,7 +22,18 @@ export namespace Command {
 			prm?: string | string[]
 		}[]
 	}
+
+	export type KeyData = {
+		[code: number]: WhenConfig
+	}
+	export type WhenConfig = {
+		[When.always]?: Config
+		[When.filer]?: Config
+		[When.modal]?: Config
+		[When.viewer]?: Config
+	}
 	export type Config = {
+		when: When
 		cmd: string[]
 		prm: string[]
 	}
@@ -40,7 +43,7 @@ export namespace Command {
 		private when: WhenType = When.filer
 		private keyData: KeyData = {}
 
-		set whenType(when: string | undefined) {
+		set whenType(when: string | unknown) {
 			switch (when) {
 				case When.always:
 					break
@@ -61,25 +64,32 @@ export namespace Command {
 			this.keyData = {}
 			try {
 				let loadConfig: LoadConfig = JSON.parse(fs.readFileSync(this.path, "utf8"))
-
-				console.log(JSON.stringify(loadConfig, null, 2))
+				// console.log(JSON.stringify(loadConfig, null, 2))
 
 				loadConfig.key.forEach((conf) => {
 					try {
 						let code: number = acceleratorToCode(conf.key)
 						if (0 < code) {
-							_.set(this.keyData, [code, conf.when], {
-								cmd: _.isString(conf.cmd) ? [conf.cmd] : _.isArray(conf.cmd) ? conf.cmd : [],
-								prm: _.isString(conf.prm) ? [conf.prm] : _.isArray(conf.prm) ? conf.prm : [],
-							})
+							let wc: WhenConfig = {
+								[conf.when]: {
+									when: conf.when,
+									cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
+									prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
+								},
+							}
+							if (this.keyData[code]) {
+								Object.assign(this.keyData[code], wc)
+							}
+							else {
+								Object.assign(this.keyData, { [code]: wc })
+							}
 						}
 					}
 					catch (err) {
 						console.error(err)
 					}
 				})
-
-				console.log(JSON.stringify(this.keyData, null, 2))
+				// console.log(JSON.stringify(this.keyData, null, 2))
 			}
 			catch (err) {
 				console.error(err)
@@ -121,7 +131,7 @@ export namespace Command {
 
 	function acceleratorToCode(key: string | string[]): number {
 		let ret: number = 0
-		let ary: string[] = _.isString(key) ? [key] : _.isArray(key) ? key : []
+		let ary: string[] = Util.isString(key) ? [key] : Array.isArray(key) ? key : []
 
 		ary.forEach((key: string) => {
 			key = key.toLowerCase()

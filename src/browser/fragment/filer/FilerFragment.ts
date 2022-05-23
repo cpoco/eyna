@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 import * as fs from "node:fs"
 
 import * as Conf from "@app/Conf"
@@ -9,6 +8,7 @@ import { Storage } from "@browser/core/Storage"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import { FilerManager } from "@browser/fragment/filer/FilerManager"
 import root from "@browser/Root"
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {
@@ -24,7 +24,7 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	get pwd(): string[] {
-		return _.map<FilerManager, string>(this.core, (f) => {
+		return this.core.map((f) => {
 			return f.pwd
 		})
 	}
@@ -34,7 +34,7 @@ export class FilerFragment extends AbstractFragment {
 
 		this.index = { active: 0, target: 1 }
 
-		this.core = _.map<number, FilerManager>(_.range(Conf.LIST_COUNT), (i) => {
+		this.core = Util.array(0, Conf.LIST_COUNT, (i) => {
 			return new FilerManager(
 				i,
 				(Storage.manager.data.wd ?? [])[i] ?? null,
@@ -104,22 +104,16 @@ export class FilerFragment extends AbstractFragment {
 					active: {
 						wd: active.pwd,
 						cursor: active.data.ls[active.data.cursor] ?? null,
-						select: _.reduce<number, Native.Attributes[]>(_.range(0, active.data.length), (ret, i) => {
-							if (active.data.mk[i]) {
-								ret.push(active.data.ls[i]!)
-							}
-							return ret
-						}, []),
+						select: Util.array(0, active.data.length, (i) => {
+							return active.data.mk[i] ? active.data.ls[i]! : undefined
+						}),
 					},
 					target: {
 						wd: target.pwd,
 						cursor: target.data.ls[target.data.cursor] ?? null,
-						select: _.reduce<number, Native.Attributes[]>(_.range(0, target.data.length), (ret, i) => {
-							if (target.data.mk[i]) {
-								ret.push(target.data.ls[i]!)
-							}
-							return ret
-						}, []),
+						select: Util.array(0, target.data.length, (i) => {
+							return target.data.mk[i] ? target.data.ls[i]! : undefined
+						}),
 					},
 				})
 				return Promise.resolve()
@@ -132,22 +126,16 @@ export class FilerFragment extends AbstractFragment {
 				active: {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
-					select: _.reduce<number, Native.Attributes[]>(_.range(0, active.data.length), (ret, i) => {
-						if (active.data.mk[i]) {
-							ret.push(active.data.ls[i]!)
-						}
-						return ret
-					}, []),
+					select: Util.array(0, active.data.length, (i) => {
+						return active.data.mk[i] ? active.data.ls[i]! : undefined
+					}),
 				},
 				target: {
 					wd: target.pwd,
 					cursor: target.data.ls[target.data.cursor] ?? null,
-					select: _.reduce<number, Native.Attributes[]>(_.range(0, target.data.length), (ret, i) => {
-						if (target.data.mk[i]) {
-							ret.push(target.data.ls[i]!)
-						}
-						return ret
-					}, []),
+					select: Util.array(0, target.data.length, (i) => {
+						return target.data.mk[i] ? target.data.ls[i]! : undefined
+					}),
 				},
 			})
 			this.title()
@@ -240,7 +228,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.mark", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -267,18 +255,18 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.select", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = _.first(active.data.ls[active.data.cursor])
-					let trgt = _.last(active.data.ls[active.data.cursor])
+					let attr = Util.first(active.data.ls[active.data.cursor])
+					let trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
 						resolve()
 						return
 					}
-					// home
+					// drive
 					// homeuser
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.home
+						attr.file_type == Native.AttributeFileType.drive
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
 						|| attr.file_type == Native.AttributeFileType.link
@@ -351,18 +339,18 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetselect", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = _.first(active.data.ls[active.data.cursor])
-					let trgt = _.last(active.data.ls[active.data.cursor])
+					let attr = Util.first(active.data.ls[active.data.cursor])
+					let trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
 						resolve()
 						return
 					}
-					// home
+					// drive
 					// homeuser
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.home
+						attr.file_type == Native.AttributeFileType.drive
 						|| attr.file_type == Native.AttributeFileType.homeuser
 						|| attr.file_type == Native.AttributeFileType.directory
 						|| attr.file_type == Native.AttributeFileType.link
@@ -390,7 +378,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.shellopne", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -398,7 +386,7 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.shellproperty", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
