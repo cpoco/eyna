@@ -9,6 +9,7 @@ import { Storage } from "@browser/core/Storage"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import { FilerManager } from "@browser/fragment/filer/FilerManager"
 import root from "@browser/Root"
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {
@@ -240,7 +241,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.mark", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -267,8 +268,8 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.select", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = _.first(active.data.ls[active.data.cursor])
-					let trgt = _.last(active.data.ls[active.data.cursor])
+					let attr = Util.first(active.data.ls[active.data.cursor])
+					let trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
 						resolve()
 						return
@@ -351,8 +352,8 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetselect", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = _.first(active.data.ls[active.data.cursor])
-					let trgt = _.last(active.data.ls[active.data.cursor])
+					let attr = Util.first(active.data.ls[active.data.cursor])
+					let trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
 						resolve()
 						return
@@ -390,7 +391,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.shellopne", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}
@@ -398,7 +399,7 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.shellproperty", (active, _target) => {
-				let attr = _.first(active.data.ls[active.data.cursor])
+				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
 				}

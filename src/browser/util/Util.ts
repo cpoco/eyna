@@ -1,3 +1,11 @@
+export function first<T>(a: T[] | undefined): T | null {
+	return a ? a[0] ?? null : null
+}
+
+export function last<T>(a: T[] | undefined): T | null {
+	return a ? a[a.length] ?? null : null
+}
+
 export function count<T>(it: Iterable<T>, func: (t: T) => boolean): number {
 	let cnt: number = 0
 	for (let t of it) {
