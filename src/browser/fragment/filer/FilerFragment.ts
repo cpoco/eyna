@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 import * as fs from "node:fs"
 
 import * as Conf from "@app/Conf"
@@ -25,7 +24,7 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	get pwd(): string[] {
-		return _.map<FilerManager, string>(this.core, (f) => {
+		return this.core.map((f) => {
 			return f.pwd
 		})
 	}
@@ -35,7 +34,7 @@ export class FilerFragment extends AbstractFragment {
 
 		this.index = { active: 0, target: 1 }
 
-		this.core = _.map<number, FilerManager>(_.range(Conf.LIST_COUNT), (i) => {
+		this.core = Util.array(0, Conf.LIST_COUNT, (i) => {
 			return new FilerManager(
 				i,
 				(Storage.manager.data.wd ?? [])[i] ?? null,
@@ -105,22 +104,16 @@ export class FilerFragment extends AbstractFragment {
 					active: {
 						wd: active.pwd,
 						cursor: active.data.ls[active.data.cursor] ?? null,
-						select: _.reduce<number, Native.Attributes[]>(_.range(0, active.data.length), (ret, i) => {
-							if (active.data.mk[i]) {
-								ret.push(active.data.ls[i]!)
-							}
-							return ret
-						}, []),
+						select: Util.array(0, active.data.length, (i) => {
+							return active.data.mk[i] ? active.data.ls[i]! : undefined
+						}),
 					},
 					target: {
 						wd: target.pwd,
 						cursor: target.data.ls[target.data.cursor] ?? null,
-						select: _.reduce<number, Native.Attributes[]>(_.range(0, target.data.length), (ret, i) => {
-							if (target.data.mk[i]) {
-								ret.push(target.data.ls[i]!)
-							}
-							return ret
-						}, []),
+						select: Util.array(0, target.data.length, (i) => {
+							return target.data.mk[i] ? target.data.ls[i]! : undefined
+						}),
 					},
 				})
 				return Promise.resolve()
@@ -133,22 +126,16 @@ export class FilerFragment extends AbstractFragment {
 				active: {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
-					select: _.reduce<number, Native.Attributes[]>(_.range(0, active.data.length), (ret, i) => {
-						if (active.data.mk[i]) {
-							ret.push(active.data.ls[i]!)
-						}
-						return ret
-					}, []),
+					select: Util.array(0, active.data.length, (i) => {
+						return active.data.mk[i] ? active.data.ls[i]! : undefined
+					}),
 				},
 				target: {
 					wd: target.pwd,
 					cursor: target.data.ls[target.data.cursor] ?? null,
-					select: _.reduce<number, Native.Attributes[]>(_.range(0, target.data.length), (ret, i) => {
-						if (target.data.mk[i]) {
-							ret.push(target.data.ls[i]!)
-						}
-						return ret
-					}, []),
+					select: Util.array(0, target.data.length, (i) => {
+						return target.data.mk[i] ? target.data.ls[i]! : undefined
+					}),
 				},
 			})
 			this.title()

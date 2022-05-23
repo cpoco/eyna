@@ -24,8 +24,8 @@ export function count<T>(it: Iterable<T>, func: (t: T) => boolean): number {
 	return cnt
 }
 
-export function array<T>(start: number, end: number, func: (i: number) => T | undefined): T[] {
-	let ary: T[] = []
+export function array<V>(start: number, end: number, func: (i: number) => V | undefined): V[] {
+	let ary: V[] = []
 	for (let i = start; i < end; i++) {
 		let a = func(i)
 		if (a !== undefined) {
@@ -33,4 +33,15 @@ export function array<T>(start: number, end: number, func: (i: number) => T | un
 		}
 	}
 	return ary
+}
+
+export function object<V>(start: number, end: number, func: (i: number) => V | undefined): { [key: string]: V } {
+	let obj: { [k: string]: V } = {}
+	for (let i = start; i < end; i++) {
+		let a = func(i)
+		if (a !== undefined) {
+			obj[i] = a
+		}
+	}
+	return obj
 }

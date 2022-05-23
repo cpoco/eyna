@@ -1,5 +1,3 @@
-import * as _ from "lodash-es"
-
 import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
 import { Scroll } from "@browser/core/Scroll"
@@ -112,9 +110,7 @@ export class FilerManager {
 		return new Promise((resolve, _reject) => {
 			let history = Dir.findRltv(this.data.ls, this.data.cursor)
 			if (history) {
-				Object.assign(this.history, {
-					[this.data.wd]: history
-				})
+				this.history[this.data.wd] = history
 			}
 
 			this.dir.cd(wd)
@@ -126,7 +122,7 @@ export class FilerManager {
 					this.data.length = ls.length
 					this.data.wd = wd
 					this.data.ls = ls
-					this.data.mk = _.map<number, boolean>(_.range(ls.length), () => false)
+					this.data.mk = Util.array(0, ls.length, () => false)
 					this.data.error = e
 
 					if (wd != Dir.HOME) {
@@ -226,9 +222,9 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
-						return Object.assign(ret, { [it]: this.data.ls[it] })
-					}, {}),
+					_slice: Util.object<Native.Attributes>(start, end, (i) => {
+						return this.data.ls[i]
+					})
 				},
 			],
 		})
@@ -241,9 +237,9 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: _.reduce<number, Bridge.List.Mark.Slice>(_.range(start, end), (ret, it) => {
-						return Object.assign(ret, { [it]: this.data.mk[it] })
-					}, {}),
+					_slice: Util.object<boolean>(start, end, (i) => {
+						return this.data.mk[i]
+					})
 				},
 			],
 		})
