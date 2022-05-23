@@ -163,9 +163,7 @@ export namespace List {
 			_slice: Slice
 		}
 		export type Slice = {
-			[index: number]: {
-				mk: boolean
-			}
+			[index: number]: boolean
 		}
 	}
 

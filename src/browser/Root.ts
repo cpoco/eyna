@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 import * as fs from "node:fs"
 import * as vm from "node:vm"
 

@@ -1,4 +1,3 @@
-import * as _ from "lodash-es"
 import * as path from "node:path"
 
 import { Path } from "@browser/core/Path"

@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as _ from "lodash-es"
 import * as fs from "node:fs"
 
 import { Platform } from "@browser/core/Platform"
@@ -14,14 +13,6 @@ export namespace Command {
 	}
 	export type WhenType = When.always | When.filer | When.modal | When.viewer
 
-	export type KeyData = {
-		[code: number]: {
-			[When.always]?: Config
-			[When.filer]?: Config
-			[When.modal]?: Config
-			[When.viewer]?: Config
-		}
-	}
 	export type LoadConfig = {
 		ver: string
 		key: {
@@ -30,6 +21,16 @@ export namespace Command {
 			cmd: string | string[]
 			prm?: string | string[]
 		}[]
+	}
+
+	export type KeyData = {
+		[code: number]: WhenConfig
+	}
+	export type WhenConfig = {
+		[When.always]?: Config
+		[When.filer]?: Config
+		[When.modal]?: Config
+		[When.viewer]?: Config
 	}
 	export type Config = {
 		when: When
@@ -42,7 +43,7 @@ export namespace Command {
 		private when: WhenType = When.filer
 		private keyData: KeyData = {}
 
-		set whenType(when: string | undefined) {
+		set whenType(when: string | unknown) {
 			switch (when) {
 				case When.always:
 					break
@@ -69,11 +70,19 @@ export namespace Command {
 					try {
 						let code: number = acceleratorToCode(conf.key)
 						if (0 < code) {
-							_.set(this.keyData, [code, conf.when], {
-								when: conf.when,
-								cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
-								prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
-							})
+							let wc: WhenConfig = {
+								[conf.when]: {
+									when: conf.when,
+									cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
+									prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
+								}
+							}
+							if (this.keyData[code]) {
+								Object.assign(this.keyData[code], wc)
+							}
+							else {
+								Object.assign(this.keyData, { [code]: wc })
+							}
 						}
 					}
 					catch (err) {

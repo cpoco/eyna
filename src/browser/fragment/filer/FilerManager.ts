@@ -23,7 +23,7 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
-	constructor(public id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -110,8 +110,13 @@ export class FilerManager {
 		})
 
 		return new Promise((resolve, _reject) => {
-			_.unset(this.history, this.data.wd)
-			_.assign(this.history, { [this.data.wd]: Dir.findRltv(this.data.ls, this.data.cursor) })
+			let history = Dir.findRltv(this.data.ls, this.data.cursor)
+			if (history) {
+				Object.assign(this.history, {
+					[this.data.wd]: history
+				})
+			}
+
 			this.dir.cd(wd)
 			this.dir.list(dp, rg, (wd, ls, e) => {
 				if (update == this.data.update) {
@@ -222,7 +227,7 @@ export class FilerManager {
 				{
 					update: this.data.update,
 					_slice: _.reduce<number, Bridge.List.Attribute.Slice>(_.range(start, end), (ret, it) => {
-						return _.assign(ret, { [it]: this.data.ls[it] })
+						return Object.assign(ret, { [it]: this.data.ls[it] })
 					}, {}),
 				},
 			],
@@ -237,7 +242,7 @@ export class FilerManager {
 				{
 					update: this.data.update,
 					_slice: _.reduce<number, Bridge.List.Mark.Slice>(_.range(start, end), (ret, it) => {
-						return _.assign(ret, { [it]: { mk: this.data.mk[it] } })
+						return Object.assign(ret, { [it]: this.data.mk[it] })
 					}, {}),
 				},
 			],

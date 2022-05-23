@@ -76,7 +76,7 @@ function _create(count: number) {
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive.list[i]!.data.mk[Number(k)] = v.mk
+			reactive.list[i]!.data.mk[Number(k)] = v
 		}
 		_update(i)
 	}

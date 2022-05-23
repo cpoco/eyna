@@ -1,5 +1,3 @@
-import * as _ from "lodash-es"
-
 export abstract class AbstractFragment {
 	private func: { [cmd: string]: (...args: string[]) => Promise<void> } = {}
 
