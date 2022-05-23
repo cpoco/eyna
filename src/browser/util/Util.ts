@@ -7,11 +7,11 @@ export function isString(v: unknown): v is string {
 }
 
 export function first<T>(a: T[] | undefined): T | null {
-	return a ? a[0] ?? null : null
+	return a?.[0] ?? null
 }
 
 export function last<T>(a: T[] | undefined): T | null {
-	return a ? a[a.length - 1] ?? null : null
+	return a?.[a.length - 1] ?? null
 }
 
 export function count<T>(it: Iterable<T>, func: (t: T) => boolean): number {
