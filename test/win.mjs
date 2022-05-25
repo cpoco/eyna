@@ -2,7 +2,7 @@ import fs from "fs-extra"
 import child_process from "node:child_process"
 import path from "node:path"
 
-const wd = path.join("/", "Users", "Shared", "eyna test")
+const wd = path.join("C:", "Users", "Public", "eyna test")
 
 if (fs.existsSync(wd)) {
 	await fs.rm(wd, { recursive: true })
@@ -63,16 +63,3 @@ await fs.symlink("ln_ln_error_0", path.join(wd, "ln_ln_ln_error_0"))
 
 await fs.symlink("ln_loop_y", path.join(wd, "ln_loop_x"))
 await fs.symlink("ln_loop_x", path.join(wd, "ln_loop_y"))
-
-make_alias(path.join(wd, "d0"), path.join(wd, "d0_alias"))
-await fs.symlink("d0_alias", path.join(wd, "d0_alias_ln"))
-make_alias(path.join(wd, "f0"), path.join(wd, "f0_alias"))
-await fs.symlink("f0_alias", path.join(wd, "f0_alias_ln"))
-
-function make_alias(src, out) {
-	let script = `tell application "Finder"
-	make new alias to (POSIX file "${src}") at (POSIX file "${path.dirname(out)}")
-	set name of result to "${path.basename(out)}"
-end tell`
-	child_process.execSync(`osascript -e '${script}'`)
-}
