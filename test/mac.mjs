@@ -61,7 +61,9 @@ await fs.symlink("ln_loop_y", path.join(wd, "ln_loop_x"))
 await fs.symlink("ln_loop_x", path.join(wd, "ln_loop_y"))
 
 make_alias(path.join(wd, "d0"), path.join(wd, "d0_alias"))
+await fs.symlink("d0_alias", path.join(wd, "d0_alias_ln"))
 make_alias(path.join(wd, "f0"), path.join(wd, "f0_alias"))
+await fs.symlink("f0_alias", path.join(wd, "f0_alias_ln"))
 
 function make_alias(src, out) {
 	let script = `tell application "Finder"

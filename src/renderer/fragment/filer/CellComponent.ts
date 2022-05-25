@@ -169,11 +169,16 @@ export const V = vue.defineComponent({
 				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.none
 				if (ltype2 == Native.AttributeLinkType.shortcut) {
 					trgt.class["c-shortcut"] = true
+					traw = Font.link_external
 				}
 				else if (ltype2 == Native.AttributeLinkType.bookmark) {
 					trgt.class["c-bookmark"] = true
+					traw = Font.link_external
 				}
-				traw = Font.file
+				else {
+					trgt.class["c-file"] = true
+					traw = Font.file
+				}
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
 				let ltype3 = Util.last(this.link_type) ?? Native.AttributeLinkType.none
