@@ -54,6 +54,8 @@ await fs.symlink(wd + "/../", path.join(wd, "parent_3"))
 await fs.symlink("error", path.join(wd, "ln_error_0"))
 await fs.symlink("./error", path.join(wd, "ln_error_1"))
 await fs.symlink("../error", path.join(wd, "ln_error_2"))
+await fs.symlink("ln_error_0", path.join(wd, "ln_ln_error_0"))
+await fs.symlink("ln_ln_error_0", path.join(wd, "ln_ln_ln_error_0"))
 
 await fs.symlink("ln_loop_y", path.join(wd, "ln_loop_x"))
 await fs.symlink("ln_loop_x", path.join(wd, "ln_loop_y"))

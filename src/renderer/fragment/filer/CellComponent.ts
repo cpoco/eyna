@@ -1,5 +1,6 @@
 import * as vue from "vue"
 
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/renderer"
 import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
@@ -104,7 +105,8 @@ export const V = vue.defineComponent({
 				"filer-clink"?: boolean
 				"filer-ctrgt"?: boolean
 
-				"c-error"?: boolean
+				"c-warn"?: boolean
+				"c-miss"?: boolean
 				"c-directory"?: boolean
 				"c-link"?: boolean
 				"c-file"?: boolean
@@ -157,7 +159,7 @@ export const V = vue.defineComponent({
 			fraw = Font.gear
 		}
 		else {
-			name.class["c-error"] = true
+			name.class["c-miss"] = true
 			fraw = Font.error
 		}
 
@@ -174,8 +176,15 @@ export const V = vue.defineComponent({
 				traw = Font.file
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
-				trgt.class["c-link"] = true
-				traw = Font.link_external
+				let ltype3 = Util.last(this.link_type) ?? Native.AttributeLinkType.none
+				if (ltype3 == Native.AttributeLinkType.none) {
+					trgt.class["c-warn"] = true
+					traw = Font.link_external
+				}
+				else {
+					trgt.class["c-link"] = true
+					traw = Font.link_external
+				}
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
 				trgt.class["c-directory"] = true
@@ -186,7 +195,7 @@ export const V = vue.defineComponent({
 				traw = Font.gear
 			}
 			else {
-				trgt.class["c-error"] = true
+				trgt.class["c-miss"] = true
 				traw = Font.error
 			}
 		}

@@ -9,8 +9,9 @@
 	--directory: _blue
 	--shortcut: _green
 	--bookmark: _green
-	--special: _yellow
-	--error: _red
+	--special: _magenta
+	--warn: _yellow
+	--miss: _red
 
 	--stat-none: rgba(255, 255, 255, 0.1)
 	--stat-active: rgba(30, 145, 255, 1)
@@ -40,8 +41,10 @@
 	color: var(--bookmark)
 .c-special
 	color: var(--special)
-.c-error
-	color: var(--error)
+.c-warn
+	color: var(--warn)
+.c-miss
+	color: var(--miss)
 
 .filer
 	&-fragment
