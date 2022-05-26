@@ -200,11 +200,11 @@ class Root {
 						return Native.move(full_src, full_dst)
 					},
 					findcopy: async (full: string): Promise<string[]> => {
-						let dir = await Native.getDirectory(full, full, false, 1024, null)
+						let dir = await Native.getDirectory(full, true, false, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
 					findmove: async (full: string): Promise<string[]> => {
-						let dir = await Native.getDirectory(full, full, true, 1024, null)
+						let dir = await Native.getDirectory(full, true, true, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
 				},

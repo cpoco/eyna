@@ -11,7 +11,7 @@ console.log("isElevated", native.isElevated())
 const v = await native.getVolume()
 console.log("getVolume", v)
 
-const d = await native.getDirectory(v[0].full, "", false, 0, null)
+const d = await native.getDirectory(v[0].full, false, false, 0, null)
 console.log("getDirectory", d)
 
 const a = await native.getAttribute(d.ls[0], "")

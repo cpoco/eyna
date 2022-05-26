@@ -10,7 +10,7 @@ struct get_directory_work
 	v8::Persistent<v8::Promise::Resolver> promise;
 
 	std::filesystem::path wd; // generic_path
-	std::filesystem::path bs; // generic_path
+	bool rl; // result relative
 	bool md; // last parent directory
 	int32_t dp;
 	_string_t pt;
@@ -81,11 +81,11 @@ static void get_directory_complete(uv_work_t* req, int status)
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
 	for (std::filesystem::path& p : work->ls) {
-		if (work->bs.empty()) {
+		if (!work->rl) {
 			array->Set(CONTEXT, index++, to_string(p));
 		}
 		else {
-			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->bs))));
+			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->wd))));
 		}
 	}
 
@@ -109,7 +109,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	if (info.Length() != 5
 			|| !info[0]->IsString()
-			|| !info[1]->IsString()
+			|| !info[1]->IsBoolean()
 			|| !info[2]->IsBoolean()
 			|| !info[3]->IsNumber()
 			|| !(info[4]->IsNull() || info[4]->IsRegExp()))
@@ -125,7 +125,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->wd = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 
-	work->bs = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	work->rl = info[1]->BooleanValue(ISOLATE);
 
 	work->md = info[2]->BooleanValue(ISOLATE);
 
