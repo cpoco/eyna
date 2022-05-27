@@ -61,3 +61,10 @@ export type DirectorySize = {
 	f: number
 	e: number
 }
+
+export type Resolve = {
+	full: string
+	real: string
+}
+
+export type Resolves = Resolve[]

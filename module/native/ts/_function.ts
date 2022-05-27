@@ -86,6 +86,13 @@ export function openProperties(abstract: string) {
 	native.openProperties(abstract)
 }
 
+export function resolve(abstract: string): Promise<Type.Resolves> {
+	if (native == null) {
+		return Promise.reject()
+	}
+	return native.resolve(abstract)
+}
+
 export function watch(id: number, abstract: string, callback: (id: number, depth: number, abstract: string) => void) {
 	if (native == null) {
 		return

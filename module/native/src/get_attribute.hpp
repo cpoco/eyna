@@ -14,40 +14,11 @@ struct get_attribute_work
 	std::vector<_attribute> attributes;
 };
 
-void get_attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
-{
-	vector.push_back(_attribute());
-
-	for (_attribute& a : vector) {
-		if (!a.full.empty() && a.full == path) {
-			return;
-		}
-	}
-
-	_attribute& attr = vector.back();
-
-	attr.full = path;
-
-	attribute(attr);
-
-	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
-		if (attr.link.is_absolute()) {
-			get_attribute(std::filesystem::path(attr.link), vector);
-		}
-		else if (attr.link.is_relative()) {
-			get_attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
-		}
-		else {
-			vector.push_back(_attribute());
-		}
-	}
-}
-
 static void get_attribute_async(uv_work_t* req)
 {
 	get_attribute_work* work = static_cast<get_attribute_work*>(req->data);
 
-	get_attribute(work->abst, work->attributes);
+	attribute(work->abst, work->attributes);
 }
 
 static void get_attribute_complete(uv_work_t* req, int status)
@@ -81,7 +52,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("ext")),  to_string(a.full.extension()));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, a.link_type));
-		if (a.link_type == 0) {
+		if (a.link_type == LINK_TYPE::LINK_TYPE_NONE) {
 			obj->Set(CONTEXT, to_string(V("link")), v8::Null(ISOLATE));
 		}
 		else {

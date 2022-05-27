@@ -4,7 +4,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 import module from "node:module"
 const require = module.createRequire(import.meta.url)
-const native = require("../build/Release/native.node")
+const native = require(path.join(__dirname, "../build/Release/native.node"))
 
 console.log("isElevated", native.isElevated())
 
