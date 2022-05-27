@@ -41,25 +41,39 @@ await fs.mkdir(path.join(wd, "RLO"))
 await fs.writeFile(path.join(wd, "RLO", "0123456789"), "0123456789")
 await fs.writeFile(path.join(wd, "RLO", "\u{202E}9876543210"), "\u{202E}9876543210")
 
-await fs.symlink(".", path.join(wd, "self_00"))
-await fs.symlink("./", path.join(wd, "self_01"))
-await fs.symlink("./.", path.join(wd, "self_02"))
-await fs.symlink(wd, path.join(wd, "self_10"))
-await fs.symlink(wd + "/", path.join(wd, "self_11"))
-await fs.symlink(wd + "/.", path.join(wd, "self_12"))
+await fs.symlink(wd,        path.join(wd, "la_self_0"))
+await fs.symlink(wd + "/",  path.join(wd, "la_self_1"))
+await fs.symlink(wd + "/.", path.join(wd, "la_self_2"))
+await fs.symlink(".",       path.join(wd, "lr_self_0"))
+await fs.symlink("./",      path.join(wd, "lr_self_1"))
+await fs.symlink("./.",     path.join(wd, "lr_self_2"))
 
-await fs.symlink("..", path.join(wd, "parent_00"))
-await fs.symlink("../", path.join(wd, "parent_01"))
-await fs.symlink("../.", path.join(wd, "parent_02"))
-await fs.symlink(wd + "/..", path.join(wd, "parent_10"))
-await fs.symlink(wd + "/../", path.join(wd, "parent_11"))
-await fs.symlink(wd + "/../.", path.join(wd, "parent_12"))
+await fs.symlink(wd + "/..",   path.join(wd, "la_parent_0"))
+await fs.symlink(wd + "/../",  path.join(wd, "la_parent_1"))
+await fs.symlink(wd + "/../.", path.join(wd, "la_parent_2"))
+await fs.symlink("..",         path.join(wd, "lr_parent_0"))
+await fs.symlink("../",        path.join(wd, "lr_parent_1"))
+await fs.symlink("../.",       path.join(wd, "lr_parent_2"))
 
-await fs.symlink("error", path.join(wd, "ln_error_0"))
-await fs.symlink("./error", path.join(wd, "ln_error_1"))
-await fs.symlink("../error", path.join(wd, "ln_error_2"))
-await fs.symlink("ln_error_0", path.join(wd, "ln_ln_error_0"))
-await fs.symlink("ln_ln_error_0", path.join(wd, "ln_ln_ln_error_0"))
+await fs.symlink(wd + "/error",   path.join(wd, "la_error_0"))
+await fs.symlink(wd + "/error/",  path.join(wd, "la_error_1"))
+await fs.symlink(wd + "/error/.", path.join(wd, "la_error_2"))
+await fs.symlink("error",         path.join(wd, "lr_error_0"))
+await fs.symlink("error/",        path.join(wd, "lr_error_1"))
+await fs.symlink("error/.",       path.join(wd, "lr_error_2"))
 
-await fs.symlink("ln_loop_y", path.join(wd, "ln_loop_x"))
-await fs.symlink("ln_loop_x", path.join(wd, "ln_loop_y"))
+await fs.symlink("lr_loop_y", path.join(wd, "lr_loop_x"))
+await fs.symlink("lr_loop_x", path.join(wd, "lr_loop_y"))
+
+make_shortcut(path.join(wd, "d0"), path.join(wd, "d0.lnk"))
+make_shortcut(path.join(wd, "f0"), path.join(wd, "f0.lnk"))
+
+function make_shortcut(target, create) {
+	target = path.win32.normalize(target)
+	create = path.win32.normalize(create)
+	const script = `$WshShell = New-Object -ComObject WScript.Shell;
+$ShortCut = $WshShell.CreateShortcut("${create}");
+$ShortCut.TargetPath = "${target}";
+$ShortCut.Save();`
+	child_process.execSync(script, { "shell": "powershell.exe" })
+}
