@@ -16,15 +16,15 @@ struct resolve_work
 	v8::Persistent<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
-	std::vector<_resolve> resolves;
+	std::vector<_resolve> v;
 };
 
 static void resolve_async(uv_work_t* req)
 {
 	resolve_work* work = static_cast<resolve_work*>(req->data);
 
-	work->resolves.push_back(_resolve());
-	_resolve& top = work->resolves.back();
+	work->v.push_back(_resolve());
+	_resolve& top = work->v.back();
 	top.full = work->abst.root_path();
 	top.real = work->abst.root_path();
 
@@ -33,9 +33,9 @@ static void resolve_async(uv_work_t* req)
 			continue;
 		}
 
-		work->resolves.push_back(_resolve());
-		_resolve& pre = work->resolves[work->resolves.size() - 2];
-		_resolve& now = work->resolves[work->resolves.size() - 1];
+		work->v.push_back(_resolve());
+		_resolve& pre = work->v[work->v.size() - 2];
+		_resolve& now = work->v[work->v.size() - 1];
 
 		now.full = generic_path(pre.full / p);
 
@@ -54,7 +54,7 @@ static void resolve_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Array> array = v8::Array::New(ISOLATE);
 
-	for (_resolve& r : work->resolves) {
+	for (_resolve& r : work->v) {
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 
 		obj->Set(CONTEXT, to_string(V("full")), to_string(r.full));
@@ -92,7 +92,8 @@ void resolve(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
-	work->resolves.clear();
+
+	work->v.clear();
 
 	uv_queue_work(uv_default_loop(), &work->request, resolve_async, resolve_complete);
 }

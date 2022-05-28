@@ -9,13 +9,16 @@ struct get_directory_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	std::filesystem::path wd; // generic_path
-	bool rl; // result relative
+	std::filesystem::path abst; // generic_path
+	std::filesystem::path base; // generic_path
 	bool md; // last parent directory
 	int32_t dp;
 	_string_t pt;
-	std::vector<std::filesystem::path> ls; // generic_path
-	int32_t e;
+	std::vector<std::filesystem::path> v; // generic_path
+	int64_t s; // size
+	int32_t d; // directory count
+	int32_t f; // file count
+	int32_t e; // error count
 };
 
 static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp)
@@ -48,14 +51,23 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				attr.full = path;
 				attribute(attr);
 
-				if (work->md == false && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->wd)).c_str(), _regex_t(work->pt)))) {
-					work->ls.push_back(attr.full);
+				if (work->md == false && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+					work->v.push_back(attr.full);
 				}
-				if (dp < work->dp && attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
-					get_directory(work, attr.full, dp + 1);
+
+				if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
+					work->d++;
+					if (dp < work->dp) {
+						get_directory(work, attr.full, dp + 1);
+					}
 				}
-				if (work->md == true && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->wd)).c_str(), _regex_t(work->pt)))) {
-					work->ls.push_back(attr.full);
+				else {
+					work->s += attr.size;
+					work->f++;
+				}
+
+				if (work->md == true && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+					work->v.push_back(attr.full);
 				}
 			}
 		);
@@ -69,7 +81,7 @@ static void get_directory_async(uv_work_t* req)
 {
 	get_directory_work* work = static_cast<get_directory_work*>(req->data);
 
-	get_directory(work, work->wd, 0);
+	get_directory(work, work->abst, 0);
 }
 
 static void get_directory_complete(uv_work_t* req, int status)
@@ -80,18 +92,21 @@ static void get_directory_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
-	for (std::filesystem::path& p : work->ls) {
-		if (!work->rl) {
+	for (std::filesystem::path& p : work->v) {
+		if (work->base.empty()) {
 			array->Set(CONTEXT, index++, to_string(p));
 		}
 		else {
-			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->wd))));
+			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->base))));
 		}
 	}
 
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->wd));
+	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->abst));
 	obj->Set(CONTEXT, to_string(V("ls")), array);
+	obj->Set(CONTEXT, to_string(V("s")), v8::Number::New(ISOLATE, (double)work->s));
+	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
+	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
@@ -109,7 +124,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	if (info.Length() != 5
 			|| !info[0]->IsString()
-			|| !info[1]->IsBoolean()
+			|| !info[1]->IsString()
 			|| !info[2]->IsBoolean()
 			|| !info[3]->IsNumber()
 			|| !(info[4]->IsNull() || info[4]->IsRegExp()))
@@ -123,9 +138,9 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->wd = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 
-	work->rl = info[1]->BooleanValue(ISOLATE);
+	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 
 	work->md = info[2]->BooleanValue(ISOLATE);
 
@@ -138,8 +153,11 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		work->pt = to_string(v8::Local<v8::RegExp>::Cast(info[4])->GetSource());
 	}
 
-	work->ls.clear();
+	work->v.clear();
 
+	work->s = 0;
+	work->d = 0;
+	work->f = 0;
 	work->e = 0;
 
 	uv_queue_work(uv_default_loop(), &work->request, get_directory_async, get_directory_complete);

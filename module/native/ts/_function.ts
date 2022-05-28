@@ -33,7 +33,7 @@ export function getAttribute(abstract: string, base: string = ""): Promise<Type.
 
 export function getDirectory(
 	abstract: string,
-	rltv: boolean = false,
+	base: string = "",
 	mode: boolean = false,
 	depth: number = 0,
 	regexp: RegExp | null = null,
@@ -41,14 +41,7 @@ export function getDirectory(
 	if (native == null) {
 		return Promise.reject()
 	}
-	return native.getDirectory(abstract, rltv, mode, depth, regexp)
-}
-
-export function getDirectorySize(abstract: string): Promise<Type.DirectorySize> {
-	if (native == null) {
-		return Promise.reject()
-	}
-	return native.getDirectorySize(abstract)
+	return native.getDirectory(abstract, base, mode, depth, regexp)
 }
 
 export function getVolume(): Promise<Type.Volume[]> {

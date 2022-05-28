@@ -6,17 +6,20 @@ import module from "node:module"
 const require = module.createRequire(import.meta.url)
 const native = require(path.join(__dirname, "../build/Release/native.node"))
 
+const wd = path.join("C:", "Users", "Public", "eyna test")
+// const wd = path.join("/", "Users", "Shared", "eyna test")
+
 console.log("isElevated", native.isElevated())
 
-const v = await native.getVolume()
-console.log("getVolume", v)
+console.log("getVolume", await native.getVolume())
 
-const d = await native.getDirectory(v[0].full, false, false, 0, null)
-console.log("getDirectory", d)
+console.log("getAttribute", await native.getAttribute(wd, ""))
+console.log("getAttribute", await native.getAttribute(wd, wd))
 
-const a = await native.getAttribute(d.ls[0], "")
-console.log("getAttribute", a)
+console.log("getDirectory", await native.getDirectory(wd, "", false, 0, null))
+console.log("getDirectory", await native.getDirectory(wd, wd, false, 0, null))
 
+/*
 const ID = 0
 native.watch(
 	ID,
@@ -36,3 +39,4 @@ await native.moveToTrash(path.join(__dirname, "__test🌈"))
 
 await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
 await native.moveToTrash(path.join(__dirname, "__test🌈"))
+*/

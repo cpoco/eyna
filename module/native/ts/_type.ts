@@ -51,11 +51,6 @@ export type Volume = {
 export type Directory = {
 	wd: string
 	ls: [string]
-	e: number
-}
-
-export type DirectorySize = {
-	wd: string
 	s: number
 	d: number
 	f: number

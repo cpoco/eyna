@@ -4,7 +4,6 @@
 #include "exists.hpp"
 #include "get_attribute.hpp"
 #include "get_directory.hpp"
-#include "get_directory_size.hpp"
 #include "get_volume.hpp"
 #include "is_elevated.hpp"
 #include "move.hpp"
@@ -26,7 +25,6 @@ void init(v8::Local<v8::Object> exports)
 	NODE_SET_METHOD(exports, "exists", exists);
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
 	NODE_SET_METHOD(exports, "getDirectory", get_directory);
-	NODE_SET_METHOD(exports, "getDirectorySize", get_directory_size);
 	NODE_SET_METHOD(exports, "getVolume", get_volume);
 	NODE_SET_METHOD(exports, "isElevated", is_elevated);
 	NODE_SET_METHOD(exports, "move", move);

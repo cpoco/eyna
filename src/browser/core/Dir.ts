@@ -115,7 +115,7 @@ export class Dir {
 			let _time = Date.now()
 			this.dp = dp
 			this.rg = rg
-			Native.getDirectory(this.wd, false, false, this.dp, this.rg).then(async (dir: Native.Directory) => {
+			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
 				console.log(this.wd, { dp: this.dp, rg: this.rg, len: dir.ls.length, err: dir.e })
 				console.log(this.wd, "Native.getDirectory", `${Date.now() - _time}ms`)
 				_time = Date.now()
