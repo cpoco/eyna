@@ -212,14 +212,14 @@ export const V = vue.defineComponent({
 				this.is_link
 					? [
 						vue.h("span", icon, fraw),
-						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+						vue.h("span", name, code(this.cell.attr[0]?.rltv)),
 						vue.h("span", link, "->"),
 						vue.h("span", icon, traw),
-						vue.h("span", trgt, this.cell.attr[0]?.link ?? undefined),
+						vue.h("span", trgt, code(this.cell.attr[0]?.link)),
 					]
 					: [
 						vue.h("span", icon, fraw),
-						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+						vue.h("span", name, code(this.cell.attr[0]?.rltv)),
 					],
 			),
 			vue.h(
@@ -246,6 +246,25 @@ export const V = vue.defineComponent({
 		])
 	},
 })
+
+function code(str: string | null | undefined): vue.VNodeArrayChildren | undefined {
+	if (str == null) {
+		return undefined
+	}
+
+	const RLO = "\u{202E}"
+
+	let ret: vue.VNodeArrayChildren = []
+	for (var s of Util.split(str, RLO)) {
+		if (s == RLO) {
+			ret.push(vue.h("span", { class: { "c-code": true } }, "[RLO]"))
+		}
+		else {
+			ret.push(s)
+		}
+	}
+	return ret
+}
 
 function date(sec: number): string {
 	if (sec == 0) {
