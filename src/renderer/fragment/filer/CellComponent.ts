@@ -182,8 +182,8 @@ export const V = vue.defineComponent({
 				}
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
-				let ltype3 = Util.last(this.link_type) ?? Native.AttributeLinkType.none
-				if (ltype3 == Native.AttributeLinkType.none) {
+				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.none
+				if (ftype3 == Native.AttributeFileType.none) {
 					trgt.class["c-warn"] = true
 					traw = Font.link_external
 				}

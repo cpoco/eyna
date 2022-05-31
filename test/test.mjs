@@ -95,6 +95,11 @@ await fs.symlink("error/.", path.join(wd, "LINK", "lr_error_2"))
 await fs.symlink("lr_loop_y", path.join(wd, "LINK", "lr_loop_x"))
 await fs.symlink("lr_loop_x", path.join(wd, "LINK", "lr_loop_y"))
 
+await fs.writeFile(path.join(wd, "LINK", "target"), "")
+await fs.symlink("target", path.join(wd, "LINK", "lr1_target"))
+await fs.symlink("lr1_target", path.join(wd, "LINK", "lr2_target"))
+await fs.symlink("lr2_target", path.join(wd, "LINK", "lr3_target"))
+
 /*
 if (process.platform == "win32") {
 	make_shortcut(path.join(wd, "d0"), path.join(wd, "d0.lnk"))
