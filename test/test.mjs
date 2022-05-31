@@ -99,6 +99,9 @@ await fs.writeFile(path.join(wd, "LINK", "target"), "")
 await fs.symlink("target", path.join(wd, "LINK", "lr1_target"))
 await fs.symlink("lr1_target", path.join(wd, "LINK", "lr2_target"))
 await fs.symlink("lr2_target", path.join(wd, "LINK", "lr3_target"))
+await fs.symlink("error", path.join(wd, "LINK", "lr1_error"))
+await fs.symlink("lr1_error", path.join(wd, "LINK", "lr2_error"))
+await fs.symlink("lr2_error", path.join(wd, "LINK", "lr3_error"))
 
 /*
 if (process.platform == "win32") {
