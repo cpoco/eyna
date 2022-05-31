@@ -1,22 +1,35 @@
 import path from "node:path"
+import process from "node:process"
 import url from "node:url"
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 import module from "node:module"
 const require = module.createRequire(import.meta.url)
-const native = require("../build/Release/native.node")
+const native = require(path.join(__dirname, "../build/Release/native.node"))
+
+if (process.platform == "win32") {
+	var wd = path.join("C:", "Users", "Public", "eyna test")
+}
+else if (process.platform == "darwin") {
+	var wd = path.join("/", "Users", "Shared", "eyna test")
+}
+else {
+	process.exit()
+}
 
 console.log("isElevated", native.isElevated())
 
-const v = await native.getVolume()
-console.log("getVolume", v)
+console.log("getVolume", await native.getVolume())
 
-const d = await native.getDirectory(v[0].full, "", false, 0, null)
-console.log("getDirectory", d)
+console.log("getAttribute", await native.getAttribute(wd, ""))
+console.log("getAttribute", await native.getAttribute(wd, wd))
+console.log("getAttribute", await native.getAttribute(wd, path.join(wd, "..")))
 
-const a = await native.getAttribute(d.ls[0], "")
-console.log("getAttribute", a)
+console.log("getDirectory", await native.getDirectory(wd, "", false, 0, null))
+console.log("getDirectory", await native.getDirectory(wd, wd, false, 0, null))
+console.log("getDirectory", await native.getDirectory(wd, path.join(wd, ".."), false, 0, null))
 
+/*
 const ID = 0
 native.watch(
 	ID,
@@ -36,3 +49,4 @@ await native.moveToTrash(path.join(__dirname, "__test🌈"))
 
 await native.createDirectory(path.join(__dirname, "__test🌈", "aaaa🍣", "bbbb🍺"))
 await native.moveToTrash(path.join(__dirname, "__test🌈"))
+*/

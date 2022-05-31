@@ -11,43 +11,14 @@ struct get_attribute_work
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
-	std::vector<_attribute> attributes;
+	std::vector<_attribute> v;
 };
-
-void get_attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
-{
-	vector.push_back(_attribute());
-
-	for (_attribute& a : vector) {
-		if (!a.full.empty() && a.full == path) {
-			return;
-		}
-	}
-
-	_attribute& attr = vector.back();
-
-	attr.full = path;
-
-	attribute(attr);
-
-	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
-		if (attr.link.is_absolute()) {
-			get_attribute(std::filesystem::path(attr.link), vector);
-		}
-		else if (attr.link.is_relative()) {
-			get_attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
-		}
-		else {
-			vector.push_back(_attribute());
-		}
-	}
-}
 
 static void get_attribute_async(uv_work_t* req)
 {
 	get_attribute_work* work = static_cast<get_attribute_work*>(req->data);
 
-	get_attribute(work->abst, work->attributes);
+	attribute(work->abst, work->v);
 }
 
 static void get_attribute_complete(uv_work_t* req, int status)
@@ -58,7 +29,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Array> array = v8::Array::New(ISOLATE);
 
-	for (_attribute& a : work->attributes) {
+	for (_attribute& a : work->v) {
 		if (a.full.empty()) {
 			array->Set(CONTEXT, array->Length(), v8::Null(ISOLATE));
 			break;
@@ -70,7 +41,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("full")),      to_string(a.full));
 
 		if (work->base.empty()) {
-			obj->Set(CONTEXT, to_string(V("rltv")), to_string(a.full.filename()));
+			obj->Set(CONTEXT, to_string(V("rltv")), to_string(a.full));
 		}
 		else {
 			obj->Set(CONTEXT, to_string(V("rltv")), to_string(generic_path(a.full.lexically_relative(work->base))));
@@ -81,7 +52,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("ext")),  to_string(a.full.extension()));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, a.link_type));
-		if (a.link_type == 0) {
+		if (a.link_type == LINK_TYPE::LINK_TYPE_NONE) {
 			obj->Set(CONTEXT, to_string(V("link")), v8::Null(ISOLATE));
 		}
 		else {
@@ -123,8 +94,10 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+
 	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
-	work->attributes.clear();
+
+	work->v.clear();
 
 	uv_queue_work(uv_default_loop(), &work->request, get_attribute_async, get_attribute_complete);
 }

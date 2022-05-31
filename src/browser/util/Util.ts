@@ -24,6 +24,16 @@ export function count<T>(it: Iterable<T>, func: (t: T) => boolean): number {
 	return cnt
 }
 
+export function split(str: string, splitter: string): string[] {
+	let ary = str.split(splitter)
+	let len = ary.length
+	for (let i = 1; i < len; i += 2) {
+		ary.splice(i, 0, splitter)
+		len++
+	}
+	return ary
+}
+
 export function array<V>(start: number, end: number, func: (i: number) => V | undefined): V[] {
 	let ary: V[] = []
 	for (let i = start; i < end; i++) {

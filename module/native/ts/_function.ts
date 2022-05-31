@@ -44,13 +44,6 @@ export function getDirectory(
 	return native.getDirectory(abstract, base, mode, depth, regexp)
 }
 
-export function getDirectorySize(abstract: string): Promise<Type.DirectorySize> {
-	if (native == null) {
-		return Promise.reject()
-	}
-	return native.getDirectorySize(abstract)
-}
-
 export function getVolume(): Promise<Type.Volume[]> {
 	if (native == null) {
 		return Promise.reject()
@@ -84,6 +77,13 @@ export function openProperties(abstract: string) {
 		return
 	}
 	native.openProperties(abstract)
+}
+
+export function resolve(abstract: string): Promise<Type.Resolves> {
+	if (native == null) {
+		return Promise.reject()
+	}
+	return native.resolve(abstract)
 }
 
 export function watch(id: number, abstract: string, callback: (id: number, depth: number, abstract: string) => void) {

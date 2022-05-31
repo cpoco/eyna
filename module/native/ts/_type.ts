@@ -51,13 +51,15 @@ export type Volume = {
 export type Directory = {
 	wd: string
 	ls: [string]
-	e: number
-}
-
-export type DirectorySize = {
-	wd: string
 	s: number
 	d: number
 	f: number
 	e: number
 }
+
+export type Resolve = {
+	full: string
+	real: string
+}
+
+export type Resolves = Resolve[]

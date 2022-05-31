@@ -177,5 +177,9 @@ function _ext(a: Native.Attributes, b: Native.Attributes): number {
 function _name(a: Native.Attributes, b: Native.Attributes): number {
 	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
 	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
-	return aa.localeCompare(bb, undefined, { numeric: true })
+	let lc = aa.localeCompare(bb, undefined, { numeric: true })
+	if (lc == 0) {
+		return aa.length - bb.length
+	}
+	return lc
 }

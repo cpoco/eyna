@@ -1,9 +1,11 @@
 import * as vue from "vue"
 
+import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/renderer"
 import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
 import * as Font from "@renderer/util/Font"
+import * as Unicode from "@renderer/util/Unicode"
 
 const TAG = "cell"
 
@@ -104,7 +106,8 @@ export const V = vue.defineComponent({
 				"filer-clink"?: boolean
 				"filer-ctrgt"?: boolean
 
-				"c-error"?: boolean
+				"c-warn"?: boolean
+				"c-miss"?: boolean
 				"c-directory"?: boolean
 				"c-link"?: boolean
 				"c-file"?: boolean
@@ -157,7 +160,7 @@ export const V = vue.defineComponent({
 			fraw = Font.gear
 		}
 		else {
-			name.class["c-error"] = true
+			name.class["c-miss"] = true
 			fraw = Font.error
 		}
 
@@ -167,15 +170,27 @@ export const V = vue.defineComponent({
 				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.none
 				if (ltype2 == Native.AttributeLinkType.shortcut) {
 					trgt.class["c-shortcut"] = true
+					traw = Font.link_external
 				}
 				else if (ltype2 == Native.AttributeLinkType.bookmark) {
 					trgt.class["c-bookmark"] = true
+					traw = Font.link_external
 				}
-				traw = Font.file
+				else {
+					trgt.class["c-file"] = true
+					traw = Font.file
+				}
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
-				trgt.class["c-link"] = true
-				traw = Font.link_external
+				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.none
+				if (ftype3 == Native.AttributeFileType.none) {
+					trgt.class["c-warn"] = true
+					traw = Font.link_external
+				}
+				else {
+					trgt.class["c-link"] = true
+					traw = Font.link_external
+				}
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
 				trgt.class["c-directory"] = true
@@ -186,7 +201,7 @@ export const V = vue.defineComponent({
 				traw = Font.gear
 			}
 			else {
-				trgt.class["c-error"] = true
+				trgt.class["c-miss"] = true
 				traw = Font.error
 			}
 		}
@@ -198,14 +213,14 @@ export const V = vue.defineComponent({
 				this.is_link
 					? [
 						vue.h("span", icon, fraw),
-						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+						vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 						vue.h("span", link, "->"),
 						vue.h("span", icon, traw),
-						vue.h("span", trgt, this.cell.attr[0]?.link ?? undefined),
+						vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
 					]
 					: [
 						vue.h("span", icon, fraw),
-						vue.h("span", name, this.cell.attr[0]?.rltv ?? undefined),
+						vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 					],
 			),
 			vue.h(

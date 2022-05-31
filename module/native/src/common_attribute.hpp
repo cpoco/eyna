@@ -262,4 +262,33 @@ void attribute(_attribute& attribute)
 	#endif
 }
 
+void attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
+{
+	vector.push_back(_attribute());
+
+	for (_attribute& a : vector) {
+		if (!a.full.empty() && a.full == path) {
+			return;
+		}
+	}
+
+	_attribute& attr = vector.back();
+
+	attr.full = path;
+
+	attribute(attr);
+
+	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
+		if (attr.link.is_absolute()) {
+			attribute(generic_path(std::filesystem::path(attr.link).lexically_normal()), vector);
+		}
+		else if (attr.link.is_relative()) {
+			attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
+		}
+		else {
+			vector.push_back(_attribute());
+		}
+	}
+}
+
 #endif // include guard
