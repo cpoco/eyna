@@ -7,7 +7,7 @@
 	"description": "",
 	"devDependencies": {
 		"@module/native": "file:./module/native",
-		"electron": "18.3.1",
+		"electron": "19.0.1",
 		"electron-builder": "23.0.3",
 		"electron-rebuild": "3.2.7",
 		"esbuild": "0.14.42",
