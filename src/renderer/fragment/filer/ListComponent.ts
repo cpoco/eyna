@@ -6,6 +6,7 @@ import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
 import root from "@renderer/Root"
 import * as Font from "@renderer/util/Font"
+import * as Unicode from "@renderer/util/Unicode"
 
 const TAG = "list"
 
@@ -93,7 +94,7 @@ export const V = vue.defineComponent({
 
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h("div", { class: { "filer-dir": true } }, this.list.data.wd),
+				vue.h("div", { class: { "filer-dir": true } }, Unicode.rol(this.list.data.wd)),
 				vue.h("div", { class: { "filer-cnt": true } }, cnt),
 			]),
 			vue.h(TAG_STAT, {
