@@ -3,18 +3,23 @@ import * as electron from "electron"
 import { Platform } from "@browser/core/Platform"
 
 export namespace Path {
-	export function appPath(): string {
-		let path = electron.app.getAppPath()
+	export function generic(path: string): string {
 		return Platform.win ? path.replace(/\\/g, "/") : path
+	}
+
+	export function preferred(path: string): string {
+		return Platform.win ? path.replace(/\//g, "\\") : path
+	}
+
+	export function appPath(): string {
+		return generic(electron.app.getAppPath())
 	}
 
 	export function userPath(): string {
-		let path = electron.app.getPath("userData")
-		return Platform.win ? path.replace(/\\/g, "/") : path
+		return generic(electron.app.getPath("userData"))
 	}
 
 	export function home(): string {
-		let path = electron.app.getPath("home")
-		return Platform.win ? path.replace(/\\/g, "/") : path
+		return generic(electron.app.getPath("home"))
 	}
 }
