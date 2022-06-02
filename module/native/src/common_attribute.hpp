@@ -72,6 +72,10 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
+	if (attribute.full.filename().empty()) {
+		attribute.full = generic_path(attribute.full.parent_path());
+	}
+
 	#if _OS_WIN_
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
@@ -264,7 +268,7 @@ void attribute(_attribute& attribute)
 
 void attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
 {
-	vector.push_back(_attribute());
+	vector.push_back({});
 
 	for (_attribute& a : vector) {
 		if (!a.full.empty() && a.full == path) {
@@ -286,7 +290,7 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 			attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
 		}
 		else {
-			vector.push_back(_attribute());
+			vector.push_back({});
 		}
 	}
 }

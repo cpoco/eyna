@@ -4,6 +4,7 @@ import * as fs from "node:fs"
 import * as Conf from "@app/Conf"
 import * as Bridge from "@bridge/Bridge"
 import { Dir } from "@browser/core/Dir"
+import { Path } from "@browser/core/Path"
 import { Storage } from "@browser/core/Storage"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import { FilerManager } from "@browser/fragment/filer/FilerManager"
@@ -382,7 +383,7 @@ export class FilerFragment extends AbstractFragment {
 				if (attr == null) {
 					return Promise.resolve()
 				}
-				electron.shell.openPath(attr.full)
+				electron.shell.openPath(Path.preferred(attr.full))
 				return Promise.resolve()
 			})
 			.on2("list.shellproperty", (active, _target) => {
