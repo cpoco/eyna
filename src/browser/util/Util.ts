@@ -55,3 +55,34 @@ export function object<V>(start: number, end: number, func: (i: number) => V | u
 	}
 	return obj
 }
+
+export function merge(target: unknown, source: unknown): unknown {
+	if (_is_object(target) && _is_object(source) || _is_array(target) && _is_array(source)) {
+		for (const [k, v] of Object.entries(source)) {
+			_merge(target, k, v)
+		}
+	}
+	else {
+		return null
+	}
+	return target
+}
+
+function _merge(target: any, key: string, source: unknown) {
+	if (_is_object(target[key]) && _is_object(source) || _is_array(target[key]) && _is_array(source)) {
+		for (const [k, v] of Object.entries(source)) {
+			_merge(target[key], k, v)
+		}
+	}
+	else {
+		target[key] = source
+	}
+}
+
+function _is_object(v: unknown): v is { [k: string]: unknown } {
+	return Object.prototype.toString.call(v) == "[object Object]"
+}
+
+function _is_array(v: unknown): v is unknown[] {
+	return Object.prototype.toString.call(v) == "[object Array]"
+}
