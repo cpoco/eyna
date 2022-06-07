@@ -9,8 +9,8 @@ import { Storage } from "@browser/core/Storage"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import { FilerManager } from "@browser/fragment/filer/FilerManager"
 import root from "@browser/Root"
-import * as Util from "@browser/util/Util"
 import * as Native from "@module/native/ts/browser"
+import * as Util from "@util/Util"
 
 export class FilerFragment extends AbstractFragment {
 	private index!: { active: number; target: number }

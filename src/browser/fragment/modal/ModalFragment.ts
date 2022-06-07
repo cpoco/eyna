@@ -2,7 +2,7 @@ import * as Bridge from "@bridge/Bridge"
 import { Command } from "@browser/core/Command"
 import { AbstractFragment } from "@browser/fragment/AbstractFragment"
 import root from "@browser/Root"
-import { DeferredPromise } from "@browser/util/DeferredPromise"
+import { DeferredPromise } from "@util/DeferredPromise"
 
 export class ModalFragment extends AbstractFragment {
 	private deferred: DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null = null

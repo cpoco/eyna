@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Util from "@browser/util/Util"
+import * as Util from "@util/Util"
 
 const RLO = "\u{202E}"
 
