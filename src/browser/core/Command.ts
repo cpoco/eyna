@@ -74,12 +74,7 @@ export namespace Command {
 									prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
 								},
 							}
-							if (this.keyData[code]) {
-								Object.assign(this.keyData[code], wc)
-							}
-							else {
-								Object.assign(this.keyData, { [code]: wc })
-							}
+							Util.merge(this.keyData, { [code]: wc })
 						}
 					}
 					catch (err) {

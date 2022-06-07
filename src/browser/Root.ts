@@ -12,6 +12,7 @@ import { ModalFragment } from "@browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@browser/fragment/viewer/ViewerFragment"
 import * as Native from "@module/native/ts/browser"
+import * as Util from "@util/Util"
 
 type Option = {
 	active: {
@@ -46,7 +47,7 @@ class Root {
 	}
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
-		this.browser = new electron.BrowserWindow(Object.assign({
+		let op: Electron.BrowserWindowConstructorOptions = {
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
@@ -55,7 +56,9 @@ class Root {
 				spellcheck: false,
 			},
 			backgroundColor: "#222",
-		}, Storage.manager.data.window))
+		}
+		Util.merge(op, Storage.manager.data.window)
+		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadURL(this.url)
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getBounds()
