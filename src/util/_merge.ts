@@ -1,5 +1,5 @@
-import { isArray } from "@util/_is_array"
-import { isDict } from "@util/_is_dict"
+import { isArray } from "@/util/_is_array"
+import { isDict } from "@/util/_is_dict"
 
 export function merge(target: unknown, source: unknown) {
 	if (isDict(target) && isDict(source) || isArray(target) && isArray(source)) {

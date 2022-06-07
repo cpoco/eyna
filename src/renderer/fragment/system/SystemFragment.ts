@@ -1,8 +1,8 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
-import * as SystemProvider from "@renderer/fragment/system/SystemProvider"
-import root from "@renderer/Root"
+import * as Bridge from "@/bridge/Bridge"
+import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import root from "@/renderer/Root"
 
 const TAG = "system"
 

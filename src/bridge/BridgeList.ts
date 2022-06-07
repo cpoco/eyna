@@ -1,4 +1,4 @@
-import { Status, StatusValues } from "@bridge/Status"
+import { Status, StatusValues } from "@/bridge/Status"
 import * as Native from "@module/native/ts/renderer"
 
 export namespace List {

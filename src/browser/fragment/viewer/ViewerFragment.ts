@@ -1,7 +1,7 @@
-import * as Bridge from "@bridge/Bridge"
-import { Command } from "@browser/core/Command"
-import { AbstractFragment } from "@browser/fragment/AbstractFragment"
-import root from "@browser/Root"
+import * as Bridge from "@/bridge/Bridge"
+import { Command } from "@/browser/core/Command"
+import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
+import root from "@/browser/Root"
 
 export class ViewerFragment extends AbstractFragment {
 	constructor() {

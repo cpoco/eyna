@@ -1,8 +1,8 @@
 import * as path from "node:path"
 
-import { Path } from "@browser/core/Path"
+import { Path } from "@/browser/core/Path"
+import * as Util from "@/util/Util"
 import * as Native from "@module/native/ts/browser"
-import * as Util from "@util/Util"
 
 export class Dir {
 	static readonly HOME: string = "home"

@@ -1,8 +1,8 @@
 import * as electron from "electron"
 import * as fs from "node:fs"
 
-import { Platform } from "@browser/core/Platform"
-import * as Util from "@util/Util"
+import { Platform } from "@/browser/core/Platform"
+import * as Util from "@/util/Util"
 
 export namespace Command {
 	export const When = {

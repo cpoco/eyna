@@ -1,10 +1,10 @@
 import * as vue from "vue"
 
-import * as Conf from "@app/Conf"
-import * as Bridge from "@bridge/Bridge"
-import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
-import * as ListComponent from "@renderer/fragment/filer/ListComponent"
-import root from "@renderer/Root"
+import * as Conf from "@/app/Conf"
+import * as Bridge from "@/bridge/Bridge"
+import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
+import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
+import root from "@/renderer/Root"
 
 const TAG = "filer"
 
