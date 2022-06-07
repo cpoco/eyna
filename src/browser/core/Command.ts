@@ -70,8 +70,8 @@ export namespace Command {
 							let wc: WhenConfig = {
 								[conf.when]: {
 									when: conf.when,
-									cmd: Util.isString(conf.cmd) ? [conf.cmd] : Array.isArray(conf.cmd) ? conf.cmd : [],
-									prm: Util.isString(conf.prm) ? [conf.prm] : Array.isArray(conf.prm) ? conf.prm : [],
+									cmd: Util.isString(conf.cmd) ? [conf.cmd] : Util.isArray(conf.cmd) ? conf.cmd : [],
+									prm: Util.isString(conf.prm) ? [conf.prm] : Util.isArray(conf.prm) ? conf.prm : [],
 								},
 							}
 							Util.merge(this.keyData, { [code]: wc })
@@ -123,7 +123,7 @@ export namespace Command {
 
 	function acceleratorToCode(key: string | string[]): number {
 		let ret: number = 0
-		let ary: string[] = Util.isString(key) ? [key] : Array.isArray(key) ? key : []
+		let ary: string[] = Util.isString(key) ? [key] : Util.isArray(key) ? key : []
 
 		ary.forEach((key: string) => {
 			key = key.toLowerCase()
