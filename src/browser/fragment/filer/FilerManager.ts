@@ -21,7 +21,7 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusTypes = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -222,7 +222,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: Util.object<Native.Attributes>(start, end, (i) => {
+					_slice: Util.dict<Native.Attributes>(start, end, (i) => {
 						return this.data.ls[i]
 					}),
 				},
@@ -237,7 +237,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: Util.object<boolean>(start, end, (i) => {
+					_slice: Util.dict<boolean>(start, end, (i) => {
 						return this.data.mk[i]
 					}),
 				},

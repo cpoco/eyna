@@ -29,7 +29,7 @@ export class Dir {
 	}
 
 	static findRltv(ls: Native.Attributes[], i: number): string | null {
-		return ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null
+		return ls[i]?.[0]?.rltv ?? null
 	}
 
 	static findIndex(ls: Native.Attributes[], rltv: string | null): number {
@@ -38,7 +38,7 @@ export class Dir {
 		}
 
 		for (let i = 0; i < ls.length; i++) {
-			if ((ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null) == rltv) {
+			if ((ls[i]?.[0]?.rltv ?? null) == rltv) {
 				return i
 			}
 		}

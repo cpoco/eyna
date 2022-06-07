@@ -1,9 +1,9 @@
-import { Status } from "@bridge/Status"
+import { Status, StatusTypes } from "@bridge/Status"
 import * as Native from "@module/native/ts/renderer"
 
 export namespace List {
 	export type Data = {
-		status: Status
+		status: StatusTypes
 		update: number
 		cursor: number
 		length: number
@@ -101,7 +101,7 @@ export namespace List {
 			Data,
 		]
 		export type Data = {
-			status: Status
+			status: StatusTypes
 		}
 	}
 

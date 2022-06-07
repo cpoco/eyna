@@ -1,4 +1,4 @@
-export function object<V>(start: number, end: number, func: (i: number) => V | undefined): { [key: string]: V } {
+export function dict<V>(start: number, end: number, func: (i: number) => V | undefined): { [key: string]: V } {
 	let obj: { [k: string]: V } = {}
 	for (let i = start; i < end; i++) {
 		let a = func(i)
