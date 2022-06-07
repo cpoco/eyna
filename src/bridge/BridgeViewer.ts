@@ -34,7 +34,7 @@ export namespace Viewer {
 		export type DataText = {
 			type: "text"
 			path: string
-			size: number
+			size: bigint
 			data: string
 		}
 	}

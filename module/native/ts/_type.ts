@@ -32,7 +32,7 @@ export type Attribute = {
 	link_type: AttributeLinkValues
 	link: string | null
 
-	size: number
+	size: bigint
 	time: number
 	nsec: number
 
@@ -49,7 +49,7 @@ export type Volume = {
 export type Directory = {
 	wd: string
 	ls: [string]
-	s: number
+	s: bigint
 	d: number
 	f: number
 	e: number
