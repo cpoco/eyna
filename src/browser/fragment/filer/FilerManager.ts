@@ -21,7 +21,7 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusTypes = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusValues = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}

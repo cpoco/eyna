@@ -6,17 +6,17 @@ import * as Util from "@util/Util"
 
 export namespace Command {
 	export const When = {
-		always: "always",
-		filer: "filer",
-		modal: "modal",
-		viewer: "viewer",
+		Always: "always",
+		Filer: "filer",
+		Modal: "modal",
+		Viewer: "viewer",
 	} as const
-	export type WhenTypes = typeof When[keyof typeof When]
+	export type WhenValues = typeof When[keyof typeof When]
 
 	export type LoadConfig = {
 		ver: string
 		key: {
-			when: WhenTypes
+			when: WhenValues
 			key: string | string[]
 			cmd: string | string[]
 			prm?: string | string[]
@@ -27,29 +27,26 @@ export namespace Command {
 		[code: number]: WhenConfig
 	}
 	export type WhenConfig = {
-		[When.always]?: Config
-		[When.filer]?: Config
-		[When.modal]?: Config
-		[When.viewer]?: Config
+		[key in WhenValues]?: Config
 	}
 	export type Config = {
-		when: WhenTypes
+		when: WhenValues
 		cmd: string[]
 		prm: string[]
 	}
 
 	class Manager {
 		private path: string = ""
-		private when: WhenTypes = When.filer
+		private when: WhenValues = When.Filer
 		private keyData: KeyData = {}
 
-		set whenType(when: WhenTypes) {
+		set whenType(when: WhenValues) {
 			switch (when) {
-				case When.always:
+				case When.Always:
 					break
-				case When.filer: // fallthrough
-				case When.modal: // fallthrough
-				case When.viewer:
+				case When.Filer: // fallthrough
+				case When.Modal: // fallthrough
+				case When.Viewer:
 					this.when = when
 			}
 		}
@@ -60,7 +57,7 @@ export namespace Command {
 		}
 
 		reload() {
-			this.whenType = When.filer
+			this.whenType = When.Filer
 			this.keyData = {}
 			try {
 				let loadConfig: LoadConfig = JSON.parse(fs.readFileSync(this.path, "utf8"))
@@ -98,7 +95,7 @@ export namespace Command {
 
 		get(input: electron.Input): Config | null {
 			let code = inputToCode(input)
-			return this.keyData[code]?.[When.always] ?? this.keyData[code]?.[this.when] ?? null
+			return this.keyData[code]?.[When.Always] ?? this.keyData[code]?.[this.when] ?? null
 		}
 	}
 
@@ -150,7 +147,7 @@ export namespace Command {
 		EF_CONTROL_DOWN: 1 << 2,
 		EF_ALT_DOWN: 1 << 3,
 	} as const
-	type EventFlagsTypes = typeof EventFlags[keyof typeof EventFlags]
+	type EventFlagsValues = typeof EventFlags[keyof typeof EventFlags]
 
 	// https://chromium.googlesource.com/chromium/src.git/+/master/ui/events/keycodes/keyboard_codes_posix.h
 	const KeyboardCode = {
@@ -218,15 +215,15 @@ export namespace Command {
 		VKEY_NUMLOCK: 0x90,
 		VKEY_SCROLL: 0x91,
 	} as const
-	type KeyboardCodeTypes = typeof KeyboardCode[keyof typeof KeyboardCode]
+	type KeyboardCodeValues = typeof KeyboardCode[keyof typeof KeyboardCode]
 
-	const FlagMap: { [key: string]: EventFlagsTypes } = {
+	const FlagMap: { [key: string]: EventFlagsValues } = {
 		"shift": EventFlags.EF_SHIFT_DOWN,
 		"ctrl": EventFlags.EF_CONTROL_DOWN,
 		"alt": EventFlags.EF_ALT_DOWN,
 	} as const
 
-	const CodeMap: { [key: string]: KeyboardCodeTypes } = {
+	const CodeMap: { [key: string]: KeyboardCodeValues } = {
 		"backspace": KeyboardCode.VKEY_BACK,
 		"tab": KeyboardCode.VKEY_TAB,
 		"return": KeyboardCode.VKEY_RETURN,

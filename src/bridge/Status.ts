@@ -3,4 +3,4 @@ export const Status = {
 	active: 1,
 	target: 2,
 } as const
-export type StatusTypes = typeof Status[keyof typeof Status]
+export type StatusValues = typeof Status[keyof typeof Status]

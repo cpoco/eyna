@@ -7,7 +7,7 @@ export const AttributeFileType = {
 	file: 3,
 	special: 10,
 } as const
-export type AttributeFileTypes = typeof AttributeFileType[keyof typeof AttributeFileType]
+export type AttributeFileValues = typeof AttributeFileType[keyof typeof AttributeFileType]
 
 export const AttributeLinkType = {
 	none: 0,
@@ -16,12 +16,12 @@ export const AttributeLinkType = {
 	shortcut: 3,
 	bookmark: 4,
 } as const
-export type AttributeLinkTypes = typeof AttributeLinkType[keyof typeof AttributeLinkType]
+export type AttributeLinkValues = typeof AttributeLinkType[keyof typeof AttributeLinkType]
 
 export type Attributes = Attribute[]
 
 export type Attribute = {
-	file_type: AttributeFileTypes
+	file_type: AttributeFileValues
 	full: string
 
 	rltv: string
@@ -29,7 +29,7 @@ export type Attribute = {
 	stem: string
 	ext: string
 
-	link_type: AttributeLinkTypes
+	link_type: AttributeLinkValues
 	link: string | null
 
 	size: number

@@ -12,7 +12,7 @@ export class ViewerFragment extends AbstractFragment {
 	}
 
 	opne(option: Bridge.Viewer.Open.Data) {
-		Command.manager.whenType = Command.When.viewer
+		Command.manager.whenType = Command.When.Viewer
 		root.send<Bridge.Viewer.Open.Send>({
 			ch: Bridge.Viewer.Open.CH,
 			args: [-1, option],
@@ -20,7 +20,7 @@ export class ViewerFragment extends AbstractFragment {
 	}
 
 	close() {
-		Command.manager.whenType = Command.When.filer
+		Command.manager.whenType = Command.When.Filer
 		root.send<Bridge.Viewer.Close.Send>({
 			ch: Bridge.Viewer.Close.CH,
 			args: [-1, {}],
@@ -31,10 +31,10 @@ export class ViewerFragment extends AbstractFragment {
 		root
 			.on(Bridge.Viewer.Event.CH, (_i: number, data: Bridge.Viewer.Event.Data) => {
 				if (data.event == "opened") {
-					Command.manager.whenType = Command.When.viewer
+					Command.manager.whenType = Command.When.Viewer
 				}
 				else if (data.event == "closed") {
-					Command.manager.whenType = Command.When.filer
+					Command.manager.whenType = Command.When.Filer
 				}
 			})
 	}

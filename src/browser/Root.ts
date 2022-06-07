@@ -71,16 +71,16 @@ class Root {
 
 				let f: AbstractFragment | null = null
 				switch (conf.when) {
-					case Command.When.always:
+					case Command.When.Always:
 						f = this.fragment[0]
 						break
-					case Command.When.filer:
+					case Command.When.Filer:
 						f = this.fragment[1]
 						break
-					case Command.When.modal:
+					case Command.When.Modal:
 						f = this.fragment[2]
 						break
-					case Command.When.viewer:
+					case Command.When.Viewer:
 						f = this.fragment[3]
 						break
 					default:

@@ -14,7 +14,7 @@ export class ModalFragment extends AbstractFragment {
 	}
 
 	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
-		Command.manager.whenType = Command.When.modal
+		Command.manager.whenType = Command.When.Modal
 		root.send<Bridge.Modal.Open.Send>({
 			ch: Bridge.Modal.Open.CH,
 			args: [-1, option],
@@ -25,7 +25,7 @@ export class ModalFragment extends AbstractFragment {
 	}
 
 	cancel() {
-		Command.manager.whenType = Command.When.filer
+		Command.manager.whenType = Command.When.Filer
 		root.send<Bridge.Modal.Cancel.Send>({
 			ch: Bridge.Modal.Cancel.CH,
 			args: [-1, {}],
@@ -36,10 +36,10 @@ export class ModalFragment extends AbstractFragment {
 		root
 			.on(Bridge.Modal.Event.CH, (_i: number, data: Bridge.Modal.Event.Data) => {
 				if (data.event == "opened") {
-					Command.manager.whenType = Command.When.modal
+					Command.manager.whenType = Command.When.Modal
 				}
 				else if (data.event == "closed" || data.event == "canceled") {
-					Command.manager.whenType = Command.When.filer
+					Command.manager.whenType = Command.When.Filer
 					if (this.deferred?.resolve) {
 						this.deferred?.resolve(data.result)
 					}
