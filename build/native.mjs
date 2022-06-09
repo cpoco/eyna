@@ -10,6 +10,7 @@ const electron = module.createRequire(import.meta.url)(path.join(__dirname, "../
 export async function Build() {
 	return electron_rebuild.rebuild({
 		buildPath: path.join(__dirname, ".."),
+		arch: "x64",
 		electronVersion: electron.version,
 		onlyModules: ["native"],
 		force: true,
