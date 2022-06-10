@@ -12,7 +12,7 @@ import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import * as Util from "@/util/Util"
-import * as Native from "@module/native/ts/browser"
+import * as Native from "@eyna/native/ts/browser"
 
 type Option = {
 	active: {

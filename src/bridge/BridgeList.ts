@@ -1,5 +1,5 @@
 import { Status, StatusValues } from "@/bridge/Status"
-import * as Native from "@module/native/ts/renderer"
+import * as Native from "@eyna/native/ts/renderer"
 
 export namespace List {
 	export type Data = {

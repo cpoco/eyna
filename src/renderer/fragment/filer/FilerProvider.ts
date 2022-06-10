@@ -2,7 +2,7 @@ import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as Util from "@/util/Util"
-import * as Native from "@module/native/ts/renderer"
+import * as Native from "@eyna/native/ts/renderer"
 
 export type List = {
 	i: number

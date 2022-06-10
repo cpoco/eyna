@@ -17,7 +17,7 @@ export async function Build() {
 	})
 		.then(() => {
 			return fs.copyFile(
-				path.join(__dirname, "../node_modules/@module/native/build/Release/native.node"),
+				path.join(__dirname, "../node_modules/@eyna/native/build/Release/native.node"),
 				path.join(__dirname, "../app/native.node"),
 			)
 		})

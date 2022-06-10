@@ -5,13 +5,16 @@
 	"private": true,
 	"main": "./app/browser.js",
 	"description": "",
+	"workspaces": [
+		"pkg/native",
+		"pkg/test"
+	],
 	"devDependencies": {
-		"@module/native": "file:./module/native",
+		"@eyna/native": "*",
 		"electron": "19.0.4",
 		"electron-builder": "23.0.3",
 		"electron-rebuild": "3.2.7",
 		"esbuild": "0.14.43",
-		"fs-extra": "10.1.0",
 		"monaco-editor": "0.33.0",
 		"pug": "3.0.2",
 		"stylus": "0.58.1",
