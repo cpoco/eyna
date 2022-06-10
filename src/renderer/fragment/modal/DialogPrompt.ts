@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
+import * as Bridge from "@/bridge/Bridge"
 
 type reactive = {
 	prompt: [string, string]

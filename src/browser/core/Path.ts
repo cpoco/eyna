@@ -1,6 +1,6 @@
 import * as electron from "electron"
 
-import { Platform } from "@browser/core/Platform"
+import { Platform } from "@/browser/core/Platform"
 
 export namespace Path {
 	export function generic(path: string): string {

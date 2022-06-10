@@ -46,6 +46,14 @@
 						],
 					},
 				}],
+				# linux
+				# ["OS=='linux'", {
+				# 	"cflags_cc": [
+				# 		"-std=c++17",
+				# 		"-fexceptions",
+				# 		"-Wno-unused-result",
+				# 	] 
+				# }],
 			],
 		}
 	]

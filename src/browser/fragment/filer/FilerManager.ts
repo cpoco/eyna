@@ -1,9 +1,9 @@
-import * as Bridge from "@bridge/Bridge"
-import { Dir } from "@browser/core/Dir"
-import { Scroll } from "@browser/core/Scroll"
-import root from "@browser/Root"
-import * as Util from "@browser/util/Util"
-import * as Native from "@module/native/ts/browser"
+import * as Bridge from "@/bridge/Bridge"
+import { Dir } from "@/browser/core/Dir"
+import { Scroll } from "@/browser/core/Scroll"
+import root from "@/browser/Root"
+import * as Util from "@/util/Util"
+import * as Native from "@eyna/native/ts/browser"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
@@ -21,7 +21,7 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusValues = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -222,7 +222,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: Util.object<Native.Attributes>(start, end, (i) => {
+					_slice: Util.dict<Native.Attributes>(start, end, (i) => {
 						return this.data.ls[i]
 					}),
 				},
@@ -237,7 +237,7 @@ export class FilerManager {
 				this.id,
 				{
 					update: this.data.update,
-					_slice: Util.object<boolean>(start, end, (i) => {
+					_slice: Util.dict<boolean>(start, end, (i) => {
 						return this.data.mk[i]
 					}),
 				},

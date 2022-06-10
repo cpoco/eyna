@@ -1,16 +1,16 @@
 import * as electron from "electron"
 import * as fs from "node:fs"
 
-import * as Conf from "@app/Conf"
-import * as Bridge from "@bridge/Bridge"
-import { Dir } from "@browser/core/Dir"
-import { Path } from "@browser/core/Path"
-import { Storage } from "@browser/core/Storage"
-import { AbstractFragment } from "@browser/fragment/AbstractFragment"
-import { FilerManager } from "@browser/fragment/filer/FilerManager"
-import root from "@browser/Root"
-import * as Util from "@browser/util/Util"
-import * as Native from "@module/native/ts/browser"
+import * as Conf from "@/app/Conf"
+import * as Bridge from "@/bridge/Bridge"
+import { Dir } from "@/browser/core/Dir"
+import { Path } from "@/browser/core/Path"
+import { Storage } from "@/browser/core/Storage"
+import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
+import { FilerManager } from "@/browser/fragment/filer/FilerManager"
+import root from "@/browser/Root"
+import * as Util from "@/util/Util"
+import * as Native from "@eyna/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {
 	private index!: { active: number; target: number }

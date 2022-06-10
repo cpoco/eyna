@@ -1,12 +1,12 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
-import * as CellComponent from "@renderer/fragment/filer/CellComponent"
-import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
-import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
-import root from "@renderer/Root"
-import * as Font from "@renderer/util/Font"
-import * as Unicode from "@renderer/util/Unicode"
+import * as Bridge from "@/bridge/Bridge"
+import * as Font from "@/renderer/dom/Font"
+import * as Unicode from "@/renderer/dom/Unicode"
+import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
+import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
+import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
+import root from "@/renderer/Root"
 
 const TAG = "list"
 

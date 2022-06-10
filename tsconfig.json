@@ -55,20 +55,8 @@
 				"./node_modules/vue/dist/vue.d.ts",
 				"./node_modules/vue/dist/vue.runtime.esm-bundler.js",
 			],
-			"@app/*": [
-				"./src/app/*"
-			],
-			"@module/*": [
-				"./module/*"
-			],
-			"@bridge/*": [
-				"./src/bridge/*"
-			],
-			"@browser/*": [
-				"./src/browser/*"
-			],
-			"@renderer/*": [
-				"./src/renderer/*"
+			"@/*": [
+				"./src/*"
 			]
 		},
 	}

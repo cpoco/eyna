@@ -1,12 +1,12 @@
 import * as vue from "vue"
 // import * as dev from "@vue/devtools"
 
-import * as Bridge from "@bridge/Bridge"
-import * as FilerFragment from "@renderer/fragment/filer/FilerFragment"
-import * as ModalFragment from "@renderer/fragment/modal/ModalFragment"
-import * as SystemFragment from "@renderer/fragment/system/SystemFragment"
-import * as SystemProvider from "@renderer/fragment/system/SystemProvider"
-import * as ViewerFragment from "@renderer/fragment/viewer/ViewerFragment"
+import * as Bridge from "@/bridge/Bridge"
+import * as FilerFragment from "@/renderer/fragment/filer/FilerFragment"
+import * as ModalFragment from "@/renderer/fragment/modal/ModalFragment"
+import * as SystemFragment from "@/renderer/fragment/system/SystemFragment"
+import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import * as ViewerFragment from "@/renderer/fragment/viewer/ViewerFragment"
 
 declare global {
 	interface Window {

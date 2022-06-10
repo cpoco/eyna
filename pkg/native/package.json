@@ -1,5 +1,9 @@
 {
+	"name": "@eyna/native",
 	"private": true,
+	"devDependencies": {
+		"node-gyp": "*"
+	},
 	"scripts": {
 		"install": "node install.js",
 		"ide:win": "node-gyp configure",

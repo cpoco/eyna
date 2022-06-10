@@ -1,10 +1,10 @@
 import * as electron from "electron"
 
-import * as Conf from "@app/Conf"
-import * as Bridge from "@bridge/Bridge"
-import { AbstractFragment } from "@browser/fragment/AbstractFragment"
-import root from "@browser/Root"
-import * as Native from "@module/native/ts/browser"
+import * as Conf from "@/app/Conf"
+import * as Bridge from "@/bridge/Bridge"
+import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
+import root from "@/browser/Root"
+import * as Native from "@eyna/native/ts/browser"
 
 export class SystemFragment extends AbstractFragment {
 	constructor() {

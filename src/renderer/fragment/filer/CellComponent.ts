@@ -1,11 +1,11 @@
 import * as vue from "vue"
 
-import * as Util from "@browser/util/Util"
-import * as Native from "@module/native/ts/renderer"
-import * as FilerProvider from "@renderer/fragment/filer/FilerProvider"
-import * as SpinnerComponent from "@renderer/fragment/filer/SpinnerComponent"
-import * as Font from "@renderer/util/Font"
-import * as Unicode from "@renderer/util/Unicode"
+import * as Font from "@/renderer/dom/Font"
+import * as Unicode from "@/renderer/dom/Unicode"
+import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
+import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
+import * as Util from "@/util/Util"
+import * as Native from "@eyna/native/ts/renderer"
 
 const TAG = "cell"
 
@@ -22,13 +22,13 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
-		const file_type = vue.computed((): Native.AttributeFileType[] => {
+		const file_type = vue.computed((): Native.AttributeFileValues[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
 			})
 		})
 
-		const link_type = vue.computed((): Native.AttributeLinkType[] => {
+		const link_type = vue.computed((): Native.AttributeLinkValues[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.link_type : Native.AttributeLinkType.none
 			})

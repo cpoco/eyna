@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
+import * as Bridge from "@/bridge/Bridge"
 
 const TAG = "dialog-alert"
 

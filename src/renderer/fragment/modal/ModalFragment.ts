@@ -1,10 +1,10 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
-import * as DialogAlert from "@renderer/fragment/modal/DialogAlert"
-import * as DialogFind from "@renderer/fragment/modal/DialogFind"
-import * as DialogPrompt from "@renderer/fragment/modal/DialogPrompt"
-import root from "@renderer/Root"
+import * as Bridge from "@/bridge/Bridge"
+import * as DialogAlert from "@/renderer/fragment/modal/DialogAlert"
+import * as DialogFind from "@/renderer/fragment/modal/DialogFind"
+import * as DialogPrompt from "@/renderer/fragment/modal/DialogPrompt"
+import root from "@/renderer/Root"
 
 type reactive = {
 	type: "alert" | "prompt" | "find" | null

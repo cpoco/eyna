@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Conf from "@app/Conf"
+import * as Conf from "@/app/Conf"
 
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("SystemProvider")
 

@@ -1,0 +1,7 @@
+{
+	"name": "@eyna/test",
+	"private": true,
+	"devDependencies": {
+		"fs-extra": "*"
+	}
+}

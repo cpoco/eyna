@@ -104,7 +104,7 @@ static void get_directory_complete(uv_work_t* req, int status)
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->abst));
 	obj->Set(CONTEXT, to_string(V("ls")), array);
-	obj->Set(CONTEXT, to_string(V("s")), v8::Number::New(ISOLATE, (double)work->s));
+	obj->Set(CONTEXT, to_string(V("s")), v8::BigInt::New(ISOLATE, work->s));
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));

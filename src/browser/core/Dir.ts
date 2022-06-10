@@ -1,8 +1,8 @@
 import * as path from "node:path"
 
-import { Path } from "@browser/core/Path"
-import * as Util from "@browser/util/Util"
-import * as Native from "@module/native/ts/browser"
+import { Path } from "@/browser/core/Path"
+import * as Util from "@/util/Util"
+import * as Native from "@eyna/native/ts/browser"
 
 export class Dir {
 	static readonly HOME: string = "home"
@@ -29,7 +29,7 @@ export class Dir {
 	}
 
 	static findRltv(ls: Native.Attributes[], i: number): string | null {
-		return ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null
+		return ls[i]?.[0]?.rltv ?? null
 	}
 
 	static findIndex(ls: Native.Attributes[], rltv: string | null): number {
@@ -38,7 +38,7 @@ export class Dir {
 		}
 
 		for (let i = 0; i < ls.length; i++) {
-			if ((ls[i]?.[0]?.[Native.AttributeKey.rltv] ?? null) == rltv) {
+			if ((ls[i]?.[0]?.rltv ?? null) == rltv) {
 				return i
 			}
 		}
@@ -79,7 +79,7 @@ export class Dir {
 						ext: "",
 						link_type: Native.AttributeLinkType.none,
 						link: "",
-						size: 0,
+						size: 0n,
 						time: 0,
 						nsec: 0,
 						readonly: false,
@@ -99,7 +99,7 @@ export class Dir {
 						ext: "",
 						link_type: Native.AttributeLinkType.none,
 						link: "",
-						size: 0,
+						size: 0n,
 						time: 0,
 						nsec: 0,
 						readonly: false,

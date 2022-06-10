@@ -59,7 +59,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 			obj->Set(CONTEXT, to_string(V("link")), to_string(a.link));
 		}
 
-		obj->Set(CONTEXT, to_string(V("size")), v8::Number::New(ISOLATE, (double)a.size));
+		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, a.size));
 		obj->Set(CONTEXT, to_string(V("time")), v8::Number::New(ISOLATE, (double)a.time));
 		obj->Set(CONTEXT, to_string(V("nsec")), v8::Number::New(ISOLATE, (double)a.nsec));
 

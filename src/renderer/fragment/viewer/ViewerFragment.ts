@@ -1,8 +1,8 @@
 import * as vue from "vue"
 
-import * as Bridge from "@bridge/Bridge"
-import * as MonacoComponent from "@renderer/fragment/viewer/MonacoComponent"
-import root from "@renderer/Root"
+import * as Bridge from "@/bridge/Bridge"
+import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
+import root from "@/renderer/Root"
 
 type reactive = {
 	type: "text" | null
