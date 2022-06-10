@@ -1,6 +1,6 @@
 import electron_builder from "electron-builder"
 
-export async function Package() {
+export async function Package(arch) {
 	return electron_builder.build({
 		config: {
 			// https://www.electron.build/generated/platformspecificbuildoptions
@@ -15,14 +15,14 @@ export async function Package() {
 			win: {
 				target: {
 					target: "7z",
-					arch: "x64",
+					arch: arch,
 				},
 			},
 			// https://www.electron.build/configuration/mac
 			mac: {
 				target: {
 					target: "7z",
-					arch: "x64",
+					arch: arch,
 				},
 				identity: null,
 			},
