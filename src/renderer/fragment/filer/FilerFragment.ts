@@ -44,8 +44,12 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ class: { "filer-fragment": true } },
-			this.filer.list.map((list) => {
-				return vue.h(ListComponent.V, { list })
+			this.filer.map((ls) => {
+				return vue.h(ListComponent.V, {
+					i: ls.i,
+					list: ls.list,
+					cell: ls.cell,
+				})
 			}),
 		)
 	},
