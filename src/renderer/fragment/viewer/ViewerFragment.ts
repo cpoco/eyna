@@ -5,7 +5,7 @@ import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | null
+	type: "text" | "image" | null
 	path: string
 	data: string
 }
@@ -55,6 +55,18 @@ export const V = vue.defineComponent({
 					path: this.reactive.path,
 					value: this.reactive.data,
 				}, undefined),
+			])
+		}
+		else if (this.reactive.type == "image") {
+			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
+				vue.h("div", {
+					class: { "viewer-image": true },
+				}, [
+					vue.h("img", {
+						class: { "viewer-img": true },
+						src: `file://${this.reactive.path}`,
+					}, undefined),
+				]),
 			])
 		}
 		return null

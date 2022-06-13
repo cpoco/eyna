@@ -30,12 +30,18 @@ export namespace Viewer {
 			number,
 			Data,
 		]
-		export type Data = DataText
+		export type Data = DataText | DataImage
 		export type DataText = {
 			type: "text"
 			path: string
 			size: bigint
 			data: string
+		}
+		export type DataImage = {
+			type: "image"
+			path: string
+			size: bigint
+			data: ""
 		}
 	}
 

@@ -300,19 +300,29 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.file
 					) {
-						let data = ""
-						if (trgt.size <= 1_000_000) {
-							data = fs.readFileSync(trgt.full, "utf8")
+						if (/^\.(gif|jpe?g|png)$/i.test(trgt.ext)) {
+							root.viewer({
+								type: "image",
+								path: trgt.full,
+								size: trgt.size,
+								data: "",
+							})
 						}
 						else {
-							data = "file too large"
+							let data = ""
+							if (trgt.size <= 1_000_000) {
+								data = fs.readFileSync(trgt.full, "utf8")
+							}
+							else {
+								data = "file too large"
+							}
+							root.viewer({
+								type: "text",
+								path: trgt.full,
+								size: trgt.size,
+								data: data,
+							})
 						}
-						root.viewer({
-							type: "text",
-							path: trgt.full,
-							size: trgt.size,
-							data: data,
-						})
 						resolve()
 					}
 				})
