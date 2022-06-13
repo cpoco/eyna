@@ -35,13 +35,11 @@ export namespace Viewer {
 			type: "text"
 			path: string
 			size: bigint
-			data: string
 		}
 		export type DataImage = {
 			type: "image"
 			path: string
 			size: bigint
-			data: ""
 		}
 	}
 
