@@ -6,7 +6,6 @@ import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
 import * as Util from "@/util/Util"
 
 type reactive = {
-	data: Bridge.List.Data // raw
 	i: number
 	list: ListComponent.List
 	cell: CellComponent.Cell[]
@@ -15,10 +14,13 @@ type reactive = {
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
 
 function _create(count: number) {
+	const _data = Util.array<Bridge.List.Data>(0, count, (_) => {
+		return Bridge.List.InitData()
+	})
+
 	const reactive = vue.reactive<reactive[]>(
 		Util.array<reactive>(0, count, (i) => {
 			return {
-				data: vue.markRaw(Bridge.List.InitData()),
 				i,
 				list: ListComponent.InitList(),
 				cell: [],
@@ -27,69 +29,70 @@ function _create(count: number) {
 	)
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
-		reactive[i]!.data = vue.markRaw(data)
+		_data[i]! = vue.markRaw(data)
 		_update(i)
 	}
 
 	const updateScan = (i: number, data: Bridge.List.Scan.Data) => {
-		reactive[i]!.data = vue.markRaw(data)
+		_data[i]! = vue.markRaw(data)
 		_update(i)
 	}
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
-		reactive[i]!.data.status = data.status
+		_data[i]!.status = data.status
 		_update(i)
 	}
 
 	const updateCursor = (i: number, data: Bridge.List.Cursor.Data) => {
-		reactive[i]!.data.cursor = data.cursor
-		reactive[i]!.data.drawCount = data.drawCount
-		reactive[i]!.data.drawIndex = data.drawIndex
-		reactive[i]!.data.drawPosition = data.drawPosition
-		reactive[i]!.data.drawSize = data.drawSize
-		reactive[i]!.data.knobPosition = data.knobPosition
-		reactive[i]!.data.knobSize = data.knobSize
+		_data[i]!.cursor = data.cursor
+		_data[i]!.drawCount = data.drawCount
+		_data[i]!.drawIndex = data.drawIndex
+		_data[i]!.drawPosition = data.drawPosition
+		_data[i]!.drawSize = data.drawSize
+		_data[i]!.knobPosition = data.knobPosition
+		_data[i]!.knobSize = data.knobSize
 		_update(i)
 	}
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive[i]!.data.ls[Number(k)] = v
+			_data[i]!.ls[Number(k)] = v
 		}
 		_update(i)
 	}
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive[i]!.data.mk[Number(k)] = v
+			_data[i]!.mk[Number(k)] = v
 		}
 		_update(i)
 	}
 
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
-		reactive[i]!.data.watch = data.watch
+		_data[i]!.watch = data.watch
 	}
 
 	const _update = (i: number) => {
+		const d = _data[i]!
 		const r = reactive[i]!
 
-		r.list.wd = r.data.wd
-		r.list.sync = r.data.watch == 0
-		r.list.status = r.data.status
-		r.list.count.mark = Util.count(r.data.mk, (mk) => mk)
-		r.list.count.total = r.data.length
-		r.list.count.error = r.data.error
-		r.list.knob.pos = r.data.knobPosition
-		r.list.knob.size = r.data.knobSize
+		r.list.wd = d.wd
+		r.list.sync = d.watch == 0
+		r.list.status = d.status
+		r.list.count.mark = Util.count(d.mk, (mk) => mk)
+		r.list.count.total = d.length
+		r.list.count.error = d.error
+		r.list.knob.pos = d.knobPosition
+		r.list.knob.size = d.knobSize
 
 		r.cell = Util.array<CellComponent.Cell>(
 			0,
-			r.data.drawCount,
+			d.drawCount,
 			(j) => {
-				const k = r.data.drawIndex + j
-				const t = r.data.drawPosition + j * r.data.drawSize
-				const s = r.data.mk?.[k] ?? false
-				const c = r.data.status == Bridge.Status.active && r.data.cursor == k
+				const k = d.drawIndex + j
+				const t = d.drawPosition + j * d.drawSize
+				const s = d.mk?.[k] ?? false
+				const c = d.status == Bridge.Status.active && d.cursor == k
 				return {
 					class: {
 						"filer-cell": true,
@@ -98,7 +101,7 @@ function _create(count: number) {
 						"filer-cell-cursor": !s && c,
 					},
 					style: { top: `${t}px` },
-					attr: vue.markRaw(r.data.ls?.[k] ?? []),
+					attr: vue.markRaw(d.ls?.[k] ?? []),
 				}
 			},
 		)
