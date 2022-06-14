@@ -17,6 +17,9 @@ function _create(count: number) {
 	const _data = Util.array<Bridge.List.Data>(0, count, (_) => {
 		return Bridge.List.InitData()
 	})
+	const _time = Util.array<NodeJS.Timeout>(0, count, (_) => {
+		return undefined
+	})
 
 	const reactive = vue.reactive<reactive[]>(
 		Util.array<reactive>(0, count, (i) => {
@@ -30,16 +33,26 @@ function _create(count: number) {
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
 		_data[i]! = vue.markRaw(data)
-		_update(i)
+
+		clearTimeout(_time[i])
+		_time[i] = setTimeout(() => {
+			_update(i)
+		}, 50)
 	}
 
 	const updateScan = (i: number, data: Bridge.List.Scan.Data) => {
 		_data[i]! = vue.markRaw(data)
-		_update(i)
+
+		clearTimeout(_time[i])
+		_time[i] = setTimeout(() => {
+			_update(i)
+		}, 50)
 	}
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
 		_data[i]!.status = data.status
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
@@ -51,6 +64,8 @@ function _create(count: number) {
 		_data[i]!.drawSize = data.drawSize
 		_data[i]!.knobPosition = data.knobPosition
 		_data[i]!.knobSize = data.knobSize
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
@@ -58,6 +73,8 @@ function _create(count: number) {
 		for (const [k, v] of Object.entries(data._slice)) {
 			_data[i]!.ls[Number(k)] = v
 		}
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
@@ -65,6 +82,8 @@ function _create(count: number) {
 		for (const [k, v] of Object.entries(data._slice)) {
 			_data[i]!.mk[Number(k)] = v
 		}
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
