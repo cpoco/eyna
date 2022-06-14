@@ -48,16 +48,16 @@
 
 		// Module Resolution
 		// Diagnostics.Modules
-		"moduleResolution": "node",
-		"baseUrl": "./",
+		"moduleResolution": "nodenext",
+		"baseUrl": ".",
 		"paths": {
 			"vue": [
-				"./node_modules/vue/dist/vue.d.ts",
-				"./node_modules/vue/dist/vue.runtime.esm-bundler.js",
+				"node_modules/vue/dist/vue.d.ts",
+				"node_modules/vue/dist/vue.runtime.esm-bundler.js",
 			],
 			"@/*": [
-				"./src/*"
-			]
+				"src/*",
+			],
 		},
 	}
 }

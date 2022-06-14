@@ -11,7 +11,7 @@
 
 		// Basic
 	   // Diagnostics.Modules
-		"module": "CommonJS",
+		"module": "ES2020",
 
 		// Basic
 		// Diagnostics.Emit
@@ -43,5 +43,12 @@
 		// Advanced
 		// Diagnostics.Interop_Constraints
 		"forceConsistentCasingInFileNames": true,
+
+		// Module Resolution
+		// Diagnostics.Modules
+		"moduleResolution": "nodenext",
+		"baseUrl": ".",
+		"paths": {
+		},
 	}
 }
