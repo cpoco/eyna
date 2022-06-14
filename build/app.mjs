@@ -50,6 +50,7 @@ export async function Build() {
 		},
 		bundle: true,
 		minify: true,
+		format: "cjs",
 		platform: "node",
 		external: [
 			"electron",
@@ -57,6 +58,5 @@ export async function Build() {
 			"*.node",
 		],
 		outdir: outdir,
-		legalComments: "external",
 	})
 }

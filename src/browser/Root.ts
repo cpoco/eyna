@@ -178,7 +178,7 @@ class Root {
 		console.log("\u001b[0m")
 		try {
 			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
-			let func = vm.runInNewContext(code, { console: console, exports: {}, require: require })
+			let func = vm.runInNewContext(code, { console: console, require: require })
 
 			func({
 				active: option.active,
