@@ -5,7 +5,7 @@ import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | null
+	type: "text" | "image" | "error" | null
 	path: string
 	data: string
 }
@@ -27,9 +27,28 @@ export const V = vue.defineComponent({
 						ch: "viewer-event",
 						args: [-1, { event: "opened" }],
 					})
-					reactive.type = data.type
-					reactive.path = data.path
-					reactive.data = data.data
+
+					if (data.type == "text") {
+						fetch(`file://${data.path}`)
+							.then((res) => {
+								return res.text()
+							})
+							.then((text) => {
+								reactive.type = data.type
+								reactive.path = data.path
+								reactive.data = text
+							})
+							.catch((e) => {
+								reactive.type = "error"
+								reactive.path = ""
+								reactive.data = e.message
+							})
+					}
+					else if (data.type == "image") {
+						reactive.type = data.type
+						reactive.path = data.path
+						reactive.data = ""
+					}
 				})
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
 					root.send<Bridge.Viewer.Event.Send>({
@@ -55,6 +74,25 @@ export const V = vue.defineComponent({
 					path: this.reactive.path,
 					value: this.reactive.data,
 				}, undefined),
+			])
+		}
+		else if (this.reactive.type == "image") {
+			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
+				vue.h("div", {
+					class: { "viewer-image": true },
+				}, [
+					vue.h("img", {
+						class: { "viewer-img": true },
+						src: `file://${this.reactive.path}`,
+					}, undefined),
+				]),
+			])
+		}
+		else if (this.reactive.type == "error") {
+			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
+				vue.h("div", {
+					class: { "viewer-error": true },
+				}, this.reactive.data),
 			])
 		}
 		return null

@@ -1,6 +1,4 @@
 declare var console: Console
-// declare var exports: any
-// declare var require: NodeRequire
 
 type Extension = {
 	active: {

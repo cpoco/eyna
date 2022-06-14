@@ -1,12 +1,12 @@
-import * as path from "node:path"
-
-export default async (ex: Extension): Promise<void> => {
+import { dirname, join } from "node:path"
+import { normalize } from "node:path/posix"
+;(async (ex: Extension): Promise<void> => {
 	if (ex.active.cursor == null) {
 		return
 	}
 
-	let src = ex.active.cursor[0].full
-	let dst = path.join(ex.active.wd, ex.active.cursor[0].rltv)
+	let src = ex.active.cursor[0]!.full
+	let dst = join(ex.active.wd, ex.active.cursor[0]!.rltv)
 
 	let prompt = await ex.dialog.opne({ type: "prompt", title: "duplicate", text: dst })
 	if (prompt == null || prompt.text == "") {
@@ -19,7 +19,7 @@ export default async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	let dirdst = path.dirname(path.posix.normalize(dst))
+	let dirdst = dirname(normalize(dst))
 	if (!await ex.filer.exists(dirdst)) {
 		await ex.filer.mkdir(dirdst)
 	}
@@ -27,4 +27,4 @@ export default async (ex: Extension): Promise<void> => {
 	await ex.filer.copy(src, dst)
 
 	ex.filer.update()
-}
+})

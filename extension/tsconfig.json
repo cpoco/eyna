@@ -1,19 +1,8 @@
 // https://www.typescriptlang.org/tsconfig
 // https://github.com/microsoft/TypeScript/blob/main/src/compiler/commandLineParser.ts
 {
-	"files": [
-		"src/extension.d.ts",
-
-		"src/fs.copy.ts",
-		"src/fs.duplicate.ts",
-		"src/fs.mkdir.ts",
-		"src/fs.move.ts",
-		"src/fs.rename.ts",
-		"src/fs.trash.ts",
-
-		"src/list.code.ts",
-		"src/list.terminal.ts",
-		"src/list.test.ts",
+	"include": [
+		"src/*",
 	],
 
 	"compilerOptions": {
@@ -22,16 +11,12 @@
 
 		// Basic
 	   // Diagnostics.Modules
-		"module": "CommonJS",
+		"module": "ES2020",
 
 		// Basic
 		// Diagnostics.Emit
 		"removeComments": true,
 		"newLine": "LF",
-
-		// Basic
-		// Diagnostics.Specify_an_output_folder_for_all_emitted_files
-		"outDir": ".",
 
 		// Strict Type Checks
 		// Diagnostics.Type_Checking
@@ -51,12 +36,19 @@
 		"exactOptionalPropertyTypes": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
-		// "noUncheckedIndexedAccess": true,
+		"noUncheckedIndexedAccess": true,
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 
 		// Advanced
 		// Diagnostics.Interop_Constraints
 		"forceConsistentCasingInFileNames": true,
+
+		// Module Resolution
+		// Diagnostics.Modules
+		"moduleResolution": "nodenext",
+		"baseUrl": ".",
+		"paths": {
+		},
 	}
 }

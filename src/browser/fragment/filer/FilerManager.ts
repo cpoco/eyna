@@ -164,8 +164,8 @@ export class FilerManager {
 					cursor: this.data.cursor,
 					length: this.data.length,
 					wd: this.data.wd,
-					ls: [], // renderer 側で要素作成
-					mk: [], // renderer 側で要素作成
+					ls: [],
+					mk: [],
 					drawCount: Math.min(this.sc.drawCount(), this.data.length),
 					drawIndex: this.sc.drawIndex(0),
 					drawPosition: this.sc.drawPosition(0),

@@ -1,5 +1,4 @@
 import * as electron from "electron"
-import * as fs from "node:fs"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
@@ -300,19 +299,20 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.file
 					) {
-						let data = ""
-						if (trgt.size <= 1_000_000) {
-							data = fs.readFileSync(trgt.full, "utf8")
+						if (/^\.(gif|jpe?g|png)$/i.test(trgt.ext)) {
+							root.viewer({
+								type: "image",
+								path: trgt.full,
+								size: trgt.size,
+							})
 						}
 						else {
-							data = "file too large"
+							root.viewer({
+								type: "text",
+								path: trgt.full,
+								size: trgt.size,
+							})
 						}
-						root.viewer({
-							type: "text",
-							path: trgt.full,
-							size: trgt.size,
-							data: data,
-						})
 						resolve()
 					}
 				})

@@ -2,18 +2,30 @@ import * as vue from "vue"
 
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
-import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import * as Util from "@/util/Util"
 import * as Native from "@eyna/native/ts/renderer"
 
 const TAG = "cell"
 
+export type Cell = {
+	class: {
+		"filer-cell": boolean
+		"filer-cell-selcur": boolean
+		"filer-cell-select": boolean
+		"filer-cell-cursor": boolean
+	}
+	style: {
+		top: string
+	}
+	attr: Native.Attributes
+}
+
 export const V = vue.defineComponent({
 	props: {
 		cell: {
 			required: true,
-			type: Object as vue.PropType<FilerProvider.Cell>,
+			type: Object as vue.PropType<Cell>,
 		},
 	},
 

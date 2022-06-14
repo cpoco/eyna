@@ -1,99 +1,117 @@
 import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
+import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
+import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
 import * as Util from "@/util/Util"
-import * as Native from "@eyna/native/ts/renderer"
 
-export type List = {
+type reactive = {
 	i: number
-	data: Bridge.List.Data
-	make: number
-	cell: Cell[]
-}
-
-export type Cell = {
-	class: {
-		"filer-cell": boolean
-		"filer-cell-selcur": boolean
-		"filer-cell-select": boolean
-		"filer-cell-cursor": boolean
-	}
-	style: {
-		top: string
-	}
-	attr: Native.Attributes
+	list: ListComponent.List
+	cell: CellComponent.Cell[]
 }
 
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
 
 function _create(count: number) {
-	const reactive = vue.reactive({
-		list: Util.array<List>(0, count, (i) => {
+	const _data = Util.array<Bridge.List.Data>(0, count, (_) => {
+		return Bridge.List.InitData()
+	})
+	const _time = Util.array<NodeJS.Timeout>(0, count, (_) => {
+		return undefined
+	})
+
+	const reactive = vue.reactive<reactive[]>(
+		Util.array<reactive>(0, count, (i) => {
 			return {
 				i,
-				data: Bridge.List.InitData(),
-				make: 0,
+				list: ListComponent.InitList(),
 				cell: [],
 			}
 		}),
-	})
+	)
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
-		reactive.list[i]!.data = data
-		_update(i)
+		_data[i]! = vue.markRaw(data)
+
+		clearTimeout(_time[i])
+		_time[i] = setTimeout(() => {
+			_update(i)
+		}, 50)
 	}
 
-	const updateScan = (i: number, data: Bridge.List.Change.Data) => {
-		reactive.list[i]!.data = data
-		reactive.list[i]!.data.ls = new Array(data.length).fill([])
-		reactive.list[i]!.data.mk = new Array(data.length).fill(false)
-		_update(i)
+	const updateScan = (i: number, data: Bridge.List.Scan.Data) => {
+		_data[i]! = vue.markRaw(data)
+
+		clearTimeout(_time[i])
+		_time[i] = setTimeout(() => {
+			_update(i)
+		}, 50)
 	}
 
 	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
-		reactive.list[i]!.data.status = data.status
+		_data[i]!.status = data.status
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
 	const updateCursor = (i: number, data: Bridge.List.Cursor.Data) => {
-		reactive.list[i]!.data.cursor = data.cursor
-		reactive.list[i]!.data.drawCount = data.drawCount
-		reactive.list[i]!.data.drawIndex = data.drawIndex
-		reactive.list[i]!.data.drawPosition = data.drawPosition
-		reactive.list[i]!.data.drawSize = data.drawSize
-		reactive.list[i]!.data.knobPosition = data.knobPosition
-		reactive.list[i]!.data.knobSize = data.knobSize
+		_data[i]!.cursor = data.cursor
+		_data[i]!.drawCount = data.drawCount
+		_data[i]!.drawIndex = data.drawIndex
+		_data[i]!.drawPosition = data.drawPosition
+		_data[i]!.drawSize = data.drawSize
+		_data[i]!.knobPosition = data.knobPosition
+		_data[i]!.knobSize = data.knobSize
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
 	const updateAttribute = (i: number, data: Bridge.List.Attribute.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive.list[i]!.data.ls[Number(k)] = v
+			_data[i]!.ls[Number(k)] = v
 		}
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
 	const updateMark = (i: number, data: Bridge.List.Mark.Data) => {
 		for (const [k, v] of Object.entries(data._slice)) {
-			reactive.list[i]!.data.mk[Number(k)] = v
+			_data[i]!.mk[Number(k)] = v
 		}
+
+		clearTimeout(_time[i])
 		_update(i)
 	}
 
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
-		reactive.list[i]!.data.watch = data.watch
+		_data[i]!.watch = data.watch
 	}
 
 	const _update = (i: number) => {
-		reactive.list[i]!.make = Util.count(reactive.list[i]!.data.mk, (mk) => mk)
-		reactive.list[i]!.cell = Util.array<Cell>(
+		const d = _data[i]!
+		const r = reactive[i]!
+
+		r.list.wd = d.wd
+		r.list.sync = d.watch == 0
+		r.list.status = d.status
+		r.list.count.mark = Util.count(d.mk, (mk) => mk)
+		r.list.count.total = d.length
+		r.list.count.error = d.error
+		r.list.knob.pos = d.knobPosition
+		r.list.knob.size = d.knobSize
+
+		r.cell = Util.array<CellComponent.Cell>(
 			0,
-			reactive.list[i]!.data.drawCount,
+			d.drawCount,
 			(j) => {
-				const k = reactive.list[i]!.data.drawIndex + j
-				const t = reactive.list[i]!.data.drawPosition + j * reactive.list[i]!.data.drawSize
-				const s = reactive.list[i]!.data.mk[k]!
-				const c = reactive.list[i]!.data.status == Bridge.Status.active && reactive.list[i]!.data.cursor == k
+				const k = d.drawIndex + j
+				const t = d.drawPosition + j * d.drawSize
+				const s = d.mk?.[k] ?? false
+				const c = d.status == Bridge.Status.active && d.cursor == k
 				return {
 					class: {
 						"filer-cell": true,
@@ -102,7 +120,7 @@ function _create(count: number) {
 						"filer-cell-cursor": !s && c,
 					},
 					style: { top: `${t}px` },
-					attr: reactive.list[i]!.data.ls[k]!,
+					attr: vue.markRaw(d.ls?.[k] ?? []),
 				}
 			},
 		)

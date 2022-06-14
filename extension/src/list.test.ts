@@ -1,9 +1,9 @@
-export default async (ex: Extension): Promise<void> => {
+;(async (ex: Extension): Promise<void> => {
 	console.log(ex.active.wd, ex.active.cursor, ...ex.active.select)
 	if (ex.active.cursor == null) {
 		return
 	}
-	let full = ex.active.cursor[0].full
+	let full = ex.active.cursor[0]!.full
 
 	return new Promise(async (resolve, _reject) => {
 		console.log("opne")
@@ -21,4 +21,4 @@ export default async (ex: Extension): Promise<void> => {
 		console.log("cancel")
 		ex.dialog.cancel()
 	})
-}
+})
