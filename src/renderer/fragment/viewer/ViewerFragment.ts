@@ -1,6 +1,7 @@
 import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
+// import * as SpinnerComponent from "@/renderer/fragment/viewer/SpinnerComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 

@@ -4,6 +4,6 @@ const TAG = "spinner"
 
 export const V = vue.defineComponent({
 	render() {
-		return vue.h(TAG, { class: { "filer-spinner": true } })
+		return vue.h(TAG, { class: { "viewer-spinner": true } })
 	},
 })
