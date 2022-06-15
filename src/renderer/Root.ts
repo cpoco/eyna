@@ -54,20 +54,29 @@ class Root {
 
 	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
 		window.ipc.on(ch, (_event: Electron.IpcRendererEvent, ...args: [T, U]) => {
-			console.log(ch, args[0], args[1])
+			this.log("ipc.on", ch, args[0], args[1])
 			listener(args[0], args[1])
 		})
 		return this
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		console.log(send.ch, send.args[0], send.args[1])
+		this.log("ipc.send", send.ch, send.args[0], send.args[1])
 		window.ipc.send(send.ch, ...send.args)
 	}
 
 	invoke<T extends Bridge.Base.Send, U>(send: T): Promise<U> {
-		console.log(send.ch, send.args[0], send.args[1])
+		this.log("ipc.invoke", send.ch, send.args[0], send.args[1])
 		return window.ipc.invoke<U>(send.ch, ...send.args)
+	}
+
+	log(label: string, ...agrs: any[]) {
+		console.log(
+			`%c${label}%c`,
+			`color:#fff;background-color:#16A085;padding:2px;border-radius:2px;`,
+			"",
+			...agrs,
+		)
 	}
 }
 

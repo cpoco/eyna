@@ -143,7 +143,7 @@ class Root {
 
 	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
 		electron.ipcMain.on(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
-			console.log(ch, args[0], args[1])
+			console.log("\u001b[32m[ipc.on]\u001b[0m", ch, args[0], args[1])
 			listener(args[0], args[1])
 		})
 		return this
@@ -151,14 +151,16 @@ class Root {
 
 	handle<T, U, V>(ch: string, listener: (i: T, data: U) => V): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
-			console.log(ch, args[0], args[1])
-			return listener(args[0], args[1])
+			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, args[0], args[1])
+			let ret = listener(args[0], args[1])
+			console.log("\u001b[32m[ipc.handle.result]\u001b[0m", ret)
+			return ret
 		})
 		return this
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		console.log(send.ch, send.args[0] /*, send.args[1]*/)
+		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.args[0] /*, send.args[1]*/)
 		this.browser.webContents.send(send.ch, ...send.args)
 	}
 
@@ -173,12 +175,14 @@ class Root {
 	runExtension(file: string, option: Option) {
 		console.log("\u001b[35m")
 		console.log("run extension ----------------------------------------------")
-		console.log(`${file}`)
-		console.log("------------------------------------------------------------")
 		console.log("\u001b[0m")
+
 		try {
-			let code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
-			let func = vm.runInNewContext(code, { console: console, require: require })
+			const log = (...args: any[]) => {
+				console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
+			}
+			const code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
+			const func = vm.runInNewContext(code, { log: log, require: require })
 
 			func({
 				active: option.active,
@@ -227,8 +231,6 @@ class Root {
 				.then(() => {
 					console.log("\u001b[35m")
 					console.log("end extension ----------------------------------------------")
-					console.log(`${file}`)
-					console.log("------------------------------------------------------------")
 					console.log("\u001b[0m")
 				})
 		}

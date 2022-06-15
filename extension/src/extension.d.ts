@@ -1,4 +1,4 @@
-declare var console: Console
+declare function log(...args: any[]): void
 
 type Extension = {
 	active: {

@@ -115,10 +115,10 @@ export class Dir {
 		else {
 			this.dp = dp
 			this.rg = rg
-			console.log(this.wd, { dp: dp, rg: rg })
+			console.log(`\u001b[36m[dir]\u001b[0m`, this.wd, { dp: dp, rg: rg })
 			let _time = perf_hooks.performance.now()
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				console.log(dir.wd, "directory", `${perf_hooks.performance.now() - _time}ms`, { s: dir.s, d: dir.d, f: dir.f, e: dir.e, len: dir.ls.length })
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "directory", `${perf_hooks.performance.now() - _time}ms`, { s: dir.s, d: dir.d, f: dir.f, e: dir.e, len: dir.ls.length })
 				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
@@ -126,7 +126,7 @@ export class Dir {
 					ls.push(await Native.getAttribute(absolute, dir.wd))
 				}
 
-				console.log(dir.wd, "attribute", `${perf_hooks.performance.now() - _time}ms`)
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "attribute", `${perf_hooks.performance.now() - _time}ms`)
 				_time = perf_hooks.performance.now()
 
 				ls.sort((a, b) => {
@@ -144,7 +144,7 @@ export class Dir {
 					return type
 				})
 
-				console.log(dir.wd, "sort", `${perf_hooks.performance.now() - _time}ms`)
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "sort", `${perf_hooks.performance.now() - _time}ms`)
 
 				cb(dir.wd, ls, dir.e)
 			})
