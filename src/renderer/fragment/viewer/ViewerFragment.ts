@@ -73,7 +73,7 @@ export const V = vue.defineComponent({
 		else if (this.reactive.type == "image") {
 			return vue.h(TAG, {
 				class: {
-					"viewer-fragment": true
+					"viewer-fragment": true,
 				},
 			}, [
 				vue.h(ImageComponent.V, {

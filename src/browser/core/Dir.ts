@@ -118,7 +118,13 @@ export class Dir {
 			console.log(`\u001b[36m[dir]\u001b[0m`, this.wd, { dp: dp, rg: rg })
 			let _time = perf_hooks.performance.now()
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "directory", `${perf_hooks.performance.now() - _time}ms`, { s: dir.s, d: dir.d, f: dir.f, e: dir.e, len: dir.ls.length })
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "directory", `${perf_hooks.performance.now() - _time}ms`, {
+					s: dir.s,
+					d: dir.d,
+					f: dir.f,
+					e: dir.e,
+					len: dir.ls.length,
+				})
 				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
