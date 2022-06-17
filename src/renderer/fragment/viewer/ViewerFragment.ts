@@ -1,6 +1,7 @@
 import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
+import * as ImageComponent from "@/renderer/fragment/viewer/ImageComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 
@@ -38,13 +39,6 @@ export const V = vue.defineComponent({
 						reactive.type = data.type
 						reactive.path = data.path
 						reactive.size = data.size
-
-						vue.nextTick(() => {
-							img.value!.onload = () => {
-								console.log("img onload", img.value!.naturalWidth, img.value!.naturalHeight)
-							}
-							img.value!.src = `file://${data.path}`
-						})
 					}
 				})
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
@@ -79,14 +73,11 @@ export const V = vue.defineComponent({
 		else if (this.reactive.type == "image") {
 			return vue.h(TAG, {
 				class: {
-					"viewer-fragment": true,
-					"viewer-fragment-flex": true,
-					"viewer-fragment-background-image": true,
+					"viewer-fragment": true
 				},
 			}, [
-				vue.h("img", {
-					ref: "img",
-					class: { "viewer-image": true },
+				vue.h(ImageComponent.V, {
+					path: this.reactive.path,
 				}, undefined),
 			])
 		}
