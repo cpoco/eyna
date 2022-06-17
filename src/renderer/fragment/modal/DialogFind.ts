@@ -64,9 +64,9 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
-			setTimeout(() => {
+			vue.nextTick(() => {
 				rg.value!.focus()
-			}, 0)
+			})
 		})
 
 		return {
