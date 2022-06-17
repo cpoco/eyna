@@ -1,7 +1,6 @@
 import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
-// import * as SpinnerComponent from "@/renderer/fragment/viewer/SpinnerComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 
@@ -21,6 +20,8 @@ export const V = vue.defineComponent({
 			data: "",
 		})
 
+		const img = vue.ref<HTMLImageElement>()
+
 		vue.onMounted(() => {
 			root
 				.on(Bridge.Viewer.Open.CH, (_: number, data: Bridge.Viewer.Open.Data) => {
@@ -28,7 +29,6 @@ export const V = vue.defineComponent({
 						ch: "viewer-event",
 						args: [-1, { event: "opened" }],
 					})
-
 					if (data.type == "text") {
 						fetch(`file://${data.path}`)
 							.then((res) => {
@@ -49,6 +49,12 @@ export const V = vue.defineComponent({
 						reactive.type = data.type
 						reactive.path = data.path
 						reactive.data = ""
+						vue.nextTick(() => {
+							img.value!.onload = () => {
+								console.log("img onload", img.value!.naturalWidth, img.value!.naturalHeight)
+							}
+							img.value!.src = `file://${data.path}`
+						})
 					}
 				})
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
@@ -64,12 +70,17 @@ export const V = vue.defineComponent({
 
 		return {
 			reactive,
+			img,
 		}
 	},
 
 	render() {
 		if (this.reactive.type == "text") {
-			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+				},
+			}, [
 				vue.h(MonacoComponent.V, {
 					class: { "viewer-monaco": true },
 					path: this.reactive.path,
@@ -78,22 +89,28 @@ export const V = vue.defineComponent({
 			])
 		}
 		else if (this.reactive.type == "image") {
-			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
-				vue.h("div", {
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+					"viewer-fragment-flex": true,
+					"viewer-fragment-background-image": true,
+				},
+			}, [
+				vue.h("img", {
+					ref: "img",
 					class: { "viewer-image": true },
-				}, [
-					vue.h("img", {
-						class: { "viewer-img": true },
-						src: `file://${this.reactive.path}`,
-					}, undefined),
-				]),
+				}, undefined),
 			])
 		}
 		else if (this.reactive.type == "error") {
-			return vue.h(TAG, { class: { "viewer-fragment": true } }, [
-				vue.h("div", {
-					class: { "viewer-error": true },
-				}, this.reactive.data),
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+					"viewer-fragment-flex": true,
+					"viewer-fragment-background": true,
+				},
+			}, [
+				vue.h("span", {}, this.reactive.data),
 			])
 		}
 		return null
