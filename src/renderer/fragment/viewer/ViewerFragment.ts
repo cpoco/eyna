@@ -5,9 +5,9 @@ import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | "image" | "error" | null
+	type: "text" | "image" | null
 	path: string
-	data: string
+	size: bigint
 }
 
 const TAG = "viewer"
@@ -17,7 +17,7 @@ export const V = vue.defineComponent({
 		const reactive = vue.reactive<reactive>({
 			type: null,
 			path: "",
-			data: "",
+			size: 0n,
 		})
 
 		const img = vue.ref<HTMLImageElement>()
@@ -30,25 +30,15 @@ export const V = vue.defineComponent({
 						args: [-1, { event: "opened" }],
 					})
 					if (data.type == "text") {
-						fetch(`file://${data.path}`)
-							.then((res) => {
-								return res.text()
-							})
-							.then((text) => {
-								reactive.type = data.type
-								reactive.path = data.path
-								reactive.data = text
-							})
-							.catch((e) => {
-								reactive.type = "error"
-								reactive.path = ""
-								reactive.data = e.message
-							})
+						reactive.type = data.type
+						reactive.path = data.path
+						reactive.size = data.size
 					}
 					else if (data.type == "image") {
 						reactive.type = data.type
 						reactive.path = data.path
-						reactive.data = ""
+						reactive.size = data.size
+
 						vue.nextTick(() => {
 							img.value!.onload = () => {
 								console.log("img onload", img.value!.naturalWidth, img.value!.naturalHeight)
@@ -64,7 +54,7 @@ export const V = vue.defineComponent({
 					})
 					reactive.type = null
 					reactive.path = ""
-					reactive.data = ""
+					reactive.size = 0n
 				})
 		})
 
@@ -82,9 +72,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoComponent.V, {
-					class: { "viewer-monaco": true },
 					path: this.reactive.path,
-					value: this.reactive.data,
 				}, undefined),
 			])
 		}
@@ -100,17 +88,6 @@ export const V = vue.defineComponent({
 					ref: "img",
 					class: { "viewer-image": true },
 				}, undefined),
-			])
-		}
-		else if (this.reactive.type == "error") {
-			return vue.h(TAG, {
-				class: {
-					"viewer-fragment": true,
-					"viewer-fragment-flex": true,
-					"viewer-fragment-background": true,
-				},
-			}, [
-				vue.h("span", {}, this.reactive.data),
 			])
 		}
 		return null
