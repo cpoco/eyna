@@ -28,19 +28,12 @@ const V = vue.defineComponent({
 	},
 
 	render() {
-		const node = [
+		return vue.h("root", undefined, [
 			vue.h(SystemFragment.V),
-		]
-
-		if (this.sys.ready) {
-			node.push(
-				vue.h(FilerFragment.V),
-				vue.h(ModalFragment.V),
-				vue.h(ViewerFragment.V),
-			)
-		}
-
-		return vue.h("root", undefined, node)
+			this.sys.ready ? vue.h(FilerFragment.V) : undefined,
+			this.sys.ready ? vue.h(ModalFragment.V) : undefined,
+			this.sys.ready ? vue.h(ViewerFragment.V) : undefined,
+		])
 	},
 })
 
