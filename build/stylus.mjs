@@ -4,14 +4,16 @@ import url from "node:url"
 import stylus from "stylus"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const file = path.join(__dirname, "../src/app/style.styl")
-const out = path.join(__dirname, "../app/style.css")
+const __top = path.join(__dirname, "..")
+
+const file = path.join(__top, "src/app/style.styl")
+const out = path.join(__top, "app/style.css")
 
 async function render(str) {
 	return new Promise((resolve, reject) => {
 		stylus(str)
 			.set("paths", [
-				path.join(__dirname, "../src/app"),
+				path.join(__top, "src/app"),
 			])
 			.render(
 				(err, css) => {

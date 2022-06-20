@@ -5,11 +5,13 @@ import path from "node:path"
 import url from "node:url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const electron = module.createRequire(import.meta.url)(path.join(__dirname, "../node_modules/electron/package.json"))
+const __top = path.join(__dirname, "..")
+
+const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 
 export async function Build(arch) {
 	return electron_rebuild.rebuild({
-		buildPath: path.join(__dirname, ".."),
+		buildPath: __top,
 		arch: arch,
 		electronVersion: electron.version,
 		onlyModules: ["native"],
@@ -17,8 +19,8 @@ export async function Build(arch) {
 	})
 		.then(() => {
 			return fs.copyFile(
-				path.join(__dirname, "../node_modules/@eyna/native/build/Release/native.node"),
-				path.join(__dirname, "../app/native.node"),
+				path.join(__top, "node_modules/@eyna/native/build/Release/native.node"),
+				path.join(__top, "app/native.node"),
 			)
 		})
 }

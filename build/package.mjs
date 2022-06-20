@@ -1,7 +1,13 @@
 import electron_builder from "electron-builder"
+import path from "node:path"
+import url from "node:url"
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
+const __top = path.join(__dirname, "..")
 
 export async function Package(arch) {
 	return electron_builder.build({
+		projectDir: __top,
 		config: {
 			// https://www.electron.build/generated/platformspecificbuildoptions
 			artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
