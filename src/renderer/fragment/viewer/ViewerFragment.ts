@@ -21,8 +21,6 @@ export const V = vue.defineComponent({
 			size: 0n,
 		})
 
-		const img = vue.ref<HTMLImageElement>()
-
 		vue.onMounted(() => {
 			root
 				.on(Bridge.Viewer.Open.CH, (_: number, data: Bridge.Viewer.Open.Data) => {
@@ -54,7 +52,6 @@ export const V = vue.defineComponent({
 
 		return {
 			reactive,
-			img,
 		}
 	},
 
