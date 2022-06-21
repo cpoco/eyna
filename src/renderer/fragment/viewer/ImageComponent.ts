@@ -15,7 +15,7 @@ export const V = vue.defineComponent({
 		vue.onMounted(() => {
 			vue.nextTick(() => {
 				img.value!.onload = () => {
-					head.value = `${img.value!.naturalWidth} x ${img.value!.naturalHeight}`
+					head.value = `${img.value!.naturalWidth.toLocaleString()} × ${img.value!.naturalHeight.toLocaleString()}`
 				}
 				img.value!.src = `file://${props.path}`
 			})
