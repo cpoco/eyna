@@ -9,28 +9,33 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
+		const head = vue.ref<string>("")
 		const img = vue.ref<HTMLImageElement>()
 
 		vue.onMounted(() => {
 			vue.nextTick(() => {
 				img.value!.onload = () => {
-					console.log("img onload", img.value!.naturalWidth, img.value!.naturalHeight)
+					head.value = `${img.value!.naturalWidth} x ${img.value!.naturalHeight}`
 				}
 				img.value!.src = `file://${props.path}`
 			})
 		})
 
 		return {
+			head,
 			img,
 		}
 	},
 
 	render() {
 		return vue.h("div", { class: { "viewer-image": true } }, [
-			vue.h("img", {
-				ref: "img",
-				class: { "viewer-image-img": true },
-			}, undefined),
+			vue.h("div", { class: { "viewer-image-head": true } }, this.head),
+			vue.h("div", { class: { "viewer-image-back": true } }, [
+				vue.h("img", {
+					ref: "img",
+					class: { "viewer-image-img": true },
+				}, undefined),
+			]),
 		])
 	},
 })
