@@ -24,7 +24,7 @@ function _merge(target: any, key: string, source: unknown) {
 			_merge(target[key], k, v)
 		}
 	}
-	else {
+	else if (typeof source !== "object" || source === null) {
 		target[key] = source
 	}
 }
