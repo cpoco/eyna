@@ -80,7 +80,6 @@ export class FilerManager {
 		this.data.watch = 0
 		this.data.error = 0
 
-		console.log("unwatch", this.id)
 		Native.unwatch(this.id)
 
 		root.send<Bridge.List.Change.Send>({
@@ -126,7 +125,6 @@ export class FilerManager {
 					this.data.error = e
 
 					if (wd != Dir.HOME) {
-						console.log(wd, "watch", this.id)
 						Native.watch(this.id, wd, (_id, depth, _abstract) => {
 							if (update == this.data.update && depth == 0) {
 								this.data.watch = 1

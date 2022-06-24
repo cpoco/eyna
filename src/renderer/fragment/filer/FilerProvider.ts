@@ -89,6 +89,8 @@ function _create(count: number) {
 
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
 		_data[i]!.watch = data.watch
+
+		reactive[i]!.list.sync = _data[i]!.watch == 0
 	}
 
 	const _update = (i: number) => {

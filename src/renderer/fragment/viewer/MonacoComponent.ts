@@ -14,10 +14,6 @@ export const V = vue.defineComponent({
 			required: true,
 			type: String,
 		},
-		"value": {
-			required: true,
-			type: String,
-		},
 	},
 
 	setup(props) {
@@ -26,18 +22,9 @@ export const V = vue.defineComponent({
 		let model: _monaco.editor.ITextModel | null = null
 		let editor: _monaco.editor.IStandaloneCodeEditor | null = null
 
-		vue.watch(vue.toRefs(props).value, (v) => {
-			if (model != null) {
-				if (model.getValue() == v) {
-					return
-				}
-				model.setValue(v)
-			}
-		})
-
 		vue.onMounted(() => {
 			model = window.monaco.editor.createModel(
-				props.value,
+				"",
 				undefined,
 				window.monaco.Uri.file(props.path),
 			)
@@ -62,7 +49,15 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			editor.focus()
+
+			fetch(`file://${props.path}`)
+				.then((res) => {
+					return res.text()
+				})
+				.then((text) => {
+					editor?.focus()
+					model?.setValue(text)
+				})
 		})
 
 		vue.onUnmounted(() => {
@@ -76,6 +71,6 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		return vue.h("div", { ref: "el" })
+		return vue.h("div", { ref: "el", class: { "viewer-monaco": true } })
 	},
 })

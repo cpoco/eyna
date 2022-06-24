@@ -1,4 +1,5 @@
 import * as path from "node:path"
+import * as perf_hooks from "node:perf_hooks"
 
 import { Path } from "@/browser/core/Path"
 import * as Util from "@/util/Util"
@@ -112,25 +113,31 @@ export class Dir {
 			})
 		}
 		else {
-			let _time = Date.now()
 			this.dp = dp
 			this.rg = rg
+			console.log(`\u001b[36m[dir]\u001b[0m`, this.wd, { dp: dp, rg: rg })
+			let _time = perf_hooks.performance.now()
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				console.log(this.wd, { dp: this.dp, rg: this.rg, len: dir.ls.length, err: dir.e })
-				console.log(this.wd, "Native.getDirectory", `${Date.now() - _time}ms`)
-				_time = Date.now()
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "directory", `${perf_hooks.performance.now() - _time}ms`, {
+					s: dir.s,
+					d: dir.d,
+					f: dir.f,
+					e: dir.e,
+					len: dir.ls.length,
+				})
+				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
 				for (let absolute of dir.ls) {
-					ls.push(await Native.getAttribute(absolute, this.wd))
+					ls.push(await Native.getAttribute(absolute, dir.wd))
 				}
 
-				console.log(this.wd, "Native.getAttribute", `${Date.now() - _time}ms`)
-				_time = Date.now()
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "attribute", `${perf_hooks.performance.now() - _time}ms`)
+				_time = perf_hooks.performance.now()
 
 				ls.sort((a, b) => {
 					let type = _type(a, b)
-					if (type == 1024) {
+					if (type == DIR_SORT) {
 						return _name(a, b)
 					}
 					if (type == 0) {
@@ -143,13 +150,15 @@ export class Dir {
 					return type
 				})
 
-				console.log(this.wd, "sort", `${Date.now() - _time}ms`)
+				console.log(`\u001b[36m[dir]\u001b[0m`, dir.wd, "sort", `${perf_hooks.performance.now() - _time}ms`)
 
-				cb(this.wd, ls, dir.e)
+				cb(dir.wd, ls, dir.e)
 			})
 		}
 	}
 }
+
+const DIR_SORT = 1024
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
 	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.none
@@ -162,7 +171,7 @@ function _type(a: Native.Attributes, b: Native.Attributes): number {
 		bb = Native.AttributeFileType.file
 	}
 	if (aa == Native.AttributeFileType.directory && bb == Native.AttributeFileType.directory) {
-		return 1024
+		return DIR_SORT
 	}
 
 	return aa - bb

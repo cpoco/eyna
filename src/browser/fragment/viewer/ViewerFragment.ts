@@ -20,7 +20,6 @@ export class ViewerFragment extends AbstractFragment {
 	}
 
 	close() {
-		Command.manager.whenType = Command.When.Filer
 		root.send<Bridge.Viewer.Close.Send>({
 			ch: Bridge.Viewer.Close.CH,
 			args: [-1, {}],

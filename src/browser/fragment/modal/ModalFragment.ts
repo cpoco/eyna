@@ -25,7 +25,6 @@ export class ModalFragment extends AbstractFragment {
 	}
 
 	cancel() {
-		Command.manager.whenType = Command.When.Filer
 		root.send<Bridge.Modal.Cancel.Send>({
 			ch: Bridge.Modal.Cancel.CH,
 			args: [-1, {}],

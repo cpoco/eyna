@@ -5,9 +5,10 @@ import url from "node:url"
 import ts from "typescript"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const outdir = path.join(__dirname, "../app")
-const conf = path.join(__dirname, "../tsconfig.json")
-const base = path.join(__dirname, "..")
+const __top = path.join(__dirname, "..")
+
+const outdir = path.join(__top, "app")
+const conf = path.join(__top, "tsconfig.json")
 
 export async function Init() {
 	return fse.ensureDir(outdir)
@@ -16,7 +17,7 @@ export async function Init() {
 export async function Check() {
 	return new Promise((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
-		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
+		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, __top)
 		const program = ts.createProgram(fileNames, options)
 		const diagnostics = [
 			...program.getSemanticDiagnostics(),
@@ -35,8 +36,8 @@ export async function Check() {
 
 export async function Build() {
 	fse.copySync(
-		path.join(__dirname, "../node_modules/monaco-editor/min/vs"),
-		path.join(__dirname, "../app/vs"),
+		path.join(__top, "node_modules/monaco-editor/min/vs"),
+		path.join(__top, "app/vs"),
 	)
 	return esbuild.build({
 		define: {
@@ -44,9 +45,9 @@ export async function Build() {
 			// "process.env.NODE_ENV": JSON.stringify("development"),
 		},
 		entryPoints: {
-			preload: path.join(__dirname, "../src/browser/Preload.ts"),
-			browser: path.join(__dirname, "../src/browser/Main.ts"),
-			renderer: path.join(__dirname, "../src/renderer/Main.ts"),
+			preload: path.join(__top, "src/browser/Preload.ts"),
+			browser: path.join(__top, "src/browser/Main.ts"),
+			renderer: path.join(__top, "src/renderer/Main.ts"),
 		},
 		bundle: true,
 		minify: true,

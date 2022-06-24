@@ -4,9 +4,11 @@ import url from "node:url"
 import ts from "typescript"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const outdir = path.join(__dirname, "../extension")
-const conf = path.join(__dirname, "../extension/tsconfig.json")
-const base = path.join(__dirname, "../extension")
+const __top = path.join(__dirname, "..")
+
+const outdir = path.join(__top, "extension")
+const conf = path.join(__top, "extension/tsconfig.json")
+const base = path.join(__top, "extension")
 
 export async function Check() {
 	return new Promise((resolve, _) => {
