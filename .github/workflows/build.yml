@@ -16,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
+        arch: [x64, arm64]
     steps: 
       - name: checkout
         uses: actions/checkout@v3
@@ -25,18 +26,14 @@ jobs:
           node-version: '16'
       - name: install
         run: npm ci
-      - name: build (x64)
-        run: npm run b -- x64
-      - name: package (x64)
-        run: npm run p -- x64
-      - name: build (arm64)
-        run: npm run b -- arm64
-      - name: package (arm64)
-        run: npm run p -- arm64
+      - name: build
+        run: npm run b -- ${{ matrix.arch }}
+      - name: package
+        run: npm run p -- ${{ matrix.arch }}
       - name: upload-artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.os }}
+          name: ${{ matrix.os }}-${{ matrix.arch }}
           path: dist/*.7z
       - name: release
         uses: softprops/action-gh-release@v1
