@@ -7,15 +7,28 @@ on:
 
 jobs:
   codeql:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
     permissions:
       actions: read
       contents: read
       security-events: write
+
     steps: 
       - name: checkout
         uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: install
+        run: npm ci
       - name: codeql init
         uses: github/codeql-action/init@v2
+      - name: build (x64)
+        run: npm run b -- x64
       - name: codeql analyze
         uses: github/codeql-action/analyze@v2
