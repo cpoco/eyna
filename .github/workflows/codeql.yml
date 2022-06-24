@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
+        arch: [x64]
     permissions:
       actions: read
       contents: read
@@ -29,7 +30,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript, cpp
-      - name: build (x64)
-        run: npm run b -- x64
+      - name: build
+        run: npm run b -- ${{ matrix.arch }}
       - name: codeql analyze
         uses: github/codeql-action/analyze@v2
