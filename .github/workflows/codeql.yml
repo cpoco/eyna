@@ -34,6 +34,8 @@ jobs:
 
       - name: codeql init
         uses: github/codeql-action/init@v2
+        with:
+          languages: javascript, cpp
 
       - name: codeql database create
         run: |
