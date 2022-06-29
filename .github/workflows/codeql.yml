@@ -20,17 +20,28 @@ jobs:
     steps: 
       - name: checkout
         uses: actions/checkout@v3
+
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
       - name: install
         run: npm ci
+
+      - name: build
+        run: npm run rebuild -w pkg/native
+
       - name: codeql init
         uses: github/codeql-action/init@v2
-        with:
-          languages: javascript, cpp
-      - name: build
-        run: npm run b -- ${{ matrix.arch }}
-      - name: codeql analyze
-        uses: github/codeql-action/analyze@v2
+
+      - name: codeql database create
+        run: |
+          mkdir -p .codeql/db
+          codeql database create --threads=0 --language=javascript --source-root=.                -- .codeql/db/javascript
+          codeql database create --threads=0 --language=cpp        --source-root=pkg/native/build -- .codeql/db/cpp
+
+      - name: codeql database analyze
+        run: |
+          codeql database analyze --threads=0 --format=csv --output=.codeql/analyze.javascript.csv -- .codeql/db/javascript javascript-lgtm-full.qls
+          codeql database analyze --threads=0 --format=csv --output=.codeql/analyze.cpp.csv        -- .codeql/db/cpp        cpp-lgtm-full.qls
