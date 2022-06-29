@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+# https://github.com/actions/checkout
+# https://github.com/actions/setup-node
+# https://github.com/github/codeql-action
 jobs:
   codeql:
     runs-on: ${{ matrix.os }}
@@ -20,35 +23,29 @@ jobs:
     steps: 
       - name: checkout
         uses: actions/checkout@v3
-
       - name: setup-node
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
       - name: install
         run: npm ci
-
       - name: configure
         run: npm run configure -w pkg/native
-
       - name: codeql init
         uses: github/codeql-action/init@v2
         with:
           languages: javascript, cpp
-
       - name: codeql database create
         run: |
           mkdir -p .codeql/db
           $CODEQL_DIST/codeql database create --threads=0 --language=javascript --source-root=.                -- .codeql/db/javascript
           $CODEQL_DIST/codeql database create --threads=0 --language=cpp        --source-root=pkg/native/build -- .codeql/db/cpp
-
       - name: codeql database analyze
         run: |
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/analyze.javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/analyze.cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
-
+          mkdir -p .codeql/out
+          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
+          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
       - name: upload sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: .codeql
+          sarif_file: .codeql/out
