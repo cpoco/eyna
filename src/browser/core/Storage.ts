@@ -19,15 +19,10 @@ export namespace Storage {
 		reload() {
 			this.data = {}
 			try {
-				if (fs.existsSync(this.path)) {
-					this.data = JSON.parse(fs.readFileSync(this.path, "utf8"))
-				}
-				else {
-					this.data = {}
-				}
+				this.data = JSON.parse(fs.readFileSync(this.path, "utf8"))
 			}
 			catch (err) {
-				this.data = {}
+				console.error(err)
 			}
 		}
 
