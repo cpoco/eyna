@@ -29,8 +29,8 @@ jobs:
       - name: install
         run: npm ci
 
-      - name: build
-        run: npm run rebuild -w pkg/native
+      - name: configure
+        run: npm run configure -w pkg/native
 
       - name: codeql init
         uses: github/codeql-action/init@v2

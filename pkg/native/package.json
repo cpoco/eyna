@@ -6,7 +6,7 @@
 	},
 	"scripts": {
 		"install": "node install.js",
-		"rebuild": "node-gyp rebuild",
+		"configure": "node-gyp configure",
 		"ide:win": "node-gyp configure",
 		"ide:mac": "node-gyp configure -- -f xcode"
 	}
