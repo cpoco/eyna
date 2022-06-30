@@ -41,8 +41,8 @@ jobs:
       - name: codeql database analyze
         run: |
           mkdir -p .codeql/out
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript $CODEQL_DIST/qlpacks/codeql/javascript-queries/**/*.qls
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        $CODEQL_DIST/qlpacks/codeql/cpp-queries/**/*.qls
+          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
+          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
       - name: upload-sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
