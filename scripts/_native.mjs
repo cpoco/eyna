@@ -9,7 +9,7 @@ const __top = path.join(__dirname, "..")
 
 const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 
-export async function Build(arch) {
+export async function Build(arch, release = true) {
 	return electron_rebuild.rebuild({
 		buildPath: __top,
 		arch: arch,
@@ -18,9 +18,14 @@ export async function Build(arch) {
 		force: true,
 	})
 		.then(() => {
-			return fs.copyFile(
-				path.join(__top, "node_modules/@eyna/native/build/Release/native.node"),
-				path.join(__top, "app/native.node"),
-			)
+			if (release) {
+				return fs.copyFile(
+					path.join(__top, "node_modules/@eyna/native/build/Release/native.node"),
+					path.join(__top, "app/native.node"),
+				)
+			}
+			else {
+				return Promise.resolve()
+			}
 		})
 }

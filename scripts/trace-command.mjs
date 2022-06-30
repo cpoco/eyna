@@ -1,10 +1,6 @@
-import * as app from "./_app.mjs"
 import * as native from "./_native.mjs"
 
 const arch = process.argv?.[2] == "arm64" ? "arm64" : "x64"
 console.log(`build (${arch})`)
 
-await app.Init()
-app.Check()
-app.Build()
-native.Build(arch)
+native.Build(arch, false)
