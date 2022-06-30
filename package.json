@@ -22,8 +22,8 @@
 		"vue": "3.2.37"
 	},
 	"scripts": {
-		"b": "node b.mjs",
-		"p": "node p.mjs",
+		"b": "node scripts/b.mjs",
+		"p": "node scripts/p.mjs",
 		"s": "electron ."
 	}
 }
