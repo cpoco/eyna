@@ -33,13 +33,11 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript, cpp
-      - name: codeql autobuild init
-        run: npm run codeql -w pkg/native
       - name: codeql database create
         run: |
           mkdir -p .codeql/db
-          $CODEQL_DIST/codeql database create --threads=0 --language=javascript --source-root=.                -- .codeql/db/javascript
-          $CODEQL_DIST/codeql database create --threads=0 --language=cpp        --source-root=pkg/native/build -- .codeql/db/cpp
+          $CODEQL_DIST/codeql database create --threads=0 --language=javascript --source-root=.                                            -- .codeql/db/javascript
+          $CODEQL_DIST/codeql database create --threads=0 --language=cpp        --source-root=. --command="node scripts/trace-command.mjs" -- .codeql/db/cpp
       - name: codeql database analyze
         run: |
           mkdir -p .codeql/out
