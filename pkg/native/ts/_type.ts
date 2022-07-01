@@ -61,3 +61,5 @@ export type Resolve = {
 }
 
 export type Resolves = Resolve[]
+
+export type WatchCallback = (id: number, depth: number, abstract: string) => void
