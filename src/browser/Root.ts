@@ -189,28 +189,36 @@ class Root {
 				target: option.target,
 				filer: {
 					update: () => {
+						log("filer.update")
 						this.fragment[1].update()
 					},
 					exists: (full: string): Promise<boolean> => {
+						log("filer.exists")
 						return Native.exists(full)
 					},
 					trash: (full: string): Promise<void> => {
+						log("filer.trash")
 						return Native.moveToTrash(full)
 					},
 					mkdir: (full: string): Promise<void> => {
+						log("filer.mkdir")
 						return Native.createDirectory(full)
 					},
 					copy: (full_src: string, full_dst: string): Promise<void> => {
+						log("filer.copy")
 						return Native.copy(full_src, full_dst)
 					},
 					move: (full_src: string, full_dst: string): Promise<void> => {
+						log("filer.move")
 						return Native.move(full_src, full_dst)
 					},
 					findcopy: async (full: string): Promise<string[]> => {
+						log("filer.findcopy")
 						let dir = await Native.getDirectory(full, full, false, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
 					findmove: async (full: string): Promise<string[]> => {
+						log("filer.findmove")
 						let dir = await Native.getDirectory(full, full, true, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
@@ -219,11 +227,13 @@ class Root {
 					opne: (
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
+						log("dialog.opne")
 						return this.fragment[2].opne(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
 					},
 					cancel: () => {
+						log("dialog.cancel")
 						this.fragment[2].cancel()
 					},
 				},

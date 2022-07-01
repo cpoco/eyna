@@ -86,7 +86,7 @@ export function resolve(abstract: string): Promise<Type.Resolves> {
 	return native.resolve(abstract)
 }
 
-export function watch(id: number, abstract: string, callback: (id: number, depth: number, abstract: string) => void) {
+export function watch(id: number, abstract: string, callback: Type.WatchCallback) {
 	if (native == null) {
 		return
 	}

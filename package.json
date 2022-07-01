@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"license": "MIT",
 	"private": true,
 	"main": "./app/browser.js",
@@ -11,10 +11,10 @@
 	],
 	"devDependencies": {
 		"@eyna/native": "*",
-		"electron": "19.0.6",
+		"electron": "19.0.7",
 		"electron-builder": "23.1.0",
 		"electron-rebuild": "3.2.7",
-		"esbuild": "0.14.47",
+		"esbuild": "0.14.48",
 		"monaco-editor": "0.33.0",
 		"pug": "3.0.2",
 		"stylus": "0.58.1",

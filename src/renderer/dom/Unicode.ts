@@ -10,7 +10,7 @@ export function rol(str: string | null | undefined): vue.VNodeArrayChildren | un
 	}
 
 	let ret: vue.VNodeArrayChildren = []
-	for (var s of Util.split(str, RLO)) {
+	for (var s of Util.split([str], RLO)) {
 		if (s == RLO) {
 			ret.push(vue.h("span", { class: { "c-code": true } }, "[RLO]"))
 		}

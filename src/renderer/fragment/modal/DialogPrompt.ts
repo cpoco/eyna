@@ -53,9 +53,12 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
-			vue.nextTick(() => {
+			setTimeout(() => {
 				prompt.value!.focus()
-			})
+			}, 0)
+			// vue.nextTick(() => {
+			// 	prompt.value!.focus()
+			// })
 		})
 
 		return {
