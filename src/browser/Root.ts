@@ -57,7 +57,7 @@ class Root {
 			},
 			backgroundColor: "#222",
 		}
-		Util.merge(op, Storage.manager.data.window)
+		Util.merge(op, Storage.manager.data.window ?? {})
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadURL(this.url)
 		this.browser.on("close", (_event: electron.Event) => {
