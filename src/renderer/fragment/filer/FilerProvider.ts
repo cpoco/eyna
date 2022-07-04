@@ -3,7 +3,7 @@ import * as vue from "vue"
 import * as Bridge from "@/bridge/Bridge"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 
 type reactive = {
 	i: number

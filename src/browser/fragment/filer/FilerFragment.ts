@@ -8,7 +8,7 @@ import { Storage } from "@/browser/core/Storage"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerManager } from "@/browser/fragment/filer/FilerManager"
 import root from "@/browser/Root"
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 import * as Native from "@eyna/native/ts/browser"
 
 export class FilerFragment extends AbstractFragment {

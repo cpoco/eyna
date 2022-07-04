@@ -2,7 +2,7 @@ import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
 import { Path } from "@/browser/core/Path"
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 import * as Native from "@eyna/native/ts/browser"
 
 export class Dir {
