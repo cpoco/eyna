@@ -5,6 +5,6 @@
 		"esbuild-register": "*"
 	},
 	"scripts": {
-		"test": "node -r esbuild-register test.ts"
+		"test:merge": "node -r esbuild-register test/merge.ts"
 	}
 }
