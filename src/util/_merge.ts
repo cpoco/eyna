@@ -1,7 +1,10 @@
 import { isArray } from "@/util/_is_array"
 import { isDict } from "@/util/_is_dict"
 
-export function merge(target: any, source: any) {
+export function merge(target: unknown, source: unknown) {
+	if (!isDict(target) && !isArray(target) || !isDict(source) && !isArray(source)) {
+		return
+	}
 	for (const [k, v] of Object.entries(source)) {
 		_merge(target, k, v)
 	}
