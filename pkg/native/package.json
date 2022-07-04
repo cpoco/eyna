@@ -6,7 +6,6 @@
 	},
 	"scripts": {
 		"install": "node install.js",
-		"codeql": "node-gyp clean configure",
 		"ide:win": "node-gyp configure",
 		"ide:mac": "node-gyp configure -- -f xcode"
 	}
