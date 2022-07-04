@@ -34,7 +34,7 @@ fs.watch(
 	wd,
 	(event, filename) => {
 		console.log("fs.watch\tcallback", event, filename)
-	}
+	},
 )
 
 setTimeout(() => {
