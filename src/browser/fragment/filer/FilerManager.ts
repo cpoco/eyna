@@ -2,8 +2,8 @@ import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
-import * as Util from "@eyna/util/ts/Util"
 import * as Native from "@eyna/native/ts/browser"
+import * as Util from "@eyna/util/ts/Util"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
