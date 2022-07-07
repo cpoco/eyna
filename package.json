@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"electron": "19.0.7",
+		"electron": "19.0.8",
 		"electron-builder": "23.1.0",
 		"electron-rebuild": "3.2.7",
 		"esbuild": "0.14.48",
