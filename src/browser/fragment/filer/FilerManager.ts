@@ -21,6 +21,10 @@ export class FilerManager {
 		return this.dir.pwd
 	}
 
+	get isHome(): boolean {
+		return this.dir.isHome
+	}
+
 	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusValues = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status

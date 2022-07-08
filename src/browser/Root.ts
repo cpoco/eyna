@@ -19,12 +19,12 @@ type Option = {
 		wd: string
 		cursor: Native.Attributes | null
 		select: Native.Attributes[]
-	}
+	} | null
 	target: {
 		wd: string
 		cursor: Native.Attributes | null
 		select: Native.Attributes[]
-	}
+	} | null
 }
 
 class Root {
@@ -90,10 +90,13 @@ class Root {
 						return
 				}
 				for (const c of conf.cmd) {
-					await f.emit(c, ...conf.prm)
-						.catch((err) => {
-							console.error(err)
-						})
+					try {
+						await f.emit(c, ...conf.prm)
+					}
+					catch (err) {
+						console.error("\u001b[33m[cmd]\u001b[0m", c, err)
+						break
+					}
 				}
 			}
 		})

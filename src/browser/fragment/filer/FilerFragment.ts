@@ -123,14 +123,14 @@ export class FilerFragment extends AbstractFragment {
 	private commandExtension() {
 		this.on2("list.extension", (active, target, file) => {
 			root.runExtension(`${file}.js`, {
-				active: {
+				active: active.isHome ? null : {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
 					select: Util.array(0, active.data.length, (i) => {
 						return active.data.mk[i] ? active.data.ls[i]! : undefined
 					}),
 				},
-				target: {
+				target: target.isHome ? null : {
 					wd: target.pwd,
 					cursor: target.data.ls[target.data.cursor] ?? null,
 					select: Util.array(0, target.data.length, (i) => {
@@ -228,6 +228,10 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.mark", (active, _target) => {
+				if (active.isHome) {
+					return Promise.reject("execution skip")
+				}
+
 				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
@@ -238,6 +242,10 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.find", (active, _target) => {
+				if (active.isHome) {
+					return Promise.reject("execution skip")
+				}
+
 				return new Promise(async (resolve, _reject) => {
 					let find = await root.find({ type: "find", title: active.pwd, rg: "^.+$", dp: "0" })
 					if (find == null) {

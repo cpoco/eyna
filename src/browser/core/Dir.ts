@@ -16,6 +16,10 @@ export class Dir {
 		return this.wd
 	}
 
+	get isHome(): boolean {
+		return this.wd == Dir.HOME
+	}
+
 	static dirname(wd: string): string {
 		if (wd == Dir.HOME || Dir.isRoot(wd)) {
 			return Dir.HOME

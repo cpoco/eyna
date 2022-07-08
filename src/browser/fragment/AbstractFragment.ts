@@ -11,7 +11,7 @@ export abstract class AbstractFragment {
 
 	emit(cmd: string, ...args: string[]): Promise<void> {
 		try {
-			return this.func[cmd]?.(...args) ?? Promise.resolve()
+			return this.func[cmd]?.(...args) ?? Promise.reject("command not found")
 		}
 		catch (err) {
 			return Promise.reject(err)
