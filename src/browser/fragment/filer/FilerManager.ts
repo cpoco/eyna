@@ -3,6 +3,7 @@ import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
 import * as Native from "@eyna/native/ts/browser"
+import { SleepPromise } from "@eyna/util/ts/SleepPromise"
 import * as Util from "@eyna/util/ts/Util"
 
 export class FilerManager {
@@ -116,7 +117,7 @@ export class FilerManager {
 
 		return new Promise((resolve, _reject) => {
 			this.dir.cd(wd)
-			this.dir.list(dp, rg, (wd, ls, e) => {
+			this.dir.list(dp, rg, async (wd, ls, e) => {
 				if (update != this.data.update) {
 					resolve(false)
 					return
@@ -138,6 +139,8 @@ export class FilerManager {
 				if (wd == Dir.HOME) {
 					return
 				}
+
+				await SleepPromise(10)
 
 				Native.watch(this.id, wd, (_id, depth, _abstract) => {
 					if (update != this.data.update || dp < depth) {
