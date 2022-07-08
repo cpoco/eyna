@@ -1,5 +1,9 @@
 import { join } from "node:path"
 ;(async (ex: Extension): Promise<void> => {
+	if (ex.active == null) {
+		return
+	}
+
 	let dir = await ex.dialog.opne({ type: "prompt", title: "mkdir", text: "new folder" })
 	if (dir == null || dir.text == "") {
 		return

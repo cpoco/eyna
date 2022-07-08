@@ -1,17 +1,19 @@
 {
 	"name": "eyna",
-	"version": "0.0.18",
+	"version": "0.0.19",
 	"license": "MIT",
 	"private": true,
 	"main": "./app/browser.js",
 	"description": "",
 	"workspaces": [
 		"pkg/native",
-		"pkg/test"
+		"pkg/test",
+		"pkg/util"
 	],
 	"devDependencies": {
 		"@eyna/native": "*",
-		"electron": "19.0.7",
+		"@eyna/util": "*",
+		"electron": "19.0.8",
 		"electron-builder": "23.1.0",
 		"electron-rebuild": "3.2.7",
 		"esbuild": "0.14.48",

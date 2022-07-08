@@ -2,7 +2,7 @@ import * as electron from "electron"
 import * as fs from "node:fs"
 
 import { Platform } from "@/browser/core/Platform"
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 
 export namespace Command {
 	export const When = {

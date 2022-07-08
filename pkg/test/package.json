@@ -3,5 +3,8 @@
 	"private": true,
 	"devDependencies": {
 		"fs-extra": "*"
+	},
+	"scripts": {
+		"test": "node test.mjs"
 	}
 }

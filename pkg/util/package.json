@@ -1,0 +1,10 @@
+{
+	"name": "@eyna/util",
+	"private": true,
+	"devDependencies": {
+		"esbuild-register": "*"
+	},
+	"scripts": {
+		"test:merge": "node -r esbuild-register test/merge.ts"
+	}
+}

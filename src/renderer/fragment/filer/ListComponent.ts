@@ -5,7 +5,6 @@ import { Status, StatusValues } from "@/bridge/Status"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
-import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
 
 const TAG = "list"
@@ -17,12 +16,18 @@ const TAG_SCROLL = "scroll"
 
 export type List = {
 	wd: string
-	sync: boolean
-	status: StatusValues
-	count: {
+	search: boolean
+	info: {
+		show: boolean
+		sync: boolean
 		mark: number
 		total: number
 		error: number
+	}
+	stat: {
+		status: StatusValues
+		active: boolean
+		target: boolean
 	}
 	knob: {
 		pos: number
@@ -32,12 +37,18 @@ export type List = {
 export function InitList(): List {
 	return {
 		wd: "",
-		sync: false,
-		status: Status.none,
-		count: {
+		search: false,
+		info: {
+			show: false,
+			sync: false,
 			mark: 0,
 			total: 0,
 			error: 0,
+		},
+		stat: {
+			status: Status.none,
+			active: false,
+			target: false,
 		},
 		knob: {
 			pos: 0,
@@ -119,26 +130,35 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		let active = this.list.status == Bridge.Status.active
-		let target = this.list.status == Bridge.Status.target
-
-		let cnt = this.list.count.total < 0
-			? vue.h(SpinnerComponent.V)
-			: [
-				vue.h("span", { class: { "filer-cicon": true } }, this.list.sync ? Font.sync : Font.sync_ignored),
-				vue.h("span", {}, `${this.list.count.mark}/${this.list.count.total} `),
-				vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
-				vue.h("span", {}, this.list.count.error),
-			]
-
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
 				vue.h("div", { class: { "filer-dir": true } }, Unicode.rol(this.list.wd)),
-				vue.h("div", { class: { "filer-cnt": true } }, cnt),
+				vue.h(
+					"div",
+					{ class: { "filer-cnt": true } },
+					this.list.info.show
+						? [
+							vue.h("span", { class: { "filer-cicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
+							vue.h("span", {}, `${this.list.info.mark}/${this.list.info.total} `),
+							vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
+							vue.h("span", {}, this.list.info.error),
+						]
+						: undefined,
+				),
 			]),
-			vue.h(TAG_STAT, {
-				class: { "filer-stat": true, "filer-stat-active": active, "filer-stat-target": target },
-			}),
+			vue.h(
+				TAG_STAT,
+				{
+					class: {
+						"filer-stat": true,
+						"filer-stat-active": this.list.stat.active,
+						"filer-stat-target": this.list.stat.target,
+					},
+				},
+				this.list.search
+					? vue.h("div", { class: { "filer-progress": true } }, undefined)
+					: undefined,
+			),
 			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
 				this.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
@@ -147,7 +167,7 @@ export const V = vue.defineComponent({
 			vue.h(
 				TAG_SCROLL,
 				{ class: { "filer-scroll": true } },
-				active
+				this.list.stat.active
 					? vue.h("div", {
 						class: { "filer-knob": true },
 						style: { top: `${this.list.knob.pos}px`, height: `${this.list.knob.size}px` },

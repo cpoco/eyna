@@ -1,6 +1,6 @@
 import * as vue from "vue"
 
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 
 const RLO = "\u{202E}"
 

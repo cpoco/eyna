@@ -3,7 +3,7 @@ import * as vue from "vue"
 import * as Bridge from "@/bridge/Bridge"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
-import * as Util from "@/util/Util"
+import * as Util from "@eyna/util/ts/Util"
 
 type reactive = {
 	i: number
@@ -90,7 +90,7 @@ function _create(count: number) {
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
 		_data[i]!.watch = data.watch
 
-		reactive[i]!.list.sync = _data[i]!.watch == 0
+		reactive[i]!.list.info.sync = _data[i]!.watch == 0
 	}
 
 	const _update = (i: number) => {
@@ -98,11 +98,15 @@ function _create(count: number) {
 		const r = reactive[i]!
 
 		r.list.wd = d.wd
-		r.list.sync = d.watch == 0
-		r.list.status = d.status
-		r.list.count.mark = Util.count(d.mk, (mk) => mk)
-		r.list.count.total = d.length
-		r.list.count.error = d.error
+		r.list.search = d.search
+		r.list.info.show = !d.search && d.wd != "home"
+		r.list.info.sync = d.watch == 0
+		r.list.info.mark = Util.count(d.mk, (mk) => mk)
+		r.list.info.total = d.length
+		r.list.info.error = d.error
+		r.list.stat.status = d.status
+		r.list.stat.active = d.status == Bridge.Status.active
+		r.list.stat.target = d.status == Bridge.Status.target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 

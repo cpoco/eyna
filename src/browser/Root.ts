@@ -11,20 +11,20 @@ import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
-import * as Util from "@/util/Util"
 import * as Native from "@eyna/native/ts/browser"
+import * as Util from "@eyna/util/ts/Util"
 
 type Option = {
 	active: {
 		wd: string
 		cursor: Native.Attributes | null
 		select: Native.Attributes[]
-	}
+	} | null
 	target: {
 		wd: string
 		cursor: Native.Attributes | null
 		select: Native.Attributes[]
-	}
+	} | null
 }
 
 class Root {
@@ -57,7 +57,7 @@ class Root {
 			},
 			backgroundColor: "#222",
 		}
-		Util.merge(op, Storage.manager.data.window ?? {})
+		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadURL(this.url)
 		this.browser.on("close", (_event: electron.Event) => {
@@ -90,10 +90,13 @@ class Root {
 						return
 				}
 				for (const c of conf.cmd) {
-					await f.emit(c, ...conf.prm)
-						.catch((err) => {
-							console.error(err)
-						})
+					try {
+						await f.emit(c, ...conf.prm)
+					}
+					catch (err) {
+						console.error("\u001b[33m[cmd]\u001b[0m", c, err)
+						break
+					}
 				}
 			}
 		})

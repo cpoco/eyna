@@ -2,8 +2,9 @@ import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
-import * as Util from "@/util/Util"
 import * as Native from "@eyna/native/ts/browser"
+import { SleepPromise } from "@eyna/util/ts/SleepPromise"
+import * as Util from "@eyna/util/ts/Util"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
@@ -19,6 +20,10 @@ export class FilerManager {
 
 	get pwd(): string {
 		return this.dir.pwd
+	}
+
+	get isHome(): boolean {
+		return this.dir.isHome
 	}
 
 	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusValues = Bridge.Status.none) {
@@ -73,12 +78,15 @@ export class FilerManager {
 	}
 
 	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
+		let history = Dir.findRltv(this.data.ls, this.data.cursor)
+		if (history) {
+			this.history[this.data.wd] = history
+		}
+
 		let update = Date.now()
 
 		this.data.update = update
-		this.data.length = 0
-		this.data.watch = 0
-		this.data.error = 0
+		this.data.search = true
 
 		Native.unwatch(this.id)
 
@@ -87,10 +95,11 @@ export class FilerManager {
 			args: [
 				this.id,
 				{
-					status: this.data.status,
 					update: this.data.update,
+					status: this.data.status,
+					search: this.data.search,
 					cursor: 0,
-					length: -1, // スピナー表示
+					length: 0,
 					wd: wd,
 					ls: [],
 					mk: [],
@@ -100,53 +109,56 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: 0,
 					knobSize: 0,
-					watch: this.data.watch,
-					error: this.data.error,
+					watch: 0,
+					error: 0,
 				},
 			],
 		})
 
 		return new Promise((resolve, _reject) => {
-			let history = Dir.findRltv(this.data.ls, this.data.cursor)
-			if (history) {
-				this.history[this.data.wd] = history
-			}
-
 			this.dir.cd(wd)
-			this.dir.list(dp, rg, (wd, ls, e) => {
-				if (update == this.data.update) {
-					this.data.cursor = Util.isNumber(cursor)
-						? Math.max(0, Math.min(cursor, ls.length - 1))
-						: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
-					this.data.length = ls.length
-					this.data.wd = wd
-					this.data.ls = ls
-					this.data.mk = Util.array(0, ls.length, () => false)
-					this.data.error = e
+			this.dir.list(dp, rg, async (wd, ls, e) => {
+				if (update != this.data.update) {
+					resolve(false)
+					return
+				}
 
-					if (wd != Dir.HOME) {
-						Native.watch(this.id, wd, (_id, depth, _abstract) => {
-							if (update == this.data.update && depth == 0) {
-								this.data.watch = 1
-								root.send<Bridge.List.Watch.Send>({
-									ch: "filer-watch",
-									args: [
-										this.id,
-										{
-											update: this.data.update,
-											watch: this.data.watch,
-										},
-									],
-								})
-							}
-						})
+				this.data.search = false
+				this.data.cursor = Util.isNumber(cursor)
+					? Math.max(0, Math.min(cursor, ls.length - 1))
+					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+				this.data.length = ls.length
+				this.data.wd = wd
+				this.data.ls = ls
+				this.data.mk = Util.array(0, ls.length, () => false)
+				this.data.watch = 0
+				this.data.error = e
+
+				resolve(true)
+
+				if (wd == Dir.HOME) {
+					return
+				}
+
+				await SleepPromise(10)
+
+				Native.watch(this.id, wd, (_id, depth, _abstract) => {
+					if (update != this.data.update || dp < depth) {
+						return
 					}
 
-					resolve(true)
-				}
-				else {
-					resolve(false)
-				}
+					this.data.watch = 1
+					root.send<Bridge.List.Watch.Send>({
+						ch: "filer-watch",
+						args: [
+							this.id,
+							{
+								update: this.data.update,
+								watch: this.data.watch,
+							},
+						],
+					})
+				})
 			})
 		})
 	}
@@ -157,8 +169,9 @@ export class FilerManager {
 			args: [
 				this.id,
 				{
-					status: this.data.status,
 					update: this.data.update,
+					status: this.data.status,
+					search: this.data.search,
 					cursor: this.data.cursor,
 					length: this.data.length,
 					wd: this.data.wd,

@@ -75,6 +75,7 @@
 
 	&-stat
 		position: absolute
+		overflow: hidden
 		top: calc(var(--dynamic-line-height) * 2)
 		width: 100%
 		height: var(--filer-stat-height)
@@ -83,6 +84,13 @@
 			background-color: var(--stat-active)
 		&-target
 			background-color: var(--stat-target)
+
+	&-progress
+		width: 100%
+		height: 100%
+		background-color: rgba(255, 255, 255, 0.5)
+		animation: indeterminate 1s infinite linear
+		transform-origin: left center
 
 	&-data
 		position: absolute

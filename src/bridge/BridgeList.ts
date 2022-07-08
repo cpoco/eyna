@@ -3,8 +3,9 @@ import * as Native from "@eyna/native/ts/renderer"
 
 export namespace List {
 	export type Data = {
-		status: StatusValues
 		update: number
+		status: StatusValues
+		search: boolean
 		cursor: number
 		length: number
 		wd: string
@@ -21,8 +22,9 @@ export namespace List {
 	}
 	export function InitData(): Data {
 		return {
-			status: Status.none,
 			update: 0,
+			status: Status.none,
+			search: false,
 			cursor: 0,
 			length: 0,
 			wd: "",

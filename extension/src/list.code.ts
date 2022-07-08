@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process"
 import { platform } from "node:process"
 ;(async (ex: Extension): Promise<void> => {
-	if (ex.active.cursor == null) {
+	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
 	let full = ex.active.cursor[0]!.full
