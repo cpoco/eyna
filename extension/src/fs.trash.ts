@@ -1,5 +1,5 @@
 ;(async (ex: Extension): Promise<void> => {
-	if (ex.active.cursor == null) {
+	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
 

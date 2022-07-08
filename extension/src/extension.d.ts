@@ -5,12 +5,12 @@ type Extension = {
 		wd: string
 		cursor: Attributes | null
 		select: Attributes[]
-	}
+	} | null
 	target: {
 		wd: string
 		cursor: Attributes | null
 		select: Attributes[]
-	}
+	} | null
 	filer: {
 		update: () => void
 		exists: (full: string) => Promise<boolean>
