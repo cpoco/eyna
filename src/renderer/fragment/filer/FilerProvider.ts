@@ -98,8 +98,8 @@ function _create(count: number) {
 		const r = reactive[i]!
 
 		r.list.wd = d.wd
-		r.list.spinner = d.spinner
-		r.list.info.show = !d.spinner && d.wd != "home"
+		r.list.search = d.search
+		r.list.info.show = !d.search && d.wd != "home"
 		r.list.info.sync = d.watch == 0
 		r.list.info.mark = Util.count(d.mk, (mk) => mk)
 		r.list.info.total = d.length

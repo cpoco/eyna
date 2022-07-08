@@ -16,7 +16,7 @@ const TAG_SCROLL = "scroll"
 
 export type List = {
 	wd: string
-	spinner: boolean
+	search: boolean
 	info: {
 		show: boolean
 		sync: boolean
@@ -37,7 +37,7 @@ export type List = {
 export function InitList(): List {
 	return {
 		wd: "",
-		spinner: false,
+		search: false,
 		info: {
 			show: false,
 			sync: false,
@@ -155,7 +155,7 @@ export const V = vue.defineComponent({
 						"filer-stat-target": this.list.stat.target,
 					},
 				},
-				this.list.spinner
+				this.list.search
 					? vue.h("div", { class: { "filer-progress": true } }, undefined)
 					: undefined,
 			),

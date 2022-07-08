@@ -85,7 +85,7 @@ export class FilerManager {
 		let update = Date.now()
 
 		this.data.update = update
-		this.data.spinner = true
+		this.data.search = true
 
 		Native.unwatch(this.id)
 
@@ -94,9 +94,9 @@ export class FilerManager {
 			args: [
 				this.id,
 				{
-					status: this.data.status,
 					update: this.data.update,
-					spinner: this.data.spinner,
+					status: this.data.status,
+					search: this.data.search,
 					cursor: 0,
 					length: 0,
 					wd: wd,
@@ -122,7 +122,7 @@ export class FilerManager {
 					return
 				}
 
-				this.data.spinner = false
+				this.data.search = false
 				this.data.cursor = Util.isNumber(cursor)
 					? Math.max(0, Math.min(cursor, ls.length - 1))
 					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
@@ -166,9 +166,9 @@ export class FilerManager {
 			args: [
 				this.id,
 				{
-					spinner: this.data.spinner,
-					status: this.data.status,
 					update: this.data.update,
+					status: this.data.status,
+					search: this.data.search,
 					cursor: this.data.cursor,
 					length: this.data.length,
 					wd: this.data.wd,
