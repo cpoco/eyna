@@ -77,12 +77,15 @@ export class FilerManager {
 	}
 
 	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
+		let history = Dir.findRltv(this.data.ls, this.data.cursor)
+		if (history) {
+			this.history[this.data.wd] = history
+		}
+
 		let update = Date.now()
 
 		this.data.update = update
-		this.data.length = 0
-		this.data.watch = 0
-		this.data.error = 0
+		this.data.spinner = true
 
 		Native.unwatch(this.id)
 
@@ -93,8 +96,9 @@ export class FilerManager {
 				{
 					status: this.data.status,
 					update: this.data.update,
+					spinner: this.data.spinner,
 					cursor: 0,
-					length: -1, // スピナー表示
+					length: 0,
 					wd: wd,
 					ls: [],
 					mk: [],
@@ -104,53 +108,54 @@ export class FilerManager {
 					drawSize: this.sc.contentsSize,
 					knobPosition: 0,
 					knobSize: 0,
-					watch: this.data.watch,
-					error: this.data.error,
+					watch: 0,
+					error: 0,
 				},
 			],
 		})
 
 		return new Promise((resolve, _reject) => {
-			let history = Dir.findRltv(this.data.ls, this.data.cursor)
-			if (history) {
-				this.history[this.data.wd] = history
-			}
-
 			this.dir.cd(wd)
 			this.dir.list(dp, rg, (wd, ls, e) => {
-				if (update == this.data.update) {
-					this.data.cursor = Util.isNumber(cursor)
-						? Math.max(0, Math.min(cursor, ls.length - 1))
-						: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
-					this.data.length = ls.length
-					this.data.wd = wd
-					this.data.ls = ls
-					this.data.mk = Util.array(0, ls.length, () => false)
-					this.data.error = e
+				if (update != this.data.update) {
+					resolve(false)
+					return
+				}
 
-					if (wd != Dir.HOME) {
-						Native.watch(this.id, wd, (_id, depth, _abstract) => {
-							if (update == this.data.update && depth == 0) {
-								this.data.watch = 1
-								root.send<Bridge.List.Watch.Send>({
-									ch: "filer-watch",
-									args: [
-										this.id,
-										{
-											update: this.data.update,
-											watch: this.data.watch,
-										},
-									],
-								})
-							}
-						})
+				this.data.spinner = false
+				this.data.cursor = Util.isNumber(cursor)
+					? Math.max(0, Math.min(cursor, ls.length - 1))
+					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+				this.data.length = ls.length
+				this.data.wd = wd
+				this.data.ls = ls
+				this.data.mk = Util.array(0, ls.length, () => false)
+				this.data.watch = 0
+				this.data.error = e
+
+				resolve(true)
+
+				if (wd == Dir.HOME) {
+					return
+				}
+
+				Native.watch(this.id, wd, (_id, depth, _abstract) => {
+					if (update != this.data.update || dp < depth) {
+						return
 					}
 
-					resolve(true)
-				}
-				else {
-					resolve(false)
-				}
+					this.data.watch = 1
+					root.send<Bridge.List.Watch.Send>({
+						ch: "filer-watch",
+						args: [
+							this.id,
+							{
+								update: this.data.update,
+								watch: this.data.watch,
+							},
+						],
+					})
+				})
 			})
 		})
 	}
@@ -161,6 +166,7 @@ export class FilerManager {
 			args: [
 				this.id,
 				{
+					spinner: this.data.spinner,
 					status: this.data.status,
 					update: this.data.update,
 					cursor: this.data.cursor,

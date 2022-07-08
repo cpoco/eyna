@@ -5,6 +5,7 @@ export namespace List {
 	export type Data = {
 		status: StatusValues
 		update: number
+		spinner: boolean
 		cursor: number
 		length: number
 		wd: string
@@ -23,6 +24,7 @@ export namespace List {
 		return {
 			status: Status.none,
 			update: 0,
+			spinner: false,
 			cursor: 0,
 			length: 0,
 			wd: "",
