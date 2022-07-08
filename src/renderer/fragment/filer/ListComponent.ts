@@ -5,7 +5,6 @@ import { Status, StatusValues } from "@/bridge/Status"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
-import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
 
 const TAG = "list"
@@ -131,29 +130,35 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		let cnt = this.list.spinner
-			? vue.h(SpinnerComponent.V)
-			: this.list.info.show
-			? [
-				vue.h("span", { class: { "filer-cicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
-				vue.h("span", {}, `${this.list.info.mark}/${this.list.info.total} `),
-				vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
-				vue.h("span", {}, this.list.info.error),
-			]
-			: undefined
-
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
 				vue.h("div", { class: { "filer-dir": true } }, Unicode.rol(this.list.wd)),
-				vue.h("div", { class: { "filer-cnt": true } }, cnt),
+				vue.h(
+					"div",
+					{ class: { "filer-cnt": true } },
+					this.list.info.show
+						? [
+							vue.h("span", { class: { "filer-cicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
+							vue.h("span", {}, `${this.list.info.mark}/${this.list.info.total} `),
+							vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
+							vue.h("span", {}, this.list.info.error),
+						]
+						: undefined,
+				),
 			]),
-			vue.h(TAG_STAT, {
-				class: {
-					"filer-stat": true,
-					"filer-stat-active": this.list.stat.active,
-					"filer-stat-target": this.list.stat.target,
+			vue.h(
+				TAG_STAT,
+				{
+					class: {
+						"filer-stat": true,
+						"filer-stat-active": this.list.stat.active,
+						"filer-stat-target": this.list.stat.target,
+					},
 				},
-			}),
+				this.list.spinner
+					? vue.h("div", { class: { "filer-progress": true } }, undefined)
+					: undefined,
+			),
 			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
 				this.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
