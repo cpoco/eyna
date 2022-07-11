@@ -24,7 +24,9 @@
 		"vue": "3.2.37"
 	},
 	"overrides": {
-		"css": "npm:@adobe/css-tools@4.0.0-rc.4"
+		"stylus": {
+			"css": "npm:@adobe/css-tools@4.0.0-rc.4"
+		}
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
