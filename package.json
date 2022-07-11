@@ -15,13 +15,16 @@
 		"@eyna/util": "*",
 		"electron": "19.0.8",
 		"electron-builder": "23.1.0",
-		"electron-rebuild": "3.2.7",
-		"esbuild": "0.14.48",
+		"electron-rebuild": "3.2.8",
+		"esbuild": "0.14.49",
 		"monaco-editor": "0.33.0",
 		"pug": "3.0.2",
 		"stylus": "0.58.1",
 		"typescript": "4.7.4",
 		"vue": "3.2.37"
+	},
+	"overrides": {
+		"css": "npm:@adobe/css-tools@4.0.0-rc.4"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
