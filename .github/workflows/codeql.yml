@@ -33,16 +33,33 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript, cpp
+
       - name: codeql database create
+        if: matrix.os == 'windows-latest'
         run: |
           mkdir -p .codeql/db
-          $CODEQL_DIST/codeql database create --threads=0 --language=javascript --source-root=.                                            -- .codeql/db/javascript
-          $CODEQL_DIST/codeql database create --threads=0 --language=cpp        --source-root=. --command="node scripts/trace-command.mjs" -- .codeql/db/cpp
+          $(CODEQL_DIST)/codeql database create --threads=0 --language=javascript --source-root=.                                            -- .codeql/db/javascript
+          $(CODEQL_DIST)/codeql database create --threads=0 --language=cpp        --source-root=. --command="node scripts/trace-command.mjs" -- .codeql/db/cpp
+      - name: codeql database create
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p .codeql/db
+          ${CODEQL_DIST}/codeql database create --threads=0 --language=javascript --source-root=.                                            -- .codeql/db/javascript
+          ${CODEQL_DIST}/codeql database create --threads=0 --language=cpp        --source-root=. --command="node scripts/trace-command.mjs" -- .codeql/db/cpp
+
       - name: codeql database analyze
+        if: matrix.os == 'windows-latest'
         run: |
           mkdir -p .codeql/out
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
+          $(CODEQL_DIST)/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
+          $(CODEQL_DIST)/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
+      - name: codeql database analyze
+        if: matrix.os == 'macos-latest'
+        run: |
+          mkdir -p .codeql/out
+          ${CODEQL_DIST}/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
+          ${CODEQL_DIST}/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
+
       - name: upload-sarif
         uses: github/codeql-action/upload-sarif@v2
         with:
