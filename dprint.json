@@ -10,10 +10,11 @@
 		"**/*.{ts,tsx,js,jsx,cjs,mjs}"
 	],
 	"excludes": [
-		"app",
+		"build",
+		"dist",
 		"**/node_modules"
 	],
 	"plugins": [
-		"https://plugins.dprint.dev/typescript-0.69.3.wasm"
+		"https://plugins.dprint.dev/typescript-0.69.6.wasm"
 	]
 }

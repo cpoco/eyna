@@ -1,12 +1,14 @@
 import esbuild from "esbuild"
+import fse from "fs-extra"
 import path from "node:path"
 import url from "node:url"
 import ts from "typescript"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
+const __build = path.join(__top, "build")
 
-const outdir = path.join(__top, "extension")
+const outdir = path.join(__build, "extension")
 const conf = path.join(__top, "extension/tsconfig.json")
 const base = path.join(__top, "extension")
 
@@ -31,6 +33,7 @@ export async function Check() {
 }
 
 export async function Build() {
+	await fse.ensureDir(outdir)
 	return esbuild.build({
 		entryPoints: [
 			path.join(base, "src/fs.copy.ts"),

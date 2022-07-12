@@ -31,6 +31,6 @@
 	"scripts": {
 		"b": "node scripts/b.mjs",
 		"p": "node scripts/p.mjs",
-		"s": "electron ."
+		"s": "electron ./build"
 	}
 }
