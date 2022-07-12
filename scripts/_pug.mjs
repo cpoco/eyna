@@ -1,7 +1,7 @@
 import fse from "fs-extra"
-import * as pug from "pug"
 import path from "node:path"
 import url from "node:url"
+import * as pug from "pug"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
