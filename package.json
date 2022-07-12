@@ -1,10 +1,8 @@
 {
 	"name": "eyna",
 	"version": "0.0.19",
-	"license": "MIT",
 	"private": true,
 	"main": "./app/browser.js",
-	"description": "",
 	"workspaces": [
 		"pkg/native",
 		"pkg/test",
@@ -24,9 +22,8 @@
 		"vue": "3.2.37"
 	},
 	"overrides": {
-		"stylus": {
-			"css": "npm:@adobe/css-tools@4.0.0-rc.4"
-		}
+		"got": "11.8.5",
+		"css": "npm:@adobe/css-tools@4.0.0-rc.4"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
