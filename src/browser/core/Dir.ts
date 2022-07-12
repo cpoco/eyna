@@ -71,11 +71,12 @@ export class Dir {
 		if (this.wd == Dir.HOME) {
 			this.dp = 0
 			this.rg = null
+			let _time = perf_hooks.performance.now()
 			Native.getVolume().then((vol: Native.Volume[]) => {
+				console.log(`\u001b[36m[dir]\u001b[0m`, "volume", `${perf_hooks.performance.now() - _time}ms`)
 				let ls: Native.Attributes[] = []
 				vol.forEach((v) => {
-					let attr: Native.Attributes = []
-					attr.push({
+					ls.push([{
 						file_type: Native.AttributeFileType.drive,
 						full: v.full,
 						rltv: v.name,
@@ -90,29 +91,24 @@ export class Dir {
 						readonly: false,
 						hidden: false,
 						system: false,
-					})
-					ls.push(attr)
+					}])
 				})
-				{
-					let attr: Native.Attributes = []
-					attr.push({
-						file_type: Native.AttributeFileType.homeuser,
-						full: Path.home(),
-						rltv: "user",
-						name: "user",
-						stem: "",
-						ext: "",
-						link_type: Native.AttributeLinkType.none,
-						link: "",
-						size: 0n,
-						time: 0,
-						nsec: 0,
-						readonly: false,
-						hidden: false,
-						system: false,
-					})
-					ls.push(attr)
-				}
+				ls.push([{
+					file_type: Native.AttributeFileType.homeuser,
+					full: Path.home(),
+					rltv: "user",
+					name: "user",
+					stem: "",
+					ext: "",
+					link_type: Native.AttributeLinkType.none,
+					link: "",
+					size: 0n,
+					time: 0,
+					nsec: 0,
+					readonly: false,
+					hidden: false,
+					system: false,
+				}])
 				cb(this.wd, ls, 0)
 			})
 		}
