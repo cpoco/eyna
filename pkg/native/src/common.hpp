@@ -93,6 +93,11 @@ std::filesystem::path generic_path(const std::filesystem::path& path)
 	return std::filesystem::path(path.generic_string<_char_t>());
 }
 
+std::filesystem::path normalize_generic_path(const std::filesystem::path& path)
+{
+	return std::filesystem::path(path.lexically_normal().generic_string<_char_t>());
+}
+
 #include "common_attribute.hpp"
 
 #endif // include guard
