@@ -79,7 +79,7 @@ export const V = vue.defineComponent({
 			vue.h("div", {
 				ref: "prompt",
 				class: { "modal-prompt": true },
-				contenteditable: true,
+				contenteditable: "plaintext-only",
 				onInput: this.input,
 			}, this.reactive.prompt[1]),
 		])
