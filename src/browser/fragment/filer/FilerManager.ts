@@ -83,6 +83,10 @@ export class FilerManager {
 			this.history[this.data.wd] = history
 		}
 
+		if (wd == Dir.HOME) {
+			cursor = this.history[Dir.HOME] ?? null
+		}
+
 		let update = Date.now()
 
 		this.data.update = update
