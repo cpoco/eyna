@@ -7,7 +7,8 @@ import * as stylus from "./_stylus.mjs"
 const arch = process.argv?.[2] == "arm64" ? "arm64" : "x64"
 console.log(`build (${arch})`)
 
-await app.Init()
+app.Node()
+app.Conf()
 app.Check()
 app.Build()
 extension.Check()

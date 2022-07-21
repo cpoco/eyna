@@ -1,23 +1,40 @@
 import esbuild from "esbuild"
 import fse from "fs-extra"
+import module from "node:module"
 import path from "node:path"
 import url from "node:url"
 import ts from "typescript"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
+const __build = path.join(__top, "build")
 
-const outdir = path.join(__top, "app")
+const outdir = path.join(__build, "app")
 const conf = path.join(__top, "tsconfig.json")
+const base = __top
 
-export async function Init() {
-	return fse.ensureDir(outdir)
+export async function Node() {
+	const json = module.createRequire(import.meta.url)(path.join(__top, "package.json"))
+	await fse.ensureDir(__build)
+	return fse.writeFile(
+		path.join(__build, "package.json"),
+		JSON.stringify({
+			name: json.name,
+			version: json.version,
+			main: json.main,
+		}),
+	)
+}
+
+export async function Conf() {
+	await fse.ensureDir(__build)
+	return fse.copy(path.join(__top, "config"), path.join(__build, "config"))
 }
 
 export async function Check() {
 	return new Promise((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
-		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, __top)
+		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
 		const program = ts.createProgram(fileNames, options)
 		const diagnostics = [
 			...program.getSemanticDiagnostics(),
@@ -35,9 +52,10 @@ export async function Check() {
 }
 
 export async function Build() {
-	fse.copySync(
+	await fse.ensureDir(outdir)
+	await fse.copy(
 		path.join(__top, "node_modules/monaco-editor/min/vs"),
-		path.join(__top, "app/vs"),
+		path.join(outdir, "vs"),
 	)
 	return esbuild.build({
 		define: {

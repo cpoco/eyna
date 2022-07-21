@@ -4,6 +4,7 @@ import url from "node:url"
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
+const __build = path.join(__top, "build")
 
 export async function Package(arch) {
 	return electron_builder.build({
@@ -11,11 +12,9 @@ export async function Package(arch) {
 		config: {
 			// https://www.electron.build/generated/platformspecificbuildoptions
 			artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
-			files: [
-				"./app/**/*",
-				"./config/*.json",
-				"./extension/*.js",
-			],
+			files: {
+				from: __build,
+			},
 			asar: false,
 			// https://www.electron.build/configuration/win
 			win: {

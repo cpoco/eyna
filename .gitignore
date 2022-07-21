@@ -1,6 +1,5 @@
 .DS_Store
 /.vscode
-/app
+/build
 /dist
 /node_modules
-/extension/*.js

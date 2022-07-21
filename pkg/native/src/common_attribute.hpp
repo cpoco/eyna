@@ -284,10 +284,10 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
-			attribute(generic_path(std::filesystem::path(attr.link).lexically_normal()), vector);
+			attribute(normalize_generic_path(attr.link), vector);
 		}
 		else if (attr.link.is_relative()) {
-			attribute(generic_path(generic_path(attr.full.parent_path() / attr.link).lexically_normal()), vector);
+			attribute(normalize_generic_path(attr.full.parent_path() / attr.link), vector);
 		}
 		else {
 			vector.push_back({});
