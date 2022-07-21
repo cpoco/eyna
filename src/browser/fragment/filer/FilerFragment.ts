@@ -262,7 +262,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.select", (active, _target) => {
-				return new Promise(async (resolve, _reject) => {
+				return new Promise(async (resolve, reject) => {
 					let attr = Util.first(active.data.ls[active.data.cursor])
 					let trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
@@ -307,7 +307,11 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.file
 					) {
-						if (/^\.(gif|jpe?g|png)$/i.test(trgt.ext)) {
+						if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+							reject("file too large")
+							return
+						}
+						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
 								type: "image",
 								path: trgt.full,
