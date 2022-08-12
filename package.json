@@ -23,7 +23,7 @@
 	},
 	"overrides": {
 		"got": "11.8.5",
-		"css": "npm:@adobe/css-tools@4.0.0"
+		"css": "npm:@adobe/css-tools@4.0.1"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
