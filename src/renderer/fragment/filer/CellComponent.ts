@@ -1,8 +1,10 @@
 import * as vue from "vue"
 
+import * as Bridge from "@/bridge/Bridge"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
+import root from "@/renderer/Root"
 import * as Native from "@eyna/native/ts/renderer"
 import * as Util from "@eyna/util/ts/Util"
 
@@ -91,6 +93,21 @@ export const V = vue.defineComponent({
 			return true
 		})
 
+		const dragstart = (event: DragEvent) => {
+			event.preventDefault()
+			root.send<Bridge.List.Drag.Send>({
+				ch: "filer-drag",
+				args: [
+					-1,
+					{
+						data: {
+							full: props.cell.attr[0]?.full ?? "",
+						},
+					},
+				],
+			})
+		}
+
 		return {
 			is_empty,
 			file_type,
@@ -98,13 +115,21 @@ export const V = vue.defineComponent({
 			is_link,
 			is_size,
 			is_date,
+			dragstart,
 		}
 	},
 
 	render() {
-		let node: vue.AllowedComponentProps = {
+		type drag = {
+			draggable: boolean
+			onDragstart: (event: DragEvent) => void
+		}
+
+		let node: vue.AllowedComponentProps & drag = {
 			class: this.cell.class,
 			style: this.cell.style,
+			draggable: true,
+			onDragstart: this.dragstart,
 		}
 
 		if (this.is_empty) {

@@ -95,6 +95,9 @@ export class FilerFragment extends AbstractFragment {
 					this.core[i]?.resized(data.data.h)
 				}
 			})
+			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
+				root.drag(data.data.full)
+			})
 	}
 
 	private commandTest() {

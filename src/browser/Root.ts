@@ -27,6 +27,11 @@ type Option = {
 	} | null
 }
 
+// 1x1 transparent
+const icon = electron.nativeImage.createFromDataURL(
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+)
+
 class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
@@ -142,6 +147,13 @@ class Root {
 		else {
 			this.browser.webContents.openDevTools()
 		}
+	}
+
+	drag(full: string) {
+		this.browser.webContents.startDrag({
+			file: full,
+			icon: icon,
+		})
 	}
 
 	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
