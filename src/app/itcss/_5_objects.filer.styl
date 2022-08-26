@@ -101,18 +101,28 @@
 
 	&-cell
 		position: absolute
-		display: flex
-		flex-direction: row
 		width: 100%
 		min-width: 300px
 		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
+
+	&-cback
+		position: absolute
+		width: 100%
+		height: var(--dynamic-line-height)
 		&-selcur
 			background-color: var(--cell-select-cursor)
 		&-select
 			background-color: var(--cell-select)
 		&-cursor
 			background-color: var(--cell-cursor)
+
+	&-cflex
+		position: absolute
+		display: flex
+		flex-direction: row
+		width: 100%
+		height: var(--dynamic-line-height)
+		line-height: var(--dynamic-line-height)
 
 	&-cname
 		font-size: var(--dynamic-font-size)
