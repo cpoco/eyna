@@ -1,22 +1,23 @@
 import * as vue from "vue"
 
+import * as Bridge from "@/bridge/Bridge"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
+import root from "@/renderer/Root"
 import * as Native from "@eyna/native/ts/renderer"
 import * as Util from "@eyna/util/ts/Util"
 
 const TAG = "cell"
 
 export type Cell = {
-	class: {
-		"filer-cell": boolean
-		"filer-cell-selcur": boolean
-		"filer-cell-select": boolean
-		"filer-cell-cursor": boolean
-	}
 	style: {
 		top: string
+	}
+	back: {
+		selcur: boolean
+		select: boolean
+		cursor: boolean
 	}
 	attr: Native.Attributes
 }
@@ -91,6 +92,21 @@ export const V = vue.defineComponent({
 			return true
 		})
 
+		const dragstart = (event: DragEvent) => {
+			event.preventDefault()
+			root.send<Bridge.List.Drag.Send>({
+				ch: "filer-drag",
+				args: [
+					-1,
+					{
+						data: {
+							full: props.cell.attr[0]?.full ?? "",
+						},
+					},
+				],
+			})
+		}
+
 		return {
 			is_empty,
 			file_type,
@@ -98,13 +114,23 @@ export const V = vue.defineComponent({
 			is_link,
 			is_size,
 			is_date,
+			dragstart,
 		}
 	},
 
 	render() {
-		let node: vue.AllowedComponentProps = {
-			class: this.cell.class,
+		type drag = {
+			draggable: boolean
+			onDragstart: (event: DragEvent) => void
+		}
+
+		let node: vue.AllowedComponentProps & drag = {
+			class: {
+				"filer-cell": true,
+			},
 			style: this.cell.style,
+			draggable: true,
+			onDragstart: this.dragstart,
 		}
 
 		if (this.is_empty) {
@@ -221,40 +247,57 @@ export const V = vue.defineComponent({
 		return vue.h(TAG, node, [
 			vue.h(
 				"span",
-				{ class: { "filer-cname": true } },
-				this.is_link
-					? [
-						vue.h("span", icon, fraw),
-						vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
-						vue.h("span", link, "->"),
-						vue.h("span", icon, traw),
-						vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
-					]
-					: [
-						vue.h("span", icon, fraw),
-						vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
-					],
+				{
+					class: {
+						"filer-cback": true,
+						"filer-cback-selcur": this.cell.back.selcur,
+						"filer-cback-select": this.cell.back.select,
+						"filer-cback-cursor": this.cell.back.cursor,
+					},
+				},
 			),
 			vue.h(
 				"span",
-				{ class: { "filer-csize": true } },
-				this.is_size
-					? this.cell.attr[0]?.size.toLocaleString() ?? undefined
-					: undefined,
-			),
-			vue.h(
-				"span",
-				{ class: { "filer-cdate": true } },
-				this.is_date
-					? date(this.cell.attr[0]?.time ?? 0)
-					: undefined,
-			),
-			vue.h(
-				"span",
-				{ class: { "filer-ctime": true } },
-				this.is_date
-					? time(this.cell.attr[0]?.time ?? 0)
-					: undefined,
+				{ class: { "filer-cflex": true } },
+				[
+					vue.h(
+						"span",
+						{ class: { "filer-cname": true } },
+						this.is_link
+							? [
+								vue.h("span", icon, fraw),
+								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
+								vue.h("span", link, "->"),
+								vue.h("span", icon, traw),
+								vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
+							]
+							: [
+								vue.h("span", icon, fraw),
+								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
+							],
+					),
+					vue.h(
+						"span",
+						{ class: { "filer-csize": true } },
+						this.is_size
+							? this.cell.attr[0]?.size.toLocaleString() ?? undefined
+							: undefined,
+					),
+					vue.h(
+						"span",
+						{ class: { "filer-cdate": true } },
+						this.is_date
+							? date(this.cell.attr[0]?.time ?? 0)
+							: undefined,
+					),
+					vue.h(
+						"span",
+						{ class: { "filer-ctime": true } },
+						this.is_date
+							? time(this.cell.attr[0]?.time ?? 0)
+							: undefined,
+					),
+				],
 			),
 		])
 	},

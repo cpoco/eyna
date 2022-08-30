@@ -13,10 +13,16 @@ export const V = vue.defineComponent({
 		const img = vue.ref<HTMLImageElement>()
 
 		vue.onMounted(() => {
+			img.value!.onload = () => {
+				head.value = `${img.value!.naturalWidth.toLocaleString()} × ${img.value!.naturalHeight.toLocaleString()}`
+			}
 			vue.nextTick(() => {
-				img.value!.onload = () => {
-					head.value = `${img.value!.naturalWidth.toLocaleString()} × ${img.value!.naturalHeight.toLocaleString()}`
-				}
+				img.value!.src = `file://${props.path}`
+			})
+		})
+
+		vue.watch(vue.toRefs(props).path, () => {
+			vue.nextTick(() => {
 				img.value!.src = `file://${props.path}`
 			})
 		})

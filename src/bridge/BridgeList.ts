@@ -63,6 +63,24 @@ export namespace List {
 		}
 	}
 
+	// renderer -> browser
+	export namespace Drag {
+		export const CH = "filer-drag"
+		export type Send = {
+			ch: typeof CH
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = {
+			data: {
+				full: string
+			}
+		}
+	}
+
 	// browser -> renderer
 	export namespace Change {
 		export const CH = "filer-change"

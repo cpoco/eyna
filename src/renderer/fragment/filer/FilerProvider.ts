@@ -119,13 +119,14 @@ function _create(count: number) {
 				const s = d.mk?.[k] ?? false
 				const c = d.status == Bridge.Status.active && d.cursor == k
 				return {
-					class: {
-						"filer-cell": true,
-						"filer-cell-selcur": s && c,
-						"filer-cell-select": s && !c,
-						"filer-cell-cursor": !s && c,
+					style: {
+						top: `${t}px`,
 					},
-					style: { top: `${t}px` },
+					back: {
+						selcur: s && c,
+						select: s && !c,
+						cursor: !s && c,
+					},
 					attr: vue.markRaw(d.ls?.[k] ?? []),
 				}
 			},

@@ -27,6 +27,11 @@ type Option = {
 	} | null
 }
 
+// 1x1 transparent
+const icon = electron.nativeImage.createFromDataURL(
+	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+)
+
 class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
@@ -67,43 +72,45 @@ class Root {
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
 			if (input.type == "keyDown") {
-				let conf = Command.manager.get(input)
-				if (conf == null) {
-					return
-				}
-
-				let f: AbstractFragment | null = null
-				switch (conf.when) {
-					case Command.When.Always:
-						f = this.fragment[0]
-						break
-					case Command.When.Filer:
-						f = this.fragment[1]
-						break
-					case Command.When.Modal:
-						f = this.fragment[2]
-						break
-					case Command.When.Viewer:
-						f = this.fragment[3]
-						break
-					default:
-						return
-				}
-				for (const c of conf.cmd) {
-					try {
-						await f.emit(c, ...conf.prm)
-					}
-					catch (err) {
-						console.error("\u001b[33m[cmd]\u001b[0m", c, err)
-						break
-					}
-				}
+				await this.command(Command.manager.get(input))
 			}
 		})
 	}
 
 	private _window_all_closed = () => {
 		this.quit()
+	}
+
+	async command(conf: Command.Config | null): Promise<void> {
+		if (conf == null) {
+			return
+		}
+		let f: AbstractFragment | null = null
+		switch (conf.when) {
+			case Command.When.Always:
+				f = this.fragment[0]
+				break
+			case Command.When.Filer:
+				f = this.fragment[1]
+				break
+			case Command.When.Modal:
+				f = this.fragment[2]
+				break
+			case Command.When.Viewer:
+				f = this.fragment[3]
+				break
+			default:
+				return
+		}
+		for (const c of conf.cmd) {
+			try {
+				await f.emit(c, ...conf.prm)
+			}
+			catch (err) {
+				console.error("\u001b[33m[cmd]\u001b[0m", c, err)
+				break
+			}
+		}
 	}
 
 	cut() {
@@ -142,6 +149,13 @@ class Root {
 		else {
 			this.browser.webContents.openDevTools()
 		}
+	}
+
+	drag(full: string) {
+		this.browser.webContents.startDrag({
+			file: full,
+			icon: icon,
+		})
 	}
 
 	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
