@@ -20,7 +20,7 @@ export const V = vue.defineComponent({
 				img.value!.src = `file://${props.path}`
 			})
 		})
-		
+
 		vue.watch(vue.toRefs(props).path, () => {
 			vue.nextTick(() => {
 				img.value!.src = `file://${props.path}`

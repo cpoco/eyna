@@ -36,6 +36,9 @@
 		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopne"     },
 		{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
 
+		{ "when": "viewer", "key": "up",                "cmd": "viewer.imageprev" },
+		{ "when": "viewer", "key": "down",              "cmd": "viewer.imagenext" },
+
 		{ "when": "viewer", "key": "enter",             "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "backspace",         "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "esc",               "cmd": "viewer.close" },

@@ -40,6 +40,20 @@ export class ViewerFragment extends AbstractFragment {
 
 	private command() {
 		this
+			.on("viewer.imageprev", () => {
+				return root.command({
+					when: "filer",
+					cmd: ["list.imageup", "list.select"],
+					prm: [],
+				})
+			})
+			.on("viewer.imagenext", () => {
+				return root.command({
+					when: "filer",
+					cmd: ["list.imagedown", "list.select"],
+					prm: [],
+				})
+			})
 			.on("viewer.close", () => {
 				this.close()
 				return Promise.resolve()

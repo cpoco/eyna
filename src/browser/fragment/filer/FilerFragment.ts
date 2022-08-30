@@ -50,6 +50,7 @@ export class FilerFragment extends AbstractFragment {
 		this.commandTest()
 		this.commandExtension()
 		this.commandList()
+		this.commandListImage()
 	}
 
 	private on2(
@@ -404,6 +405,57 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 				Native.openProperties(attr.full)
+				return Promise.resolve()
+			})
+	}
+
+	private commandListImage() {
+		this
+			.on2("list.imageup", (active, _target) => {
+				if (active.data.ls.length == 0) {
+					return Promise.resolve()
+				}
+				for (let i = active.data.cursor - 1; 0 <= i; i--) {
+					let trgt = Util.last(active.data.ls[i])
+					if (trgt == null) {
+						continue
+					}
+					if (trgt.file_type != Native.AttributeFileType.file) {
+						continue
+					}
+					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
+						continue
+					}
+					active.data.cursor = i
+					active.scroll()
+					active.sendCursor()
+					this.title()
+					break
+				}
+				return Promise.resolve()
+			})
+			.on2("list.imagedown", (active, _target) => {
+				if (active.data.ls.length == 0) {
+					return Promise.resolve()
+				}
+
+				for (let i = active.data.cursor + 1; i < active.data.ls.length; i++) {
+					let trgt = Util.last(active.data.ls[i])
+					if (trgt == null) {
+						continue
+					}
+					if (trgt.file_type != Native.AttributeFileType.file) {
+						continue
+					}
+					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
+						continue
+					}
+					active.data.cursor = i
+					active.scroll()
+					active.sendCursor()
+					this.title()
+					break
+				}
 				return Promise.resolve()
 			})
 	}
