@@ -153,7 +153,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 
-				active.data.cursor = Math.max(active.data.cursor - 1, 0)
+				active.cursorUp()
 				active.scroll()
 				active.sendCursor()
 				this.title()
@@ -164,7 +164,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 
-				active.data.cursor = Math.max(active.data.cursor - active.mv, 0)
+				active.cursorUp(active.mv)
 				active.scroll()
 				active.sendCursor()
 				this.title()
@@ -175,7 +175,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 
-				active.data.cursor = Math.min(active.data.cursor + 1, active.data.ls.length - 1)
+				active.cursorDown()
 				active.scroll()
 				active.sendCursor()
 				this.title()
@@ -186,10 +186,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 
-				active.data.cursor = Math.min(
-					active.data.cursor + active.mv,
-					active.data.ls.length - 1,
-				)
+				active.cursorDown(active.mv)
 				active.scroll()
 				active.sendCursor()
 				this.title()

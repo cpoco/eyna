@@ -47,6 +47,14 @@ export class FilerManager {
 		}
 	}
 
+	cursorUp(mv: number = 1) {
+		this.data.cursor = Math.max(this.data.cursor - mv, 0)
+	}
+
+	cursorDown(mv: number = 1) {
+		this.data.cursor = Math.min(this.data.cursor + mv, this.data.ls.length - 1)
+	}
+
 	update(): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
 			if (await this.sendChange(this.pwd, 0, null, this.data.cursor)) {
