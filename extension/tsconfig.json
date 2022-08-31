@@ -10,7 +10,7 @@
 		"target": "ES2020",
 
 		// Basic
-	   // Diagnostics.Modules
+		// Diagnostics.Modules
 		"module": "ES2020",
 
 		// Basic
