@@ -6,6 +6,10 @@ export const V = vue.defineComponent({
 			required: true,
 			type: String,
 		},
+		"size": {
+			required: true,
+			type: Object as vue.PropType<BigInt>,
+		},
 	},
 
 	setup(props) {
@@ -14,7 +18,9 @@ export const V = vue.defineComponent({
 
 		vue.onMounted(() => {
 			img.value!.onload = () => {
-				head.value = `${img.value!.naturalWidth.toLocaleString()} × ${img.value!.naturalHeight.toLocaleString()}`
+				head.value = `${img.value!.naturalWidth.toLocaleString()}`
+					+ ` x ${img.value!.naturalHeight.toLocaleString()}`
+					+ ` | ${props.size.toLocaleString()} byte`
 			}
 			vue.nextTick(() => {
 				img.value!.src = `file://${props.path}`

@@ -308,10 +308,6 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.file
 					) {
-						if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
-							reject("file too large")
-							return
-						}
 						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
 								type: "image",
@@ -319,7 +315,18 @@ export class FilerFragment extends AbstractFragment {
 								size: trgt.size,
 							})
 						}
+						else if (Conf.VIEWER_VIDEO_EXT.test(trgt.ext)) {
+							root.viewer({
+								type: "video",
+								path: trgt.full,
+								size: trgt.size,
+							})
+						}
 						else {
+							if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+								reject("file too large")
+								return
+							}
 							root.viewer({
 								type: "text",
 								path: trgt.full,

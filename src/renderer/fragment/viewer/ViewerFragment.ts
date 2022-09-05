@@ -3,10 +3,11 @@ import * as vue from "vue"
 import * as Bridge from "@/bridge/Bridge"
 import * as ImageComponent from "@/renderer/fragment/viewer/ImageComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
+import * as VideoComponent from "@/renderer/fragment/viewer/VideoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | "image" | null
+	type: "text" | "image" | "video" | null
 	path: string
 	size: bigint
 }
@@ -34,6 +35,11 @@ export const V = vue.defineComponent({
 						reactive.size = data.size
 					}
 					else if (data.type == "image") {
+						reactive.type = data.type
+						reactive.path = data.path
+						reactive.size = data.size
+					}
+					else if (data.type == "video") {
 						reactive.type = data.type
 						reactive.path = data.path
 						reactive.size = data.size
@@ -75,6 +81,19 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(ImageComponent.V, {
 					path: this.reactive.path,
+					size: this.reactive.size,
+				}, undefined),
+			])
+		}
+		else if (this.reactive.type == "video") {
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+				},
+			}, [
+				vue.h(VideoComponent.V, {
+					path: this.reactive.path,
+					size: this.reactive.size,
 				}, undefined),
 			])
 		}
