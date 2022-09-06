@@ -29,17 +29,7 @@ export const V = vue.defineComponent({
 						ch: "viewer-event",
 						args: [-1, { event: "opened" }],
 					})
-					if (data.type == "text") {
-						reactive.type = data.type
-						reactive.path = data.path
-						reactive.size = data.size
-					}
-					else if (data.type == "image") {
-						reactive.type = data.type
-						reactive.path = data.path
-						reactive.size = data.size
-					}
-					else if (data.type == "video") {
+					if (data.type == "text" || data.type == "image" || data.type == "video") {
 						reactive.type = data.type
 						reactive.path = data.path
 						reactive.size = data.size
