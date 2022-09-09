@@ -2,6 +2,7 @@
 #define NATIVE_COMMON
 
 #include <filesystem>
+#include <fstream>
 #include <map>
 #include <regex>
 #include <string>

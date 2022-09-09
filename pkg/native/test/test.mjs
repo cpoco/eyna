@@ -48,6 +48,8 @@ setTimeout(() => {
 }, 3000)
 
 await native.createDirectory(path.join(wd, "watch", "d", "d"))
+await native.createFile(path.join(wd, "watch", "f"))
+await native.moveToTrash(path.join(wd, "watch", "f"))
 await native.moveToTrash(path.join(wd, "watch", "d", "d"))
 await native.moveToTrash(path.join(wd, "watch", "d"))
 await native.moveToTrash(path.join(wd, "watch"))

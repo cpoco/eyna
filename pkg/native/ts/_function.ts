@@ -17,6 +17,13 @@ export function createDirectory(abstract: string): Promise<void> {
 	return native.createDirectory(abstract)
 }
 
+export function createFile(abstract: string): Promise<void> {
+	if (native == null) {
+		return Promise.reject()
+	}
+	return native.createFile(abstract)
+}
+
 export function exists(abstract: string): Promise<boolean> {
 	if (native == null) {
 		return Promise.reject()
