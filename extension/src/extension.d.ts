@@ -16,6 +16,7 @@ type Extension = {
 		exists: (full: string) => Promise<boolean>
 		trash: (full: string) => Promise<void>
 		mkdir: (full: string) => Promise<void>
+		mkfile: (full: string) => Promise<void>
 		copy: (full_src: string, full_dst: string) => Promise<void>
 		move: (full_src: string, full_dst: string) => Promise<void>
 		findcopy: (full: string) => Promise<string[]>

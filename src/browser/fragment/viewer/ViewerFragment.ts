@@ -4,6 +4,8 @@ import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class ViewerFragment extends AbstractFragment {
+	private type: "text" | "image" | "video" | null = null
+
 	constructor() {
 		super()
 
@@ -17,6 +19,7 @@ export class ViewerFragment extends AbstractFragment {
 			ch: Bridge.Viewer.Open.CH,
 			args: [-1, option],
 		})
+		this.type = option.type
 	}
 
 	close() {
@@ -24,6 +27,7 @@ export class ViewerFragment extends AbstractFragment {
 			ch: Bridge.Viewer.Close.CH,
 			args: [-1, {}],
 		})
+		this.type = null
 	}
 
 	private ipc() {
@@ -41,6 +45,9 @@ export class ViewerFragment extends AbstractFragment {
 	private command() {
 		this
 			.on("viewer.imageprev", () => {
+				if (this.type != "image") {
+					return Promise.resolve()
+				}
 				return root.command({
 					when: "filer",
 					cmd: ["list.imageup", "list.select"],
@@ -48,6 +55,9 @@ export class ViewerFragment extends AbstractFragment {
 				})
 			})
 			.on("viewer.imagenext", () => {
+				if (this.type != "image") {
+					return Promise.resolve()
+				}
 				return root.command({
 					when: "filer",
 					cmd: ["list.imagedown", "list.select"],

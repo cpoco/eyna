@@ -4,7 +4,7 @@ import { join } from "node:path"
 		return
 	}
 
-	let dir = await ex.dialog.opne({ type: "prompt", title: "mkdir", text: "new directory" })
+	let dir = await ex.dialog.opne({ type: "prompt", title: "mkfile", text: "new file" })
 	if (dir == null || dir.text == "") {
 		return
 	}
@@ -12,11 +12,11 @@ import { join } from "node:path"
 	let full = join(ex.active.wd, dir.text)
 
 	if (await ex.filer.exists(full)) {
-		await ex.dialog.opne({ type: "alert", title: "mkdir", text: "exists" })
+		await ex.dialog.opne({ type: "alert", title: "mkfile", text: "exists" })
 		return
 	}
 
-	await ex.filer.mkdir(full)
+	await ex.filer.mkfile(full)
 
 	ex.filer.update()
 })

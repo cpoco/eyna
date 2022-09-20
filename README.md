@@ -11,7 +11,9 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
 
 - ファイル操作
 - 正規表現による再帰検索
-- イメージビューア
+- メディアビューア
+  - gif / jpg / jpeg / png / webp
+  - mp4 / webm
 - テキストビューア
   - Monaco Editor
 - リンク 解決
