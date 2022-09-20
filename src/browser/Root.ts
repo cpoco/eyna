@@ -221,6 +221,10 @@ class Root {
 						log("filer.mkdir")
 						return Native.createDirectory(full)
 					},
+					mkfile: (full: string): Promise<void> => {
+						log("filer.mkfile")
+						return Native.createFile(full)
+					},
 					copy: (full_src: string, full_dst: string): Promise<void> => {
 						log("filer.copy")
 						return Native.copy(full_src, full_dst)
