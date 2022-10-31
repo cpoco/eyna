@@ -11,15 +11,15 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"electron": "21.0.1",
-		"electron-builder": "23.3.3",
+		"electron": "21.2.0",
+		"electron-builder": "23.6.0",
 		"electron-rebuild": "3.2.9",
-		"esbuild": "0.15.10",
-		"monaco-editor": "0.34.0",
+		"esbuild": "0.15.12",
+		"monaco-editor": "0.34.1",
 		"pug": "3.0.2",
 		"stylus": "0.59.0",
 		"typescript": "4.8.4",
-		"vue": "3.2.40"
+		"vue": "3.2.41"
 	},
 	"overrides": {
 		"got": "11.8.5"
