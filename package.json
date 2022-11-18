@@ -9,11 +9,11 @@
 		"pkg/util"
 	],
 	"devDependencies": {
+		"@electron/rebuild": "3.2.10",
 		"@eyna/native": "*",
 		"@eyna/util": "*",
 		"electron": "21.3.0",
 		"electron-builder": "23.6.0",
-		"electron-rebuild": "3.2.9",
 		"esbuild": "0.15.14",
 		"monaco-editor": "0.34.1",
 		"pug": "3.0.2",
@@ -22,7 +22,6 @@
 		"vue": "3.2.45"
 	},
 	"overrides": {
-		"got": "11.8.5",
 		"minimatch": "3.1.2"
 	},
 	"scripts": {

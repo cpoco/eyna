@@ -1,4 +1,4 @@
-import * as electron_rebuild from "electron-rebuild"
+import * as rebuild from "@electron/rebuild"
 import fse from "fs-extra"
 import module from "node:module"
 import path from "node:path"
@@ -14,7 +14,7 @@ const electron = module.createRequire(import.meta.url)(path.join(__top, "node_mo
 
 export async function Build(arch, release = true) {
 	await fse.ensureDir(outdir)
-	return electron_rebuild.rebuild({
+	return rebuild.rebuild({
 		buildPath: __top,
 		arch: arch,
 		electronVersion: electron.version,
