@@ -262,6 +262,44 @@ export class FilerFragment extends AbstractFragment {
 					resolve()
 				})
 			})
+			.on2("list.diff", (active, target) => {
+				return new Promise(async (resolve, reject) => {
+					let lattr: Native.Attribute | null = null
+					let ltrgt: Native.Attribute | null = null
+					let rattr: Native.Attribute | null = null
+					let rtrgt: Native.Attribute | null = null
+					if (this.index.active < this.index.target) {
+						lattr = Util.first(active.data.ls[active.data.cursor])
+						ltrgt = Util.last(active.data.ls[active.data.cursor])
+						rattr = Util.first(target.data.ls[target.data.cursor])
+						rtrgt = Util.last(target.data.ls[target.data.cursor])
+					} 
+					else {
+						lattr = Util.first(target.data.ls[target.data.cursor])
+						ltrgt = Util.last(target.data.ls[target.data.cursor])
+						rattr = Util.first(active.data.ls[active.data.cursor])
+						rtrgt = Util.last(active.data.ls[active.data.cursor])
+					}
+					if (lattr == null || ltrgt == null || rattr == null || rtrgt == null
+						|| ltrgt.file_type != Native.AttributeFileType.file
+						|| rtrgt.file_type != Native.AttributeFileType.file
+						|| ltrgt.full == rtrgt.full
+					) {
+						resolve()
+						return
+					}
+					if (Conf.VIEWER_SIZE_LIMIT < ltrgt.size || Conf.VIEWER_SIZE_LIMIT < rtrgt.size) {
+						reject("file too large")
+						return
+					}
+					root.viewer({
+						type: "diff",
+						path: [ltrgt.full, rtrgt.full],
+						size: [ltrgt.size, rtrgt.size],
+					})
+					resolve()
+				})
+			})
 			.on2("list.select", (active, _target) => {
 				return new Promise(async (resolve, reject) => {
 					let attr = Util.first(active.data.ls[active.data.cursor])
@@ -311,15 +349,15 @@ export class FilerFragment extends AbstractFragment {
 						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
 								type: "image",
-								path: trgt.full,
-								size: trgt.size,
+								path: [trgt.full],
+								size: [trgt.size],
 							})
 						}
 						else if (Conf.VIEWER_VIDEO_EXT.test(trgt.ext)) {
 							root.viewer({
 								type: "video",
-								path: trgt.full,
-								size: trgt.size,
+								path: [trgt.full],
+								size: [trgt.size],
 							})
 						}
 						else {
@@ -329,8 +367,8 @@ export class FilerFragment extends AbstractFragment {
 							}
 							root.viewer({
 								type: "text",
-								path: trgt.full,
-								size: trgt.size,
+								path: [trgt.full],
+								size: [trgt.size],
 							})
 						}
 						resolve()
