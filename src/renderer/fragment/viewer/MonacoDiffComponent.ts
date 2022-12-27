@@ -10,7 +10,11 @@ declare global {
 
 export const V = vue.defineComponent({
 	props: {
-		"path": {
+		"original": {
+			required: true,
+			type: String,
+		},
+		"modified": {
 			required: true,
 			type: String,
 		},
@@ -19,16 +23,22 @@ export const V = vue.defineComponent({
 	setup(props) {
 		const el = vue.ref<HTMLElement>()
 
-		let model: _monaco.editor.ITextModel | null = null
-		let editor: _monaco.editor.IStandaloneCodeEditor | null = null
+		let original: _monaco.editor.ITextModel | null = null
+		let modified: _monaco.editor.ITextModel | null = null
+		let editor: _monaco.editor.IStandaloneDiffEditor | null = null
 
 		vue.onMounted(() => {
-			model = window.monaco.editor.createModel(
+			original = window.monaco.editor.createModel(
 				"",
 				undefined,
-				window.monaco.Uri.file(props.path),
+				window.monaco.Uri.file(props.original),
 			)
-			editor = window.monaco.editor.create(
+			modified = window.monaco.editor.createModel(
+				"",
+				undefined,
+				window.monaco.Uri.file(props.modified),
+			)
+			editor = window.monaco.editor.createDiffEditor(
 				el.value!,
 				{
 					readOnly: true,
@@ -47,21 +57,34 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			editor.setModel(model)
+			editor.setModel({
+				original: original,
+				modified: modified,
+			})
 
-			fetch(`file://${props.path}`)
+			fetch(`file://${props.original}`)
 				.then((res) => {
 					return res.text()
 				})
 				.then((text) => {
 					editor?.focus()
-					model?.setValue(text)
+					original?.setValue(text)
+				})
+
+			fetch(`file://${props.modified}`)
+				.then((res) => {
+					return res.text()
+				})
+				.then((text) => {
+					editor?.focus()
+					modified?.setValue(text)
 				})
 		})
 
 		vue.onUnmounted(() => {
 			editor?.dispose()
-			model?.dispose()
+			original?.dispose()
+			modified?.dispose()
 		})
 
 		return {

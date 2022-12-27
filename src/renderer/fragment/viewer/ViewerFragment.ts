@@ -3,13 +3,14 @@ import * as vue from "vue"
 import * as Bridge from "@/bridge/Bridge"
 import * as ImageComponent from "@/renderer/fragment/viewer/ImageComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
+import * as MonacoDiffComponent from "@/renderer/fragment/viewer/MonacoDiffComponent"
 import * as VideoComponent from "@/renderer/fragment/viewer/VideoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | "image" | "video" | null
-	path: string
-	size: bigint
+	type: "text" | "diff" | "image" | "video" | null
+	path: string[]
+	size: bigint[]
 }
 
 const TAG = "viewer"
@@ -18,8 +19,8 @@ export const V = vue.defineComponent({
 	setup() {
 		const reactive = vue.reactive<reactive>({
 			type: null,
-			path: "",
-			size: 0n,
+			path: [],
+			size: [],
 		})
 
 		vue.onMounted(() => {
@@ -29,7 +30,7 @@ export const V = vue.defineComponent({
 						ch: "viewer-event",
 						args: [-1, { event: "opened" }],
 					})
-					if (data.type == "text" || data.type == "image" || data.type == "video") {
+					if (data.type == "text" || data.type == "diff" || data.type == "image" || data.type == "video") {
 						reactive.type = data.type
 						reactive.path = data.path
 						reactive.size = data.size
@@ -41,8 +42,8 @@ export const V = vue.defineComponent({
 						args: [-1, { event: "closed" }],
 					})
 					reactive.type = null
-					reactive.path = ""
-					reactive.size = 0n
+					reactive.path = []
+					reactive.size = []
 				})
 		})
 
@@ -59,7 +60,19 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoComponent.V, {
-					path: this.reactive.path,
+					path: this.reactive.path[0] ?? "",
+				}, undefined),
+			])
+		}
+		else if (this.reactive.type == "diff") {
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+				},
+			}, [
+				vue.h(MonacoDiffComponent.V, {
+					original: this.reactive.path[0] ?? "",
+					modified: this.reactive.path[1] ?? "",
 				}, undefined),
 			])
 		}
@@ -70,8 +83,8 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(ImageComponent.V, {
-					path: this.reactive.path,
-					size: this.reactive.size,
+					path: this.reactive.path[0] ?? "",
+					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
 			])
 		}
@@ -82,8 +95,8 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(VideoComponent.V, {
-					path: this.reactive.path,
-					size: this.reactive.size,
+					path: this.reactive.path[0] ?? "",
+					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
 			])
 		}

@@ -30,21 +30,26 @@ export namespace Viewer {
 			number,
 			Data,
 		]
-		export type Data = DataText | DataImage | DataVideo
+		export type Data = DataText | DataDiff | DataImage | DataVideo
 		export type DataText = {
 			type: "text"
-			path: string
-			size: bigint
+			path: [string]
+			size: [bigint]
+		}
+		export type DataDiff = {
+			type: "diff"
+			path: [string, string]
+			size: [bigint, bigint]
 		}
 		export type DataImage = {
 			type: "image"
-			path: string
-			size: bigint
+			path: [string]
+			size: [bigint]
 		}
 		export type DataVideo = {
 			type: "video"
-			path: string
-			size: bigint
+			path: [string]
+			size: [bigint]
 		}
 	}
 
