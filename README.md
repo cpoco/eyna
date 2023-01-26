@@ -14,7 +14,7 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
 - メディアビューア
   - gif / jpg / jpeg / png / webp
   - mp4 / webm
-- テキストビューア
+- テキストビューアとテキスト比較(diff)
   - Monaco Editor
 - リンク 解決
   - シンボリックリンク
