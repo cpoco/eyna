@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.23",
+	"version": "0.0.24",
 	"private": true,
 	"main": "./app/browser.js",
 	"workspaces": [
