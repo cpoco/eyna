@@ -14,7 +14,7 @@
 		"@eyna/util": "*",
 		"electron": "22.2.0",
 		"electron-builder": "24.0.0-alpha.11",
-		"esbuild": "0.17.5",
+		"esbuild": "0.17.8",
 		"monaco-editor": "0.34.1",
 		"pug": "3.0.2",
 		"stylus": "0.59.0",
