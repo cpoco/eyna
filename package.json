@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.23",
+	"version": "0.0.24",
 	"private": true,
 	"main": "./app/browser.js",
 	"workspaces": [
@@ -12,14 +12,14 @@
 		"@electron/rebuild": "3.2.10",
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"electron": "22.1.0",
+		"electron": "23.0.0",
 		"electron-builder": "24.0.0-alpha.11",
-		"esbuild": "0.17.4",
-		"monaco-editor": "0.34.1",
+		"esbuild": "0.17.8",
+		"monaco-editor": "0.35.0",
 		"pug": "3.0.2",
 		"stylus": "0.59.0",
-		"typescript": "4.9.4",
-		"vue": "3.2.45"
+		"typescript": "4.9.5",
+		"vue": "3.2.47"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
