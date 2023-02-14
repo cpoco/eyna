@@ -353,6 +353,13 @@ export class FilerFragment extends AbstractFragment {
 								size: [trgt.size],
 							})
 						}
+						else if (Conf.VIEWER_AUDIO_EXT.test(trgt.ext)) {
+							root.viewer({
+								type: "audio",
+								path: [trgt.full],
+								size: [trgt.size],
+							})
+						}
 						else if (Conf.VIEWER_VIDEO_EXT.test(trgt.ext)) {
 							root.viewer({
 								type: "video",

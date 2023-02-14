@@ -4,7 +4,7 @@ import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class ViewerFragment extends AbstractFragment {
-	private type: "text" | "diff" | "image" | "video" | null = null
+	private type: "text" | "diff" | "image" | "audio" | "video" | null = null
 
 	constructor() {
 		super()

@@ -13,6 +13,7 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
 - 正規表現による再帰検索
 - メディアビューア
   - gif / jpg / jpeg / png / webp
+  - mp3 / m4a / ogg / wav / wave
   - mp4 / webm
 - テキストビューアとテキスト比較(diff)
   - Monaco Editor

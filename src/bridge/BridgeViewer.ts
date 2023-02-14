@@ -30,7 +30,7 @@ export namespace Viewer {
 			number,
 			Data,
 		]
-		export type Data = DataText | DataDiff | DataImage | DataVideo
+		export type Data = DataText | DataDiff | DataImage | DataAudio | DataVideo
 		export type DataText = {
 			type: "text"
 			path: [string]
@@ -43,6 +43,11 @@ export namespace Viewer {
 		}
 		export type DataImage = {
 			type: "image"
+			path: [string]
+			size: [bigint]
+		}
+		export type DataAudio = {
+			type: "audio"
 			path: [string]
 			size: [bigint]
 		}
