@@ -9,10 +9,10 @@
 		"pkg/util"
 	],
 	"devDependencies": {
-		"@electron/rebuild": "3.2.10",
+		"@electron/rebuild": "3.2.12",
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"electron": "24.0.0",
+		"electron": "24.1.1",
 		"electron-builder": "24.2.0",
 		"esbuild": "0.17.16",
 		"monaco-editor": "0.37.1",
