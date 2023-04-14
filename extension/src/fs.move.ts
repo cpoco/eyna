@@ -9,7 +9,10 @@ import { normalize } from "node:path/posix"
 		let src = ex.active.cursor[0]!.full
 		let dst = join(ex.target.wd, ex.active.cursor[0]!.rltv)
 
-		let prompt = await ex.dialog.opne({ type: "prompt", title: "move", text: dst })
+		let e = dst.length
+		let s = e - ex.active.cursor[0]!.rltv.length
+
+		let prompt = await ex.dialog.opne({ type: "prompt", title: "move", text: dst, start: s, end: e })
 		if (prompt == null || prompt.text == "") {
 			return
 		}
