@@ -50,6 +50,8 @@ export namespace Modal {
 			type: "prompt"
 			title: string
 			text: string
+			start?: number
+			end?: number
 		}
 		export type DataFind = {
 			type: "find"

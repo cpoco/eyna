@@ -23,9 +23,23 @@ type Extension = {
 		findmove: (full: string) => Promise<string[]>
 	}
 	dialog: {
-		opne: (option: { type: "alert" | "prompt"; title: string; text: string }) => Promise<{ text: string } | null>
+		opne: (option: alert_option | prompt_option) => Promise<{ text: string } | null>
 		cancel: () => void
 	}
+}
+
+type alert_option = {
+	type: "alert"
+	title: string
+	text: string
+}
+
+type prompt_option = {
+	type: "prompt"
+	title: string
+	text: string
+	start?: number
+	end?: number
 }
 
 declare enum AttributeFileType {

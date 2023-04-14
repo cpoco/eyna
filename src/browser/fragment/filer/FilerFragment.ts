@@ -273,14 +273,15 @@ export class FilerFragment extends AbstractFragment {
 						ltrgt = Util.last(active.data.ls[active.data.cursor])
 						rattr = Util.first(target.data.ls[target.data.cursor])
 						rtrgt = Util.last(target.data.ls[target.data.cursor])
-					} 
+					}
 					else {
 						lattr = Util.first(target.data.ls[target.data.cursor])
 						ltrgt = Util.last(target.data.ls[target.data.cursor])
 						rattr = Util.first(active.data.ls[active.data.cursor])
 						rtrgt = Util.last(active.data.ls[active.data.cursor])
 					}
-					if (lattr == null || ltrgt == null || rattr == null || rtrgt == null
+					if (
+						lattr == null || ltrgt == null || rattr == null || rtrgt == null
 						|| ltrgt.file_type != Native.AttributeFileType.file
 						|| rtrgt.file_type != Native.AttributeFileType.file
 						|| ltrgt.full == rtrgt.full

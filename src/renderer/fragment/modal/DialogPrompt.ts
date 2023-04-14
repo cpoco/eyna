@@ -1,6 +1,7 @@
 import * as vue from "vue"
 
 import * as Bridge from "@/bridge/Bridge"
+import { Selection } from "@/renderer/dom/Selection"
 
 type reactive = {
 	prompt: [string, string]
@@ -17,6 +18,14 @@ export const V = vue.defineComponent({
 		text: {
 			required: true,
 			type: String,
+		},
+		start: {
+			required: true,
+			type: Number as vue.PropType<number | null>,
+		},
+		end: {
+			required: true,
+			type: Number as vue.PropType<number | null>,
 		},
 		close: {
 			required: true,
@@ -55,10 +64,10 @@ export const V = vue.defineComponent({
 		vue.onMounted(() => {
 			setTimeout(() => {
 				prompt.value!.focus()
+				if (props.start != null && props.end != null) {
+					Selection.text(<Text> prompt.value!.childNodes[0]!, props.start, props.end)
+				}
 			}, 0)
-			// vue.nextTick(() => {
-			// 	prompt.value!.focus()
-			// })
 		})
 
 		return {

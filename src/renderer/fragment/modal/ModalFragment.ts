@@ -15,6 +15,8 @@ type reactive = {
 	prompt: {
 		title: string
 		text: string
+		start: number | null
+		end: number | null
 	}
 	find: {
 		title: string
@@ -36,6 +38,8 @@ export const V = vue.defineComponent({
 			prompt: {
 				title: "",
 				text: "",
+				start: null,
+				end: null,
 			},
 			find: {
 				title: "",
@@ -60,6 +64,8 @@ export const V = vue.defineComponent({
 						reactive.type = data.type
 						reactive.prompt.title = data.title
 						reactive.prompt.text = data.text
+						reactive.prompt.start = data.start ?? null
+						reactive.prompt.end = data.end ?? null
 					}
 					else if (data.type == "find") {
 						reactive.type = data.type
@@ -116,6 +122,8 @@ export const V = vue.defineComponent({
 				vue.h(DialogPrompt.V, {
 					title: this.reactive.prompt.title,
 					text: this.reactive.prompt.text,
+					start: this.reactive.prompt.start,
+					end: this.reactive.prompt.end,
 					close: this.close,
 					cancel: this.cancel,
 				}),
