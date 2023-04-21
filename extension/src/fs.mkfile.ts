@@ -4,7 +4,9 @@ import { join } from "node:path"
 		return
 	}
 
-	let dir = await ex.dialog.opne({ type: "prompt", title: "mkfile", text: "new file" })
+	let txet = "new file"
+
+	let dir = await ex.dialog.opne({ type: "prompt", title: "mkfile", text: txet, start: 0, end: txet.length })
 	if (dir == null || dir.text == "") {
 		return
 	}
