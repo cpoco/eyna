@@ -2,6 +2,7 @@ import esbuild from "esbuild"
 import fse from "fs-extra"
 import module from "node:module"
 import path from "node:path"
+import * as perf_hooks from "node:perf_hooks"
 import url from "node:url"
 import ts from "typescript"
 
@@ -32,6 +33,7 @@ export async function Conf() {
 }
 
 export async function Check() {
+	let _time = perf_hooks.performance.now()
 	return new Promise((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
 		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
@@ -49,9 +51,14 @@ export async function Check() {
 		})
 		resolve()
 	})
+	.then(() => {
+		console.log(`app.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+		return Promise.resolve()
+	})
 }
 
 export async function Build() {
+	let _time = perf_hooks.performance.now()
 	await fse.ensureDir(outdir)
 	await fse.copy(
 		path.join(__top, "node_modules/monaco-editor/min/vs"),
@@ -77,5 +84,9 @@ export async function Build() {
 			"*.node",
 		],
 		outdir: outdir,
+	})
+	.then(() => {
+		console.log(`app.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+		return Promise.resolve()
 	})
 }
