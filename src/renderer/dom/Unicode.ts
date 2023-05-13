@@ -1,4 +1,4 @@
-import * as vue from "vue"
+import * as vue from "@/renderer/Vue"
 
 import * as Util from "@eyna/util/ts/Util"
 
