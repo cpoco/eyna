@@ -142,8 +142,8 @@ export const V = vue.defineComponent({
 							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.mark}/${this.list.info.total}`),
 							vue.h("span", { class: { "filer-vicon": true } }, Font.circle_slash),
 							vue.h("span", { class: { "filer-vdata": true } }, this.list.info.error),
-							vue.h("span", { class: { "filer-vicon": true } }, Font.source_control),
-							vue.h("span", { class: { "filer-vdata": true } }, "-"),
+							// vue.h("span", { class: { "filer-vicon": true } }, Font.source_control),
+							// vue.h("span", { class: { "filer-vdata": true } }, "-"),
 						]
 						: undefined,
 				),
