@@ -51,10 +51,10 @@ export async function Check() {
 		})
 		resolve()
 	})
-	.then(() => {
-		console.log(`app.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
-		return Promise.resolve()
-	})
+		.then(() => {
+			console.log(`app.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }
 
 export async function Build() {
@@ -85,8 +85,8 @@ export async function Build() {
 		],
 		outdir: outdir,
 	})
-	.then(() => {
-		console.log(`app.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
-		return Promise.resolve()
-	})
+		.then(() => {
+			console.log(`app.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }

@@ -32,10 +32,10 @@ export async function Check() {
 		})
 		resolve()
 	})
-	.then(() => {
-		console.log(`ext.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
-		return Promise.resolve()
-	})
+		.then(() => {
+			console.log(`ext.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }
 
 export async function Build() {
@@ -60,8 +60,8 @@ export async function Build() {
 		platform: "node",
 		outdir: outdir,
 	})
-	.then(() => {
-		console.log(`ext.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
-		return Promise.resolve()
-	})
+		.then(() => {
+			console.log(`ext.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }
