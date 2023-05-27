@@ -1,4 +1,4 @@
-import * as vue from "vue"
+import * as vue from "@/renderer/Vue"
 
 export const V = vue.defineComponent({
 	props: {

@@ -1,4 +1,4 @@
-import * as vue from "vue"
+import * as vue from "@/renderer/Vue"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"

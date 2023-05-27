@@ -1,4 +1,4 @@
-import * as vue from "vue"
+import * as vue from "@/renderer/Vue"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Status, StatusValues } from "@/bridge/Status"
@@ -135,13 +135,15 @@ export const V = vue.defineComponent({
 				vue.h("div", { class: { "filer-dir": true } }, Unicode.rol(this.list.wd)),
 				vue.h(
 					"div",
-					{ class: { "filer-cnt": true } },
+					{ class: { "filer-val": true } },
 					this.list.info.show
 						? [
-							vue.h("span", { class: { "filer-cicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
-							vue.h("span", {}, `${this.list.info.mark}/${this.list.info.total} `),
-							vue.h("span", { class: { "filer-cicon": true } }, Font.circle_slash),
-							vue.h("span", {}, this.list.info.error),
+							vue.h("span", { class: { "filer-vicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
+							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.mark}/${this.list.info.total}`),
+							vue.h("span", { class: { "filer-vicon": true } }, Font.circle_slash),
+							vue.h("span", { class: { "filer-vdata": true } }, this.list.info.error),
+							// vue.h("span", { class: { "filer-vicon": true } }, Font.source_control),
+							// vue.h("span", { class: { "filer-vdata": true } }, "-"),
 						]
 						: undefined,
 				),

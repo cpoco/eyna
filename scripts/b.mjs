@@ -5,7 +5,7 @@ import * as pug from "./_pug.mjs"
 import * as stylus from "./_stylus.mjs"
 
 const arch = process.argv?.[2] == "arm64" ? "arm64" : "x64"
-console.log(`build (${arch})`)
+console.log(`build (${arch})\n`)
 
 app.Node()
 app.Conf()

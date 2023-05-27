@@ -1,6 +1,7 @@
 import esbuild from "esbuild"
 import fse from "fs-extra"
 import path from "node:path"
+import * as perf_hooks from "node:perf_hooks"
 import url from "node:url"
 import ts from "typescript"
 
@@ -13,6 +14,7 @@ const conf = path.join(__top, "extension/tsconfig.json")
 const base = path.join(__top, "extension")
 
 export async function Check() {
+	let _time = perf_hooks.performance.now()
 	return new Promise((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
 		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
@@ -30,9 +32,14 @@ export async function Check() {
 		})
 		resolve()
 	})
+		.then(() => {
+			console.log(`ext.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }
 
 export async function Build() {
+	let _time = perf_hooks.performance.now()
 	await fse.ensureDir(outdir)
 	return esbuild.build({
 		entryPoints: [
@@ -53,4 +60,8 @@ export async function Build() {
 		platform: "node",
 		outdir: outdir,
 	})
+		.then(() => {
+			console.log(`ext.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 }

@@ -1,6 +1,6 @@
 import * as Conf from "@/app/Conf"
+import * as vue from "@/renderer/Vue"
 import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
-import * as vue from "vue"
 
 declare global {
 	interface Window {

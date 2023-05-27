@@ -11,6 +11,7 @@ export const link_external = "\u{eb14}"
 export const gear = "\u{eaf8}"
 export const error = "\u{ea87}"
 
+export const source_control = "\u{ea68}"
 export const sync = "\u{ea77}"
 export const sync_ignored = "\u{eb9f}"
 export const circle_slash = "\u{eabd}"
