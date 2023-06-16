@@ -64,27 +64,40 @@ export async function Build() {
 		path.join(__top, "node_modules/monaco-editor/min/vs"),
 		path.join(outdir, "vs"),
 	)
-	return esbuild.build({
+
+	let common = {
 		define: {
 			"process.env.NODE_ENV": JSON.stringify("production"),
 			// "process.env.NODE_ENV": JSON.stringify("development"),
 		},
-		entryPoints: {
-			preload: path.join(__top, "src/browser/Preload.ts"),
-			browser: path.join(__top, "src/browser/Main.ts"),
-			renderer: path.join(__top, "src/renderer/Main.ts"),
-		},
 		bundle: true,
 		minify: true,
 		format: "cjs",
-		platform: "node",
+		target: ["es2020"],
 		external: [
 			"electron",
 			"monaco-editor",
 			"*.node",
 		],
 		outdir: outdir,
-	})
+	}
+
+	let browser = esbuild.build(Object.assign(common, {
+		entryPoints: {
+			preload: path.join(__top, "src/browser/Preload.ts"),
+			browser: path.join(__top, "src/browser/Main.ts"),
+		},
+		platform: "node",
+	}))
+
+	let renderer = esbuild.build(Object.assign(common, {
+		entryPoints: {
+			renderer: path.join(__top, "src/renderer/Main.ts"),
+		},
+		platform: "browser",
+	}))
+
+	return Promise.all([browser, renderer])
 		.then(() => {
 			console.log(`app.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
 			return Promise.resolve()

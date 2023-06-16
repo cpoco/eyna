@@ -58,6 +58,7 @@ export async function Build() {
 		minify: false,
 		format: "cjs",
 		platform: "node",
+		target: ["es2020"],
 		outdir: outdir,
 	})
 		.then(() => {
