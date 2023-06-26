@@ -39,6 +39,7 @@ export type Attribute = {
 	readonly: boolean
 	hidden: boolean
 	system: boolean
+	pseudo: boolean
 }
 
 export type Volume = {

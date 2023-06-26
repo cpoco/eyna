@@ -202,6 +202,10 @@ export const V = vue.defineComponent({
 			fraw = Font.error
 		}
 
+		if (this.cell.attr[0]?.pseudo) {
+			fraw = Font.cloud
+		}
+
 		if (this.is_link) {
 			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.none
 			if (ftype2 == Native.AttributeFileType.file) {
