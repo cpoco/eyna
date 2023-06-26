@@ -66,6 +66,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, a.readonly));
 		obj->Set(CONTEXT, to_string(V("hidden")), v8::Boolean::New(ISOLATE, a.hidden));
 		obj->Set(CONTEXT, to_string(V("system")), v8::Boolean::New(ISOLATE, a.system));
+		obj->Set(CONTEXT, to_string(V("pseudo")), v8::Boolean::New(ISOLATE, a.pseudo));
 
 		array->Set(CONTEXT, array->Length(), obj);
 	}
