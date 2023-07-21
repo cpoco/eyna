@@ -13,16 +13,16 @@
 		"@eyna/native": "*",
 		"@eyna/util": "*",
 		"@vue/runtime-dom": "3.3.4",
-		"electron": "25.2.0",
+		"electron": "25.3.1",
 		"electron-builder": "24.4.0",
-		"esbuild": "0.18.11",
-		"monaco-editor": "0.39.0",
+		"esbuild": "0.18.15",
+		"monaco-editor": "0.40.0",
 		"pug": "3.0.2",
 		"stylus": "0.59.0",
 		"typescript": "5.1.6"
 	},
 	"overrides": {
-		"semver": "7.5.3"
+		"semver": "7.5.4"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
