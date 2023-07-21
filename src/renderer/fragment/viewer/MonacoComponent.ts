@@ -14,15 +14,21 @@ export const V = vue.defineComponent({
 			required: true,
 			type: String,
 		},
+		"size": {
+			required: true,
+			type: Object as vue.PropType<BigInt>,
+		},
 	},
 
 	setup(props) {
+		const head = vue.ref<string>("")
 		const el = vue.ref<HTMLElement>()
 
 		let model: _monaco.editor.ITextModel | null = null
 		let editor: _monaco.editor.IStandaloneCodeEditor | null = null
 
 		vue.onMounted(() => {
+			head.value = `${props.size.toLocaleString()} byte`
 			model = window.monaco.editor.createModel(
 				"",
 				undefined,
@@ -65,11 +71,16 @@ export const V = vue.defineComponent({
 		})
 
 		return {
+			head,
 			el,
 		}
 	},
 
 	render() {
-		return vue.h("div", { ref: "el", class: { "viewer-monaco": true } })
+		return vue.h("div", { class: { "viewer-monaco": true } }, [
+			vue.h("div", { class: { "viewer-monaco-head": true } },  this.head),
+			vue.h("div", { class: { "viewer-monaco-stat": true } }),
+			vue.h("div", { class: { "viewer-monaco-edit": true }, ref: "el" }),
+		])
 	},
 })

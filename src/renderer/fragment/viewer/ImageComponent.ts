@@ -42,6 +42,7 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-image": true } }, [
 			vue.h("div", { class: { "viewer-image-head": true } }, this.head),
+			vue.h("div", { class: { "viewer-image-stat": true } }),
 			vue.h("div", { class: { "viewer-image-back": true } }, [
 				vue.h("img", {
 					ref: "img",

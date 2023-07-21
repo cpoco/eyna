@@ -39,6 +39,7 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-video": true } }, [
 			vue.h("div", { class: { "viewer-video-head": true } }, this.head),
+			vue.h("div", { class: { "viewer-video-stat": true } }),
 			vue.h("div", { class: { "viewer-video-back": true } }, [
 				vue.h("video", {
 					ref: "vid",

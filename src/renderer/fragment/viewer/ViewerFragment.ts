@@ -62,6 +62,7 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(MonacoComponent.V, {
 					path: this.reactive.path[0] ?? "",
+					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
 			])
 		}
@@ -74,6 +75,8 @@ export const V = vue.defineComponent({
 				vue.h(MonacoDiffComponent.V, {
 					original: this.reactive.path[0] ?? "",
 					modified: this.reactive.path[1] ?? "",
+					original_size:  this.reactive.size[0] ?? 0n,
+					modified_size:  this.reactive.size[1] ?? 0n
 				}, undefined),
 			])
 		}

@@ -36,6 +36,7 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-audio": true } }, [
 			vue.h("div", { class: { "viewer-audio-head": true } }, this.head),
+			vue.h("div", { class: { "viewer-audio-stat": true } }),
 			vue.h("div", { class: { "viewer-audio-back": true } }, [
 				vue.h("audio", {
 					ref: "aud",
