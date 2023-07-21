@@ -14,6 +14,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const vid = vue.ref<HTMLVideoElement>()
 		const src = vue.ref<HTMLSourceElement>()
 
@@ -31,6 +32,7 @@ export const V = vue.defineComponent({
 
 		return {
 			head,
+			prog,
 			vid,
 			src,
 		}
@@ -39,7 +41,13 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-video": true } }, [
 			vue.h("div", { class: { "viewer-video-head": true } }, this.head),
-			vue.h("div", { class: { "viewer-video-stat": true } }),
+			vue.h(
+				"div",
+				{ class: { "viewer-video-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-video-prog": true } }, undefined)
+					: undefined,
+			),
 			vue.h("div", { class: { "viewer-video-back": true } }, [
 				vue.h("video", {
 					ref: "vid",

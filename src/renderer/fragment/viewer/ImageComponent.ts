@@ -14,6 +14,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const img = vue.ref<HTMLImageElement>()
 
 		vue.onMounted(() => {
@@ -35,6 +36,7 @@ export const V = vue.defineComponent({
 
 		return {
 			head,
+			prog,
 			img,
 		}
 	},
@@ -42,7 +44,13 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-image": true } }, [
 			vue.h("div", { class: { "viewer-image-head": true } }, this.head),
-			vue.h("div", { class: { "viewer-image-stat": true } }),
+			vue.h(
+				"div",
+				{ class: { "viewer-image-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-image-prog": true } }, undefined)
+					: undefined,
+			),
 			vue.h("div", { class: { "viewer-image-back": true } }, [
 				vue.h("img", {
 					ref: "img",

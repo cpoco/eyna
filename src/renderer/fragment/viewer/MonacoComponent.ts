@@ -22,6 +22,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const el = vue.ref<HTMLElement>()
 
 		let model: _monaco.editor.ITextModel | null = null
@@ -55,11 +56,13 @@ export const V = vue.defineComponent({
 			)
 			editor.setModel(model)
 
+			prog.value = true
 			fetch(`file://${props.path}`)
 				.then((res) => {
 					return res.text()
 				})
 				.then((text) => {
+					prog.value = false
 					editor?.focus()
 					model?.setValue(text)
 				})
@@ -72,14 +75,21 @@ export const V = vue.defineComponent({
 
 		return {
 			head,
+			prog,
 			el,
 		}
 	},
 
 	render() {
 		return vue.h("div", { class: { "viewer-monaco": true } }, [
-			vue.h("div", { class: { "viewer-monaco-head": true } },  this.head),
-			vue.h("div", { class: { "viewer-monaco-stat": true } }),
+			vue.h("div", { class: { "viewer-monaco-head": true } }, this.head),
+			vue.h(
+				"div",
+				{ class: { "viewer-monaco-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-monaco-prog": true } }, undefined)
+					: undefined,
+			),
 			vue.h("div", { class: { "viewer-monaco-edit": true }, ref: "el" }),
 		])
 	},

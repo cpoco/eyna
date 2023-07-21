@@ -14,6 +14,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const aud = vue.ref<HTMLAudioElement>()
 		const src = vue.ref<HTMLSourceElement>()
 
@@ -28,6 +29,7 @@ export const V = vue.defineComponent({
 
 		return {
 			head,
+			prog,
 			aud,
 			src,
 		}
@@ -36,7 +38,13 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-audio": true } }, [
 			vue.h("div", { class: { "viewer-audio-head": true } }, this.head),
-			vue.h("div", { class: { "viewer-audio-stat": true } }),
+			vue.h(
+				"div",
+				{ class: { "viewer-audio-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-audio-prog": true } }, undefined)
+					: undefined,
+			),
 			vue.h("div", { class: { "viewer-audio-back": true } }, [
 				vue.h("audio", {
 					ref: "aud",
