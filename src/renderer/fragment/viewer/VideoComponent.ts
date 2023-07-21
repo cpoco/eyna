@@ -21,8 +21,8 @@ export const V = vue.defineComponent({
 			vid.value!.onloadeddata = () => {
 				head.value = `${vid.value!.videoWidth.toLocaleString()}`
 					+ ` x ${vid.value!.videoHeight.toLocaleString()}`
-					+ ` | ${props.size.toLocaleString()} byte`
 					+ ` | ${vid.value!.duration} sec`
+					+ ` | ${props.size.toLocaleString()} byte`
 			}
 			vue.nextTick(() => {
 				src.value!.src = `file://${props.path}`
