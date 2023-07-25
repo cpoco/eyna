@@ -19,6 +19,7 @@ export namespace Storage {
 		reload() {
 			this.data = {}
 			try {
+				console.log(`\u001b[34m[conf.read]\u001b[0m`, `"${this.path}"`)
 				this.data = JSON.parse(fs.readFileSync(this.path, "utf8"))
 			}
 			catch (err) {
@@ -31,6 +32,7 @@ export namespace Storage {
 				return
 			}
 			try {
+				console.log(`\u001b[34m[conf.write]\u001b[0m`, `"${this.path}"`)
 				fs.writeFileSync(this.path, JSON.stringify(this.data))
 			}
 			catch (err) {
