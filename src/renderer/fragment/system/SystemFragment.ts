@@ -11,6 +11,11 @@ export const V = vue.defineComponent({
 		const el = vue.ref<HTMLElement>()
 		const sys = SystemProvider.inject()
 
+		root
+			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
+				sys.reactive.active = data
+			})
+
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
 			root
@@ -32,6 +37,7 @@ export const V = vue.defineComponent({
 				.then((data: Bridge.System.Style.Data) => {
 					root.log("ipc.invoke.result", data)
 					sys.reactive.ready = true
+					sys.reactive.active = data.active
 					sys.reactive.styleFontSize = data.fontSize
 					sys.reactive.styleLineHeight = data.lineHeight
 				})

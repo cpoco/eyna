@@ -7,6 +7,7 @@ const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("SystemProvider
 function _create() {
 	const reactive = vue.reactive({
 		ready: false,
+		active: false,
 		styleFontSize: Conf.DYNAMIC_FONT_SIZE,
 		styleLineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 	})

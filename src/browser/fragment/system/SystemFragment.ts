@@ -18,6 +18,7 @@ export class SystemFragment extends AbstractFragment {
 		root
 			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Style.Data => {
 				return {
+					active: root.isActive(),
 					fontSize: Conf.DYNAMIC_FONT_SIZE,
 					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 				}
