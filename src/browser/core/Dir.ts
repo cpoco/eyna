@@ -91,6 +91,7 @@ export class Dir {
 						readonly: false,
 						hidden: false,
 						system: false,
+						pseudo: false,
 					}])
 				})
 				ls.push([{
@@ -108,6 +109,7 @@ export class Dir {
 					readonly: false,
 					hidden: false,
 					system: false,
+					pseudo: false,
 				}])
 				cb(this.wd, ls, 0)
 			})

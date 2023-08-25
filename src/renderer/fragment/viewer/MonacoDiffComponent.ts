@@ -18,9 +18,19 @@ export const V = vue.defineComponent({
 			required: true,
 			type: String,
 		},
+		"original_size": {
+			required: true,
+			type: Object as vue.PropType<BigInt>,
+		},
+		"modified_size": {
+			required: true,
+			type: Object as vue.PropType<BigInt>,
+		},
 	},
 
 	setup(props) {
+		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const el = vue.ref<HTMLElement>()
 
 		let original: _monaco.editor.ITextModel | null = null
@@ -28,6 +38,8 @@ export const V = vue.defineComponent({
 		let editor: _monaco.editor.IStandaloneDiffEditor | null = null
 
 		vue.onMounted(() => {
+			head.value = `${props.original_size.toLocaleString()} byte`
+				+ ` | ${props.modified_size.toLocaleString()} byte`
 			original = window.monaco.editor.createModel(
 				"",
 				undefined,
@@ -62,22 +74,22 @@ export const V = vue.defineComponent({
 				modified: modified,
 			})
 
-			fetch(`file://${props.original}`)
-				.then((res) => {
-					return res.text()
-				})
+			prog.value = true
+			Promise.all([
+				fetch(`file://${props.original}`)
+					.then((res) => {
+						return res.text()
+					}),
+				fetch(`file://${props.modified}`)
+					.then((res) => {
+						return res.text()
+					}),
+			])
 				.then((text) => {
+					prog.value = false
 					editor?.focus()
-					original?.setValue(text)
-				})
-
-			fetch(`file://${props.modified}`)
-				.then((res) => {
-					return res.text()
-				})
-				.then((text) => {
-					editor?.focus()
-					modified?.setValue(text)
+					original?.setValue(text[0])
+					modified?.setValue(text[1])
 				})
 		})
 
@@ -88,11 +100,23 @@ export const V = vue.defineComponent({
 		})
 
 		return {
+			head,
+			prog,
 			el,
 		}
 	},
 
 	render() {
-		return vue.h("div", { ref: "el", class: { "viewer-monaco": true } })
+		return vue.h("div", { class: { "viewer-monaco": true } }, [
+			vue.h("div", { class: { "viewer-monaco-head": true } }, this.head),
+			vue.h(
+				"div",
+				{ class: { "viewer-monaco-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-monaco-prog": true } }, undefined)
+					: undefined,
+			),
+			vue.h("div", { class: { "viewer-monaco-edit": true }, ref: "el" }),
+		])
 	},
 })

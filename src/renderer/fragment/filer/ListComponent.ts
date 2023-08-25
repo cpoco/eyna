@@ -158,7 +158,7 @@ export const V = vue.defineComponent({
 					},
 				},
 				this.list.search
-					? vue.h("div", { class: { "filer-progress": true } }, undefined)
+					? vue.h("div", { class: { "filer-prog": true } }, undefined)
 					: undefined,
 			),
 			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [

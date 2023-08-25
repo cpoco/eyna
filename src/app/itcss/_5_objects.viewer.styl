@@ -1,3 +1,8 @@
+:root
+	--viewer-head-height: var(--dynamic-line-height)
+	--viewer-stat-height: 2px
+	--viewer-main-height: calc(100% - var(--viewer-head-height) - var(--viewer-stat-height))
+
 .viewer
 	&-fragment
 		position: absolute
@@ -5,10 +10,34 @@
 		width: 100%
 		height: 100%
 
-// MonacoComponent
+// MonacoComponent MonacoDiffComponent
 .viewer-monaco
 	width: 100%
 	height: 100%
+
+	&-head
+		width: 100%
+		height: var(--viewer-head-height)
+		line-height: var(--viewer-head-height)
+		background-color: var(--background)
+		margin: 0px 4px
+
+	&-stat
+		width: 100%
+		height: var(--viewer-stat-height)
+		background-color: var(--stat-active)
+
+	&-prog
+		width: 100%
+		height: 100%
+		background-color: rgba(255, 255, 255, 0.5)
+		animation: indeterminate 1s infinite linear
+		transform-origin: left center
+
+	&-edit
+		width: 100%
+		height: var(--viewer-main-height)
+		background-color: var(--background)
 
 .editor-banner
 	display: none !important
@@ -20,21 +49,32 @@
 
 	&-head
 		width: 100%
-		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
-
+		height: var(--viewer-head-height)
+		line-height: var(--viewer-head-height)
 		background-color: var(--background)
 		margin: 0px 4px
 
+	&-stat
+		width: 100%
+		height: var(--viewer-stat-height)
+		background-color: var(--stat-active)
+
+	&-prog
+		width: 100%
+		height: 100%
+		background-color: rgba(255, 255, 255, 0.5)
+		animation: indeterminate 1s infinite linear
+		transform-origin: left center
+
 	&-back
 		width: 100%
-		height: calc(100% - var(--dynamic-line-height))
+		height: var(--viewer-main-height)
 
 		display: flex
 		flex-direction: column
 		justify-content: center
 		align-items: center
-		
+
 		background-color: var(--background)
 		background-image:
 			linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
@@ -53,21 +93,32 @@
 
 	&-head
 		width: 100%
-		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
-
+		height: var(--viewer-head-height)
+		line-height: var(--viewer-head-height)
 		background-color: var(--background)
 		margin: 0px 4px
 
+	&-stat
+		width: 100%
+		height: var(--viewer-stat-height)
+		background-color: var(--stat-active)
+
+	&-prog
+		width: 100%
+		height: 100%
+		background-color: rgba(255, 255, 255, 0.5)
+		animation: indeterminate 1s infinite linear
+		transform-origin: left center
+
 	&-back
 		width: 100%
-		height: calc(100% - var(--dynamic-line-height))
+		height: var(--viewer-main-height)
 
 		display: flex
 		flex-direction: column
 		justify-content: center
 		align-items: center
-		
+
 		background-color: var(--background)
 		background-image:
 			linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
@@ -86,21 +137,32 @@
 
 	&-head
 		width: 100%
-		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
+		height: var(--viewer-head-height)
+		line-height: var(--viewer-head-height)
 
 		background-color: var(--background)
 		margin: 0px 4px
 
+	&-stat
+		width: 100%
+		height: var(--viewer-stat-height)
+		background-color: var(--stat-active)
+
+	&-prog
+		width: 100%
+		height: 100%
+		background-color: rgba(255, 255, 255, 0.5)
+		animation: indeterminate 1s infinite linear
+		transform-origin: left center
+
 	&-back
 		width: 100%
-		height: calc(100% - var(--dynamic-line-height))
-
+		height: var(--viewer-main-height)
 		display: flex
 		flex-direction: column
 		justify-content: center
 		align-items: center
-		
+
 		background-color: var(--background)
 		background-image:
 			linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),

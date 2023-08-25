@@ -14,12 +14,13 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 		const aud = vue.ref<HTMLAudioElement>()
 		const src = vue.ref<HTMLSourceElement>()
 
 		vue.onMounted(() => {
 			aud.value!.onloadeddata = () => {
-				head.value = `${props.size.toLocaleString()} byte | ${aud.value!.duration} sec`
+				head.value = `${aud.value!.duration} sec | ${props.size.toLocaleString()} byte`
 			}
 			vue.nextTick(() => {
 				src.value!.src = `file://${props.path}`
@@ -28,6 +29,7 @@ export const V = vue.defineComponent({
 
 		return {
 			head,
+			prog,
 			aud,
 			src,
 		}
@@ -36,6 +38,13 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h("div", { class: { "viewer-audio": true } }, [
 			vue.h("div", { class: { "viewer-audio-head": true } }, this.head),
+			vue.h(
+				"div",
+				{ class: { "viewer-audio-stat": true } },
+				this.prog
+					? vue.h("div", { class: { "viewer-audio-prog": true } }, undefined)
+					: undefined,
+			),
 			vue.h("div", { class: { "viewer-audio-back": true } }, [
 				vue.h("audio", {
 					ref: "aud",

@@ -6,15 +6,12 @@
 		"useBraces": "always",
 		"nextControlFlowPosition": "nextLine"
 	},
-	"includes": [
-		"**/*.{ts,tsx,js,jsx,cjs,mjs}"
-	],
 	"excludes": [
 		"build",
 		"dist",
 		"**/node_modules"
 	],
 	"plugins": [
-		"https://plugins.dprint.dev/typescript-0.84.4.wasm"
+		"https://plugins.dprint.dev/typescript-0.86.2.wasm"
 	]
 }

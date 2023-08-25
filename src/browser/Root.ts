@@ -36,6 +36,7 @@ class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
+	private active: boolean = false
 
 	create(url: string) {
 		this.url = url
@@ -65,6 +66,14 @@ class Root {
 		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadURL(this.url)
+		this.browser.on("focus", () => {
+			this.active = true
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+		})
+		this.browser.on("blur", () => {
+			this.active = false
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getBounds()
 			Storage.manager.data.wd = this.fragment[1].pwd
@@ -74,6 +83,10 @@ class Root {
 			if (input.type == "keyDown") {
 				await this.command(Command.manager.get(input))
 			}
+		})
+
+		process.on("SIGINT", () => {
+			this.quit()
 		})
 	}
 
@@ -111,6 +124,10 @@ class Root {
 				break
 			}
 		}
+	}
+
+	isActive(): boolean {
+		return this.active
 	}
 
 	cut() {

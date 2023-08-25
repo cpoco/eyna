@@ -11,6 +11,7 @@ export class ModalFragment extends AbstractFragment {
 		super()
 
 		this.ipc()
+		this.command()
 	}
 
 	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
@@ -44,6 +45,14 @@ export class ModalFragment extends AbstractFragment {
 					}
 					this.deferred = null
 				}
+			})
+	}
+
+	private command() {
+		this
+			.on("modal.cancel", () => {
+				this.cancel()
+				return Promise.resolve()
 			})
 	}
 }
