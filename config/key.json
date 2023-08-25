@@ -38,6 +38,8 @@
 		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopne"     },
 		{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
 
+		{ "when": "modal",  "key": "esc",               "cmd": "modal.cancel" },
+
 		{ "when": "viewer", "key": "up",                "cmd": "viewer.imageprev" },
 		{ "when": "viewer", "key": "down",              "cmd": "viewer.imagenext" },
 
