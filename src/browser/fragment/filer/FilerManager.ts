@@ -1,3 +1,5 @@
+import * as perf_hooks from "node:perf_hooks"
+
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
@@ -95,9 +97,10 @@ export class FilerManager {
 			cursor = this.history[Dir.HOME] ?? null
 		}
 
-		let create = Date.now()
+		let create = perf_hooks.performance.now()
 
 		this.data.create = create
+		this.data.elapse = 0
 		this.data.search = true
 
 		Native.unwatch(this.id)
@@ -108,6 +111,7 @@ export class FilerManager {
 				this.id,
 				{
 					create: this.data.create,
+					elapse: this.data.elapse,
 					status: this.data.status,
 					search: this.data.search,
 					cursor: 0,
@@ -135,6 +139,7 @@ export class FilerManager {
 					return
 				}
 
+				this.data.elapse = perf_hooks.performance.now() - this.data.create
 				this.data.search = false
 				this.data.cursor = Util.isNumber(cursor)
 					? Math.max(0, Math.min(cursor, ls.length - 1))
@@ -181,6 +186,7 @@ export class FilerManager {
 				this.id,
 				{
 					create: this.data.create,
+					elapse: this.data.elapse,
 					status: this.data.status,
 					search: this.data.search,
 					cursor: this.data.cursor,

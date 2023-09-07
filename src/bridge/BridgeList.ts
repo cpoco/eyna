@@ -4,6 +4,7 @@ import * as Native from "@eyna/native/ts/renderer"
 export namespace List {
 	export type Data = {
 		create: number
+		elapse: number
 		status: StatusValues
 		search: boolean
 		cursor: number
@@ -23,6 +24,7 @@ export namespace List {
 	export function InitData(): Data {
 		return {
 			create: 0,
+			elapse: 0,
 			status: Status.none,
 			search: false,
 			cursor: 0,
