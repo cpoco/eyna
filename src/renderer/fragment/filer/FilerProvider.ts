@@ -104,6 +104,7 @@ function _create(count: number) {
 		r.list.info.mark = Util.count(d.mk, (mk) => mk)
 		r.list.info.total = d.length
 		r.list.info.error = d.error
+		r.list.info.elapse = d.elapse
 		r.list.stat.status = d.status
 		r.list.stat.active = d.status == Bridge.Status.active
 		r.list.stat.target = d.status == Bridge.Status.target

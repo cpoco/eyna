@@ -23,6 +23,7 @@ export type List = {
 		mark: number
 		total: number
 		error: number
+		elapse: number
 	}
 	stat: {
 		status: StatusValues
@@ -44,6 +45,7 @@ export function InitList(): List {
 			mark: 0,
 			total: 0,
 			error: 0,
+			elapse: 0,
 		},
 		stat: {
 			status: Status.none,
@@ -142,6 +144,8 @@ export const V = vue.defineComponent({
 							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.mark}/${this.list.info.total}`),
 							vue.h("span", { class: { "filer-vicon": true } }, Font.circle_slash),
 							vue.h("span", { class: { "filer-vdata": true } }, this.list.info.error),
+							vue.h("span", { class: { "filer-vicon": true } }, Font.history),
+							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
 							// vue.h("span", { class: { "filer-vicon": true } }, Font.source_control),
 							// vue.h("span", { class: { "filer-vdata": true } }, "-"),
 						]
