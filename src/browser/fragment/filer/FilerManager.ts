@@ -95,19 +95,19 @@ export class FilerManager {
 			cursor = this.history[Dir.HOME] ?? null
 		}
 
-		let update = Date.now()
+		let create = Date.now()
 
-		this.data.update = update
+		this.data.create = create
 		this.data.search = true
 
 		Native.unwatch(this.id)
 
 		root.send<Bridge.List.Change.Send>({
-			ch: "filer-change",
+			ch: Bridge.List.Change.CH,
 			args: [
 				this.id,
 				{
-					update: this.data.update,
+					create: this.data.create,
 					status: this.data.status,
 					search: this.data.search,
 					cursor: 0,
@@ -130,7 +130,7 @@ export class FilerManager {
 		return new Promise((resolve, _reject) => {
 			this.dir.cd(wd)
 			this.dir.list(dp, rg, async (wd, ls, e) => {
-				if (update != this.data.update) {
+				if (create != this.data.create) {
 					resolve(false)
 					return
 				}
@@ -155,17 +155,16 @@ export class FilerManager {
 				await SleepPromise(10)
 
 				Native.watch(this.id, wd, (_id, depth, _abstract) => {
-					if (update != this.data.update || dp < depth) {
+					if (create != this.data.create || dp < depth) {
 						return
 					}
 
 					this.data.watch = 1
 					root.send<Bridge.List.Watch.Send>({
-						ch: "filer-watch",
+						ch: Bridge.List.Watch.CH,
 						args: [
 							this.id,
 							{
-								update: this.data.update,
 								watch: this.data.watch,
 							},
 						],
@@ -177,11 +176,11 @@ export class FilerManager {
 
 	sendScan() {
 		root.send<Bridge.List.Scan.Send>({
-			ch: "filer-scan",
+			ch: Bridge.List.Scan.CH,
 			args: [
 				this.id,
 				{
-					update: this.data.update,
+					create: this.data.create,
 					status: this.data.status,
 					search: this.data.search,
 					cursor: this.data.cursor,
@@ -204,7 +203,7 @@ export class FilerManager {
 
 	sendActive() {
 		root.send<Bridge.List.Active.Send>({
-			ch: "filer-status",
+			ch: Bridge.List.Active.CH,
 			args: [
 				this.id,
 				{
@@ -216,7 +215,7 @@ export class FilerManager {
 
 	sendCursor() {
 		root.send<Bridge.List.Cursor.Send>({
-			ch: "filer-cursor",
+			ch: Bridge.List.Cursor.CH,
 			args: [
 				this.id,
 				{
@@ -240,11 +239,10 @@ export class FilerManager {
 
 	_sendAttribute(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
-			ch: "filer-attribute",
+			ch: Bridge.List.Attribute.CH,
 			args: [
 				this.id,
 				{
-					update: this.data.update,
 					_slice: Util.dict<Native.Attributes>(start, end, (i) => {
 						return this.data.ls[i]
 					}),
@@ -255,11 +253,10 @@ export class FilerManager {
 
 	sendMark(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Mark.Send>({
-			ch: "filer-mark",
+			ch: Bridge.List.Mark.CH,
 			args: [
 				this.id,
 				{
-					update: this.data.update,
 					_slice: Util.dict<boolean>(start, end, (i) => {
 						return this.data.mk[i]
 					}),

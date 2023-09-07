@@ -3,7 +3,7 @@ import * as Native from "@eyna/native/ts/renderer"
 
 export namespace List {
 	export type Data = {
-		update: number
+		create: number
 		status: StatusValues
 		search: boolean
 		cursor: number
@@ -22,7 +22,7 @@ export namespace List {
 	}
 	export function InitData(): Data {
 		return {
-			update: 0,
+			create: 0,
 			status: Status.none,
 			search: false,
 			cursor: 0,
@@ -159,7 +159,6 @@ export namespace List {
 			Data,
 		]
 		export type Data = {
-			update: number
 			_slice: Slice
 		}
 		export type Slice = {
@@ -179,7 +178,6 @@ export namespace List {
 			Data,
 		]
 		export type Data = {
-			update: number
 			_slice: Slice
 		}
 		export type Slice = {
@@ -199,7 +197,6 @@ export namespace List {
 			Data,
 		]
 		export type Data = {
-			update: number
 			watch: number
 		}
 	}
