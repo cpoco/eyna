@@ -18,6 +18,8 @@ const TAG = "viewer"
 
 export const V = vue.defineComponent({
 	setup() {
+		const diff = vue.ref<InstanceType<typeof MonacoDiffComponent.V>>()
+
 		const reactive = vue.reactive<reactive>({
 			type: null,
 			path: [],
@@ -46,10 +48,19 @@ export const V = vue.defineComponent({
 					reactive.path = []
 					reactive.size = []
 				})
+				.on(Bridge.Viewer.Diff.CH, (_: number, data: Bridge.Viewer.Diff.Data) => {
+					if (data == "prev") {
+						diff.value?.prev()
+					}
+					else if (data == "next") {
+						diff.value?.next()
+					}
+				})
 		})
 
 		return {
 			reactive,
+			diff,
 		}
 	},
 
@@ -73,6 +84,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoDiffComponent.V, {
+					ref: "diff",
 					original: this.reactive.path[0] ?? "",
 					modified: this.reactive.path[1] ?? "",
 					original_size: this.reactive.size[0] ?? 0n,

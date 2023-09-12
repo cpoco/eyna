@@ -13,10 +13,11 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const head = vue.ref<string>("")
-		const prog = vue.ref<boolean>(false)
 		const aud = vue.ref<HTMLAudioElement>()
 		const src = vue.ref<HTMLSourceElement>()
+
+		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
 			aud.value!.onloadeddata = () => {

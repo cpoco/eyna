@@ -13,10 +13,11 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const head = vue.ref<string>("")
-		const prog = vue.ref<boolean>(false)
 		const vid = vue.ref<HTMLVideoElement>()
 		const src = vue.ref<HTMLSourceElement>()
+
+		const head = vue.ref<string>("")
+		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
 			vid.value!.onloadeddata = () => {

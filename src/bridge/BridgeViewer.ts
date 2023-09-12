@@ -71,4 +71,18 @@ export namespace Viewer {
 		]
 		export type Data = {}
 	}
+
+	// browser -> renderer
+	export namespace Diff {
+		export const CH = "viewer-diff"
+		export type Send = {
+			ch: typeof CH
+			args: Args
+		}
+		export type Args = [
+			number,
+			Data,
+		]
+		export type Data = "prev" | "next"
+	}
 }

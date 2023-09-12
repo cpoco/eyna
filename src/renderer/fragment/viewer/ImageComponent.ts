@@ -13,9 +13,10 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
+		const img = vue.ref<HTMLImageElement>()
+
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
-		const img = vue.ref<HTMLImageElement>()
 
 		vue.onMounted(() => {
 			img.value!.onload = () => {

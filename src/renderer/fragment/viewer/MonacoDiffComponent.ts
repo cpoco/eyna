@@ -29,13 +29,15 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
+		const el = vue.ref<HTMLElement>()
+
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
-		const el = vue.ref<HTMLElement>()
 
 		let original: _monaco.editor.ITextModel | null = null
 		let modified: _monaco.editor.ITextModel | null = null
 		let editor: _monaco.editor.IStandaloneDiffEditor | null = null
+		let navigator: _monaco.editor.IDiffNavigator | null = null
 
 		vue.onMounted(() => {
 			head.value = `${props.original_size.toLocaleString()} byte`
@@ -69,6 +71,7 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
+			navigator = window.monaco.editor.createDiffNavigator(editor)
 			editor.setModel({
 				original: original,
 				modified: modified,
@@ -94,15 +97,26 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onUnmounted(() => {
+			navigator?.dispose()
 			editor?.dispose()
-			original?.dispose()
 			modified?.dispose()
+			original?.dispose()
 		})
+
+		const prev = () => {
+			navigator?.previous()
+		}
+
+		const next = () => {
+			navigator?.next()
+		}
 
 		return {
 			head,
 			prog,
 			el,
+			prev,
+			next,
 		}
 	},
 
@@ -116,7 +130,7 @@ export const V = vue.defineComponent({
 					? vue.h("div", { class: { "viewer-monaco-prog": true } }, undefined)
 					: undefined,
 			),
-			vue.h("div", { class: { "viewer-monaco-edit": true }, ref: "el" }),
+			vue.h("div", { ref: "el", class: { "viewer-monaco-edit": true } }),
 		])
 	},
 })
