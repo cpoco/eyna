@@ -75,6 +75,7 @@ static void get_icon_async(uv_work_t* req)
 		CoUninitialize();
 
 		DestroyIcon(icon);
+		list->Release();
 		DestroyIcon(file.hIcon);
 
 	#elif _OS_MAC_
