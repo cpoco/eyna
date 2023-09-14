@@ -23,9 +23,8 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX);
-
-		HICON icon = ImageList_GetIcon(file.hIcon, file.iIcon, ILD_NORMAL);
+		HIMAGELIST list = reinterpret_cast<HIMAGELIST>(SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX));
+		HICON icon = ImageList_GetIcon(list, file.iIcon, ILD_NORMAL);
 
 		ICONINFO info = {};
 		GetIconInfo(icon, &info);
@@ -70,7 +69,6 @@ static void get_icon_async(uv_work_t* req)
 
 		CoUninitialize();
 
-		DestroyIcon(icon);
 		DestroyIcon(file.hIcon);
 
 	#elif _OS_MAC_
