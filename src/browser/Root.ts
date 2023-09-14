@@ -46,6 +46,14 @@ class Root {
 			new ModalFragment(),
 			new ViewerFragment(),
 		]
+		electron.protocol.registerSchemesAsPrivileged(
+			[{
+				scheme: "eyna",
+				privileges: {
+					bypassCSP: true,
+				}
+			}]
+		)
 		electron.app
 			.on("ready", this._ready)
 			.on("window-all-closed", this._window_all_closed)
@@ -83,6 +91,13 @@ class Root {
 			if (input.type == "keyDown") {
 				await this.command(Command.manager.get(input))
 			}
+		})
+
+		electron.protocol.handle("eyna", (req: Request): Response => {
+			let url = new URL(req.url) 
+			let p = url.searchParams.get("p")
+			console.log(p)
+			return new Response()
 		})
 
 		process.on("SIGINT", () => {

@@ -276,7 +276,10 @@ export const V = vue.defineComponent({
 								vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
 							]
 							: [
-								vue.h("span", icon, fraw),
+								// vue.h("span", icon, fraw),
+								vue.h("span", icon, [
+									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` })
+								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 							],
 					),
