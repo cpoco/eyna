@@ -23,8 +23,13 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		HIMAGELIST list = reinterpret_cast<HIMAGELIST>(SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX));
-		HICON icon = ImageList_GetIcon(list, file.iIcon, ILD_NORMAL);
+		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX);
+
+		HIMAGELIST* list;
+		SHGetImageList(SHIL_JUMBO, IID_IImageList, (void**)&list);
+
+		HICON icon;
+		list2->GetIcon(file.iIcon, ILD_TRANSPARENT, &icon);
 
 		ICONINFO info = {};
 		GetIconInfo(icon, &info);
