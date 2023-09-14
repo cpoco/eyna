@@ -23,10 +23,12 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_LARGEICON);
+		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX);
 
-		ICONINFO icon = {};
-		GetIconInfo(file.hIcon, &icon);
+		HICON icon = ImageList_GetIcon(file.hIcon, file.iIcon, ILD_NORMAL);
+
+		ICONINFO info = {};
+		GetIconInfo(icon, &info);
 
 		CoInitialize(NULL);
 
@@ -41,7 +43,7 @@ static void get_icon_async(uv_work_t* req)
 		encoder->Initialize(stream, WICBitmapEncoderNoCache);
 
 		IWICBitmap* bitmap = NULL;
-		factory->CreateBitmapFromHBITMAP(icon.hbmColor, NULL, WICBitmapUseAlpha, &bitmap);
+		factory->CreateBitmapFromHBITMAP(info.hbmColor, NULL, WICBitmapUseAlpha, &bitmap);
 
 		IWICBitmapFrameEncode* flame = NULL;
 		encoder->CreateNewFrame(&flame, NULL);
@@ -68,6 +70,7 @@ static void get_icon_async(uv_work_t* req)
 
 		CoUninitialize();
 
+		DestroyIcon(icon);
 		DestroyIcon(file.hIcon);
 
 	#elif _OS_MAC_
