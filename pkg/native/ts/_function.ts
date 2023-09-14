@@ -51,6 +51,13 @@ export function getDirectory(
 	return native.getDirectory(abstract, base, mode, depth, regexp)
 }
 
+export function getIcon(abstract: string): Promise<Buffer> {
+	if (native == null) {
+		return Promise.reject()
+	}
+	return native.getIcon(abstract)
+}
+
 export function getVolume(): Promise<Type.Volume[]> {
 	if (native == null) {
 		return Promise.reject()
