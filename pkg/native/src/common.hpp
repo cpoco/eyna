@@ -22,6 +22,7 @@
 #define CONTEXT v8::Isolate::GetCurrent()->GetCurrentContext()
 
 #if _OS_WIN_
+	#pragma comment(lib, "comctl32.lib")
 	#include <windows.h>
 	#include <shlobj.h>
 	#include <wincodec.h>
