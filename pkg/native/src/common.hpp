@@ -25,6 +25,7 @@
 	#include <windows.h>
 	#include <shlobj.h>
 	#include <wincodec.h>
+	#include <commctrl.h>
 #elif _OS_MAC_
 	#import <AppKit/AppKit.h>
 	#include <unistd.h>
