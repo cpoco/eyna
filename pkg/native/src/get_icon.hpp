@@ -25,11 +25,11 @@ static void get_icon_async(uv_work_t* req)
 		SHFILEINFOW file = {};
 		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX);
 
-		HIMAGELIST* list;
-		SHGetImageList(SHIL_JUMBO, IID_IImageList, (void**)&list);
+		IImageList* list;
+		SHGetImageList(SHIL_JUMBO, IID_PPV_ARGS(&list));
 
 		HICON icon;
-		list2->GetIcon(file.iIcon, ILD_TRANSPARENT, &icon);
+		list->GetIcon(file.iIcon, ILD_TRANSPARENT, &icon);
 
 		ICONINFO info = {};
 		GetIconInfo(icon, &info);
@@ -74,6 +74,7 @@ static void get_icon_async(uv_work_t* req)
 
 		CoUninitialize();
 
+		DestroyIcon(icon);
 		DestroyIcon(file.hIcon);
 
 	#elif _OS_MAC_
