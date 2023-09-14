@@ -28,10 +28,44 @@ static void get_icon_async(uv_work_t* req)
 		ICONINFO icon = {};
 		GetIconInfo(file.hIcon, &icon);
 
-		IWICImagingFactory* factory = nullptr;
-		CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory));
+		CoInitialize(NULL);
 
+		IStream* stream = NULL;
+		CreateStreamOnHGlobal(NULL, TRUE, &stream);
+
+		IWICImagingFactory* factory = NULL;
+		CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory));
+
+		IWICBitmapEncoder* encoder = NULL;
+		factory->CreateEncoder(GUID_ContainerFormatPng, NULL, &encoder);
+		encoder->Initialize(stream, WICBitmapEncoderNoCache);
+
+		IWICBitmap* bitmap = NULL;
+		factory->CreateBitmapFromHBITMAP(icon.hbmColor, NULL, WICBitmapUseAlpha, &bitmap);
+
+		IWICBitmapFrameEncode* flame = NULL;
+		encoder->CreateNewFrame(&pFrameEncode, NULL);
+		flame->Initialize(NULL);
+		flame->SetSize(bitmap->GetWidth(), bitmap->GetHeight());
+		flame->WriteSource(bitmap, NULL);
+		flame->Commit();
+		encoder->Commit();
+
+		STATSTG stat = {};
+		stream->Stat(&stat, STATFLAG_NONAME);
+
+		work->size = static_cast<size_t>(stat.cbSize.QuadPart);
+		work->data = new int8_t[work->size];
+
+		LARGE_INTEGER zero = {};
+		stream->Seek(zero, STREAM_SEEK_SET, NULL);
+		stream->Read(work->data, work->size, NULL);
+
+		flame->Release();
+		bitmap->Release();
+		encoder->Release();
 		factory->Release();
+		stream->Release();
 
 		DestroyIcon(file.hIcon);
 
@@ -40,8 +74,8 @@ static void get_icon_async(uv_work_t* req)
 		NSImage* img = [[NSWorkspace sharedWorkspace] iconForFile:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 		NSData* png = [[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 
-		work->data = new int8_t[png.length];
 		work->size = png.length;
+		work->data = new int8_t[work->size];
 
 		memcpy(work->data, [png bytes], png.length);
 
