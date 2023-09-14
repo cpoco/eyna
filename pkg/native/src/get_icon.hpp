@@ -44,9 +44,8 @@ static void get_icon_async(uv_work_t* req)
 		factory->CreateBitmapFromHBITMAP(icon.hbmColor, NULL, WICBitmapUseAlpha, &bitmap);
 
 		IWICBitmapFrameEncode* flame = NULL;
-		encoder->CreateNewFrame(&pFrameEncode, NULL);
+		encoder->CreateNewFrame(&flame, NULL);
 		flame->Initialize(NULL);
-		flame->SetSize(bitmap->GetWidth(), bitmap->GetHeight());
 		flame->WriteSource(bitmap, NULL);
 		flame->Commit();
 		encoder->Commit();
