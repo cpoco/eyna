@@ -9,7 +9,7 @@ struct get_icon_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	std::filesystem::path abst; // generic_path
+	_string_t abst;
 	int8_t* data;
 	size_t size;
 };
@@ -22,8 +22,8 @@ static void get_icon_async(uv_work_t* req)
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
-		SHFILEINFO file = {};
-		SHGetFileInfo(work->abst.c_str(), 0, &file, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_LARGEICON);
+		SHFILEINFOW file = {};
+		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_LARGEICON);
 
 		ICONINFO icon = {};
 		GetIconInfo(file.hIcon, &icon);
@@ -88,7 +88,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->abst = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
 	work->data = nullptr;
 	work->size = 0;
 
