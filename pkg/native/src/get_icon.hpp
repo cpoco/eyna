@@ -97,19 +97,11 @@ static void get_icon_complete(uv_work_t* req, int status)
 
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
-	v8::MaybeLocal<v8::Object> buff = node::Buffer::New(
-		ISOLATE,
-		work->data,
-		work->size,
-		[](char* data, void* hint)
-		{
-			delete[] data;
-			delete static_cast<get_icon_work*>(hint);
-		},
-		work);
-
-	work->promise.Get(ISOLATE)->Resolve(CONTEXT, buff.ToLocalChecked());
+	work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
 	work->promise.Reset();
+
+	delete[] work->data;
+	delete work;
 }
 
 void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
