@@ -10,5 +10,5 @@ const native = require(path.join(__dirname, "../build/Release/native.node"))
 native.getIcon(__dirname)
 .then(async (data) => {
 	console.log(data)
-	await fs.writeFile("dirname.png", Buffer.from(data))
+	await fs.writeFile("dirname.png", data)
 })

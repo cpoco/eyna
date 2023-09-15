@@ -8,6 +8,7 @@
 #include <string>
 
 #include <node.h>
+#include <node_buffer.h>
 #include <uv.h>
 
 #if defined(_WIN64)

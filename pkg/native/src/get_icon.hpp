@@ -97,20 +97,18 @@ static void get_icon_complete(uv_work_t* req, int status)
 
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
-	std::shared_ptr<v8::BackingStore> backing =
-		v8::ArrayBuffer::NewBackingStore(
-			work->data,
-			work->size,
-			[](void* data, size_t size, void* work)
-			{
-				delete[] static_cast<int8_t*>(data);
-				delete static_cast<get_icon_work*>(work);
-			},
-			work);  
+	v8::MaybeLocal<v8::Object> buff = node::Buffer::New(
+		ISOLATE,
+		reinterpret_cast<char*>(work->data),
+		work->size,
+		[](char* data, void* hint)
+		{
+			delete[] reinterpret_cast<int8_t*>(data);
+			delete static_cast<get_icon_work*>(hint);
+		},
+		work);
 
-	v8::Local<v8::ArrayBuffer> buff = v8::ArrayBuffer::New(ISOLATE, std::move(backing));
-
-	work->promise.Get(ISOLATE)->Resolve(CONTEXT, buff);
+	work->promise.Get(ISOLATE)->Resolve(CONTEXT, buff.ToLocalChecked());
 	work->promise.Reset();
 }
 
