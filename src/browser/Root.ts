@@ -32,6 +32,8 @@ const icon = electron.nativeImage.createFromDataURL(
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
 )
 
+const schema = "eyna"
+
 class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
@@ -48,7 +50,7 @@ class Root {
 		]
 		electron.protocol.registerSchemesAsPrivileged(
 			[{
-				scheme: "eyna",
+				scheme: schema,
 				privileges: {
 					bypassCSP: true,
 				},
@@ -93,14 +95,14 @@ class Root {
 			}
 		})
 
-		electron.protocol.handle("eyna", async (req: Request): Promise<Response> => {
+		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
 			let url = new URL(req.url)
 			let p = url.searchParams.get("p") ?? ""
 
-			console.log(`\u001b[36m[icon]\u001b[0m`, `"${p}"`)
+			console.log(`\u001b[33m[icon]\u001b[0m`, { url: req.url, p: p })
 
 			return Native.getIcon(p)
-				.then((icon) => {
+				.then((icon: Buffer) => {
 					return new Response(
 						icon,
 						{
