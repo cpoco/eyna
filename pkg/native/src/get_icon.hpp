@@ -10,7 +10,7 @@ struct get_icon_work
 	v8::Persistent<v8::Promise::Resolver> promise;
 
 	_string_t abst;
-	int8_t* data;
+	char* data;
 	size_t size;
 };
 
@@ -60,7 +60,7 @@ static void get_icon_async(uv_work_t* req)
 		stream->Stat(&stat, STATFLAG_NONAME);
 
 		work->size = static_cast<size_t>(stat.cbSize.QuadPart);
-		work->data = new int8_t[work->size];
+		work->data = new char[work->size];
 
 		LARGE_INTEGER zero = {};
 		stream->Seek(zero, STREAM_SEEK_SET, NULL);
@@ -84,7 +84,7 @@ static void get_icon_async(uv_work_t* req)
 		NSData* png = [[NSBitmapImageRep imageRepWithData:[img TIFFRepresentation]] representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 
 		work->size = png.length;
-		work->data = new int8_t[work->size];
+		work->data = new char[work->size];
 
 		memcpy(work->data, [png bytes], png.length);
 
@@ -99,11 +99,11 @@ static void get_icon_complete(uv_work_t* req, int status)
 
 	v8::MaybeLocal<v8::Object> buff = node::Buffer::New(
 		ISOLATE,
-		reinterpret_cast<char*>(work->data),
+		work->data,
 		work->size,
 		[](char* data, void* hint)
 		{
-			delete[] reinterpret_cast<int8_t*>(data);
+			delete[] data;
 			delete static_cast<get_icon_work*>(hint);
 		},
 		work);
