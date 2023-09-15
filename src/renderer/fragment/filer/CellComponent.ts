@@ -1,7 +1,6 @@
 import * as vue from "@/renderer/Vue"
 
 import * as Bridge from "@/bridge/Bridge"
-import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
@@ -124,7 +123,8 @@ export const V = vue.defineComponent({
 			onDragstart: (event: DragEvent) => void
 		}
 
-		let node: vue.AllowedComponentProps & drag = {
+		let node: vue.VNodeProps & vue.AllowedComponentProps & drag = {
+			key: this.cell.attr[0]?.full ?? "",
 			class: {
 				"filer-cell": true,
 			},
@@ -160,50 +160,34 @@ export const V = vue.defineComponent({
 		let link: style = { class: { "filer-clink": true } }
 		let trgt: style = { class: { "filer-ctrgt": true } }
 
-		let fraw = Font.error
-		let traw = Font.error
-
 		let ftype = this.file_type[0] ?? Native.AttributeFileType.none
 		if (ftype == Native.AttributeFileType.file) {
 			let ltype = this.link_type[0] ?? Native.AttributeLinkType.none
 			if (ltype == Native.AttributeLinkType.shortcut) {
 				name.class["c-shortcut"] = true
-				fraw = Font.link_external
 			}
 			else if (ltype == Native.AttributeLinkType.bookmark) {
 				name.class["c-bookmark"] = true
-				fraw = Font.link_external
 			}
 			else {
 				name.class["c-file"] = true
-				fraw = Font.file
 			}
 		}
 		else if (ftype == Native.AttributeFileType.link) {
 			name.class["c-link"] = true
-			fraw = Font.link_external
 		}
 		else if (ftype == Native.AttributeFileType.directory) {
 			name.class["c-directory"] = true
-			fraw = Font.folder
 		}
 		else if (ftype == Native.AttributeFileType.drive) {
-			fraw = Font.symbol_method
 		}
 		else if (ftype == Native.AttributeFileType.homeuser) {
-			fraw = Font.home
 		}
 		else if (ftype == Native.AttributeFileType.special) {
 			name.class["c-special"] = true
-			fraw = Font.gear
 		}
 		else {
 			name.class["c-miss"] = true
-			fraw = Font.error
-		}
-
-		if (this.cell.attr[0]?.pseudo) {
-			fraw = Font.cloud
 		}
 
 		if (this.is_link) {
@@ -212,39 +196,31 @@ export const V = vue.defineComponent({
 				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.none
 				if (ltype2 == Native.AttributeLinkType.shortcut) {
 					trgt.class["c-shortcut"] = true
-					traw = Font.link_external
 				}
 				else if (ltype2 == Native.AttributeLinkType.bookmark) {
 					trgt.class["c-bookmark"] = true
-					traw = Font.link_external
 				}
 				else {
 					trgt.class["c-file"] = true
-					traw = Font.file
 				}
 			}
 			else if (ftype2 == Native.AttributeFileType.link) {
 				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.none
 				if (ftype3 == Native.AttributeFileType.none) {
 					trgt.class["c-warn"] = true
-					traw = Font.link_external
 				}
 				else {
 					trgt.class["c-link"] = true
-					traw = Font.link_external
 				}
 			}
 			else if (ftype2 == Native.AttributeFileType.directory) {
 				trgt.class["c-directory"] = true
-				traw = Font.folder
 			}
 			else if (ftype2 == Native.AttributeFileType.special) {
 				trgt.class["c-special"] = true
-				traw = Font.gear
 			}
 			else {
 				trgt.class["c-miss"] = true
-				traw = Font.error
 			}
 		}
 
@@ -269,17 +245,14 @@ export const V = vue.defineComponent({
 						{ class: { "filer-cname": true } },
 						this.is_link
 							? [
-								// vue.h("span", icon, fraw),
 								vue.h("span", icon, [
 									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` }),
 								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
-								vue.h("span", link, "->"),
-								vue.h("span", icon, traw),
+								vue.h("span", link, " -> "),
 								vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
 							]
 							: [
-								// vue.h("span", icon, fraw),
 								vue.h("span", icon, [
 									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` }),
 								]),

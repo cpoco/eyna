@@ -95,8 +95,11 @@ class Root {
 
 		electron.protocol.handle("eyna", async (req: Request): Promise<Response> => {
 			let url = new URL(req.url)
-			let p = url.searchParams.get("p")
-			return Native.getIcon(p ?? "")
+			let p = url.searchParams.get("p") ?? ""
+
+			console.log(`\u001b[36m[icon]\u001b[0m`, `"${p}"`)
+
+			return Native.getIcon(p)
 				.then((icon) => {
 					return new Response(
 						icon,
