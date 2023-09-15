@@ -8,7 +8,7 @@ const require = module.createRequire(import.meta.url)
 const native = require(path.join(__dirname, "../build/Release/native.node"))
 
 native.getIcon(__dirname)
-.then(async (data) => {
-	console.log(data)
-	await fs.writeFile("dirname.png", data)
-})
+	.then(async (data) => {
+		console.log(data)
+		await fs.writeFile("dirname.png", data)
+	})

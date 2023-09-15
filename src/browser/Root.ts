@@ -51,8 +51,8 @@ class Root {
 				scheme: "eyna",
 				privileges: {
 					bypassCSP: true,
-				}
-			}]
+				},
+			}],
 		)
 		electron.app
 			.on("ready", this._ready)
@@ -93,11 +93,21 @@ class Root {
 			}
 		})
 
-		electron.protocol.handle("eyna", (req: Request): Response => {
-			let url = new URL(req.url) 
+		electron.protocol.handle("eyna", async (req: Request): Promise<Response> => {
+			let url = new URL(req.url)
 			let p = url.searchParams.get("p")
-			console.log(p)
-			return new Response()
+			return Native.getIcon(p ?? "")
+				.then((icon) => {
+					return new Response(
+						icon,
+						{
+							headers: {
+								"content-type": "image/png",
+								"cache-control": "private, max-age=3600",
+							},
+						},
+					)
+				})
 		})
 
 		process.on("SIGINT", () => {

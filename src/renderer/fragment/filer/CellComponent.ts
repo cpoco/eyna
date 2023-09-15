@@ -269,7 +269,10 @@ export const V = vue.defineComponent({
 						{ class: { "filer-cname": true } },
 						this.is_link
 							? [
-								vue.h("span", icon, fraw),
+								// vue.h("span", icon, fraw),
+								vue.h("span", icon, [
+									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` }),
+								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 								vue.h("span", link, "->"),
 								vue.h("span", icon, traw),
@@ -278,7 +281,7 @@ export const V = vue.defineComponent({
 							: [
 								// vue.h("span", icon, fraw),
 								vue.h("span", icon, [
-									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` })
+									vue.h("img", { src: `eyna://icon?p=${this.cell.attr[0]?.full}` }),
 								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 							],
