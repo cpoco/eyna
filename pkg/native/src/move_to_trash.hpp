@@ -21,8 +21,6 @@ static void move_to_trash_async(uv_work_t* req)
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
-		CoInitialize(NULL);
-
 		IFileOperation* fo;
 		CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fo));
 		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT | FOFX_RECYCLEONDELETE | FOFX_ADDUNDORECORD);
@@ -37,8 +35,6 @@ static void move_to_trash_async(uv_work_t* req)
 		item->Release();
 
 		fo->Release();
-
-		CoUninitialize();
 
 	#elif _OS_MAC_
 

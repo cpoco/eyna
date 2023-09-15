@@ -23,27 +23,24 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_SYSICONINDEX);
-
-		IImageList* list;
-		SHGetImageList(SHIL_LARGE, IID_PPV_ARGS(&list));
-
-		HICON icon;
-		list->GetIcon(file.iIcon, ILD_TRANSPARENT, &icon);
+		if (SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_ICON) == 0) {
+			return;
+		}
 
 		ICONINFO info = {};
-		GetIconInfo(icon, &info);
-
-		CoInitialize(NULL);
-
-		IStream* stream = NULL;
-		CreateStreamOnHGlobal(NULL, TRUE, &stream);
+		if (GetIconInfo(file.hIcon, &info) == 0) {
+			DestroyIcon(file.hIcon);
+			return;
+		}
 
 		IWICImagingFactory* factory = NULL;
 		CoCreateInstance(CLSID_WICImagingFactory, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory));
 
 		IWICBitmapEncoder* encoder = NULL;
 		factory->CreateEncoder(GUID_ContainerFormatPng, NULL, &encoder);
+
+		IStream* stream = NULL;
+		CreateStreamOnHGlobal(NULL, TRUE, &stream);
 		encoder->Initialize(stream, WICBitmapEncoderNoCache);
 
 		IWICBitmap* bitmap = NULL;
@@ -68,14 +65,13 @@ static void get_icon_async(uv_work_t* req)
 
 		flame->Release();
 		bitmap->Release();
+		stream->Release();
 		encoder->Release();
 		factory->Release();
-		stream->Release();
 
-		CoUninitialize();
+		DeleteObject(info.hbmColor);
+		DeleteObject(info.hbmMask);
 
-		DestroyIcon(icon);
-		list->Release();
 		DestroyIcon(file.hIcon);
 
 	#elif _OS_MAC_

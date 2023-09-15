@@ -14,8 +14,21 @@
 #include "resolve.hpp"
 #include "watch.hpp"
 
+void cleanup(void* arg)
+{
+	#if _OS_WIN_
+		CoUninitialize();
+	#endif
+}
+
 void init(v8::Local<v8::Object> exports)
 {
+	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
+
+	#if _OS_WIN_
+		CoInitialize(NULL);
+	#endif
+
 	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
 	NODE_SET_METHOD(exports, "createFile", create_file);
