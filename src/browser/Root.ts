@@ -48,14 +48,7 @@ class Root {
 			new ModalFragment(),
 			new ViewerFragment(),
 		]
-		electron.protocol.registerSchemesAsPrivileged(
-			[{
-				scheme: schema,
-				privileges: {
-					bypassCSP: true,
-				},
-			}],
-		)
+		electron.protocol.registerSchemesAsPrivileged([{ scheme: schema }])
 		electron.app
 			.on("ready", this._ready)
 			.on("window-all-closed", this._window_all_closed)
