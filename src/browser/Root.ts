@@ -11,6 +11,7 @@ import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
+import { Protocol } from "@/browser/Protocol"
 import * as Native from "@eyna/native/ts/browser"
 import * as Util from "@eyna/util/ts/Util"
 
@@ -32,7 +33,6 @@ const icon = electron.nativeImage.createFromDataURL(
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
 )
 
-const schema = "eyna"
 
 class Root {
 	private url: string = ""
@@ -48,7 +48,7 @@ class Root {
 			new ModalFragment(),
 			new ViewerFragment(),
 		]
-		electron.protocol.registerSchemesAsPrivileged([{ scheme: schema }])
+		Protocol.register()
 		electron.app
 			.on("ready", this._ready)
 			.on("window-all-closed", this._window_all_closed)
@@ -88,25 +88,7 @@ class Root {
 			}
 		})
 
-		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
-			let url = new URL(req.url)
-			let p = url.searchParams.get("p") ?? ""
-
-			console.log(`\u001b[33m[icon]\u001b[0m`, { url: req.url, p: p })
-
-			return Native.getIcon(p)
-				.then((icon: Buffer) => {
-					return new Response(
-						icon,
-						{
-							headers: {
-								"content-type": "image/png",
-								"cache-control": "private, max-age=3600",
-							},
-						},
-					)
-				})
-		})
+		Protocol.handle()
 
 		process.on("SIGINT", () => {
 			this.quit()
