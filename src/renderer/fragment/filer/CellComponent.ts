@@ -1,6 +1,7 @@
 import * as vue from "@/renderer/Vue"
 
 import * as Bridge from "@/bridge/Bridge"
+import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
@@ -141,7 +142,6 @@ export const V = vue.defineComponent({
 			class: {
 				"filer-cicon"?: boolean
 				"filer-cfile"?: boolean
-				"filer-clink"?: boolean
 				"filer-ctrgt"?: boolean
 
 				"c-warn"?: boolean
@@ -157,7 +157,6 @@ export const V = vue.defineComponent({
 
 		let icon: style = { class: { "filer-cicon": true } }
 		let name: style = { class: { "filer-cfile": true } }
-		let link: style = { class: { "filer-clink": true } }
 		let trgt: style = { class: { "filer-ctrgt": true } }
 
 		let ftype = this.file_type[0] ?? Native.AttributeFileType.none
@@ -246,15 +245,21 @@ export const V = vue.defineComponent({
 						this.is_link
 							? [
 								vue.h("span", icon, [
-									vue.h("img", { src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}` }),
+									vue.h("img", {
+										class: { "filer-cimg": true },
+										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
+									}),
 								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
-								vue.h("span", link, " -> "),
+								vue.h("span", icon, Font.arrow_right),
 								vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
 							]
 							: [
 								vue.h("span", icon, [
-									vue.h("img", { src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}` }),
+									vue.h("img", {
+										class: { "filer-cimg": true },
+										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
+									}),
 								]),
 								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
 							],
