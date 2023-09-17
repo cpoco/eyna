@@ -30,6 +30,7 @@ static void get_icon_async(uv_work_t* req)
 			if (file.hIcon != NULL) {
 				break;
 			}
+			Sleep(1);
 		}
 
 		ICONINFO info = {};
