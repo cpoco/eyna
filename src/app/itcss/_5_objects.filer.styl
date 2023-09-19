@@ -1,11 +1,12 @@
 :root
+	--operator: _blue
 	--file: _foreground
-	--link: _cyan
-	--directory: _blue
-	--shortcut: _green
-	--bookmark: _green
+	--link: _sky
+	--directory: _cyan
+	--shortcut: _teal
+	--bookmark: _teal
 	--special: _magenta
-	--note: _yellow
+	--note: _amber
 	--warn: _orange
 	--miss: _red
 
@@ -25,6 +26,8 @@
 	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
 	--filer-data-height: calc(100% - var(--filer-data-top))
 
+.c-operator
+	color: var(--operator)
 .c-file
 	color: var(--file)
 .c-link
@@ -75,8 +78,8 @@
 	&-vicon
 		font-family: icon
 		vertical-align: bottom
-		margin-right: 2px
 	&-vdata
+		margin-left: 2px
 		margin-right: 12px
 
 	&-stat
@@ -140,8 +143,6 @@
 	&-cicon
 		font-family: icon
 		vertical-align: bottom
-		margin-right: 2px
-
 	&-cimg
 		display: inline-block
 		vertical-align: bottom
@@ -150,8 +151,16 @@
 
 	&-cfile
 		font-size: var(--dynamic-font-size)
+		margin-left: 2px
+
+	&-clink
+		font-family: icon
+		vertical-align: bottom
+		margin-left: 2px
+
 	&-ctrgt
 		font-size: var(--dynamic-font-size)
+		margin-left: 2px
 
 	&-csize
 		font-size: var(--dynamic-font-size)
