@@ -119,45 +119,48 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		type drag = {
-			draggable: boolean
-			onDragstart: (event: DragEvent) => void
-		}
-
-		let node: vue.VNodeProps & vue.AllowedComponentProps & drag = {
+		let node: vue.VNodeProps & vue.AllowedComponentProps = {
 			key: this.cell.attr[0]?.full ?? "",
 			class: {
 				"filer-cell": true,
 			},
 			style: this.cell.style,
-			draggable: true,
-			onDragstart: this.dragstart,
 		}
 
 		if (this.is_empty) {
 			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
 		}
 
-		type style = {
-			class: {
-				"filer-cicon"?: boolean
-				"filer-cfile"?: boolean
-				"filer-clink"?: boolean
-				"filer-ctrgt"?: boolean
+		type drag = {
+			draggable?: boolean
+			onDragstart?: (event: DragEvent) => void
+		}
 
-				"c-warn"?: boolean
-				"c-miss"?: boolean
-				"c-directory"?: boolean
-				"c-link"?: boolean
-				"c-file"?: boolean
-				"c-special"?: boolean
-				"c-shortcut"?: boolean
-				"c-bookmark"?: boolean
-				"c-operator"?: boolean
+		type style =
+			& {
+				class: {
+					"filer-cicon"?: boolean
+					"filer-cfile"?: boolean
+					"filer-clink"?: boolean
+					"filer-ctrgt"?: boolean
+
+					"c-operator"?: boolean
+					"c-drive"?: boolean
+					"c-homeuser"?: boolean
+					"c-link"?: boolean
+					"c-file"?: boolean
+					"c-directory"?: boolean
+					"c-shortcut"?: boolean
+					"c-bookmark"?: boolean
+					"c-special"?: boolean
+					"c-warn"?: boolean
+					"c-miss"?: boolean
+				}
 			}
-		} & vue.AllowedComponentProps
+			& drag
+			& vue.AllowedComponentProps
 
-		let icon: style = { class: { "filer-cicon": true } }
+		let icon: style = { class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart }
 		let name: style = { class: { "filer-cfile": true } }
 		let link: style = { class: { "filer-clink": true, "c-operator": true } }
 		let trgt: style = { class: { "filer-ctrgt": true } }
@@ -182,8 +185,10 @@ export const V = vue.defineComponent({
 			name.class["c-directory"] = true
 		}
 		else if (ftype == Native.AttributeFileType.drive) {
+			name.class["c-drive"] = true
 		}
 		else if (ftype == Native.AttributeFileType.homeuser) {
+			name.class["c-homeuser"] = true
 		}
 		else if (ftype == Native.AttributeFileType.special) {
 			name.class["c-special"] = true
