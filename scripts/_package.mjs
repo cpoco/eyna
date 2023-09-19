@@ -16,6 +16,7 @@ export async function Package(arch) {
 				from: __build,
 			},
 			asar: false,
+			electronLanguages: "",
 			// https://www.electron.build/configuration/win
 			win: {
 				target: {
