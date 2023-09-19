@@ -33,7 +33,6 @@ const icon = electron.nativeImage.createFromDataURL(
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
 )
 
-
 class Root {
 	private url: string = ""
 	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]

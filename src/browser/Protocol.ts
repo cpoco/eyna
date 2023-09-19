@@ -5,12 +5,11 @@ import * as Native from "@eyna/native/ts/browser"
 const schema = "eyna"
 
 export class Protocol {
-
-	static register() { 
+	static register() {
 		electron.protocol.registerSchemesAsPrivileged([{ scheme: schema }])
 	}
-	
-	static handle() { 
+
+	static handle() {
 		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
 			let url = new URL(req.url)
 			let p = url.searchParams.get("p") ?? ""
@@ -31,5 +30,4 @@ export class Protocol {
 				})
 		})
 	}
-
 }
