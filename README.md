@@ -23,4 +23,10 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
   - エイリアス(Mac)
 - RLO 対策
 
-![](docs/img/0.0.14.png)
+Windows
+
+![](docs/img/0.0.28-win.png)
+
+Mac
+
+![](docs/img/0.0.28-mac.png)

@@ -64,6 +64,26 @@ export class ViewerFragment extends AbstractFragment {
 					prm: [],
 				})
 			})
+			.on("viewer.diffprev", () => {
+				if (this.type != "diff") {
+					return Promise.resolve()
+				}
+				root.send<Bridge.Viewer.Diff.Send>({
+					ch: Bridge.Viewer.Diff.CH,
+					args: [-1, "prev"],
+				})
+				return Promise.resolve()
+			})
+			.on("viewer.diffnext", () => {
+				if (this.type != "diff") {
+					return Promise.resolve()
+				}
+				root.send<Bridge.Viewer.Diff.Send>({
+					ch: Bridge.Viewer.Diff.CH,
+					args: [-1, "next"],
+				})
+				return Promise.resolve()
+			})
 			.on("viewer.close", () => {
 				this.close()
 				return Promise.resolve()

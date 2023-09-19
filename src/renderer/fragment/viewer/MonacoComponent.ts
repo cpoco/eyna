@@ -21,9 +21,10 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
+		const el = vue.ref<HTMLElement>()
+
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
-		const el = vue.ref<HTMLElement>()
 
 		let model: _monaco.editor.ITextModel | null = null
 		let editor: _monaco.editor.IStandaloneCodeEditor | null = null
@@ -90,7 +91,7 @@ export const V = vue.defineComponent({
 					? vue.h("div", { class: { "viewer-monaco-prog": true } }, undefined)
 					: undefined,
 			),
-			vue.h("div", { class: { "viewer-monaco-edit": true }, ref: "el" }),
+			vue.h("div", { ref: "el", class: { "viewer-monaco-edit": true } }),
 		])
 	},
 })

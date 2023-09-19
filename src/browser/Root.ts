@@ -11,6 +11,7 @@ import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
+import { Protocol } from "@/browser/Protocol"
 import * as Native from "@eyna/native/ts/browser"
 import * as Util from "@eyna/util/ts/Util"
 
@@ -46,6 +47,7 @@ class Root {
 			new ModalFragment(),
 			new ViewerFragment(),
 		]
+		Protocol.register()
 		electron.app
 			.on("ready", this._ready)
 			.on("window-all-closed", this._window_all_closed)
@@ -84,6 +86,8 @@ class Root {
 				await this.command(Command.manager.get(input))
 			}
 		})
+
+		Protocol.handle()
 
 		process.on("SIGINT", () => {
 			this.quit()

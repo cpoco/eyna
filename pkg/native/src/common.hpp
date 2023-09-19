@@ -8,6 +8,7 @@
 #include <string>
 
 #include <node.h>
+#include <node_buffer.h>
 #include <uv.h>
 
 #if defined(_WIN64)
@@ -24,6 +25,8 @@
 #if _OS_WIN_
 	#include <windows.h>
 	#include <shlobj.h>
+	#include <commoncontrols.h>
+	#include <wincodec.h>
 #elif _OS_MAC_
 	#import <AppKit/AppKit.h>
 	#include <unistd.h>

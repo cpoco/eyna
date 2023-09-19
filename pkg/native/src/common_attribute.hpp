@@ -167,7 +167,6 @@ void attribute(_attribute& attribute)
 			else if (attribute.file_type == FILE_TYPE::FILE_TYPE_FILE) {
 
 				if (std::regex_match(attribute.full.extension().c_str(), std::wregex(L"^\\.lnk$", std::regex::flag_type::icase))) {
-					CoInitialize(NULL);
 
 					IShellLinkW* shell;
 					CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&shell));
@@ -183,8 +182,6 @@ void attribute(_attribute& attribute)
 					file->Release();
 
 					shell->Release();
-
-					CoUninitialize();
 
 					int len = wcslen(out);
 					if (0 < len) {

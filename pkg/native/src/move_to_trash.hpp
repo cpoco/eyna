@@ -36,8 +36,6 @@ static void move_to_trash_async(uv_work_t* req)
 
 		fo->Release();
 
-		CoUninitialize();
-
 	#elif _OS_MAC_
 
 		NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];

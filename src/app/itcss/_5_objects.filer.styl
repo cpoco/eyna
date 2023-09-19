@@ -1,21 +1,21 @@
 :root
-	--icon: #EEE
-	--file: var(--color)
-	--link: _cyan
-	--directory: _blue
-	--shortcut: _green
-	--bookmark: _green
+	--operator: _blue
+	--file: _foreground
+	--link: _sky
+	--directory: _cyan
+	--shortcut: _teal
+	--bookmark: _teal
 	--special: _magenta
-	--note: _yellow
+	--note: _amber
 	--warn: _orange
 	--miss: _red
 
+	--stat-active: rgba(0, 127, 212, 1)
+	--stat-target: rgba(0, 127, 212, 0.5)
 	--stat-none: rgba(255, 255, 255, 0.1)
-	--stat-active: rgba(30, 145, 255, 1)
-	--stat-target: rgba(30, 145, 255, 0.5)
 
-	--cell-select-cursor: rgba(30, 145, 255, 0.4)
-	--cell-select: rgba(30, 145, 255, 0.2)
+	--cell-select-cursor: rgba(0, 127, 212, 0.3)
+	--cell-select: rgba(0, 127, 212, 0.2)
 	--cell-cursor: rgba(255, 255, 255, 0.1)
 
 	--scroll-width: 6px
@@ -26,6 +26,8 @@
 	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
 	--filer-data-height: calc(100% - var(--filer-data-top))
 
+.c-operator
+	color: var(--operator)
 .c-file
 	color: var(--file)
 .c-link
@@ -76,8 +78,8 @@
 	&-vicon
 		font-family: icon
 		vertical-align: bottom
-		margin-right: 2px
 	&-vdata
+		margin-left: 2px
 		margin-right: 12px
 
 	&-stat
@@ -137,20 +139,28 @@
 		text-overflow: ellipsis
 		flex: 1
 		margin-left: 4px
+
 	&-cicon
 		font-family: icon
-		font-size: calc(var(--dynamic-font-size) + 2px)
 		vertical-align: bottom
-		margin-right: 2px
-		color: var(--icon)
+	&-cimg
+		display: inline-block
+		vertical-align: bottom
+		width: var(--dynamic-line-height)
+		height: var(--dynamic-line-height)
 
 	&-cfile
 		font-size: var(--dynamic-font-size)
+		margin-left: 2px
+
 	&-clink
-		font-size: var(--dynamic-font-size)
-		margin: 0 2px
+		font-family: icon
+		vertical-align: bottom
+		margin-left: 2px
+
 	&-ctrgt
 		font-size: var(--dynamic-font-size)
+		margin-left: 2px
 
 	&-csize
 		font-size: var(--dynamic-font-size)

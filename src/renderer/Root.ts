@@ -43,6 +43,14 @@ class Root {
 			vue.createApp(V).mount(document.getElementsByTagName("body")[0]!)
 			// dev.connect()
 		}
+
+		window.addEventListener("cut", async (_: ClipboardEvent) => {
+			await navigator.clipboard.writeText(await navigator.clipboard.readText())
+		})
+
+		window.addEventListener("copy", async (_: ClipboardEvent) => {
+			await navigator.clipboard.writeText(await navigator.clipboard.readText())
+		})
 	}
 
 	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
