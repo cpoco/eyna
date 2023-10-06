@@ -231,36 +231,36 @@ class Root {
 						this.fragment[1].update()
 					},
 					exists: (full: string): Promise<boolean> => {
-						log("filer.exists")
+						log("filer.exists", { full })
 						return Native.exists(full)
 					},
 					trash: (full: string): Promise<void> => {
-						log("filer.trash")
+						log("filer.trash", { full })
 						return Native.moveToTrash(full)
 					},
 					mkdir: (full: string): Promise<void> => {
-						log("filer.mkdir")
+						log("filer.mkdir", { full })
 						return Native.createDirectory(full)
 					},
 					mkfile: (full: string): Promise<void> => {
-						log("filer.mkfile")
+						log("filer.mkfile", { full })
 						return Native.createFile(full)
 					},
 					copy: (full_src: string, full_dst: string): Promise<void> => {
-						log("filer.copy")
+						log("filer.copy", { src: full_src, dst: full_dst })
 						return Native.copy(full_src, full_dst)
 					},
 					move: (full_src: string, full_dst: string): Promise<void> => {
-						log("filer.move")
+						log("filer.move", { src: full_src, dst: full_dst })
 						return Native.move(full_src, full_dst)
 					},
 					findcopy: async (full: string): Promise<string[]> => {
-						log("filer.findcopy")
+						log("filer.findcopy", { full })
 						let dir = await Native.getDirectory(full, full, false, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
 					findmove: async (full: string): Promise<string[]> => {
-						log("filer.findmove")
+						log("filer.findmove", { full })
 						let dir = await Native.getDirectory(full, full, true, 1024, null)
 						return Promise.resolve(dir.ls)
 					},
@@ -269,7 +269,7 @@ class Root {
 					opne: (
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
-						log("dialog.opne")
+						log("dialog.opne", option)
 						return this.fragment[2].opne(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
