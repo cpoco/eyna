@@ -23,7 +23,7 @@ export class Protocol {
 						{
 							headers: {
 								"content-type": "image/png",
-								// "cache-control": "no-store",
+								"cache-control": "no-store",
 							},
 						},
 					)

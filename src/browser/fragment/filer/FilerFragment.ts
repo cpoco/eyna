@@ -302,6 +302,9 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.select", (active, _target) => {
+				if (active.data.search) {
+					return Promise.resolve()
+				}
 				return new Promise(async (resolve, reject) => {
 					let attr = Util.first(active.data.ls[active.data.cursor])
 					let trgt = Util.last(active.data.ls[active.data.cursor])
