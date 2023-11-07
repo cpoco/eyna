@@ -2,7 +2,7 @@
 	"name": "@eyna/native",
 	"private": true,
 	"devDependencies": {
-		"node-gyp": "*"
+		"node-gyp": "9"
 	},
 	"scripts": {
 		"install": "node install.js",
