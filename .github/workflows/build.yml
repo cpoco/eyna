@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: setup-python
+        run: sudo -H pip install setuptools
       - name: install
         run: npm ci
       - name: build
