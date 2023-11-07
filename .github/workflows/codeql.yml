@@ -28,7 +28,9 @@ jobs:
         with:
           node-version: '20'
       - name: install
-        run: npm ci
+        run: |
+          pip3 install setuptools
+          npm ci
       - name: codeql init
         uses: github/codeql-action/init@v2
         with:
