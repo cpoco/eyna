@@ -24,7 +24,7 @@ jobs:
           node-version: '20'
       - name: install
         run: |
-          pip3 install setuptools
+          pip3 install packaging
           npm ci
       - name: build
         run: npm run b -- ${{ matrix.arch }}
