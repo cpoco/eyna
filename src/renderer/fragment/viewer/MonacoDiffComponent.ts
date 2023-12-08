@@ -37,7 +37,6 @@ export const V = vue.defineComponent({
 		let original: _monaco.editor.ITextModel | null = null
 		let modified: _monaco.editor.ITextModel | null = null
 		let editor: _monaco.editor.IStandaloneDiffEditor | null = null
-		let navigator: _monaco.editor.IDiffNavigator | null = null
 
 		vue.onMounted(() => {
 			head.value = `${props.original_size.toLocaleString()} byte`
@@ -71,7 +70,6 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			navigator = window.monaco.editor.createDiffNavigator(editor)
 			editor.setModel({
 				original: original,
 				modified: modified,
@@ -97,18 +95,17 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onUnmounted(() => {
-			navigator?.dispose()
 			editor?.dispose()
 			modified?.dispose()
 			original?.dispose()
 		})
 
 		const prev = () => {
-			navigator?.previous()
+			editor?.goToDiff("previous")
 		}
 
 		const next = () => {
-			navigator?.next()
+			editor?.goToDiff("next")
 		}
 
 		return {
