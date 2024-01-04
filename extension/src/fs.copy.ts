@@ -1,5 +1,4 @@
-import { dirname, join } from "node:path"
-import { normalize } from "node:path/posix"
+import { dirname, join, normalize } from "node:path/posix"
 ;(async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.target == null || ex.active.cursor == null) {
 		return

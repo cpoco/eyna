@@ -1,4 +1,4 @@
-import { join } from "node:path"
+import { join } from "node:path/posix"
 ;(async (ex: Extension): Promise<void> => {
 	if (ex.active == null) {
 		return
