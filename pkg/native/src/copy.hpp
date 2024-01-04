@@ -20,12 +20,31 @@ static void copy_async(uv_work_t* req)
 
 	#if _OS_WIN_
 
-		std::error_code ec;
-		std::filesystem::copy(work->src, work->dst, std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks, ec);
+		_string_t src(work->src.c_str());
+		_string_t dst(work->dst.parent_path().c_str());
+		_string_t file(work->dst.filename().c_str());
+		std::replace(src.begin(), src.end(), L'/', L'\\');
+		std::replace(dst.begin(), dst.end(), L'/', L'\\');
 
-		if (ec) {
+		IFileOperation* fo;
+		CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fo));
+		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT | FOF_NOCONFIRMATION);
+
+		IShellItem* isrc;
+		SHCreateItemFromParsingName(src.c_str(), NULL, IID_PPV_ARGS(&isrc));
+		IShellItem* idst;
+		SHCreateItemFromParsingName(dst.c_str(), NULL, IID_PPV_ARGS(&idst));
+
+		fo->CopyItem(isrc, idst, file.c_str(), NULL);
+
+		if (FAILED(fo->PerformOperations())) {
 			work->error = true;
 		}
+
+		idst->Release();
+		isrc->Release();
+
+		fo->Release();
 
 	#elif _OS_MAC_
 
@@ -51,7 +70,7 @@ static void copy_complete(uv_work_t* req, int status)
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, v8::Undefined(ISOLATE));
 		work->promise.Reset();
-    }
+	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
 		work->promise.Reset();
