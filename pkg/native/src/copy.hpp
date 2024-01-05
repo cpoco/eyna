@@ -18,6 +18,15 @@ static void copy_async(uv_work_t* req)
 {
 	copy_work* work = static_cast<copy_work*>(req->data);
 
+	/*
+	std::error_code ec;
+	std::filesystem::copy(work->src, work->dst, std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks, ec);
+
+	if (ec) {
+		work->error = true;
+	}
+	*/
+
 	#if _OS_WIN_
 
 		_string_t src(work->src.c_str());
@@ -28,7 +37,7 @@ static void copy_async(uv_work_t* req)
 
 		IFileOperation* fo;
 		CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fo));
-		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT | FOF_NOCONFIRMATION);
+		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT);
 
 		IShellItem* isrc;
 		SHCreateItemFromParsingName(src.c_str(), NULL, IID_PPV_ARGS(&isrc));
