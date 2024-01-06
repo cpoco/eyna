@@ -66,10 +66,10 @@ export async function Build() {
 	)
 
 	let common = {
-		define: {
-			"process.env.NODE_ENV": JSON.stringify("production"),
-			// "process.env.NODE_ENV": JSON.stringify("development"),
-		},
+		// define: {
+		// 	"process.env.NODE_ENV": JSON.stringify("production"),
+		// 	"process.env.NODE_ENV": JSON.stringify("development"),
+		// },
 		bundle: true,
 		minify: true,
 		format: "cjs",
@@ -91,6 +91,9 @@ export async function Build() {
 	}))
 
 	let renderer = esbuild.build(Object.assign(common, {
+		define: {
+			"__VUE_PROD_DEVTOOLS__": JSON.stringify(false),
+		},
 		entryPoints: {
 			renderer: path.join(__top, "src/renderer/Main.ts"),
 		},
