@@ -1,5 +1,7 @@
 import * as path from "node:path/posix"
-; (async (ex: Extension): Promise<void> => {
+import { AttributeFileType } from "./_type"
+
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.target == null || ex.active.cursor == null) {
 		return
 	}
@@ -24,7 +26,7 @@ import * as path from "node:path/posix"
 		}
 		operation(ex, { type: v[0]!.file_type, rltv: v[0]!.rltv }, src_base, dst_base)
 	}
-})
+}
 
 async function operation(_ex: Extension, item: Item, src_base: string, dst_base: string): Promise<void> {
 	const base = item.type == AttributeFileType.directory
@@ -42,8 +44,4 @@ async function operation(_ex: Extension, item: Item, src_base: string, dst_base:
 		base: base,
 		file: file,
 	})
-}
-
-enum AttributeFileType {
-	directory = 1,
 }

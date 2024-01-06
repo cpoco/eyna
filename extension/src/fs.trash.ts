@@ -1,4 +1,4 @@
-;(async (ex: Extension): Promise<void> => {
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
@@ -21,4 +21,4 @@
 	}
 
 	ex.filer.update()
-})
+}

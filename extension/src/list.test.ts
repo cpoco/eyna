@@ -1,4 +1,4 @@
-;(async (ex: Extension): Promise<void> => {
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null) {
 		return
 	}
@@ -19,4 +19,4 @@
 			})
 		ex.dialog.cancel()
 	})
-})
+}

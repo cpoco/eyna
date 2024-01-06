@@ -41,7 +41,6 @@ type prompt_option = {
 	end?: number
 }
 
-
 type AttributeFileType = number
 
 type AttributeLinkType = number

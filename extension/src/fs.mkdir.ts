@@ -1,5 +1,6 @@
 import { join } from "node:path/posix"
-;(async (ex: Extension): Promise<void> => {
+
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null) {
 		return
 	}
@@ -21,4 +22,4 @@ import { join } from "node:path/posix"
 	await ex.filer.mkdir(full)
 
 	ex.filer.update()
-})
+}

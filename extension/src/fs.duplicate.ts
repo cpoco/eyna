@@ -1,5 +1,6 @@
 import { dirname, join, normalize } from "node:path/posix"
-;(async (ex: Extension): Promise<void> => {
+
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
@@ -29,4 +30,4 @@ import { dirname, join, normalize } from "node:path/posix"
 	await ex.filer.copy(src, dst)
 
 	ex.filer.update()
-})
+}
