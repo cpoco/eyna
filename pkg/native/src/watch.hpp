@@ -112,13 +112,23 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 			|| !info[1]->IsString()
 			|| !info[2]->IsFunction())
 	{
+		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
 	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
+
+	std::filesystem::path abst = std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
+	if (is_traversal(abst)) {
+		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
+		return;
+	}
+
 	_string_t path = to_string(info[1]->ToString(CONTEXT).ToLocalChecked());
 
 	watch_map.add(id, path, v8::Local<v8::Function>::Cast(info[2]));
+
+	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }
 
 void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
@@ -126,12 +136,15 @@ void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 1 || !info[0]->IsNumber()) {
+		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
 	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
 
 	watch_map.remove(id);
+
+	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }
 
 #endif // include guard

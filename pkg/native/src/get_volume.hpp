@@ -82,7 +82,7 @@ void get_volume(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 0) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 

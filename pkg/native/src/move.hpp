@@ -96,7 +96,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 2 || !info[0]->IsString() || !info[1]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -106,7 +106,17 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->src)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->dst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, move_async, move_complete);

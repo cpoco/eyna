@@ -9,7 +9,7 @@ struct get_icon_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	_string_t abst;
+	_string_t abst; // generic_path
 	char* data;
 	size_t size;
 };
@@ -119,7 +119,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 1 || !info[0]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -128,8 +128,15 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+	work->abst = abst;
+
 	work->data = nullptr;
+
 	work->size = 0;
 
 	uv_queue_work(uv_default_loop(), &work->request, get_icon_async, get_icon_complete);
