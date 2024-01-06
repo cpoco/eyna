@@ -1,6 +1,7 @@
 import * as vue from "@/renderer/Vue"
 
 import * as Bridge from "@/bridge/Bridge"
+import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
 type reactive = {
 	rg: [string, string]
@@ -66,7 +67,7 @@ export const V = vue.defineComponent({
 		vue.onMounted(() => {
 			setTimeout(() => {
 				rg.value!.focus()
-			}, 0)
+			}, FOCUS_DELAY)
 		})
 
 		return {
