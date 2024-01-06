@@ -26,7 +26,7 @@ void init(v8::Local<v8::Object> exports)
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
 	#if _OS_WIN_
-		CoInitialize(NULL);
+		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
 	NODE_SET_METHOD(exports, "copy", copy);
