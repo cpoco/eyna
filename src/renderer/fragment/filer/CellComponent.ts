@@ -35,13 +35,13 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
-		const file_type = vue.computed((): Native.AttributeFileValues[] => {
+		const file_type = vue.computed((): Native.AttributeFileType[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
 			})
 		})
 
-		const link_type = vue.computed((): Native.AttributeLinkValues[] => {
+		const link_type = vue.computed((): Native.AttributeLinkType[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.link_type : Native.AttributeLinkType.none
 			})

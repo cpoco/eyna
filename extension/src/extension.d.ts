@@ -41,22 +41,10 @@ type prompt_option = {
 	end?: number
 }
 
-declare enum AttributeFileType {
-	home = -1,
-	none = 0,
-	directory = 1,
-	link = 2,
-	file = 3,
-	special = 10,
-}
 
-declare enum AttributeLinkType {
-	none = 0,
-	symbolic = 1,
-	junction = 2,
-	shortcut = 3,
-	bookmark = 4,
-}
+type AttributeFileType = number
+
+type AttributeLinkType = number
 
 type Attributes = Attribute[]
 
@@ -83,14 +71,14 @@ type Attribute = {
 type Directory = {
 	full: string
 	base: string
-	list: Data[]
+	list: Item[]
 	s: bigint
 	d: number
 	f: number
 	e: number
 }
 
-type Data = {
+type Item = {
 	type: AttributeFileType
 	rltv: string
 }
