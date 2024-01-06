@@ -24,7 +24,9 @@ export type Attribute = {
 	file_type: AttributeFileValues
 	full: string
 
+	base: string
 	rltv: string
+
 	name: string
 	stem: string
 	ext: string
@@ -48,12 +50,18 @@ export type Volume = {
 }
 
 export type Directory = {
-	wd: string
-	ls: [string]
+	full: string
+	base: string
+	list: Data[]
 	s: bigint
 	d: number
 	f: number
 	e: number
+}
+
+export type Data = {
+	type: AttributeFileValues
+	rltv: string
 }
 
 export type Resolve = {
