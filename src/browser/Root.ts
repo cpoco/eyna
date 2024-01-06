@@ -254,15 +254,9 @@ class Root {
 						log("filer.move", { src: full_src, dst: full_dst })
 						return Native.move(full_src, full_dst)
 					},
-					findcopy: async (full: string): Promise<string[]> => {
-						log("filer.findcopy", { full })
-						let dir = await Native.getDirectory(full, full, false, 1024, null)
-						return Promise.resolve(dir.ls)
-					},
-					findmove: async (full: string): Promise<string[]> => {
-						log("filer.findmove", { full })
-						let dir = await Native.getDirectory(full, full, true, 1024, null)
-						return Promise.resolve(dir.ls)
+					find: (full: string, base: string): Promise<Native.Directory> => {
+						log("filer.find", { full })
+						return Native.getDirectory(full, base, true, 1024, null)
 					},
 				},
 				dialog: {

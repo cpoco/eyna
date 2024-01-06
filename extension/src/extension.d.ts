@@ -19,8 +19,7 @@ type Extension = {
 		mkfile: (full: string) => Promise<void>
 		copy: (full_src: string, full_dst: string) => Promise<void>
 		move: (full_src: string, full_dst: string) => Promise<void>
-		findcopy: (full: string) => Promise<string[]>
-		findmove: (full: string) => Promise<string[]>
+		find: (full: string, base: string) => Promise<Directory>
 	}
 	dialog: {
 		opne: (option: alert_option | prompt_option) => Promise<{ text: string } | null>
@@ -50,6 +49,7 @@ declare enum AttributeFileType {
 	file = 3,
 	special = 10,
 }
+
 declare enum AttributeLinkType {
 	none = 0,
 	symbolic = 1,
@@ -57,9 +57,14 @@ declare enum AttributeLinkType {
 	shortcut = 3,
 	bookmark = 4,
 }
+
+type Attributes = Attribute[]
+
 type Attribute = {
 	file_type: AttributeFileType
 	full: string
+
+	base: string
 	rltv: string
 
 	link_type: AttributeLinkType
@@ -68,5 +73,24 @@ type Attribute = {
 	size: number
 	time: number
 	nsec: number
+
+	readonly: boolean
+	hidden: boolean
+	system: boolean
+	pseudo: boolean
 }
-type Attributes = Attribute[]
+
+type Directory = {
+	full: string
+	base: string
+	list: Data[]
+	s: bigint
+	d: number
+	f: number
+	e: number
+}
+
+type Data = {
+	type: AttributeFileType
+	rltv: string
+}

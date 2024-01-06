@@ -1,38 +1,25 @@
-import { dirname, join, normalize } from "node:path/posix"
+// import { basename, dirname, join, normalize } from "node:path/posix"
 ;(async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.target == null || ex.active.cursor == null) {
 		return
 	}
-
-	if (ex.active.select.length == 0) {
-		let src = ex.active.cursor[0]!.full
-		let dst = join(ex.target.wd, ex.active.cursor[0]!.rltv)
-
-		let e = dst.length
-		let s = e - ex.active.cursor[0]!.rltv.length
-
-		let prompt = await ex.dialog.opne({ type: "prompt", title: "move", text: dst, start: s, end: e })
-		if (prompt == null || prompt.text == "") {
-			return
-		}
-		dst = prompt.text
-
-		if (await ex.filer.exists(dst)) {
-			await ex.dialog.opne({ type: "alert", title: "move", text: "exists" })
-			return
-		}
-
-		let dirdst = dirname(normalize(dst))
-		if (!await ex.filer.exists(dirdst)) {
-			await ex.filer.mkdir(dirdst)
-		}
-
-		await ex.filer.move(src, dst)
-	}
-	else {
-		await ex.dialog.opne({ type: "alert", title: "move", text: "select move is unimplemented" })
+	if (ex.active.wd == ex.target.wd) {
+		await ex.dialog.opne({ type: "alert", title: "move", text: "same directory" })
 		return
 	}
 
-	ex.filer.update()
+	const ls: Attributes[] = ex.active.select.length == 0
+		? [ex.active.cursor]
+		: ex.active.select
+
+	const base = ex.active.wd
+	for (const v of ls) {
+		if (v[0]!.file_type == 1) {
+			const dir = await ex.filer.find(v[0]!.full, ex.active.wd)
+			for (const v of dir.list) {
+				log(v.type, base, v.rltv)
+			}
+		}
+		log(v[0]!.file_type, base, v[0]!.rltv)
+	}
 })
