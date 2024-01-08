@@ -1,7 +1,7 @@
 // node -r esbuild-register merge.ts
 
-import assert from "assert"
 import * as Util from "@eyna/util/ts/Util"
+import assert from "assert"
 
 Util.merge(null, null)
 Util.merge(null, undefined)
@@ -22,7 +22,6 @@ Util.merge({}, null)
 Util.merge({}, undefined)
 Util.merge({}, {})
 Util.merge({}, [])
-
 
 {
 	let t = [1, 2]
@@ -85,10 +84,10 @@ Util.merge({}, [])
 		dict: {},
 		reg: /./,
 		symbol: Symbol("symbol"),
-		func: () => { },
+		func: () => {},
 		date: new Date(),
 		error: new Error(),
-		promise: new Promise(() => { }),
+		promise: new Promise(() => {}),
 	})
 	console.log(t)
 }
@@ -107,10 +106,10 @@ Util.merge({}, [])
 		{},
 		/./,
 		Symbol("symbol"),
-		() => { },
+		() => {},
 		new Date(),
 		new Error(),
-		new Promise(() => { }),
+		new Promise(() => {}),
 	])
 	console.log(t)
 }

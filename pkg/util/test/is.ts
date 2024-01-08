@@ -1,7 +1,7 @@
 // node -r esbuild-register is.ts
 
-import assert from "assert"
 import * as Util from "@eyna/util/ts/Util"
+import assert from "assert"
 
 // isArray
 {
@@ -31,10 +31,10 @@ import * as Util from "@eyna/util/ts/Util"
 
 	assert(!Util.isArray(/.*/))
 	assert(!Util.isArray(Symbol("symbol")))
-	assert(!Util.isArray(() => { }))
+	assert(!Util.isArray(() => {}))
 	assert(!Util.isArray(new Date()))
 	assert(!Util.isArray(new Error()))
-	assert(!Util.isArray(new Promise(() => { })))
+	assert(!Util.isArray(new Promise(() => {})))
 }
 
 // isDict
@@ -65,10 +65,10 @@ import * as Util from "@eyna/util/ts/Util"
 
 	assert(!Util.isDict(/.*/))
 	assert(!Util.isDict(Symbol("symbol")))
-	assert(!Util.isDict(() => { }))
+	assert(!Util.isDict(() => {}))
 	assert(!Util.isDict(new Date()))
 	assert(!Util.isDict(new Error()))
-	assert(!Util.isDict(new Promise(() => { })))
+	assert(!Util.isDict(new Promise(() => {})))
 }
 
 // isNumber
@@ -99,10 +99,10 @@ import * as Util from "@eyna/util/ts/Util"
 
 	assert(!Util.isNumber(/.*/))
 	assert(!Util.isNumber(Symbol("symbol")))
-	assert(!Util.isNumber(() => { }))
+	assert(!Util.isNumber(() => {}))
 	assert(!Util.isNumber(new Date()))
 	assert(!Util.isNumber(new Error()))
-	assert(!Util.isNumber(new Promise(() => { })))
+	assert(!Util.isNumber(new Promise(() => {})))
 }
 
 // isString
@@ -133,8 +133,8 @@ import * as Util from "@eyna/util/ts/Util"
 
 	assert(!Util.isString(/.*/))
 	assert(!Util.isString(Symbol("symbol")))
-	assert(!Util.isString(() => { }))
+	assert(!Util.isString(() => {}))
 	assert(!Util.isString(new Date()))
 	assert(!Util.isString(new Error()))
-	assert(!Util.isString(new Promise(() => { })))
+	assert(!Util.isString(new Promise(() => {})))
 }
