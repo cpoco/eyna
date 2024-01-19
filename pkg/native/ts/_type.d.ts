@@ -1,4 +1,4 @@
-export enum AttributeFileType {
+declare enum AttributeFileType {
 	homeuser = -2,
 	drive = -1,
 	none = 0,
@@ -8,7 +8,7 @@ export enum AttributeFileType {
 	special = 10,
 }
 
-export enum AttributeLinkType {
+declare enum AttributeLinkType {
 	none = 0,
 	symbolic = 1,
 	junction = 2,
@@ -16,9 +16,9 @@ export enum AttributeLinkType {
 	bookmark = 4,
 }
 
-export type Attributes = Attribute[]
+declare type Attributes = Attribute[]
 
-export type Attribute = {
+declare type Attribute = {
 	file_type: AttributeFileType
 	full: string
 
@@ -42,12 +42,12 @@ export type Attribute = {
 	pseudo: boolean
 }
 
-export type Volume = {
+declare type Volume = {
 	full: string
 	name: string
 }
 
-export type Directory = {
+declare type Directory = {
 	full: string
 	base: string
 	list: Item[]
@@ -57,16 +57,16 @@ export type Directory = {
 	e: number
 }
 
-export type Item = {
+declare type Item = {
 	type: AttributeFileType
 	rltv: string
 }
 
-export type Resolves = Resolve[]
+declare type Resolves = Resolve[]
 
-export type Resolve = {
+declare type Resolve = {
 	full: string
 	real: string
 }
 
-export type WatchCallback = (id: number, depth: number, abstract: string) => void
+declare type WatchCallback = (id: number, depth: number, abstract: string) => void

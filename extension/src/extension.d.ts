@@ -1,3 +1,5 @@
+/// <reference types="@eyna/native/ts/_type" />
+
 declare function log(...args: any[]): void
 
 type Extension = {
@@ -39,45 +41,4 @@ type prompt_option = {
 	text: string
 	start?: number
 	end?: number
-}
-
-type AttributeFileType = number
-
-type AttributeLinkType = number
-
-type Attributes = Attribute[]
-
-type Attribute = {
-	file_type: AttributeFileType
-	full: string
-
-	base: string
-	rltv: string
-
-	link_type: AttributeLinkType
-	link: string
-
-	size: number
-	time: number
-	nsec: number
-
-	readonly: boolean
-	hidden: boolean
-	system: boolean
-	pseudo: boolean
-}
-
-type Directory = {
-	full: string
-	base: string
-	list: Item[]
-	s: bigint
-	d: number
-	f: number
-	e: number
-}
-
-type Item = {
-	type: AttributeFileType
-	rltv: string
 }

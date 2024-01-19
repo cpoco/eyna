@@ -1,5 +1,5 @@
+import { AttributeFileType } from "@eyna/native/ts/_type"
 import * as path from "node:path/posix"
-import { AttributeFileType } from "./_type"
 
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.target == null || ex.active.cursor == null) {
