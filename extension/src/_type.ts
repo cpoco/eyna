@@ -1,8 +1,8 @@
-/// <reference types="@eyna/native/ts/_type" />
+import { Attributes, Directory } from "@eyna/native/ts/_type"
 
-declare function log(...args: any[]): void
+export * from "@eyna/native/ts/_type"
 
-type Extension = {
+export type Extension = {
 	active: {
 		wd: string
 		cursor: Attributes | null

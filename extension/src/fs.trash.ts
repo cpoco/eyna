@@ -1,3 +1,5 @@
+import { Extension } from "./_type"
+
 const title = "trash"
 
 module.exports = async (ex: Extension): Promise<void> => {

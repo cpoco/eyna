@@ -1,3 +1,5 @@
+import { Extension } from "./_type"
+
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null) {
 		return

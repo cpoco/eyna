@@ -1,3 +1,3 @@
 declare module "@eyna/native/esm/index.mjs" {
-	export * from "@eyna/native/ts/_function.ts"
+	export * from "@eyna/native/ts/_func.ts"
 }

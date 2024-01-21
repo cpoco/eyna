@@ -1,4 +1,5 @@
 import * as path from "node:path/posix"
+import { Extension } from "./_type"
 
 const title = "mkdir"
 

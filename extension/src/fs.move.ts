@@ -1,5 +1,6 @@
 // import { AttributeFileType } from "@eyna/native/ts/_type"
 import * as path from "node:path/posix"
+import { Attributes, Extension, Item } from "./_type"
 
 const title = "move"
 
