@@ -1,9 +1,9 @@
-import * as vue from "@/renderer/Vue"
+import * as Util from "@eyna/util"
+import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
-import * as Util from "@eyna/util/ts/Util"
 
 type reactive = {
 	i: number

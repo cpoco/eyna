@@ -1,12 +1,12 @@
-import * as vue from "@/renderer/Vue"
+import * as vue from "@vue/runtime-dom"
 
 export const V = vue.defineComponent({
 	props: {
-		"path": {
+		path: {
 			required: true,
 			type: String,
 		},
-		"size": {
+		size: {
 			required: true,
 			type: Object as vue.PropType<BigInt>,
 		},

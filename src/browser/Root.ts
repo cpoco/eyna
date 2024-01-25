@@ -2,6 +2,9 @@ import * as electron from "electron"
 import * as fs from "node:fs"
 import * as vm from "node:vm"
 
+import * as Native from "@eyna/native/ts/browser"
+import * as Util from "@eyna/util"
+
 import * as Bridge from "@/bridge/Bridge"
 import { Command } from "@/browser/core/Command"
 import { Path } from "@/browser/core/Path"
@@ -12,8 +15,6 @@ import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
-import * as Native from "@eyna/native/ts/browser"
-import * as Util from "@eyna/util/ts/Util"
 
 type Option = {
 	active: {

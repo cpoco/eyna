@@ -1,4 +1,4 @@
-import * as vue from "@/renderer/Vue"
+import * as vue from "@vue/runtime-dom"
 // import * as dev from "@vue/devtools"
 
 import * as Bridge from "@/bridge/Bridge"

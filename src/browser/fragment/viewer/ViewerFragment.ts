@@ -49,7 +49,7 @@ export class ViewerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 				return root.command({
-					when: "filer",
+					when: Command.When.Filer,
 					cmd: ["list.imageup", "list.select"],
 					prm: [],
 				})
@@ -59,7 +59,7 @@ export class ViewerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 				return root.command({
-					when: "filer",
+					when: Command.When.Filer,
 					cmd: ["list.imagedown", "list.select"],
 					prm: [],
 				})

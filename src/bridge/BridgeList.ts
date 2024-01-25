@@ -1,11 +1,12 @@
-import { Status, StatusValues } from "@/bridge/Status"
 import * as Native from "@eyna/native/ts/renderer"
+
+import { Status } from "@/bridge/Status"
 
 export namespace List {
 	export type Data = {
 		create: number
 		elapse: number
-		status: StatusValues
+		status: Status
 		search: boolean
 		cursor: number
 		length: number
@@ -123,7 +124,7 @@ export namespace List {
 			Data,
 		]
 		export type Data = {
-			status: StatusValues
+			status: Status
 		}
 	}
 

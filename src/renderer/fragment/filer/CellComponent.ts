@@ -1,12 +1,12 @@
-import * as vue from "@/renderer/Vue"
+import * as Native from "@eyna/native/ts/renderer"
+import * as Util from "@eyna/util"
+import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
-import * as Native from "@eyna/native/ts/renderer"
-import * as Util from "@eyna/util/ts/Util"
 
 const TAG = "cell"
 

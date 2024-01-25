@@ -1,7 +1,7 @@
 // node -r esbuild-register merge.ts
 
-import * as Util from "@eyna/util/ts/Util"
-import assert from "assert"
+import * as Util from "@eyna/util"
+import assert from "node:assert"
 
 Util.merge(null, null)
 Util.merge(null, undefined)

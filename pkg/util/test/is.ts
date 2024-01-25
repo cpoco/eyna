@@ -1,7 +1,7 @@
 // node -r esbuild-register is.ts
 
-import * as Util from "@eyna/util/ts/Util"
-import assert from "assert"
+import * as Util from "@eyna/util"
+import assert from "node:assert"
 
 // isArray
 {

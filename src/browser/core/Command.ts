@@ -1,22 +1,22 @@
 import * as electron from "electron"
 import * as fs from "node:fs"
 
+import * as Util from "@eyna/util"
+
 import { Platform } from "@/browser/core/Platform"
-import * as Util from "@eyna/util/ts/Util"
 
 export namespace Command {
-	export const When = {
-		Always: "always",
-		Filer: "filer",
-		Modal: "modal",
-		Viewer: "viewer",
-	} as const
-	export type WhenValues = typeof When[keyof typeof When]
+	export enum When {
+		Always = "always",
+		Filer = "filer",
+		Modal = "modal",
+		Viewer = "viewer",
+	}
 
 	export type LoadConfig = {
 		ver: string
 		key: {
-			when: WhenValues
+			when: When
 			key: string | string[]
 			cmd: string | string[]
 			prm?: string | string[]
@@ -27,20 +27,20 @@ export namespace Command {
 		[code: number]: WhenConfig
 	}
 	export type WhenConfig = {
-		[key in WhenValues]?: Config
+		[key in When]?: Config
 	}
 	export type Config = {
-		when: WhenValues
+		when: When
 		cmd: string[]
 		prm: string[]
 	}
 
 	class Manager {
 		private path: string = ""
-		private when: WhenValues = When.Filer
+		private when: When = When.Filer
 		private keyData: KeyData = {}
 
-		set whenType(when: WhenValues) {
+		set whenType(when: When) {
 			switch (when) {
 				case When.Always:
 					break
@@ -136,89 +136,87 @@ export namespace Command {
 	}
 
 	// https://chromium.googlesource.com/chromium/src.git/+/master/ui/events/event_constants.h
-	const EventFlags = {
-		EF_NONE: 0,
-		EF_SHIFT_DOWN: 1 << 1,
-		EF_CONTROL_DOWN: 1 << 2,
-		EF_ALT_DOWN: 1 << 3,
-	} as const
-	type EventFlagsValues = typeof EventFlags[keyof typeof EventFlags]
+	enum EventFlags {
+		EF_NONE = 0,
+		EF_SHIFT_DOWN = 1 << 1,
+		EF_CONTROL_DOWN = 1 << 2,
+		EF_ALT_DOWN = 1 << 3,
+	}
 
 	// https://chromium.googlesource.com/chromium/src.git/+/master/ui/events/keycodes/keyboard_codes_posix.h
-	const KeyboardCode = {
-		VKEY_BACK: 0x08,
-		VKEY_TAB: 0x09,
-		VKEY_RETURN: 0x0D,
-		VKEY_PAUSE: 0x13,
-		VKEY_CAPITAL: 0x14,
-		VKEY_ESCAPE: 0x1B,
-		VKEY_SPACE: 0x20,
-		VKEY_PRIOR: 0x21,
-		VKEY_NEXT: 0x22,
-		VKEY_END: 0x23,
-		VKEY_HOME: 0x24,
-		VKEY_LEFT: 0x25,
-		VKEY_UP: 0x26,
-		VKEY_RIGHT: 0x27,
-		VKEY_DOWN: 0x28,
-		VKEY_SNAPSHOT: 0x2C,
-		VKEY_INSERT: 0x2D,
-		VKEY_DELETE: 0x2E,
+	enum KeyboardCode {
+		VKEY_BACK = 0x08,
+		VKEY_TAB = 0x09,
+		VKEY_RETURN = 0x0D,
+		VKEY_PAUSE = 0x13,
+		VKEY_CAPITAL = 0x14,
+		VKEY_ESCAPE = 0x1B,
+		VKEY_SPACE = 0x20,
+		VKEY_PRIOR = 0x21,
+		VKEY_NEXT = 0x22,
+		VKEY_END = 0x23,
+		VKEY_HOME = 0x24,
+		VKEY_LEFT = 0x25,
+		VKEY_UP = 0x26,
+		VKEY_RIGHT = 0x27,
+		VKEY_DOWN = 0x28,
+		VKEY_SNAPSHOT = 0x2C,
+		VKEY_INSERT = 0x2D,
+		VKEY_DELETE = 0x2E,
 
-		VKEY_NUMPAD0: 0x60,
-		VKEY_NUMPAD1: 0x61,
-		VKEY_NUMPAD2: 0x62,
-		VKEY_NUMPAD3: 0x63,
-		VKEY_NUMPAD4: 0x64,
-		VKEY_NUMPAD5: 0x65,
-		VKEY_NUMPAD6: 0x66,
-		VKEY_NUMPAD7: 0x67,
-		VKEY_NUMPAD8: 0x68,
-		VKEY_NUMPAD9: 0x69,
-		VKEY_MULTIPLY: 0x6A,
-		VKEY_ADD: 0x6B,
-		VKEY_SEPARATOR: 0x6C,
-		VKEY_SUBTRACT: 0x6D,
-		VKEY_DECIMAL: 0x6E,
-		VKEY_DIVIDE: 0x6F,
+		VKEY_NUMPAD0 = 0x60,
+		VKEY_NUMPAD1 = 0x61,
+		VKEY_NUMPAD2 = 0x62,
+		VKEY_NUMPAD3 = 0x63,
+		VKEY_NUMPAD4 = 0x64,
+		VKEY_NUMPAD5 = 0x65,
+		VKEY_NUMPAD6 = 0x66,
+		VKEY_NUMPAD7 = 0x67,
+		VKEY_NUMPAD8 = 0x68,
+		VKEY_NUMPAD9 = 0x69,
+		VKEY_MULTIPLY = 0x6A,
+		VKEY_ADD = 0x6B,
+		VKEY_SEPARATOR = 0x6C,
+		VKEY_SUBTRACT = 0x6D,
+		VKEY_DECIMAL = 0x6E,
+		VKEY_DIVIDE = 0x6F,
 
-		VKEY_F1: 0x70,
-		VKEY_F2: 0x71,
-		VKEY_F3: 0x72,
-		VKEY_F4: 0x73,
-		VKEY_F5: 0x74,
-		VKEY_F6: 0x75,
-		VKEY_F7: 0x76,
-		VKEY_F8: 0x77,
-		VKEY_F9: 0x78,
-		VKEY_F10: 0x79,
-		VKEY_F11: 0x7A,
-		VKEY_F12: 0x7B,
-		VKEY_F13: 0x7C,
-		VKEY_F14: 0x7D,
-		VKEY_F15: 0x7E,
-		VKEY_F16: 0x7F,
-		VKEY_F17: 0x80,
-		VKEY_F18: 0x81,
-		VKEY_F19: 0x82,
-		VKEY_F20: 0x83,
-		VKEY_F21: 0x84,
-		VKEY_F22: 0x85,
-		VKEY_F23: 0x86,
-		VKEY_F24: 0x87,
+		VKEY_F1 = 0x70,
+		VKEY_F2 = 0x71,
+		VKEY_F3 = 0x72,
+		VKEY_F4 = 0x73,
+		VKEY_F5 = 0x74,
+		VKEY_F6 = 0x75,
+		VKEY_F7 = 0x76,
+		VKEY_F8 = 0x77,
+		VKEY_F9 = 0x78,
+		VKEY_F10 = 0x79,
+		VKEY_F11 = 0x7A,
+		VKEY_F12 = 0x7B,
+		VKEY_F13 = 0x7C,
+		VKEY_F14 = 0x7D,
+		VKEY_F15 = 0x7E,
+		VKEY_F16 = 0x7F,
+		VKEY_F17 = 0x80,
+		VKEY_F18 = 0x81,
+		VKEY_F19 = 0x82,
+		VKEY_F20 = 0x83,
+		VKEY_F21 = 0x84,
+		VKEY_F22 = 0x85,
+		VKEY_F23 = 0x86,
+		VKEY_F24 = 0x87,
 
-		VKEY_NUMLOCK: 0x90,
-		VKEY_SCROLL: 0x91,
-	} as const
-	type KeyboardCodeValues = typeof KeyboardCode[keyof typeof KeyboardCode]
+		VKEY_NUMLOCK = 0x90,
+		VKEY_SCROLL = 0x91,
+	}
 
-	const FlagMap: { [key: string]: EventFlagsValues } = {
+	const FlagMap: { [key: string]: EventFlags } = {
 		"shift": EventFlags.EF_SHIFT_DOWN,
 		"ctrl": EventFlags.EF_CONTROL_DOWN,
 		"alt": EventFlags.EF_ALT_DOWN,
 	} as const
 
-	const CodeMap: { [key: string]: KeyboardCodeValues } = {
+	const CodeMap: { [key: string]: KeyboardCode } = {
 		"backspace": KeyboardCode.VKEY_BACK,
 		"tab": KeyboardCode.VKEY_TAB,
 		"return": KeyboardCode.VKEY_RETURN,

@@ -5,8 +5,7 @@ import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
 import * as Native from "@eyna/native/ts/browser"
-import { SleepPromise } from "@eyna/util/ts/SleepPromise"
-import * as Util from "@eyna/util/ts/Util"
+import * as Util from "@eyna/util"
 
 export class FilerManager {
 	data: Bridge.List.Data = Bridge.List.InitData()
@@ -28,7 +27,7 @@ export class FilerManager {
 		return this.dir.isHome
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.StatusValues = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -157,7 +156,7 @@ export class FilerManager {
 					return
 				}
 
-				await SleepPromise(10)
+				await Util.SleepPromise(10)
 
 				Native.watch(this.id, wd, (_id, depth, _abstract) => {
 					if (create != this.data.create || dp < depth) {

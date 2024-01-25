@@ -1,20 +1,19 @@
-import * as Conf from "@/app/Conf"
-import * as vue from "@/renderer/Vue"
-import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
-
 declare global {
-	interface Window {
-		monaco: typeof _monaco
-	}
+	var monaco: typeof import("monaco-editor/esm/vs/editor/editor.api")
 }
+
+import * as vue from "@vue/runtime-dom"
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
+
+import * as Conf from "@/app/Conf"
 
 export const V = vue.defineComponent({
 	props: {
-		"path": {
+		path: {
 			required: true,
 			type: String,
 		},
-		"size": {
+		size: {
 			required: true,
 			type: Object as vue.PropType<BigInt>,
 		},
@@ -26,17 +25,17 @@ export const V = vue.defineComponent({
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
 
-		let model: _monaco.editor.ITextModel | null = null
-		let editor: _monaco.editor.IStandaloneCodeEditor | null = null
+		let model: monaco.editor.ITextModel | null = null
+		let editor: monaco.editor.IStandaloneCodeEditor | null = null
 
 		vue.onMounted(() => {
 			head.value = `${props.size.toLocaleString()} byte`
-			model = window.monaco.editor.createModel(
+			model = globalThis.monaco.editor.createModel(
 				"",
 				undefined,
-				window.monaco.Uri.file(props.path),
+				globalThis.monaco.Uri.file(props.path),
 			)
-			editor = window.monaco.editor.create(
+			editor = globalThis.monaco.editor.create(
 				el.value!,
 				{
 					readOnly: true,

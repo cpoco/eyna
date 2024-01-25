@@ -1,5 +1,8 @@
 import * as electron from "electron"
 
+import * as Native from "@eyna/native/ts/browser"
+import * as Util from "@eyna/util"
+
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
@@ -8,8 +11,6 @@ import { Storage } from "@/browser/core/Storage"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerManager } from "@/browser/fragment/filer/FilerManager"
 import root from "@/browser/Root"
-import * as Native from "@eyna/native/ts/browser"
-import * as Util from "@eyna/util/ts/Util"
 
 export class FilerFragment extends AbstractFragment {
 	private index!: { active: number; target: number }
