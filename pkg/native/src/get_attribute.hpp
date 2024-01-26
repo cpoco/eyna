@@ -40,12 +40,12 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("file_type")), v8::Number::New(ISOLATE, a.file_type));
 		obj->Set(CONTEXT, to_string(V("full")),      to_string(a.full));
 
-		if (work->base.empty()) {
-			obj->Set(CONTEXT, to_string(V("rltv")), to_string(a.full));
-		}
-		else {
-			obj->Set(CONTEXT, to_string(V("rltv")), to_string(generic_path(a.full.lexically_relative(work->base))));
-		}
+		obj->Set(CONTEXT, to_string(V("base")), to_string(work->base));
+		obj->Set(CONTEXT, to_string(V("rltv")),
+			work->base.empty()
+				? to_string(a.full)
+				: to_string(generic_path(a.full.lexically_relative(work->base)))
+		);
 
 		obj->Set(CONTEXT, to_string(V("name")), to_string(a.full.filename()));
 		obj->Set(CONTEXT, to_string(V("stem")), to_string(a.full.stem()));
@@ -85,7 +85,7 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 2 || !info[0]->IsString() || !info[1]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -95,8 +95,16 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
 
 	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->base)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
 
 	work->v.clear();
 

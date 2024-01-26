@@ -1,35 +1,35 @@
-export const AttributeFileType = {
-	homeuser: -2,
-	drive: -1,
-	none: 0,
-	directory: 1,
-	link: 2,
-	file: 3,
-	special: 10,
-} as const
-export type AttributeFileValues = typeof AttributeFileType[keyof typeof AttributeFileType]
+export enum AttributeFileType {
+	homeuser = -2,
+	drive = -1,
+	none = 0,
+	directory = 1,
+	link = 2,
+	file = 3,
+	special = 10,
+}
 
-export const AttributeLinkType = {
-	none: 0,
-	symbolic: 1,
-	junction: 2,
-	shortcut: 3,
-	bookmark: 4,
-} as const
-export type AttributeLinkValues = typeof AttributeLinkType[keyof typeof AttributeLinkType]
+export enum AttributeLinkType {
+	none = 0,
+	symbolic = 1,
+	junction = 2,
+	shortcut = 3,
+	bookmark = 4,
+}
 
 export type Attributes = Attribute[]
 
 export type Attribute = {
-	file_type: AttributeFileValues
+	file_type: AttributeFileType
 	full: string
 
+	base: string
 	rltv: string
+
 	name: string
 	stem: string
 	ext: string
 
-	link_type: AttributeLinkValues
+	link_type: AttributeLinkType
 	link: string | null
 
 	size: bigint
@@ -48,19 +48,25 @@ export type Volume = {
 }
 
 export type Directory = {
-	wd: string
-	ls: [string]
+	full: string
+	base: string
+	list: Item[]
 	s: bigint
 	d: number
 	f: number
 	e: number
 }
 
+export type Item = {
+	type: AttributeFileType
+	rltv: string
+}
+
+export type Resolves = Resolve[]
+
 export type Resolve = {
 	full: string
 	real: string
 }
-
-export type Resolves = Resolve[]
 
 export type WatchCallback = (id: number, depth: number, abstract: string) => void

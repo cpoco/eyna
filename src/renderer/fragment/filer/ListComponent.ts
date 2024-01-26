@@ -1,7 +1,7 @@
-import * as vue from "@/renderer/Vue"
+import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
-import { Status, StatusValues } from "@/bridge/Status"
+import { Status } from "@/bridge/Status"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
@@ -26,7 +26,7 @@ export type List = {
 		elapse: number
 	}
 	stat: {
-		status: StatusValues
+		status: Status
 		active: boolean
 		target: boolean
 	}

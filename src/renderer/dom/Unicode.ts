@@ -1,6 +1,5 @@
-import * as vue from "@/renderer/Vue"
-
-import * as Util from "@eyna/util/ts/Util"
+import * as Util from "@eyna/util"
+import * as vue from "@vue/runtime-dom"
 
 const RLO = "\u{202E}"
 

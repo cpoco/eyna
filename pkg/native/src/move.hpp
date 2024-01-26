@@ -18,12 +18,56 @@ static void move_async(uv_work_t* req)
 {
 	move_work* work = static_cast<move_work*>(req->data);
 
+	/*
 	std::error_code ec;
 	std::filesystem::rename(work->src, work->dst, ec);
 
 	if (ec) {
 		work->error = true;
 	}
+	*/
+
+	#if _OS_WIN_
+
+		_string_t src(work->src.c_str());
+		_string_t dst(work->dst.parent_path().c_str());
+		_string_t file(work->dst.filename().c_str());
+		std::replace(src.begin(), src.end(), L'/', L'\\');
+		std::replace(dst.begin(), dst.end(), L'/', L'\\');
+
+		IFileOperation* fo;
+		CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fo));
+		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT);
+
+		IShellItem* isrc;
+		SHCreateItemFromParsingName(src.c_str(), NULL, IID_PPV_ARGS(&isrc));
+		IShellItem* idst;
+		SHCreateItemFromParsingName(dst.c_str(), NULL, IID_PPV_ARGS(&idst));
+
+		fo->MoveItem(isrc, idst, file.c_str(), NULL);
+
+		if (FAILED(fo->PerformOperations())) {
+			work->error = true;
+		}
+
+		idst->Release();
+		isrc->Release();
+
+		fo->Release();
+
+	#elif _OS_MAC_
+
+		NSError* error = nil;
+		BOOL ret = [[NSFileManager defaultManager]
+			moveItemAtPath:[NSString stringWithCString:work->src.c_str() encoding:NSUTF8StringEncoding]
+			toPath:[NSString stringWithCString:work->dst.c_str() encoding:NSUTF8StringEncoding]
+			error:&error];
+
+		if (!ret || error) {
+			work->error = true;
+		}
+
+	#endif
 }
 
 static void move_complete(uv_work_t* req, int status)
@@ -52,7 +96,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 2 || !info[0]->IsString() || !info[1]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -62,7 +106,17 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->src)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->dst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, move_async, move_complete);

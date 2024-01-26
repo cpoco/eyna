@@ -2,6 +2,9 @@ import * as electron from "electron"
 import * as fs from "node:fs"
 import * as vm from "node:vm"
 
+import * as Native from "@eyna/native/ts/browser"
+import * as Util from "@eyna/util"
+
 import * as Bridge from "@/bridge/Bridge"
 import { Command } from "@/browser/core/Command"
 import { Path } from "@/browser/core/Path"
@@ -12,8 +15,6 @@ import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
-import * as Native from "@eyna/native/ts/browser"
-import * as Util from "@eyna/util/ts/Util"
 
 type Option = {
 	active: {
@@ -216,66 +217,64 @@ class Root {
 		console.log("\u001b[0m")
 
 		try {
-			const log = (...args: any[]) => {
-				console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
-			}
 			const code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
-			const func = vm.runInNewContext(code, { log: log, require: require })
+			const sbox = {
+				module: {},
+				require: require,
+				log: (...args: any[]) => {
+					console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
+				},
+			}
+			const func = vm.runInNewContext(code, sbox)
 
 			func({
 				active: option.active,
 				target: option.target,
 				filer: {
 					update: () => {
-						log("filer.update")
+						sbox.log("filer.update")
 						this.fragment[1].update()
 					},
 					exists: (full: string): Promise<boolean> => {
-						log("filer.exists", { full })
+						sbox.log("filer.exists", { full })
 						return Native.exists(full)
 					},
 					trash: (full: string): Promise<void> => {
-						log("filer.trash", { full })
+						sbox.log("filer.trash", { full })
 						return Native.moveToTrash(full)
 					},
 					mkdir: (full: string): Promise<void> => {
-						log("filer.mkdir", { full })
+						sbox.log("filer.mkdir", { full })
 						return Native.createDirectory(full)
 					},
 					mkfile: (full: string): Promise<void> => {
-						log("filer.mkfile", { full })
+						sbox.log("filer.mkfile", { full })
 						return Native.createFile(full)
 					},
 					copy: (full_src: string, full_dst: string): Promise<void> => {
-						log("filer.copy", { src: full_src, dst: full_dst })
+						sbox.log("filer.copy", { src: full_src, dst: full_dst })
 						return Native.copy(full_src, full_dst)
 					},
 					move: (full_src: string, full_dst: string): Promise<void> => {
-						log("filer.move", { src: full_src, dst: full_dst })
+						sbox.log("filer.move", { src: full_src, dst: full_dst })
 						return Native.move(full_src, full_dst)
 					},
-					findcopy: async (full: string): Promise<string[]> => {
-						log("filer.findcopy", { full })
-						let dir = await Native.getDirectory(full, full, false, 1024, null)
-						return Promise.resolve(dir.ls)
-					},
-					findmove: async (full: string): Promise<string[]> => {
-						log("filer.findmove", { full })
-						let dir = await Native.getDirectory(full, full, true, 1024, null)
-						return Promise.resolve(dir.ls)
+					find: (full: string, base: string): Promise<Native.Directory> => {
+						sbox.log("filer.find", { full })
+						return Native.getDirectory(full, base, true, 1024, null)
 					},
 				},
 				dialog: {
 					opne: (
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
-						log("dialog.opne", option)
+						sbox.log("dialog.opne", option)
 						return this.fragment[2].opne(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
 					},
 					cancel: () => {
-						log("dialog.cancel")
+						sbox.log("dialog.cancel")
 						this.fragment[2].cancel()
 					},
 				},

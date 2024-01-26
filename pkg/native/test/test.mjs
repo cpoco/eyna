@@ -1,11 +1,6 @@
+import native from "@eyna/native/esm/index.mjs"
 import path from "node:path"
 import process from "node:process"
-import url from "node:url"
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-
-import module from "node:module"
-const require = module.createRequire(import.meta.url)
-const native = require(path.join(__dirname, "../build/Release/native.node"))
 
 if (process.platform == "win32") {
 	var wd = path.join("C:", "Users", "Public", "eyna test")

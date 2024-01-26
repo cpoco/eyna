@@ -1,0 +1,30 @@
+name: build-check
+
+on:
+  push:
+    branches:
+      - develop
+
+# https://github.com/actions/checkout
+# https://github.com/actions/setup-node
+jobs:
+  build-check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        arch: [x64, arm64]
+    steps: 
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: install
+        run: |
+          pip3 install setuptools
+          npm ci
+      - name: build
+        run: npm run b -- ${{ matrix.arch }}

@@ -92,6 +92,16 @@ v8::Local<v8::String> to_string(const _string_t& str)
 	#endif
 }
 
+bool is_traversal(const std::filesystem::path& path)
+{
+	for (const std::filesystem::path& p : path) {
+		if (p == "." || p == "..") {
+			return true;
+		}
+	}
+	return false;
+}
+
 std::filesystem::path generic_path(const std::filesystem::path& path)
 {
 	return std::filesystem::path(path.generic_string<_char_t>());

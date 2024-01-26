@@ -2,14 +2,13 @@ import { isArray } from "./_is_array"
 import { isDict } from "./_is_dict"
 
 export function merge(target: unknown, source: unknown) {
-	if (
-		Object.prototype.toString.call(target) !== Object.prototype.toString.call(source)
-		|| !isDict(source) && !isArray(source)
-	) {
+	if (target === source) {
 		return
 	}
-	for (const [k, v] of Object.entries(source)) {
-		_merge(target, k, v)
+	if ((isDict(target) && isDict(source)) || (isArray(target) && isArray(source))) {
+		for (const [k, v] of Object.entries(source)) {
+			_merge(target, k, v)
+		}
 	}
 }
 
@@ -21,22 +20,23 @@ function _merge(target: any, key: string, source: unknown) {
 		for (const [k, v] of Object.entries(source)) {
 			_merge(target[key], k, v)
 		}
+		return
 	}
-	else if (isArray(source)) {
+
+	if (isArray(source)) {
 		if (!isArray(target[key])) {
 			target[key] = []
 		}
 		for (const [k, v] of Object.entries(source)) {
 			_merge(target[key], k, v)
 		}
+		return
 	}
-	else if (typeof source !== "object" && typeof source !== "function") {
+
+	if (source === null || typeof source !== "function" && typeof source !== "object" && typeof source !== "symbol") {
 		target[key] = source
+		return
 	}
-	else if (source === null) {
-		target[key] = null
-	}
-	else {
-		target[key] = undefined
-	}
+
+	target[key] = undefined
 }

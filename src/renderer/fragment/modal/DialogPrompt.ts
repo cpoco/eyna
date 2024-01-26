@@ -1,7 +1,8 @@
-import * as vue from "@/renderer/Vue"
+import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Selection } from "@/renderer/dom/Selection"
+import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
 type reactive = {
 	prompt: [string, string]
@@ -67,7 +68,7 @@ export const V = vue.defineComponent({
 				if (props.start != null && props.end != null) {
 					Selection.text(<Text> prompt.value!.childNodes[0]!, props.start, props.end)
 				}
-			}, 0)
+			}, FOCUS_DELAY)
 		})
 
 		return {

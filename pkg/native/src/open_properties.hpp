@@ -8,10 +8,15 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 1 || !info[0]->IsString()) {
+		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
-	std::filesystem::path abst = std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
+	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(abst)) {
+		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
+		return;
+	}
 
 	#if _OS_WIN_
 
@@ -26,6 +31,8 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 		NSPerformService(@"Finder/Show Info", pboard);
 
 	#endif
+
+	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }
 
 #endif // include guard

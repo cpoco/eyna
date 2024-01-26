@@ -9,7 +9,7 @@ struct move_to_trash_work
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
-	_string_t abst;
+	_string_t abst; // generic_path
 	bool error;
 };
 
@@ -30,7 +30,9 @@ static void move_to_trash_async(uv_work_t* req)
 
 		fo->DeleteItem(item, NULL);
 
-		fo->PerformOperations();
+		if (FAILED(fo->PerformOperations())) {
+			work->error = true;
+		}
 
 		item->Release();
 
@@ -76,7 +78,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 1 || !info[0]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -85,7 +87,13 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = to_string(info[0]->ToString(CONTEXT).ToLocalChecked());
+	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+	work->abst = abst;
+
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, move_to_trash_async, move_to_trash_complete);

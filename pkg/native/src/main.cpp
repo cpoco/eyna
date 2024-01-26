@@ -16,7 +16,7 @@
 
 void cleanup(void* arg)
 {
-	#if _OS_WIN_
+	#if _OS_WIN_ && !defined(USING_ELECTRON_CONFIG_GYPI)
 		CoUninitialize();
 	#endif
 }
@@ -25,8 +25,8 @@ void init(v8::Local<v8::Object> exports)
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
-	#if _OS_WIN_
-		CoInitialize(NULL);
+	#if _OS_WIN_ && !defined(USING_ELECTRON_CONFIG_GYPI)
+		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
 	NODE_SET_METHOD(exports, "copy", copy);

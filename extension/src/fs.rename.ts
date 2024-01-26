@@ -1,33 +1,40 @@
-import { dirname, join } from "node:path"
-import { normalize } from "node:path/posix"
-;(async (ex: Extension): Promise<void> => {
+import * as path from "node:path/posix"
+import { Extension } from "./_type"
+
+const title = "rename"
+
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
 
-	let src = ex.active.cursor[0]!.full
-	let dst = join(ex.active.wd, ex.active.cursor[0]!.rltv)
+	const src_base = ex.active.wd
+	const dst_base = ex.active.wd
+	const src_item = ex.active.cursor[0]!.rltv
 
-	let e = dst.length
-	let s = e - ex.active.cursor[0]!.rltv.length
-
-	let prompt = await ex.dialog.opne({ type: "prompt", title: "rename", text: dst, start: s, end: e })
+	const prompt = await ex.dialog.opne({
+		type: "prompt",
+		title: title,
+		text: src_item,
+		start: 0,
+		end: src_item.length,
+	})
 	if (prompt == null || prompt.text == "") {
 		return
 	}
-	dst = prompt.text
 
-	if (src.toLocaleLowerCase() != dst.toLocaleLowerCase() && await ex.filer.exists(dst)) {
-		await ex.dialog.opne({ type: "alert", title: "rename", text: "exists" })
+	const src = path.join(src_base, src_item)
+	const dst = path.join(dst_base, prompt.text)
+
+	if (
+		src == dst
+		|| path.dirname(src) != path.dirname(dst)
+		|| await ex.filer.exists(dst)
+	) {
 		return
-	}
-
-	let dirdst = dirname(normalize(dst))
-	if (!await ex.filer.exists(dirdst)) {
-		await ex.filer.mkdir(dirdst)
 	}
 
 	await ex.filer.move(src, dst)
 
 	ex.filer.update()
-})
+}

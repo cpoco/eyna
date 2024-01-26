@@ -18,14 +18,42 @@ static void copy_async(uv_work_t* req)
 {
 	copy_work* work = static_cast<copy_work*>(req->data);
 
+	/*
+	std::error_code ec;
+	std::filesystem::copy(work->src, work->dst, std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks, ec);
+
+	if (ec) {
+		work->error = true;
+	}
+	*/
+
 	#if _OS_WIN_
 
-		std::error_code ec;
-		std::filesystem::copy(work->src, work->dst, std::filesystem::copy_options::recursive | std::filesystem::copy_options::copy_symlinks, ec);
+		_string_t src(work->src.c_str());
+		_string_t dst(work->dst.parent_path().c_str());
+		_string_t file(work->dst.filename().c_str());
+		std::replace(src.begin(), src.end(), L'/', L'\\');
+		std::replace(dst.begin(), dst.end(), L'/', L'\\');
 
-		if (ec) {
+		IFileOperation* fo;
+		CoCreateInstance(CLSID_FileOperation, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fo));
+		fo->SetOperationFlags(FOF_NO_UI | FOFX_SHOWELEVATIONPROMPT);
+
+		IShellItem* isrc;
+		SHCreateItemFromParsingName(src.c_str(), NULL, IID_PPV_ARGS(&isrc));
+		IShellItem* idst;
+		SHCreateItemFromParsingName(dst.c_str(), NULL, IID_PPV_ARGS(&idst));
+
+		fo->CopyItem(isrc, idst, file.c_str(), NULL);
+
+		if (FAILED(fo->PerformOperations())) {
 			work->error = true;
 		}
+
+		idst->Release();
+		isrc->Release();
+
+		fo->Release();
 
 	#elif _OS_MAC_
 
@@ -51,7 +79,7 @@ static void copy_complete(uv_work_t* req, int status)
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, v8::Undefined(ISOLATE));
 		work->promise.Reset();
-    }
+	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
 		work->promise.Reset();
@@ -68,7 +96,7 @@ void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 2 || !info[0]->IsString() || !info[1]->IsString()) {
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -78,7 +106,17 @@ void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->src)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->dst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
+
 	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, copy_async, copy_complete);

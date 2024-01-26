@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.29",
+	"version": "0.0.30",
 	"private": true,
 	"main": "./app/browser.js",
 	"workspaces": [
@@ -9,17 +9,20 @@
 		"pkg/util"
 	],
 	"devDependencies": {
-		"@electron/rebuild": "3.3.0",
+		"@electron/rebuild": "3.6.0",
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.3.8",
-		"electron": "27.0.3",
-		"electron-builder": "24.6.4",
-		"esbuild": "0.19.5",
-		"monaco-editor": "0.43.0",
+		"@vue/runtime-dom": "3.4.15",
+		"electron": "28.2.0",
+		"electron-builder": "24.9.1",
+		"esbuild": "0.19.12",
+		"monaco-editor": "0.45.0",
 		"pug": "3.0.2",
-		"stylus": "0.61.0",
-		"typescript": "5.2.2"
+		"stylus": "0.62.0",
+		"typescript": "5.3.3"
+	},
+	"overrides": {
+		"make-fetch-happen": "13.0.0"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",

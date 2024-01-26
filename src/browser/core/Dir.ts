@@ -1,9 +1,10 @@
 import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
-import { Path } from "@/browser/core/Path"
 import * as Native from "@eyna/native/ts/browser"
-import * as Util from "@eyna/util/ts/Util"
+import * as Util from "@eyna/util"
+
+import { Path } from "@/browser/core/Path"
 
 export class Dir {
 	static readonly HOME: string = "home"
@@ -79,6 +80,7 @@ export class Dir {
 					ls.push([{
 						file_type: Native.AttributeFileType.drive,
 						full: v.full,
+						base: "",
 						rltv: v.name,
 						name: v.name,
 						stem: "",
@@ -97,6 +99,7 @@ export class Dir {
 				ls.push([{
 					file_type: Native.AttributeFileType.homeuser,
 					full: Path.home(),
+					base: "",
 					rltv: "user",
 					name: "user",
 					stem: "",
@@ -122,7 +125,7 @@ export class Dir {
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
 				console.log(
 					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.wd}"`,
+					`"${dir.full}"`,
 					"directory",
 					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
 					{
@@ -130,19 +133,19 @@ export class Dir {
 						d: dir.d,
 						f: dir.f,
 						e: dir.e,
-						len: dir.ls.length,
+						len: dir.list.length,
 					},
 				)
 				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
-				for (let absolute of dir.ls) {
-					ls.push(await Native.getAttribute(absolute, dir.wd))
+				for (let attr of dir.list) {
+					ls.push(await Native.getAttribute(attr.rltv, dir.full))
 				}
 
 				console.log(
 					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.wd}"`,
+					`"${dir.full}"`,
 					"attribute",
 					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
 				)
@@ -165,12 +168,12 @@ export class Dir {
 
 				console.log(
 					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.wd}"`,
+					`"${dir.full}"`,
 					"sort",
 					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
 				)
 
-				cb(dir.wd, ls, dir.e)
+				cb(dir.full, ls, dir.e)
 			})
 		}
 	}

@@ -1,12 +1,12 @@
-import * as vue from "@/renderer/Vue"
+import * as Native from "@eyna/native/ts/renderer"
+import * as Util from "@eyna/util"
+import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
 import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
-import * as Native from "@eyna/native/ts/renderer"
-import * as Util from "@eyna/util/ts/Util"
 
 const TAG = "cell"
 
@@ -35,13 +35,13 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
-		const file_type = vue.computed((): Native.AttributeFileValues[] => {
+		const file_type = vue.computed((): Native.AttributeFileType[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
 			})
 		})
 
-		const link_type = vue.computed((): Native.AttributeLinkValues[] => {
+		const link_type = vue.computed((): Native.AttributeLinkType[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.link_type : Native.AttributeLinkType.none
 			})

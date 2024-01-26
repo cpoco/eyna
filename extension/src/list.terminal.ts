@@ -1,6 +1,8 @@
 import { spawn } from "node:child_process"
 import { platform } from "node:process"
-;(async (ex: Extension): Promise<void> => {
+import { Extension } from "./_type"
+
+module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null) {
 		return
 	}
@@ -10,4 +12,4 @@ import { platform } from "node:process"
 	else if (platform == "darwin") {
 		spawn("open", ["-F", "-a", "Terminal", ex.active.wd])
 	}
-})
+}

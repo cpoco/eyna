@@ -1,11 +1,12 @@
+import * as Util from "@eyna/util"
+
 import * as Bridge from "@/bridge/Bridge"
 import { Command } from "@/browser/core/Command"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
-import { DeferredPromise } from "@eyna/util/ts/DeferredPromise"
 
 export class ModalFragment extends AbstractFragment {
-	private deferred: DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null = null
+	private deferred: Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null = null
 
 	constructor() {
 		super()
@@ -21,7 +22,7 @@ export class ModalFragment extends AbstractFragment {
 			args: [-1, option],
 		})
 
-		this.deferred = new DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
+		this.deferred = new Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
 		return this.deferred.promise
 	}
 

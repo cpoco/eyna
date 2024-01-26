@@ -86,11 +86,11 @@ export function moveToTrash(abstract: string): Promise<void> {
 	return native.moveToTrash(abstract)
 }
 
-export function openProperties(abstract: string) {
+export function openProperties(abstract: string): boolean {
 	if (native == null) {
-		return
+		return false
 	}
-	native.openProperties(abstract)
+	return native.openProperties(abstract)
 }
 
 export function resolve(abstract: string): Promise<Type.Resolves> {
@@ -100,16 +100,16 @@ export function resolve(abstract: string): Promise<Type.Resolves> {
 	return native.resolve(abstract)
 }
 
-export function watch(id: number, abstract: string, callback: Type.WatchCallback) {
+export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean {
 	if (native == null) {
-		return
+		return false
 	}
-	native.watch(id, abstract, callback)
+	return native.watch(id, abstract, callback)
 }
 
-export function unwatch(id: number) {
+export function unwatch(id: number): boolean {
 	if (native == null) {
-		return
+		return false
 	}
-	native.unwatch(id)
+	return native.unwatch(id)
 }

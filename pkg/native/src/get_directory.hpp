@@ -14,7 +14,7 @@ struct get_directory_work
 	bool md; // last parent directory
 	int32_t dp;
 	_string_t pt;
-	std::vector<std::filesystem::path> v; // generic_path
+	std::vector<_attribute> v;
 	int64_t s; // size
 	int32_t d; // directory count
 	int32_t f; // file count
@@ -52,7 +52,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				attribute(attr);
 
 				if (work->md == false && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
-					work->v.push_back(attr.full);
+					work->v.push_back(attr);
 				}
 
 				if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
@@ -67,7 +67,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				}
 
 				if (work->md == true && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
-					work->v.push_back(attr.full);
+					work->v.push_back(attr);
 				}
 			}
 		);
@@ -92,18 +92,21 @@ static void get_directory_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
-	for (std::filesystem::path& p : work->v) {
-		if (work->base.empty()) {
-			array->Set(CONTEXT, index++, to_string(p));
-		}
-		else {
-			array->Set(CONTEXT, index++, to_string(generic_path(p.lexically_relative(work->base))));
-		}
+	for (_attribute& attr : work->v) {
+		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
+		obj->Set(CONTEXT, to_string(V("type")), v8::Number::New(ISOLATE, (double)attr.file_type));
+		obj->Set(CONTEXT, to_string(V("rltv")),
+			work->base.empty()
+				? to_string(attr.full)
+				: to_string(generic_path(attr.full.lexically_relative(work->base)))
+		);
+		array->Set(CONTEXT, index++, obj);
 	}
 
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-	obj->Set(CONTEXT, to_string(V("wd")), to_string(work->abst));
-	obj->Set(CONTEXT, to_string(V("ls")), array);
+	obj->Set(CONTEXT, to_string(V("full")), to_string(work->abst));
+	obj->Set(CONTEXT, to_string(V("base")), to_string(work->base));
+	obj->Set(CONTEXT, to_string(V("list")), array);
 	obj->Set(CONTEXT, to_string(V("s")), v8::BigInt::New(ISOLATE, work->s));
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
@@ -129,7 +132,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 			|| !info[3]->IsNumber()
 			|| !(info[4]->IsNull() || info[4]->IsRegExp()))
 	{
-		promise->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		promise->Reject(CONTEXT, to_string(V("invalid argument")));
 		return;
 	}
 
@@ -139,8 +142,16 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
 
 	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_traversal(work->base)) {
+		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		return;
+	}
 
 	work->md = info[2]->BooleanValue(ISOLATE);
 

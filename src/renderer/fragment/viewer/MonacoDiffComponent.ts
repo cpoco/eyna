@@ -1,28 +1,27 @@
-import * as Conf from "@/app/Conf"
-import * as vue from "@/renderer/Vue"
-import * as _monaco from "monaco-editor/esm/vs/editor/editor.api"
-
 declare global {
-	interface Window {
-		monaco: typeof _monaco
-	}
+	var monaco: typeof import("monaco-editor/esm/vs/editor/editor.api")
 }
+
+import * as vue from "@vue/runtime-dom"
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
+
+import * as Conf from "@/app/Conf"
 
 export const V = vue.defineComponent({
 	props: {
-		"original": {
+		original: {
 			required: true,
 			type: String,
 		},
-		"modified": {
+		modified: {
 			required: true,
 			type: String,
 		},
-		"original_size": {
+		original_size: {
 			required: true,
 			type: Object as vue.PropType<BigInt>,
 		},
-		"modified_size": {
+		modified_size: {
 			required: true,
 			type: Object as vue.PropType<BigInt>,
 		},
@@ -34,25 +33,24 @@ export const V = vue.defineComponent({
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
 
-		let original: _monaco.editor.ITextModel | null = null
-		let modified: _monaco.editor.ITextModel | null = null
-		let editor: _monaco.editor.IStandaloneDiffEditor | null = null
-		let navigator: _monaco.editor.IDiffNavigator | null = null
+		let original: monaco.editor.ITextModel | null = null
+		let modified: monaco.editor.ITextModel | null = null
+		let editor: monaco.editor.IStandaloneDiffEditor | null = null
 
 		vue.onMounted(() => {
 			head.value = `${props.original_size.toLocaleString()} byte`
 				+ ` | ${props.modified_size.toLocaleString()} byte`
-			original = window.monaco.editor.createModel(
+			original = globalThis.monaco.editor.createModel(
 				"",
 				undefined,
-				window.monaco.Uri.file(props.original),
+				globalThis.monaco.Uri.file(props.original),
 			)
-			modified = window.monaco.editor.createModel(
+			modified = globalThis.monaco.editor.createModel(
 				"",
 				undefined,
-				window.monaco.Uri.file(props.modified),
+				globalThis.monaco.Uri.file(props.modified),
 			)
-			editor = window.monaco.editor.createDiffEditor(
+			editor = globalThis.monaco.editor.createDiffEditor(
 				el.value!,
 				{
 					readOnly: true,
@@ -71,7 +69,6 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			navigator = window.monaco.editor.createDiffNavigator(editor)
 			editor.setModel({
 				original: original,
 				modified: modified,
@@ -97,18 +94,17 @@ export const V = vue.defineComponent({
 		})
 
 		vue.onUnmounted(() => {
-			navigator?.dispose()
 			editor?.dispose()
 			modified?.dispose()
 			original?.dispose()
 		})
 
 		const prev = () => {
-			navigator?.previous()
+			editor?.goToDiff("previous")
 		}
 
 		const next = () => {
-			navigator?.next()
+			editor?.goToDiff("next")
 		}
 
 		return {

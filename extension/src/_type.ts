@@ -1,6 +1,8 @@
-declare function log(...args: any[]): void
+import { Attributes, Directory } from "@eyna/native/ts/_type"
 
-type Extension = {
+export * from "@eyna/native/ts/_type"
+
+export type Extension = {
 	active: {
 		wd: string
 		cursor: Attributes | null
@@ -19,8 +21,7 @@ type Extension = {
 		mkfile: (full: string) => Promise<void>
 		copy: (full_src: string, full_dst: string) => Promise<void>
 		move: (full_src: string, full_dst: string) => Promise<void>
-		findcopy: (full: string) => Promise<string[]>
-		findmove: (full: string) => Promise<string[]>
+		find: (full: string, base: string) => Promise<Directory>
 	}
 	dialog: {
 		opne: (option: alert_option | prompt_option) => Promise<{ text: string } | null>
@@ -41,32 +42,3 @@ type prompt_option = {
 	start?: number
 	end?: number
 }
-
-declare enum AttributeFileType {
-	home = -1,
-	none = 0,
-	directory = 1,
-	link = 2,
-	file = 3,
-	special = 10,
-}
-declare enum AttributeLinkType {
-	none = 0,
-	symbolic = 1,
-	junction = 2,
-	shortcut = 3,
-	bookmark = 4,
-}
-type Attribute = {
-	file_type: AttributeFileType
-	full: string
-	rltv: string
-
-	link_type: AttributeLinkType
-	link: string
-
-	size: number
-	time: number
-	nsec: number
-}
-type Attributes = Attribute[]
