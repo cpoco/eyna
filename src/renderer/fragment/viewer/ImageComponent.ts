@@ -23,6 +23,7 @@ export const V = vue.defineComponent({
 				head.value = `${img.value!.naturalWidth.toLocaleString()}`
 					+ ` x ${img.value!.naturalHeight.toLocaleString()}`
 					+ ` | ${props.size.toLocaleString()} byte`
+					+ ` | ${window.devicePixelRatio}`
 			}
 			vue.nextTick(() => {
 				img.value!.src = `file://${props.path}`
