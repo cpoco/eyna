@@ -58,16 +58,28 @@ for (const f of ff) {
 }
 
 {
-	const rol = path.join(wd, "RLO")
-	await fs.mkdir(rol)
-	await fs.mkdir(path.join(rol, "\u{202E}りとくれぃで"))
-	await fs.mkdir(path.join(rol, "\u{202E}リトクレィデ"))
-	await fs.writeFile(path.join(rol, "0123456789"), "")
-	await fs.writeFile(path.join(rol, "\u{202E}9876543210"), "")
-	await fs.symlink(rol + "/0123456789", path.join(rol, "la_0123456789"))
-	await fs.symlink(rol + "/\u{202E}9876543210", path.join(rol, "la_\u{202E}9876543210"))
-	await fs.symlink("../RLO/0123456789", path.join(rol, "lr_0123456789"))
-	await fs.symlink("../RLO/\u{202E}9876543210", path.join(rol, "lr_\u{202E}9876543210"))
+	const rlo = path.join(wd, "RLO")
+	await fs.mkdir(rlo)
+	await fs.mkdir(path.join(rlo, "でぃれくとり"))
+	await fs.mkdir(path.join(rlo, "ディレクトリ"))
+	await fs.mkdir(path.join(rlo, "\u{202D}でぃれくとり"))
+	await fs.mkdir(path.join(rlo, "\u{202D}ディレクトリ"))
+	await fs.mkdir(path.join(rlo, "\u{202E}りとくれぃで"))
+	await fs.mkdir(path.join(rlo, "\u{202E}リトクレィデ"))
+	await fs.mkdir(path.join(rlo, "\u{202D}でぃれ\u{202E}りとく"))
+	await fs.mkdir(path.join(rlo, "\u{202D}ディレ\u{202E}リトク"))
+	await fs.writeFile(path.join(rlo, "0123456789"), "")
+	await fs.writeFile(path.join(rlo, "\u{202D}0123456789"), "")
+	await fs.writeFile(path.join(rlo, "\u{202E}9876543210"), "")
+	await fs.writeFile(path.join(rlo, "\u{202D}01234\u{202E}98765"), "")
+	await fs.symlink(rlo + "/0123456789", path.join(rlo, "la_0123456789"))
+	await fs.symlink(rlo + "/\u{202D}0123456789", path.join(rlo, "la_\u{202D}0123456789"))
+	await fs.symlink(rlo + "/\u{202E}9876543210", path.join(rlo, "la_\u{202E}9876543210"))
+	await fs.symlink(rlo + "/\u{202D}01234\u{202E}98765", path.join(rlo, "la_\u{202D}01234\u{202E}98765"))
+	await fs.symlink("../RLO/0123456789", path.join(rlo, "lr_0123456789"))
+	await fs.symlink("../RLO/\u{202D}0123456789", path.join(rlo, "lr_\u{202D}0123456789"))
+	await fs.symlink("../RLO/\u{202E}9876543210", path.join(rlo, "lr_\u{202E}9876543210"))
+	await fs.symlink("../RLO/\u{202D}01234\u{202E}98765", path.join(rlo, "lr_\u{202D}01234\u{202E}98765"))
 }
 
 {
