@@ -258,9 +258,9 @@ export const V = vue.defineComponent({
 										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
 									}),
 								]),
-								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
+								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
 								vue.h("span", link, Font.arrow_right),
-								vue.h("span", trgt, Unicode.rol(this.cell.attr[0]?.link)),
+								vue.h("span", trgt, Unicode.highlight(this.cell.attr[0]?.link)),
 							]
 							: [
 								vue.h("span", icon, [
@@ -269,7 +269,7 @@ export const V = vue.defineComponent({
 										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
 									}),
 								]),
-								vue.h("span", name, Unicode.rol(this.cell.attr[0]?.rltv)),
+								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
 							],
 					),
 					vue.h(
