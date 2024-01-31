@@ -15,7 +15,7 @@
 		"@vue/runtime-dom": "3.4.15",
 		"electron": "28.2.0",
 		"electron-builder": "24.9.1",
-		"esbuild": "0.19.12",
+		"esbuild": "0.20.0",
 		"monaco-editor": "0.45.0",
 		"pug": "3.0.2",
 		"stylus": "0.62.0",
