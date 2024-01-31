@@ -38,8 +38,8 @@ export const V = vue.defineComponent({
 					root.log("ipc.invoke.result", data)
 					sys.reactive.ready = true
 					sys.reactive.active = data.active
-					sys.reactive.styleFontSize = data.fontSize
-					sys.reactive.styleLineHeight = data.lineHeight
+					sys.reactive.dynamicFontSize = data.fontSize
+					sys.reactive.dynamicLineHeight = data.lineHeight
 				})
 		}
 

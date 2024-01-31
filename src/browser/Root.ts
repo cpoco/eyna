@@ -5,6 +5,7 @@ import * as vm from "node:vm"
 import * as Native from "@eyna/native/ts/browser"
 import * as Util from "@eyna/util"
 
+import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import { Command } from "@/browser/core/Command"
 import { Path } from "@/browser/core/Path"
@@ -12,6 +13,7 @@ import { Storage } from "@/browser/core/Storage"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
+import { NavbarFragment } from "@/browser/fragment/navbar/NavbarFragment"
 import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
@@ -34,9 +36,17 @@ const icon = electron.nativeImage.createFromDataURL(
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
 )
 
+enum index {
+	system = 0,
+	navbar = 1,
+	filer = 2,
+	modal = 3,
+	viewer = 4,
+}
+
 class Root {
 	private url: string = ""
-	private fragment!: [SystemFragment, FilerFragment, ModalFragment, ViewerFragment]
+	private fragment!: [SystemFragment, NavbarFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
 	private active: boolean = false
 
@@ -44,6 +54,7 @@ class Root {
 		this.url = url
 		this.fragment = [
 			new SystemFragment(),
+			new NavbarFragment(),
 			new FilerFragment(),
 			new ModalFragment(),
 			new ViewerFragment(),
@@ -57,6 +68,13 @@ class Root {
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
 		let op: Electron.BrowserWindowConstructorOptions = {
+			frame: false,
+			titleBarStyle: "hidden",
+			titleBarOverlay: {
+				color: "#fff",
+				symbolColor: "#1e1e1e", // _1_settings.styl#_background
+				height: Conf.NAVBAR_HEIGHT,
+			},
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
@@ -64,7 +82,7 @@ class Root {
 				sandbox: true,
 				spellcheck: false,
 			},
-			backgroundColor: "#222",
+			backgroundColor: "#1e1e1e", // _1_settings.styl#_background
 		}
 		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
@@ -79,7 +97,7 @@ class Root {
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getBounds()
-			Storage.manager.data.wd = this.fragment[1].pwd
+			Storage.manager.data.wd = this.fragment[index.filer].pwd
 			Storage.manager.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
@@ -106,16 +124,16 @@ class Root {
 		let f: AbstractFragment | null = null
 		switch (conf.when) {
 			case Command.When.Always:
-				f = this.fragment[0]
+				f = this.fragment[index.system]
 				break
 			case Command.When.Filer:
-				f = this.fragment[1]
+				f = this.fragment[index.filer]
 				break
 			case Command.When.Modal:
-				f = this.fragment[2]
+				f = this.fragment[index.modal]
 				break
 			case Command.When.Viewer:
-				f = this.fragment[3]
+				f = this.fragment[index.viewer]
 				break
 			default:
 				return
@@ -157,7 +175,7 @@ class Root {
 	}
 
 	setTitle(title: string) {
-		this.browser.setTitle(title)
+		this.fragment[index.navbar].setTitle(title)
 	}
 
 	showMessageBox(message: string) {
@@ -204,11 +222,11 @@ class Root {
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
-		return this.fragment[2].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
+		return this.fragment[index.modal].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
 	viewer(option: Bridge.Viewer.Open.Data) {
-		this.fragment[3].opne(option)
+		this.fragment[index.viewer].opne(option)
 	}
 
 	runExtension(file: string, option: Option) {
@@ -233,7 +251,7 @@ class Root {
 				filer: {
 					update: () => {
 						sbox.log("filer.update")
-						this.fragment[1].update()
+						this.fragment[index.filer].update()
 					},
 					exists: (full: string): Promise<boolean> => {
 						sbox.log("filer.exists", { full })
@@ -269,13 +287,13 @@ class Root {
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
 						sbox.log("dialog.opne", option)
-						return this.fragment[2].opne(option) as Promise<
+						return this.fragment[index.modal].opne(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
 					},
 					cancel: () => {
 						sbox.log("dialog.cancel")
-						this.fragment[2].cancel()
+						this.fragment[index.modal].cancel()
 					},
 				},
 			})
