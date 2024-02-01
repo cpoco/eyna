@@ -6,6 +6,9 @@ export const VIEWER_IMAGE_EXT = /^\.(gif|jpe?g|png|webp)$/i
 export const VIEWER_AUDIO_EXT = /^\.(mp3|m4a|ogg|wave?)$/i
 export const VIEWER_VIDEO_EXT = /^\.(mp4|webm)$/i
 
+export const COLOR_FOREGROUND = "#d4d4d4" // _1_settings.styl#_foreground
+export const COLOR_BACKGROUND = "#1e1e1e" // _1_settings.styl#_background
+
 export const DYNAMIC_NAVBAR_HEIGHT_STYLE = "--dynamic-navbar-height"
 export const DYNAMIC_NAVBAR_HEIGHT = NAVBAR_HEIGHT
 

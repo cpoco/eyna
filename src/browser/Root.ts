@@ -71,8 +71,8 @@ class Root {
 			frame: false,
 			titleBarStyle: "hidden",
 			titleBarOverlay: {
-				color: "#fff",
-				symbolColor: "#1e1e1e", // _1_settings.styl#_background
+				color: Conf.COLOR_BACKGROUND,
+				symbolColor: Conf.COLOR_FOREGROUND,
 				height: Conf.NAVBAR_HEIGHT,
 			},
 			minWidth: 400,
@@ -82,7 +82,7 @@ class Root {
 				sandbox: true,
 				spellcheck: false,
 			},
-			backgroundColor: "#1e1e1e", // _1_settings.styl#_background
+			backgroundColor: Conf.COLOR_BACKGROUND,
 		}
 		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
