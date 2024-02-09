@@ -4,12 +4,11 @@ export namespace System {
 		export const CH = "system-active"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = boolean
 	}
 
@@ -18,12 +17,11 @@ export namespace System {
 		export const CH = "system-dom"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				-1,
+				Data,
+			]
 		}
-		export type Args = [
-			-1,
-			Data,
-		]
 		export type Data = {
 			event: "mounted"
 			root: {

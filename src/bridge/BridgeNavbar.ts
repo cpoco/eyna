@@ -4,12 +4,11 @@ export namespace Navbar {
 		export const CH = "navbar-title"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = string
 	}
 }

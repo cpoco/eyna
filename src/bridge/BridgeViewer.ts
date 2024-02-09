@@ -4,12 +4,11 @@ export namespace Viewer {
 		export const CH = "viewer-event"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = opened | closed
 		type opened = {
 			event: "opened"
@@ -24,12 +23,11 @@ export namespace Viewer {
 		export const CH = "viewer-open"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = DataText | DataDiff | DataImage | DataAudio | DataVideo
 		export type DataText = {
 			type: "text"
@@ -63,12 +61,11 @@ export namespace Viewer {
 		export const CH = "viewer-close"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = {}
 	}
 
@@ -77,12 +74,11 @@ export namespace Viewer {
 		export const CH = "viewer-diff"
 		export type Send = {
 			ch: typeof CH
-			args: Args
+			args: [
+				number,
+				Data,
+			]
 		}
-		export type Args = [
-			number,
-			Data,
-		]
 		export type Data = "prev" | "next"
 	}
 }
