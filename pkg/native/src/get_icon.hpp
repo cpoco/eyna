@@ -131,6 +131,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	if (is_traversal(work->abst)) {
 		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		delete work;
 		return;
 	}
 	work->abst = abst;
