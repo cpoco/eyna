@@ -131,15 +131,9 @@ export const V = vue.defineComponent({
 			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
 		}
 
-		type drag = {
-			draggable?: boolean
-			onDragstart?: (event: DragEvent) => void
-		}
-
 		type style =
 			& {
 				class: {
-					"filer-cicon"?: boolean
 					"filer-cfile"?: boolean
 					"filer-clink"?: boolean
 					"filer-ctrgt"?: boolean
@@ -157,10 +151,8 @@ export const V = vue.defineComponent({
 					"c-miss"?: boolean
 				}
 			}
-			& drag
 			& vue.AllowedComponentProps
 
-		let icon: style = { class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart }
 		let name: style = { class: { "filer-cfile": true } }
 		let link: style = { class: { "filer-clink": true, "c-operator": true } }
 		let trgt: style = { class: { "filer-ctrgt": true } }
@@ -249,26 +241,24 @@ export const V = vue.defineComponent({
 				[
 					vue.h(
 						"span",
+						{ class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart },
+						[
+							vue.h("img", {
+								class: { "filer-cimg": true },
+								src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
+							}),
+						],
+					),
+					vue.h(
+						"span",
 						{ class: { "filer-cname": true } },
 						this.is_link
 							? [
-								vue.h("span", icon, [
-									vue.h("img", {
-										class: { "filer-cimg": true },
-										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
-									}),
-								]),
 								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
 								vue.h("span", link, Font.arrow_right),
 								vue.h("span", trgt, Unicode.highlight(this.cell.attr[0]?.link)),
 							]
 							: [
-								vue.h("span", icon, [
-									vue.h("img", {
-										class: { "filer-cimg": true },
-										src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
-									}),
-								]),
 								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
 							],
 					),
