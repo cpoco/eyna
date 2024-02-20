@@ -14,9 +14,7 @@
 	--stat-target: rgba(0, 127, 212, 0.5)
 	--stat-none: rgba(255, 255, 255, 0.1)
 
-	--cell-select-cursor: rgba(0, 127, 212, 0.3)
-	--cell-select: rgba(0, 127, 212, 0.2)
-	--cell-cursor: rgba(255, 255, 255, 0.1)
+	--cell-select: rgba(255, 255, 255, 0.1)
 
 	--scroll-width: 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
@@ -131,12 +129,10 @@
 		position: absolute
 		width: 100%
 		height: var(--dynamic-line-height)
-		&-selcur
-			background-color: var(--cell-select-cursor)
+		&-cursor
+			border: 1px solid _focus;
 		&-select
 			background-color: var(--cell-select)
-		&-cursor
-			background-color: var(--cell-cursor)
 
 	&-cflex
 		position: absolute

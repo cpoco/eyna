@@ -15,7 +15,6 @@ export type Cell = {
 		top: string
 	}
 	back: {
-		selcur: boolean
 		select: boolean
 		cursor: boolean
 	}
@@ -229,7 +228,6 @@ export const V = vue.defineComponent({
 				{
 					class: {
 						"filer-cback": true,
-						"filer-cback-selcur": this.cell.back.selcur,
 						"filer-cback-select": this.cell.back.select,
 						"filer-cback-cursor": this.cell.back.cursor,
 					},

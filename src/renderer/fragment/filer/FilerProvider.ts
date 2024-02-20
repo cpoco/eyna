@@ -124,9 +124,8 @@ function _create(count: number) {
 						top: `${t}px`,
 					},
 					back: {
-						selcur: s && c,
-						select: s && !c,
-						cursor: !s && c,
+						select: s,
+						cursor: c,
 					},
 					attr: vue.markRaw(d.ls?.[k] ?? []),
 				}
