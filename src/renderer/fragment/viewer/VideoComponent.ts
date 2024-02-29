@@ -25,6 +25,7 @@ export const V = vue.defineComponent({
 					+ ` x ${vid.value!.videoHeight.toLocaleString()}`
 					+ ` | ${vid.value!.duration} sec`
 					+ ` | ${props.size.toLocaleString()} byte`
+					+ ` | ${window.devicePixelRatio}`
 			}
 			vue.nextTick(() => {
 				src.value!.src = `file://${props.path}`

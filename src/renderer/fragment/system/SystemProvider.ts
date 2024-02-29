@@ -8,23 +8,24 @@ function _create() {
 	const reactive = vue.reactive({
 		ready: false,
 		active: false,
-		styleFontSize: Conf.DYNAMIC_FONT_SIZE,
-		styleLineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+		dynamicFontSize: Conf.DYNAMIC_FONT_SIZE,
+		dynamicLineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 	})
 	const refs = vue.toRefs(reactive)
 
 	const e = document.querySelector<HTMLElement>(":root")
-	e?.style.setProperty(Conf.STYLE_DYNAMIC_FONT_SIZE, `${Conf.DYNAMIC_FONT_SIZE}px`)
-	e?.style.setProperty(Conf.STYLE_DYNAMIC_LINE_HEIGHT, `${Conf.DYNAMIC_LINE_HEIGHT}px`)
+	e?.style.setProperty(Conf.DYNAMIC_NAVBAR_HEIGHT_STYLE, `${Conf.DYNAMIC_NAVBAR_HEIGHT}px`)
+	e?.style.setProperty(Conf.DYNAMIC_FONT_SIZE_STYLE, `${Conf.DYNAMIC_FONT_SIZE}px`)
+	e?.style.setProperty(Conf.DYNAMIC_LINE_HEIGHT_STYLE, `${Conf.DYNAMIC_LINE_HEIGHT}px`)
 
-	vue.watch(refs.styleFontSize, (v) => {
+	vue.watch(refs.dynamicFontSize, (v) => {
 		const e = document.querySelector<HTMLElement>(":root")
-		e?.style.setProperty(Conf.STYLE_DYNAMIC_FONT_SIZE, `${v}px`)
+		e?.style.setProperty(Conf.DYNAMIC_FONT_SIZE_STYLE, `${v}px`)
 	})
 
-	vue.watch(refs.styleLineHeight, (v) => {
+	vue.watch(refs.dynamicLineHeight, (v) => {
 		const e = document.querySelector<HTMLElement>(":root")
-		e?.style.setProperty(Conf.STYLE_DYNAMIC_LINE_HEIGHT, `${v}px`)
+		e?.style.setProperty(Conf.DYNAMIC_LINE_HEIGHT_STYLE, `${v}px`)
 	})
 
 	return {

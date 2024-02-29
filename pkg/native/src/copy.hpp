@@ -108,12 +108,14 @@ void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	if (is_traversal(work->src)) {
 		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		delete work;
 		return;
 	}
 
 	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
 	if (is_traversal(work->dst)) {
 		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		delete work;
 		return;
 	}
 

@@ -7,8 +7,9 @@
 	&-fragment
 		position: absolute
 		overflow: hidden
+		top: var(--dynamic-navbar-height)
 		width: 100%
-		height: 100%
+		height: calc(100% - var(--dynamic-navbar-height))
 
 // MonacoComponent MonacoDiffComponent
 .viewer-monaco

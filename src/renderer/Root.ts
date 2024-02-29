@@ -4,6 +4,7 @@ import * as vue from "@vue/runtime-dom"
 import * as Bridge from "@/bridge/Bridge"
 import * as FilerFragment from "@/renderer/fragment/filer/FilerFragment"
 import * as ModalFragment from "@/renderer/fragment/modal/ModalFragment"
+import * as NavbarFragment from "@/renderer/fragment/navbar/NavbarFragment"
 import * as SystemFragment from "@/renderer/fragment/system/SystemFragment"
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 import * as ViewerFragment from "@/renderer/fragment/viewer/ViewerFragment"
@@ -30,6 +31,7 @@ const V = vue.defineComponent({
 	render() {
 		return vue.h("root", undefined, [
 			vue.h(SystemFragment.V),
+			this.sys.ready ? vue.h(NavbarFragment.V) : undefined,
 			this.sys.ready ? vue.h(FilerFragment.V) : undefined,
 			this.sys.ready ? vue.h(ModalFragment.V) : undefined,
 			this.sys.ready ? vue.h(ViewerFragment.V) : undefined,

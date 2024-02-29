@@ -94,6 +94,7 @@ void resolve(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	if (is_traversal(work->abst)) {
 		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+		delete work;
 		return;
 	}
 

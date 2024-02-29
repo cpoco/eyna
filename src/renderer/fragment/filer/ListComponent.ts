@@ -134,7 +134,7 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h("div", { class: { "filer-dir": true } }, Unicode.rol(this.list.wd)),
+				vue.h("div", { class: { "filer-dir": true } }, Unicode.highlight(this.list.wd)),
 				vue.h(
 					"div",
 					{ class: { "filer-val": true } },
