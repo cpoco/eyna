@@ -33,7 +33,7 @@ jobs:
       - name: package
         run: npm run p -- ${{ matrix.arch }}
       - name: upload-artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}
           path: dist/*.7z
