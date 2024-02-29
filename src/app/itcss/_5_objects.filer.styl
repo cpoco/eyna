@@ -14,6 +14,7 @@
 	--stat-target: rgba(0, 127, 212, 0.5)
 	--stat-none: rgba(255, 255, 255, 0.1)
 
+	--cell-cursor: rgba(0, 127, 212, 0.9)
 	--cell-select: rgba(255, 255, 255, 0.1)
 
 	--scroll-width: 6px
@@ -130,7 +131,7 @@
 		width: 100%
 		height: var(--dynamic-line-height)
 		&-cursor
-			border: 1px solid _focus;
+			border: 1px solid var(--cell-cursor)
 		&-select
 			background-color: var(--cell-select)
 
