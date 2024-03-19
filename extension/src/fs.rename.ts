@@ -26,11 +26,10 @@ module.exports = async (ex: Extension): Promise<void> => {
 	const src = path.join(src_base, src_item)
 	const dst = path.join(dst_base, prompt.text)
 
-	if (
-		src == dst
-		|| path.dirname(src) != path.dirname(dst)
-		|| await ex.filer.exists(dst)
-	) {
+	if (src == dst || path.dirname(src) != path.dirname(dst)) {
+		return
+	}
+	if (src_item.toLowerCase() != prompt.text.toLowerCase() && await ex.filer.exists(dst)) {
 		return
 	}
 
