@@ -174,10 +174,6 @@ class Root {
 		this.browser.reload()
 	}
 
-	setTitle(title: string) {
-		this.fragment[index.navbar].setTitle(title)
-	}
-
 	showMessageBox(message: string) {
 		electron.dialog.showMessageBox(this.browser, { "message": message })
 	}

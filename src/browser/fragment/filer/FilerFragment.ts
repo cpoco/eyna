@@ -65,9 +65,7 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	update() {
-		this.active.update().then(() => {
-			this.title()
-		})
+		this.active.update()
 		this.target.update()
 		this.core.forEach((fm) => {
 			if (fm.data.status == Bridge.Status.none) {
@@ -78,20 +76,11 @@ export class FilerFragment extends AbstractFragment {
 		})
 	}
 
-	private title() {
-		let a = this.active.data.ls[this.active.data.cursor] ?? []
-		root.setTitle(a[0]?.full ?? this.active.data.wd)
-	}
-
 	private ipc() {
 		root
 			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_LINE_HEIGHT).then(() => {
-						if (this.index.active == i) {
-							this.title()
-						}
-					})
+					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_LINE_HEIGHT)
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.data.h)
@@ -143,7 +132,7 @@ export class FilerFragment extends AbstractFragment {
 					}),
 				},
 			})
-			this.title()
+			// this.title()
 			return Promise.resolve()
 		})
 	}
@@ -158,7 +147,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorUp()
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.pageup", (active, _target) => {
@@ -169,7 +157,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorUp(active.mv)
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.down", (active, _target) => {
@@ -180,7 +167,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorDown()
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.pagedown", (active, _target) => {
@@ -191,7 +177,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorDown(active.mv)
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.left", (_active, _target) => {
@@ -205,7 +190,6 @@ export class FilerFragment extends AbstractFragment {
 						: Bridge.Status.none
 					fm.sendActive()
 				})
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.right", (_active, _target) => {
@@ -219,13 +203,11 @@ export class FilerFragment extends AbstractFragment {
 						: Bridge.Status.none
 					fm.sendActive()
 				})
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.update", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
 					await active.update()
-					this.title()
 					resolve()
 				})
 			})
@@ -259,7 +241,6 @@ export class FilerFragment extends AbstractFragment {
 						active.sendScan()
 						active.sendAttribute()
 					}
-					this.title()
 					resolve()
 				})
 			})
@@ -329,7 +310,6 @@ export class FilerFragment extends AbstractFragment {
 							active.sendScan()
 							active.sendAttribute()
 						}
-						this.title()
 						resolve()
 					}
 					// file(shortcut or bookmark) -> directory
@@ -342,7 +322,6 @@ export class FilerFragment extends AbstractFragment {
 							active.sendScan()
 							active.sendAttribute()
 						}
-						this.title()
 						resolve()
 					}
 					// file
@@ -394,7 +373,6 @@ export class FilerFragment extends AbstractFragment {
 						active.sendScan()
 						active.sendAttribute()
 					}
-					this.title()
 					resolve()
 				})
 			})
@@ -486,7 +464,6 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					this.title()
 					break
 				}
 				return Promise.resolve()
@@ -510,7 +487,6 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					this.title()
 					break
 				}
 				return Promise.resolve()

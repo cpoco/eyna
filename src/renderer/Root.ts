@@ -1,8 +1,10 @@
 import * as vue from "@vue/runtime-dom"
 // import * as dev from "@vue/devtools"
 
+import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import * as FilerFragment from "@/renderer/fragment/filer/FilerFragment"
+import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
 import * as ModalFragment from "@/renderer/fragment/modal/ModalFragment"
 import * as NavbarFragment from "@/renderer/fragment/navbar/NavbarFragment"
 import * as SystemFragment from "@/renderer/fragment/system/SystemFragment"
@@ -22,6 +24,7 @@ declare global {
 const V = vue.defineComponent({
 	setup() {
 		const sys = SystemProvider.create()
+		FilerProvider.create(Conf.LIST_COUNT)
 
 		return {
 			sys: sys.reactive,
