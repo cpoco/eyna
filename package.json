@@ -13,13 +13,13 @@
 		"@eyna/native": "*",
 		"@eyna/util": "*",
 		"@vue/runtime-dom": "3.4.21",
-		"electron": "29.1.4",
+		"electron": "29.1.5",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.20.2",
 		"monaco-editor": "0.47.0",
 		"pug": "3.0.2",
 		"stylus": "0.63.0",
-		"typescript": "5.4.2"
+		"typescript": "5.4.3"
 	},
 	"overrides": {
 		"make-fetch-happen": "13.0.0"
