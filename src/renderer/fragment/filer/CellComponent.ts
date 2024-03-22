@@ -34,6 +34,10 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
+		const first = vue.computed((): Native.Attribute | undefined => {
+			return props.cell.attr[0]
+		})
+
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
 			return props.cell.attr.map((it) => {
 				return it ? it.file_type : Native.AttributeFileType.none
@@ -108,6 +112,7 @@ export const V = vue.defineComponent({
 
 		return {
 			is_empty,
+			first,
 			file_type,
 			link_type,
 			is_link,
@@ -119,7 +124,7 @@ export const V = vue.defineComponent({
 
 	render() {
 		let node: vue.VNodeProps & vue.AllowedComponentProps = {
-			key: this.cell.attr[0]?.full ?? "",
+			key: this.first?.full ?? "",
 			class: {
 				"filer-cell": true,
 			},
@@ -222,6 +227,8 @@ export const V = vue.defineComponent({
 			}
 		}
 
+		const dt = Util.DateTime(this.first?.time ?? 0)
+
 		return vue.h(TAG, node, [
 			vue.h(
 				"span",
@@ -243,7 +250,7 @@ export const V = vue.defineComponent({
 						[
 							vue.h("img", {
 								class: { "filer-cimg": true },
-								src: `eyna://icon?p=${encodeURIComponent(this.cell.attr[0]?.full ?? "")}`,
+								src: `eyna://icon?p=${encodeURIComponent(this.first?.full ?? "")}`,
 							}),
 						],
 					),
@@ -252,61 +259,33 @@ export const V = vue.defineComponent({
 						{ class: { "filer-cname": true } },
 						this.is_link
 							? [
-								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
+								vue.h("span", name, Unicode.highlight(this.first?.rltv)),
 								vue.h("span", link, Font.arrow_right),
-								vue.h("span", trgt, Unicode.highlight(this.cell.attr[0]?.link)),
+								vue.h("span", trgt, Unicode.highlight(this.first?.link)),
 							]
 							: [
-								vue.h("span", name, Unicode.highlight(this.cell.attr[0]?.rltv)),
+								vue.h("span", name, Unicode.highlight(this.first?.rltv)),
 							],
 					),
 					vue.h(
 						"span",
 						{ class: { "filer-csize": true } },
 						this.is_size
-							? this.cell.attr[0]?.size.toLocaleString() ?? undefined
+							? this.first?.size.toLocaleString() ?? undefined
 							: undefined,
 					),
 					vue.h(
 						"span",
 						{ class: { "filer-cdate": true } },
-						this.is_date
-							? date(this.cell.attr[0]?.time ?? 0)
-							: undefined,
+						this.is_date ? dt.date : undefined,
 					),
 					vue.h(
 						"span",
 						{ class: { "filer-ctime": true } },
-						this.is_date
-							? time(this.cell.attr[0]?.time ?? 0)
-							: undefined,
+						this.is_date ? dt.time : undefined,
 					),
 				],
 			),
 		])
 	},
 })
-
-function date(sec: number): string {
-	if (sec == 0) {
-		return "----/--/--"
-	}
-	let d = new Date(sec * 1000)
-	return [
-		d.getFullYear(),
-		(`0${d.getMonth() + 1}`).slice(-2),
-		(`0${d.getDate()}`).slice(-2),
-	].join("/")
-}
-
-function time(sec: number): string {
-	if (sec == 0) {
-		return "--:--:--"
-	}
-	let d = new Date(sec * 1000)
-	return [
-		(`0${d.getHours()}`).slice(-2),
-		(`0${d.getMinutes()}`).slice(-2),
-		(`0${d.getSeconds()}`).slice(-2),
-	].join(":")
-}
