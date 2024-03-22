@@ -260,7 +260,7 @@ export const V = vue.defineComponent({
 						this.is_link
 							? [
 								vue.h("span", name, Unicode.highlight(this.first?.rltv)),
-								vue.h("span", link, Font.arrow_right),
+								vue.h("span", link, Font.Icon.ArrowRight),
 								vue.h("span", trgt, Unicode.highlight(this.first?.link)),
 							]
 							: [
