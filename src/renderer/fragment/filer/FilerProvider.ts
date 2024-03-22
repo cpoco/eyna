@@ -122,8 +122,8 @@ function _create(count: number) {
 		r.list.info.error = d.error
 		r.list.info.elapse = d.elapse
 		r.list.stat.status = d.status
-		r.list.stat.active = d.status == Bridge.Status.active
-		r.list.stat.target = d.status == Bridge.Status.target
+		r.list.stat.active = d.status == Bridge.Status.Active
+		r.list.stat.target = d.status == Bridge.Status.Target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 
@@ -134,7 +134,7 @@ function _create(count: number) {
 				const k = d.drawIndex + j
 				const t = d.drawPosition + j * d.drawSize
 				const s = d.mk?.[k] ?? false
-				const c = d.status == Bridge.Status.active && d.cursor == k
+				const c = d.status == Bridge.Status.Active && d.cursor == k
 				return {
 					style: {
 						top: `${t}px`,
@@ -148,7 +148,7 @@ function _create(count: number) {
 			},
 		)
 
-		if (d.status == Bridge.Status.active) {
+		if (d.status == Bridge.Status.Active) {
 			reactive.title.wd = d.wd
 			reactive.title.attr = vue.markRaw(d.ls?.[d.cursor] ?? d.st)
 		}

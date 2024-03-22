@@ -1,5 +1,5 @@
 export enum Status {
-	none = 0,
-	active = 1,
-	target = 2,
+	None = 0,
+	Active = 1,
+	Target = 2,
 }

@@ -40,13 +40,13 @@ export const V = vue.defineComponent({
 
 		const file_type = vue.computed((): Native.AttributeFileType[] => {
 			return props.cell.attr.map((it) => {
-				return it ? it.file_type : Native.AttributeFileType.none
+				return it ? it.file_type : Native.AttributeFileType.None
 			})
 		})
 
 		const link_type = vue.computed((): Native.AttributeLinkType[] => {
 			return props.cell.attr.map((it) => {
-				return it ? it.link_type : Native.AttributeLinkType.none
+				return it ? it.link_type : Native.AttributeLinkType.None
 			})
 		})
 
@@ -55,14 +55,14 @@ export const V = vue.defineComponent({
 				return false
 			}
 
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.none
-			if (ftype == Native.AttributeFileType.file) {
-				let ltype = link_type.value[0] ?? Native.AttributeLinkType.none
-				if (ltype == Native.AttributeLinkType.shortcut || ltype == Native.AttributeLinkType.bookmark) {
+			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
+			if (ftype == Native.AttributeFileType.File) {
+				let ltype = link_type.value[0] ?? Native.AttributeLinkType.None
+				if (ltype == Native.AttributeLinkType.Shortcut || ltype == Native.AttributeLinkType.Bookmark) {
 					return true
 				}
 			}
-			else if (ftype == Native.AttributeFileType.link) {
+			else if (ftype == Native.AttributeFileType.Link) {
 				return true
 			}
 
@@ -74,8 +74,8 @@ export const V = vue.defineComponent({
 				return false
 			}
 
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.none
-			if (ftype == Native.AttributeFileType.file) {
+			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
+			if (ftype == Native.AttributeFileType.File) {
 				return true
 			}
 
@@ -87,8 +87,8 @@ export const V = vue.defineComponent({
 				return false
 			}
 
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.none
-			if (ftype == Native.AttributeFileType.drive || ftype == Native.AttributeFileType.homeuser) {
+			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
+			if (ftype == Native.AttributeFileType.Drive || ftype == Native.AttributeFileType.HomeUser) {
 				return false
 			}
 
@@ -161,32 +161,32 @@ export const V = vue.defineComponent({
 		let link: style = { class: { "filer-clink": true, "c-operator": true } }
 		let trgt: style = { class: { "filer-ctrgt": true } }
 
-		let ftype = this.file_type[0] ?? Native.AttributeFileType.none
-		if (ftype == Native.AttributeFileType.file) {
-			let ltype = this.link_type[0] ?? Native.AttributeLinkType.none
-			if (ltype == Native.AttributeLinkType.shortcut) {
+		let ftype = this.file_type[0] ?? Native.AttributeFileType.None
+		if (ftype == Native.AttributeFileType.File) {
+			let ltype = this.link_type[0] ?? Native.AttributeLinkType.None
+			if (ltype == Native.AttributeLinkType.Shortcut) {
 				name.class["c-shortcut"] = true
 			}
-			else if (ltype == Native.AttributeLinkType.bookmark) {
+			else if (ltype == Native.AttributeLinkType.Bookmark) {
 				name.class["c-bookmark"] = true
 			}
 			else {
 				name.class["c-file"] = true
 			}
 		}
-		else if (ftype == Native.AttributeFileType.link) {
+		else if (ftype == Native.AttributeFileType.Link) {
 			name.class["c-link"] = true
 		}
-		else if (ftype == Native.AttributeFileType.directory) {
+		else if (ftype == Native.AttributeFileType.Directory) {
 			name.class["c-directory"] = true
 		}
-		else if (ftype == Native.AttributeFileType.drive) {
+		else if (ftype == Native.AttributeFileType.Drive) {
 			name.class["c-drive"] = true
 		}
-		else if (ftype == Native.AttributeFileType.homeuser) {
+		else if (ftype == Native.AttributeFileType.HomeUser) {
 			name.class["c-homeuser"] = true
 		}
-		else if (ftype == Native.AttributeFileType.special) {
+		else if (ftype == Native.AttributeFileType.Special) {
 			name.class["c-special"] = true
 		}
 		else {
@@ -194,32 +194,32 @@ export const V = vue.defineComponent({
 		}
 
 		if (this.is_link) {
-			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.none
-			if (ftype2 == Native.AttributeFileType.file) {
-				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.none
-				if (ltype2 == Native.AttributeLinkType.shortcut) {
+			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.None
+			if (ftype2 == Native.AttributeFileType.File) {
+				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.None
+				if (ltype2 == Native.AttributeLinkType.Shortcut) {
 					trgt.class["c-shortcut"] = true
 				}
-				else if (ltype2 == Native.AttributeLinkType.bookmark) {
+				else if (ltype2 == Native.AttributeLinkType.Bookmark) {
 					trgt.class["c-bookmark"] = true
 				}
 				else {
 					trgt.class["c-file"] = true
 				}
 			}
-			else if (ftype2 == Native.AttributeFileType.link) {
-				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.none
-				if (ftype3 == Native.AttributeFileType.none) {
+			else if (ftype2 == Native.AttributeFileType.Link) {
+				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.None
+				if (ftype3 == Native.AttributeFileType.None) {
 					trgt.class["c-warn"] = true
 				}
 				else {
 					trgt.class["c-link"] = true
 				}
 			}
-			else if (ftype2 == Native.AttributeFileType.directory) {
+			else if (ftype2 == Native.AttributeFileType.Directory) {
 				trgt.class["c-directory"] = true
 			}
-			else if (ftype2 == Native.AttributeFileType.special) {
+			else if (ftype2 == Native.AttributeFileType.Special) {
 				trgt.class["c-special"] = true
 			}
 			else {

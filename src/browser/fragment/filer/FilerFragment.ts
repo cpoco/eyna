@@ -40,10 +40,10 @@ export class FilerFragment extends AbstractFragment {
 				i,
 				(Storage.manager.data.wd ?? [])[i] ?? null,
 				this.index.active == i
-					? Bridge.Status.active
+					? Bridge.Status.Active
 					: this.index.target == i
-					? Bridge.Status.target
-					: Bridge.Status.none,
+					? Bridge.Status.Target
+					: Bridge.Status.None,
 			)
 		})
 
@@ -68,7 +68,7 @@ export class FilerFragment extends AbstractFragment {
 		this.active.update()
 		this.target.update()
 		this.core.forEach((fm) => {
-			if (fm.data.status == Bridge.Status.none) {
+			if (fm.data.status == Bridge.Status.None) {
 				if (fm.pwd == this.active.pwd || fm.pwd == this.target.pwd) {
 					fm.update()
 				}
@@ -184,10 +184,10 @@ export class FilerFragment extends AbstractFragment {
 				this.index.active = (this.index.active + Conf.LIST_COUNT - 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
-						? Bridge.Status.active
+						? Bridge.Status.Active
 						: this.index.target == i
-						? Bridge.Status.target
-						: Bridge.Status.none
+						? Bridge.Status.Target
+						: Bridge.Status.None
 					fm.sendActive()
 				})
 				return Promise.resolve()
@@ -197,10 +197,10 @@ export class FilerFragment extends AbstractFragment {
 				this.index.active = (this.index.active + 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
-						? Bridge.Status.active
+						? Bridge.Status.Active
 						: this.index.target == i
-						? Bridge.Status.target
-						: Bridge.Status.none
+						? Bridge.Status.Target
+						: Bridge.Status.None
 					fm.sendActive()
 				})
 				return Promise.resolve()
@@ -264,8 +264,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					if (
 						lattr == null || ltrgt == null || rattr == null || rtrgt == null
-						|| ltrgt.file_type != Native.AttributeFileType.file
-						|| rtrgt.file_type != Native.AttributeFileType.file
+						|| ltrgt.file_type != Native.AttributeFileType.File
+						|| rtrgt.file_type != Native.AttributeFileType.File
 						|| ltrgt.full == rtrgt.full
 					) {
 						resolve()
@@ -299,11 +299,11 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.drive
-						|| attr.file_type == Native.AttributeFileType.homeuser
-						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.file_type == Native.AttributeFileType.link
-							&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.Drive
+						|| attr.file_type == Native.AttributeFileType.HomeUser
+						|| attr.file_type == Native.AttributeFileType.Directory
+						|| attr.file_type == Native.AttributeFileType.Link
+							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await active.sendChange(attr.full, 0, null, null)) {
 							active.scroll()
@@ -314,8 +314,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.file
-						&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.File
+						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await active.sendChange(trgt.full, 0, null, null)) {
 							active.scroll()
@@ -328,7 +328,7 @@ export class FilerFragment extends AbstractFragment {
 					// file(shortcut or bookmark) -> file
 					// link(symbolic or junction) -> file
 					else if (
-						trgt.file_type == Native.AttributeFileType.file
+						trgt.file_type == Native.AttributeFileType.File
 					) {
 						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
@@ -399,11 +399,11 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.drive
-						|| attr.file_type == Native.AttributeFileType.homeuser
-						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.file_type == Native.AttributeFileType.link
-							&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.Drive
+						|| attr.file_type == Native.AttributeFileType.HomeUser
+						|| attr.file_type == Native.AttributeFileType.Directory
+						|| attr.file_type == Native.AttributeFileType.Link
+							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await target.sendChange(attr.full, 0, null, null)) {
 							target.scroll()
@@ -414,8 +414,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.file
-						&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.File
+						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await target.sendChange(trgt.full, 0, null, null)) {
 							target.scroll()
@@ -455,7 +455,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.file) {
+					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
@@ -478,7 +478,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.file) {
+					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {

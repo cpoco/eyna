@@ -78,14 +78,14 @@ export class Dir {
 			this.rg = null
 			let _time = perf_hooks.performance.now()
 			let st = [{
-				file_type: Native.AttributeFileType.homeuser,
+				file_type: Native.AttributeFileType.HomeUser,
 				full: Dir.HOME,
 				base: "",
 				rltv: Dir.HOME,
 				name: Dir.HOME,
 				stem: "",
 				ext: "",
-				link_type: Native.AttributeLinkType.none,
+				link_type: Native.AttributeLinkType.None,
 				link: "",
 				size: 0n,
 				time: 0,
@@ -100,14 +100,14 @@ export class Dir {
 				let ls: Native.Attributes[] = []
 				vol.forEach((v) => {
 					ls.push([{
-						file_type: Native.AttributeFileType.drive,
+						file_type: Native.AttributeFileType.Drive,
 						full: v.full,
 						base: "",
 						rltv: v.name,
 						name: v.name,
 						stem: "",
 						ext: "",
-						link_type: Native.AttributeLinkType.none,
+						link_type: Native.AttributeLinkType.None,
 						link: "",
 						size: 0n,
 						time: 0,
@@ -119,14 +119,14 @@ export class Dir {
 					}])
 				})
 				ls.push([{
-					file_type: Native.AttributeFileType.homeuser,
+					file_type: Native.AttributeFileType.HomeUser,
 					full: Path.home(),
 					base: "",
 					rltv: "user",
 					name: "user",
 					stem: "",
 					ext: "",
-					link_type: Native.AttributeLinkType.none,
+					link_type: Native.AttributeLinkType.None,
 					link: "",
 					size: 0n,
 					time: 0,
@@ -205,16 +205,16 @@ export class Dir {
 const DIR_SORT = 1024
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.none
-	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.none
+	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.None
+	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.None
 
-	if (aa == Native.AttributeFileType.none) {
-		aa = Native.AttributeFileType.file
+	if (aa == Native.AttributeFileType.None) {
+		aa = Native.AttributeFileType.File
 	}
-	if (bb == Native.AttributeFileType.none) {
-		bb = Native.AttributeFileType.file
+	if (bb == Native.AttributeFileType.None) {
+		bb = Native.AttributeFileType.File
 	}
-	if (aa == Native.AttributeFileType.directory && bb == Native.AttributeFileType.directory) {
+	if (aa == Native.AttributeFileType.Directory && bb == Native.AttributeFileType.Directory) {
 		return DIR_SORT
 	}
 

@@ -27,7 +27,7 @@ export namespace List {
 		return {
 			create: 0,
 			elapse: 0,
-			status: Status.none,
+			status: Status.None,
 			search: false,
 			cursor: 0,
 			length: 0,

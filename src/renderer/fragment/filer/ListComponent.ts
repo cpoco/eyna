@@ -51,7 +51,7 @@ export function InitList(): List {
 			elapse: 0,
 		},
 		stat: {
-			status: Status.none,
+			status: Status.None,
 			active: false,
 			target: false,
 		},
