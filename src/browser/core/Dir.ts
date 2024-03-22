@@ -68,11 +68,33 @@ export class Dir {
 		}
 	}
 
-	list(dp: number, rg: RegExp | null, cb: (wd: string, ls: Native.Attributes[], e: number) => void) {
+	async list(
+		dp: number,
+		rg: RegExp | null,
+		cb: (wd: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
+	) {
 		if (this.wd == Dir.HOME) {
 			this.dp = 0
 			this.rg = null
 			let _time = perf_hooks.performance.now()
+			let st = [{
+				file_type: Native.AttributeFileType.homeuser,
+				full: Dir.HOME,
+				base: "",
+				rltv: Dir.HOME,
+				name: Dir.HOME,
+				stem: "",
+				ext: "",
+				link_type: Native.AttributeLinkType.none,
+				link: "",
+				size: 0n,
+				time: 0,
+				nsec: 0,
+				readonly: false,
+				hidden: false,
+				system: false,
+				pseudo: false,
+			}]
 			Native.getVolume().then((vol: Native.Volume[]) => {
 				console.log(`\u001b[36m[dir]\u001b[0m`, "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 				let ls: Native.Attributes[] = []
@@ -114,7 +136,7 @@ export class Dir {
 					system: false,
 					pseudo: false,
 				}])
-				cb(this.wd, ls, 0)
+				cb(this.wd, st, ls, 0)
 			})
 		}
 		else {
@@ -122,6 +144,7 @@ export class Dir {
 			this.rg = rg
 			console.log(`\u001b[36m[dir]\u001b[0m`, `"${this.wd}"`, { dp: dp, rg: rg })
 			let _time = perf_hooks.performance.now()
+			let st = await Native.getAttribute(this.wd)
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
 				console.log(
 					`\u001b[36m[dir]\u001b[0m`,
@@ -173,7 +196,7 @@ export class Dir {
 					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
 				)
 
-				cb(dir.full, ls, dir.e)
+				cb(dir.full, st, ls, dir.e)
 			})
 		}
 	}

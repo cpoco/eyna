@@ -1,3 +1,4 @@
+import * as Native from "@eyna/native/ts/renderer"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
@@ -16,6 +17,7 @@ const TAG_SCROLL = "scroll"
 
 export type List = {
 	wd: string
+	st: Native.Attributes
 	search: boolean
 	info: {
 		show: boolean
@@ -38,6 +40,7 @@ export type List = {
 export function InitList(): List {
 	return {
 		wd: "",
+		st: [],
 		search: false,
 		info: {
 			show: false,

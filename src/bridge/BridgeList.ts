@@ -11,6 +11,7 @@ export namespace List {
 		cursor: number
 		length: number
 		wd: string
+		st: Native.Attributes
 		ls: Native.Attributes[]
 		mk: boolean[]
 		drawCount: number
@@ -31,6 +32,7 @@ export namespace List {
 			cursor: 0,
 			length: 0,
 			wd: "",
+			st: [],
 			ls: [],
 			mk: [],
 			drawCount: 0,

@@ -113,6 +113,7 @@ function _create(count: number) {
 		const r = reactive.list[i]!
 
 		r.list.wd = d.wd
+		r.list.st = d.st
 		r.list.search = d.search
 		r.list.info.show = !d.search && d.wd != "home"
 		r.list.info.sync = d.watch == 0
@@ -149,7 +150,7 @@ function _create(count: number) {
 
 		if (d.status == Bridge.Status.active) {
 			reactive.title.wd = d.wd
-			reactive.title.attr = vue.markRaw(d.ls?.[d.cursor] ?? [])
+			reactive.title.attr = vue.markRaw(d.ls?.[d.cursor] ?? d.st)
 		}
 	}
 

@@ -116,6 +116,7 @@ export class FilerManager {
 					cursor: 0,
 					length: 0,
 					wd: wd,
+					st: [],
 					ls: [],
 					mk: [],
 					drawCount: 0,
@@ -130,9 +131,9 @@ export class FilerManager {
 			],
 		})
 
-		return new Promise((resolve, _reject) => {
+		return new Promise(async (resolve, _reject) => {
 			this.dir.cd(wd)
-			this.dir.list(dp, rg, async (wd, ls, e) => {
+			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)
 					return
@@ -145,6 +146,7 @@ export class FilerManager {
 					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
 				this.data.length = ls.length
 				this.data.wd = wd
+				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, () => false)
 				this.data.watch = 0
@@ -191,6 +193,7 @@ export class FilerManager {
 					cursor: this.data.cursor,
 					length: this.data.length,
 					wd: this.data.wd,
+					st: this.data.st,
 					ls: [],
 					mk: [],
 					drawCount: Math.min(this.sc.drawCount(), this.data.length),
