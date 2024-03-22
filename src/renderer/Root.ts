@@ -45,7 +45,7 @@ const V = vue.defineComponent({
 class Root {
 	create() {
 		window.onload = () => {
-			vue.createApp(V).mount(document.getElementsByTagName("body")[0]!)
+			vue.createApp(V).mount("body")
 			// dev.connect()
 		}
 
