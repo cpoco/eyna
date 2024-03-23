@@ -23,14 +23,14 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		for (int i = 0; i< 3; i++) {
+		for (int i = 0; i< 5; i++) {
 			if (SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_ICON) == 0) {
 				return;
 			}
 			if (file.hIcon != NULL) {
 				break;
 			}
-			Sleep(1);
+			Sleep(20);
 		}
 
 		ICONINFO info = {};
