@@ -1,7 +1,8 @@
+import * as timers from "node:timers/promises"
+
 import * as electron from "electron"
 
 import * as Native from "@eyna/native/ts/browser"
-import * as Util from "@eyna/util"
 
 const schema = "eyna"
 
@@ -19,7 +20,7 @@ export class Protocol {
 			let p = u.searchParams.get("p") ?? ""
 
 			while (requestMax <= requestCount) {
-				await Util.SleepPromise(0)
+				await timers.setTimeout(0)
 			}
 
 			console.log(`\u001b[33m[icon]\u001b[0m`, { u: u.href, p: p })

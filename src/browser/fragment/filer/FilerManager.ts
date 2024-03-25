@@ -1,4 +1,5 @@
 import * as perf_hooks from "node:perf_hooks"
+import * as timers from "node:timers/promises"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
@@ -158,7 +159,7 @@ export class FilerManager {
 					return
 				}
 
-				await Util.SleepPromise(10)
+				await timers.setTimeout(10)
 
 				Native.watch(this.id, wd, (_id, depth, _abstract) => {
 					if (create != this.data.create || dp < depth) {
