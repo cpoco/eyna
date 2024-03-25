@@ -1,5 +1,4 @@
 import * as vue from "@vue/runtime-dom"
-// import * as dev from "@vue/devtools"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
@@ -46,7 +45,6 @@ class Root {
 	create() {
 		window.onload = () => {
 			vue.createApp(V).mount("body")
-			// dev.connect()
 		}
 
 		window.addEventListener("cut", async (_: ClipboardEvent) => {
