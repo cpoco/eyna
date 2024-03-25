@@ -28,14 +28,12 @@ export namespace Storage {
 		}
 
 		save() {
-			if (this.path == null) {
-				return
-			}
 			try {
 				console.log(`\u001b[34m[conf.write]\u001b[0m`, `"${this.path}"`)
 				fs.writeFileSync(this.path, JSON.stringify(this.data))
 			}
 			catch (err) {
+				console.error(err)
 			}
 		}
 	}
