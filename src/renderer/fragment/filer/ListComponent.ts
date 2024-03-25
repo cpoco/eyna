@@ -170,11 +170,13 @@ export const V = vue.defineComponent({
 					? vue.h("div", { class: { "filer-prog": true } }, undefined)
 					: undefined,
 			),
-			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
+			vue.h(
+				TAG_DATA,
+				{ ref: "el", class: { "filer-data": true } },
 				this.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
-			]),
+			),
 			vue.h(
 				TAG_SCROLL,
 				{ class: { "filer-scroll": true } },
