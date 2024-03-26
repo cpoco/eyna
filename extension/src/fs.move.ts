@@ -1,4 +1,4 @@
-import * as path from "node:path/posix"
+import { join } from "node:path/posix"
 import { Attributes, Extension, Item } from "./_type"
 
 const title = "move"
@@ -39,8 +39,8 @@ module.exports = async (ex: Extension): Promise<void> => {
 }
 
 async function operation(ex: Extension, item: Item, src_base: string, dst_base: string): Promise<void> {
-	const src = path.join(src_base, item.rltv)
-	const dst = path.join(dst_base, item.rltv)
+	const src = join(src_base, item.rltv)
+	const dst = join(dst_base, item.rltv)
 
 	if (!await ex.filer.exists(dst_base) || await ex.filer.exists(dst)) {
 		return
