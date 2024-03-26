@@ -12,7 +12,7 @@ export class Protocol {
 	}
 
 	static handle() {
-		const requestMax = 2
+		const requestMax = 1
 		let requestCount = 0
 
 		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
