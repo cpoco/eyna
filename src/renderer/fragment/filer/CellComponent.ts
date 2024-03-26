@@ -10,6 +10,28 @@ import root from "@/renderer/Root"
 
 const TAG = "cell"
 
+type style =
+	& {
+		class: {
+			"filer-cfile"?: boolean
+			"filer-clink"?: boolean
+			"filer-ctrgt"?: boolean
+
+			"c-operator"?: boolean
+			"c-drive"?: boolean
+			"c-homeuser"?: boolean
+			"c-link"?: boolean
+			"c-file"?: boolean
+			"c-directory"?: boolean
+			"c-shortcut"?: boolean
+			"c-bookmark"?: boolean
+			"c-special"?: boolean
+			"c-warn"?: boolean
+			"c-miss"?: boolean
+		}
+	}
+	& vue.AllowedComponentProps
+
 export type Cell = {
 	style: {
 		top: string
@@ -34,65 +56,116 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
-		const first = vue.computed((): Native.Attribute | undefined => {
-			return props.cell.attr[0]
-		})
-
-		const file_type = vue.computed((): Native.AttributeFileType[] => {
-			return props.cell.attr.map((it) => {
-				return it ? it.file_type : Native.AttributeFileType.None
-			})
-		})
-
-		const link_type = vue.computed((): Native.AttributeLinkType[] => {
-			return props.cell.attr.map((it) => {
-				return it ? it.link_type : Native.AttributeLinkType.None
-			})
-		})
-
 		const is_link = vue.computed((): boolean => {
 			if (is_empty.value) {
 				return false
 			}
+			return props.cell.attr[0]?.link_type != Native.AttributeLinkType.None
+		})
 
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
-			if (ftype == Native.AttributeFileType.File) {
-				let ltype = link_type.value[0] ?? Native.AttributeLinkType.None
-				if (ltype == Native.AttributeLinkType.Shortcut || ltype == Native.AttributeLinkType.Bookmark) {
-					return true
+		const first = vue.computed((): Native.Attribute | undefined => {
+			return props.cell.attr[0]
+		})
+
+		const name = vue.computed((): style => {
+			const ret: style = { class: { "filer-cfile": true } }
+
+			const f = props.cell.attr[0]?.file_type
+			if (f == Native.AttributeFileType.File) {
+				const l = props.cell.attr[0]?.link_type
+				if (l == Native.AttributeLinkType.Shortcut) {
+					ret.class["c-shortcut"] = true
+				}
+				else if (l == Native.AttributeLinkType.Bookmark) {
+					ret.class["c-bookmark"] = true
+				}
+				else {
+					ret.class["c-file"] = true
 				}
 			}
-			else if (ftype == Native.AttributeFileType.Link) {
-				return true
+			else if (f == Native.AttributeFileType.Link) {
+				ret.class["c-link"] = true
+			}
+			else if (f == Native.AttributeFileType.Directory) {
+				ret.class["c-directory"] = true
+			}
+			else if (f == Native.AttributeFileType.Drive) {
+				ret.class["c-drive"] = true
+			}
+			else if (f == Native.AttributeFileType.HomeUser) {
+				ret.class["c-homeuser"] = true
+			}
+			else if (f == Native.AttributeFileType.Special) {
+				ret.class["c-special"] = true
+			}
+			else {
+				ret.class["c-miss"] = true
 			}
 
-			return false
+			return ret
 		})
 
-		const is_size = vue.computed((): boolean => {
-			if (is_empty.value) {
-				return false
-			}
-
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
-			if (ftype == Native.AttributeFileType.File) {
-				return true
-			}
-
-			return false
+		const link = vue.computed((): style => {
+			return { class: { "filer-clink": true, "c-operator": true } }
 		})
 
-		const is_date = vue.computed((): boolean => {
-			if (is_empty.value) {
-				return false
+		const trgt = vue.computed((): style => {
+			const ret: style = { class: { "filer-ctrgt": true } }
+
+			const f = props.cell.attr[1]?.file_type
+			if (f == Native.AttributeFileType.File) {
+				const l = props.cell.attr[1]?.link_type
+				if (l == Native.AttributeLinkType.Shortcut) {
+					ret.class["c-shortcut"] = true
+				}
+				else if (l == Native.AttributeLinkType.Bookmark) {
+					ret.class["c-bookmark"] = true
+				}
+				else {
+					ret.class["c-file"] = true
+				}
+			}
+			else if (f == Native.AttributeFileType.Link) {
+				const last = Util.last(props.cell.attr)
+				if (last == null || last.file_type == Native.AttributeFileType.None) {
+					ret.class["c-warn"] = true
+				}
+				else {
+					ret.class["c-link"] = true
+				}
+			}
+			else if (f == Native.AttributeFileType.Directory) {
+				ret.class["c-directory"] = true
+			}
+			else if (f == Native.AttributeFileType.Special) {
+				ret.class["c-special"] = true
+			}
+			else {
+				ret.class["c-miss"] = true
 			}
 
-			let ftype = file_type.value[0] ?? Native.AttributeFileType.None
-			if (ftype == Native.AttributeFileType.Drive || ftype == Native.AttributeFileType.HomeUser) {
-				return false
-			}
+			return ret
+		})
 
-			return true
+		const size = vue.computed((): string | undefined => {
+			if (
+				is_empty.value
+				|| props.cell.attr[0]?.file_type != Native.AttributeFileType.File
+			) {
+				return undefined
+			}
+			return props.cell.attr[0]?.size.toLocaleString()
+		})
+
+		const date = vue.computed((): { date: string; time: string } | undefined => {
+			if (
+				is_empty.value
+				|| props.cell.attr[0]?.file_type == Native.AttributeFileType.Drive
+				|| props.cell.attr[0]?.file_type == Native.AttributeFileType.HomeUser
+			) {
+				return undefined
+			}
+			return Util.DateTime(props.cell.attr[0]?.time ?? 0)
 		})
 
 		const dragstart = (event: DragEvent) => {
@@ -112,18 +185,19 @@ export const V = vue.defineComponent({
 
 		return {
 			is_empty,
-			first,
-			file_type,
-			link_type,
 			is_link,
-			is_size,
-			is_date,
+			first,
+			name,
+			link,
+			trgt,
+			size,
+			date,
 			dragstart,
 		}
 	},
 
 	render() {
-		let node: vue.VNodeProps & vue.AllowedComponentProps = {
+		const node: vue.VNodeProps & vue.AllowedComponentProps = {
 			key: this.first?.full ?? "",
 			class: {
 				"filer-cell": true,
@@ -134,100 +208,6 @@ export const V = vue.defineComponent({
 		if (this.is_empty) {
 			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
 		}
-
-		type style =
-			& {
-				class: {
-					"filer-cfile"?: boolean
-					"filer-clink"?: boolean
-					"filer-ctrgt"?: boolean
-
-					"c-operator"?: boolean
-					"c-drive"?: boolean
-					"c-homeuser"?: boolean
-					"c-link"?: boolean
-					"c-file"?: boolean
-					"c-directory"?: boolean
-					"c-shortcut"?: boolean
-					"c-bookmark"?: boolean
-					"c-special"?: boolean
-					"c-warn"?: boolean
-					"c-miss"?: boolean
-				}
-			}
-			& vue.AllowedComponentProps
-
-		let name: style = { class: { "filer-cfile": true } }
-		let link: style = { class: { "filer-clink": true, "c-operator": true } }
-		let trgt: style = { class: { "filer-ctrgt": true } }
-
-		let ftype = this.file_type[0] ?? Native.AttributeFileType.None
-		if (ftype == Native.AttributeFileType.File) {
-			let ltype = this.link_type[0] ?? Native.AttributeLinkType.None
-			if (ltype == Native.AttributeLinkType.Shortcut) {
-				name.class["c-shortcut"] = true
-			}
-			else if (ltype == Native.AttributeLinkType.Bookmark) {
-				name.class["c-bookmark"] = true
-			}
-			else {
-				name.class["c-file"] = true
-			}
-		}
-		else if (ftype == Native.AttributeFileType.Link) {
-			name.class["c-link"] = true
-		}
-		else if (ftype == Native.AttributeFileType.Directory) {
-			name.class["c-directory"] = true
-		}
-		else if (ftype == Native.AttributeFileType.Drive) {
-			name.class["c-drive"] = true
-		}
-		else if (ftype == Native.AttributeFileType.HomeUser) {
-			name.class["c-homeuser"] = true
-		}
-		else if (ftype == Native.AttributeFileType.Special) {
-			name.class["c-special"] = true
-		}
-		else {
-			name.class["c-miss"] = true
-		}
-
-		if (this.is_link) {
-			let ftype2 = this.file_type[1] ?? Native.AttributeFileType.None
-			if (ftype2 == Native.AttributeFileType.File) {
-				let ltype2 = this.link_type[1] ?? Native.AttributeLinkType.None
-				if (ltype2 == Native.AttributeLinkType.Shortcut) {
-					trgt.class["c-shortcut"] = true
-				}
-				else if (ltype2 == Native.AttributeLinkType.Bookmark) {
-					trgt.class["c-bookmark"] = true
-				}
-				else {
-					trgt.class["c-file"] = true
-				}
-			}
-			else if (ftype2 == Native.AttributeFileType.Link) {
-				let ftype3 = Util.last(this.file_type) ?? Native.AttributeFileType.None
-				if (ftype3 == Native.AttributeFileType.None) {
-					trgt.class["c-warn"] = true
-				}
-				else {
-					trgt.class["c-link"] = true
-				}
-			}
-			else if (ftype2 == Native.AttributeFileType.Directory) {
-				trgt.class["c-directory"] = true
-			}
-			else if (ftype2 == Native.AttributeFileType.Special) {
-				trgt.class["c-special"] = true
-			}
-			else {
-				trgt.class["c-miss"] = true
-			}
-		}
-
-		const dt = Util.DateTime(this.first?.time ?? 0)
 
 		return vue.h(TAG, node, [
 			vue.h(
@@ -259,31 +239,17 @@ export const V = vue.defineComponent({
 						{ class: { "filer-cname": true } },
 						this.is_link
 							? [
-								vue.h("span", name, Unicode.highlight(this.first?.rltv)),
-								vue.h("span", link, Font.Icon.ArrowRight),
-								vue.h("span", trgt, Unicode.highlight(this.first?.link)),
+								vue.h("span", this.name, Unicode.highlight(this.first?.rltv)),
+								vue.h("span", this.link, Font.Icon.ArrowRight),
+								vue.h("span", this.trgt, Unicode.highlight(this.first?.link)),
 							]
 							: [
-								vue.h("span", name, Unicode.highlight(this.first?.rltv)),
+								vue.h("span", this.name, Unicode.highlight(this.first?.rltv)),
 							],
 					),
-					vue.h(
-						"span",
-						{ class: { "filer-csize": true } },
-						this.is_size
-							? this.first?.size.toLocaleString() ?? undefined
-							: undefined,
-					),
-					vue.h(
-						"span",
-						{ class: { "filer-cdate": true } },
-						this.is_date ? dt.date : undefined,
-					),
-					vue.h(
-						"span",
-						{ class: { "filer-ctime": true } },
-						this.is_date ? dt.time : undefined,
-					),
+					vue.h("span", { class: { "filer-csize": true } }, this.size),
+					vue.h("span", { class: { "filer-cdate": true } }, this.date?.date),
+					vue.h("span", { class: { "filer-ctime": true } }, this.date?.time),
 				],
 			),
 		])
