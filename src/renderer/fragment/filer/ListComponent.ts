@@ -135,9 +135,15 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
+		const err = this.list.st[0]?.file_type == Native.AttributeFileType.None
+
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h("div", { class: { "filer-dir": true } }, Unicode.highlight(this.list.wd)),
+				vue.h(
+					"div",
+					{ class: { "filer-dir": true } },
+					Unicode.highlight(this.list.wd, err),
+				),
 				vue.h(
 					"div",
 					{ class: { "filer-val": true } },
