@@ -293,6 +293,7 @@ export namespace Command {
 		*/
 	} as const
 
+	// 0x100 + U+00xx
 	const KeyMap: { [key: string]: number } = {
 		"!": 0x121,
 		"\"": 0x122,
