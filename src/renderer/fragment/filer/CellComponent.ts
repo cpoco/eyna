@@ -5,7 +5,6 @@ import * as vue from "@vue/runtime-dom"
 import * as Bridge from "@/bridge/Bridge"
 import * as Font from "@/renderer/dom/Font"
 import * as Unicode from "@/renderer/dom/Unicode"
-import * as SpinnerComponent from "@/renderer/fragment/filer/SpinnerComponent"
 import root from "@/renderer/Root"
 
 const TAG = "cell"
@@ -56,23 +55,88 @@ export const V = vue.defineComponent({
 			return props.cell.attr.length == 0
 		})
 
-		const is_link = vue.computed((): boolean => {
-			if (is_empty.value) {
-				return false
-			}
-			return props.cell.attr[0]?.link_type != Native.AttributeLinkType.None
+		return {
+			is_empty,
+		}
+	},
+
+	render() {
+		return vue.h(
+			TAG,
+			{
+				key: this.cell.attr[0]?.full ?? "",
+				class: {
+					"filer-cell": true,
+				},
+				style: this.cell.style,
+			},
+			this.is_empty
+				? [
+					vue.h(back, { back: this.cell.back }),
+					vue.h(spnr),
+				]
+				: [
+					vue.h(back, { back: this.cell.back }),
+					vue.h(attr, { attr: this.cell.attr }),
+				],
+		)
+	},
+})
+
+const back = vue.defineComponent({
+	props: {
+		back: {
+			required: true,
+			type: Object as vue.PropType<{ select: boolean; cursor: boolean }>,
+		},
+	},
+
+	render() {
+		return vue.h(
+			"span",
+			{
+				class: {
+					"filer-cback": true,
+					"filer-cback-select": this.back.select,
+					"filer-cback-cursor": this.back.cursor,
+				},
+			},
+		)
+	},
+})
+
+const spnr = vue.defineComponent({
+	render() {
+		return vue.h("span", { class: { "filer-spinner": true } })
+	},
+})
+
+const attr = vue.defineComponent({
+	props: {
+		attr: {
+			required: true,
+			type: Object as vue.PropType<Native.Attributes>,
+		},
+	},
+
+	setup(props) {
+		const is_empty = vue.computed((): boolean => {
+			return props.attr.length == 0
 		})
 
-		const first = vue.computed((): Native.Attribute | undefined => {
-			return props.cell.attr[0]
+		const is_link = vue.computed((): boolean => {
+			if (props.attr.length == 0) {
+				return false
+			}
+			return props.attr[0]?.link_type != Native.AttributeLinkType.None
 		})
 
 		const name = vue.computed((): style => {
 			const ret: style = { class: { "filer-cfile": true } }
 
-			const f = props.cell.attr[0]?.file_type
+			const f = props.attr[0]?.file_type
 			if (f == Native.AttributeFileType.File) {
-				const l = props.cell.attr[0]?.link_type
+				const l = props.attr[0]?.link_type
 				if (l == Native.AttributeLinkType.Shortcut) {
 					ret.class["c-shortcut"] = true
 				}
@@ -112,9 +176,9 @@ export const V = vue.defineComponent({
 		const trgt = vue.computed((): style => {
 			const ret: style = { class: { "filer-ctrgt": true } }
 
-			const f = props.cell.attr[1]?.file_type
+			const f = props.attr[1]?.file_type
 			if (f == Native.AttributeFileType.File) {
-				const l = props.cell.attr[1]?.link_type
+				const l = props.attr[1]?.link_type
 				if (l == Native.AttributeLinkType.Shortcut) {
 					ret.class["c-shortcut"] = true
 				}
@@ -126,7 +190,7 @@ export const V = vue.defineComponent({
 				}
 			}
 			else if (f == Native.AttributeFileType.Link) {
-				const last = Util.last(props.cell.attr)
+				const last = Util.last(props.attr)
 				if (last == null || last.file_type == Native.AttributeFileType.None) {
 					ret.class["c-warn"] = true
 				}
@@ -150,22 +214,22 @@ export const V = vue.defineComponent({
 		const size = vue.computed((): string | undefined => {
 			if (
 				is_empty.value
-				|| props.cell.attr[0]?.file_type != Native.AttributeFileType.File
+				|| props.attr[0]?.file_type != Native.AttributeFileType.File
 			) {
 				return undefined
 			}
-			return props.cell.attr[0]?.size.toLocaleString()
+			return props.attr[0]?.size.toLocaleString()
 		})
 
 		const date = vue.computed((): { date: string; time: string } | undefined => {
 			if (
 				is_empty.value
-				|| props.cell.attr[0]?.file_type == Native.AttributeFileType.Drive
-				|| props.cell.attr[0]?.file_type == Native.AttributeFileType.HomeUser
+				|| props.attr[0]?.file_type == Native.AttributeFileType.Drive
+				|| props.attr[0]?.file_type == Native.AttributeFileType.HomeUser
 			) {
 				return undefined
 			}
-			return Util.DateTime(props.cell.attr[0]?.time ?? 0)
+			return Util.DateTime(props.attr[0]?.time ?? 0)
 		})
 
 		const dragstart = (event: DragEvent) => {
@@ -176,7 +240,7 @@ export const V = vue.defineComponent({
 					-1,
 					{
 						data: {
-							full: props.cell.attr[0]?.full ?? "",
+							full: props.attr[0]?.full ?? "",
 						},
 					},
 				],
@@ -184,9 +248,7 @@ export const V = vue.defineComponent({
 		}
 
 		return {
-			is_empty,
 			is_link,
-			first,
 			name,
 			link,
 			trgt,
@@ -197,61 +259,37 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		const node: vue.VNodeProps & vue.AllowedComponentProps = {
-			key: this.first?.full ?? "",
-			class: {
-				"filer-cell": true,
-			},
-			style: this.cell.style,
-		}
-
-		if (this.is_empty) {
-			return vue.h(TAG, node, vue.h(SpinnerComponent.V))
-		}
-
-		return vue.h(TAG, node, [
-			vue.h(
-				"span",
-				{
-					class: {
-						"filer-cback": true,
-						"filer-cback-select": this.cell.back.select,
-						"filer-cback-cursor": this.cell.back.cursor,
-					},
-				},
-			),
-			vue.h(
-				"span",
-				{ class: { "filer-cflex": true } },
-				[
-					vue.h(
-						"span",
-						{ class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart },
-						[
-							vue.h("img", {
-								class: { "filer-cimg": true },
-								src: `eyna://icon?p=${encodeURIComponent(this.first?.full ?? "")}`,
-							}),
+		return vue.h(
+			"span",
+			{ class: { "filer-cflex": true } },
+			[
+				vue.h(
+					"span",
+					{ class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart },
+					[
+						vue.h("img", {
+							class: { "filer-cimg": true },
+							src: `eyna://icon?p=${encodeURIComponent(this.attr[0]?.full ?? "")}`,
+						}),
+					],
+				),
+				vue.h(
+					"span",
+					{ class: { "filer-cname": true } },
+					this.is_link
+						? [
+							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
+							vue.h("span", this.link, Font.Icon.ArrowRight),
+							vue.h("span", this.trgt, Unicode.highlight(this.attr[0]?.link)),
+						]
+						: [
+							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
 						],
-					),
-					vue.h(
-						"span",
-						{ class: { "filer-cname": true } },
-						this.is_link
-							? [
-								vue.h("span", this.name, Unicode.highlight(this.first?.rltv)),
-								vue.h("span", this.link, Font.Icon.ArrowRight),
-								vue.h("span", this.trgt, Unicode.highlight(this.first?.link)),
-							]
-							: [
-								vue.h("span", this.name, Unicode.highlight(this.first?.rltv)),
-							],
-					),
-					vue.h("span", { class: { "filer-csize": true } }, this.size),
-					vue.h("span", { class: { "filer-cdate": true } }, this.date?.date),
-					vue.h("span", { class: { "filer-ctime": true } }, this.date?.time),
-				],
-			),
-		])
+				),
+				vue.h("span", { class: { "filer-csize": true } }, this.size),
+				vue.h("span", { class: { "filer-cdate": true } }, this.date?.date),
+				vue.h("span", { class: { "filer-ctime": true } }, this.date?.time),
+			],
+		)
 	},
 })
