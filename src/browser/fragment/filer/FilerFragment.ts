@@ -108,7 +108,6 @@ export class FilerFragment extends AbstractFragment {
 					}),
 				},
 			})
-			// this.title()
 			return Promise.resolve()
 		})
 	}
