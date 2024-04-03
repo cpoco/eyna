@@ -3,6 +3,7 @@ import * as timers from "node:timers/promises"
 import * as electron from "electron"
 
 import * as Native from "@eyna/native/ts/browser"
+import * as util from "@eyna/util"
 
 const schema = "eyna"
 
@@ -12,23 +13,42 @@ export class Protocol {
 	}
 
 	static handle() {
-		const requestMax = 1
-		let requestCount = 0
-
 		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
-			let u = new URL(req.url)
-			let p = u.searchParams.get("p") ?? ""
+			const { pathname } = new URL(req.url)
+			const abst = decodeURIComponent(pathname.split("/")[1] ?? "")
 
-			while (requestMax <= requestCount) {
-				await timers.setTimeout(0)
+			if (abst == "") {
+				return new Response(null, { status: 400 })
 			}
 
-			console.log(`\u001b[33m[icon]\u001b[0m`, { u: u.href, p: p })
+			const deferred = new util.DeferredPromise<Response>()
+			queue.push({ abst: abst, deferred: deferred })
+			return deferred.promise
+		})
 
-			requestCount++
-			return Native.getIcon(p)
-				.then((icon: Buffer) => {
-					return new Response(
+		worker()
+	}
+}
+
+type task = {
+	abst: string
+	deferred: util.DeferredPromise<Response>
+}
+
+const queue: task[] = []
+
+async function worker(): Promise<void> {
+	while (true) {
+		if (queue.length == 0) {
+			await timers.setTimeout(10)
+			continue
+		}
+		const front = queue.shift()!
+		try {
+			const icon = await Native.getIcon(front.abst)
+			if (front.deferred.resolve) {
+				front.deferred.resolve(
+					new Response(
 						icon,
 						{
 							headers: {
@@ -36,11 +56,14 @@ export class Protocol {
 								"cache-control": "no-store",
 							},
 						},
-					)
-				})
-				.finally(() => {
-					requestCount--
-				})
-		})
+					),
+				)
+			}
+		}
+		catch (err) {
+			if (front.deferred.reject) {
+				front.deferred.reject(err)
+			}
+		}
 	}
 }

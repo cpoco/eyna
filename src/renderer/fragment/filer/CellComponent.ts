@@ -269,7 +269,7 @@ const attr = vue.defineComponent({
 					[
 						vue.h("img", {
 							class: { "filer-cimg": true },
-							src: `eyna://icon?p=${encodeURIComponent(this.attr[0]?.full ?? "")}`,
+							src: `eyna://icon/${encodeURIComponent(this.attr[0]?.full ?? "")}`,
 						}),
 					],
 				),
