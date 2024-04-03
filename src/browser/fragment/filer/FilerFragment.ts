@@ -48,7 +48,6 @@ export class FilerFragment extends AbstractFragment {
 		})
 
 		this.ipc()
-		this.commandTest()
 		this.commandExtension()
 		this.commandList()
 		this.commandListImage()
@@ -88,29 +87,6 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
 				root.drag(data.data.full)
-			})
-	}
-
-	private commandTest() {
-		this
-			.on2("list.test", (active, target) => {
-				root.runExtension("list.test.js", {
-					active: {
-						wd: active.pwd,
-						cursor: active.data.ls[active.data.cursor] ?? null,
-						select: Util.array(0, active.data.length, (i) => {
-							return active.data.mk[i] ? active.data.ls[i]! : undefined
-						}),
-					},
-					target: {
-						wd: target.pwd,
-						cursor: target.data.ls[target.data.cursor] ?? null,
-						select: Util.array(0, target.data.length, (i) => {
-							return target.data.mk[i] ? target.data.ls[i]! : undefined
-						}),
-					},
-				})
-				return Promise.resolve()
 			})
 	}
 

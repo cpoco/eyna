@@ -52,7 +52,6 @@ export async function Build() {
 			path.join(base, "src/fs.trash.ts"),
 			path.join(base, "src/list.code.ts"),
 			path.join(base, "src/list.terminal.ts"),
-			path.join(base, "src/list.test.ts"),
 		],
 		bundle: true,
 		minify: false,
