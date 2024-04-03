@@ -1,4 +1,5 @@
 import * as perf_hooks from "node:perf_hooks"
+import * as timers from "node:timers/promises"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
@@ -27,7 +28,7 @@ export class FilerManager {
 		return this.dir.isHome
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.none) {
+	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.None) {
 		this.dir.cd(wd)
 		this.data.status = status
 	}
@@ -116,6 +117,7 @@ export class FilerManager {
 					cursor: 0,
 					length: 0,
 					wd: wd,
+					st: [],
 					ls: [],
 					mk: [],
 					drawCount: 0,
@@ -130,9 +132,9 @@ export class FilerManager {
 			],
 		})
 
-		return new Promise((resolve, _reject) => {
+		return new Promise(async (resolve, _reject) => {
 			this.dir.cd(wd)
-			this.dir.list(dp, rg, async (wd, ls, e) => {
+			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)
 					return
@@ -145,6 +147,7 @@ export class FilerManager {
 					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
 				this.data.length = ls.length
 				this.data.wd = wd
+				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, () => false)
 				this.data.watch = 0
@@ -156,7 +159,7 @@ export class FilerManager {
 					return
 				}
 
-				await Util.SleepPromise(10)
+				await timers.setTimeout(10)
 
 				Native.watch(this.id, wd, (_id, depth, _abstract) => {
 					if (create != this.data.create || dp < depth) {
@@ -191,6 +194,7 @@ export class FilerManager {
 					cursor: this.data.cursor,
 					length: this.data.length,
 					wd: this.data.wd,
+					st: this.data.st,
 					ls: [],
 					mk: [],
 					drawCount: Math.min(this.sc.drawCount(), this.data.length),

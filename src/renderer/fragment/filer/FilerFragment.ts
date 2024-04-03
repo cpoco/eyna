@@ -1,6 +1,5 @@
 import * as vue from "@vue/runtime-dom"
 
-import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
@@ -10,7 +9,7 @@ const TAG = "filer"
 
 export const V = vue.defineComponent({
 	setup() {
-		const filer = FilerProvider.create(Conf.LIST_COUNT)
+		const filer = FilerProvider.inject()
 
 		root
 			.on(Bridge.List.Change.CH, (i: number, data: Bridge.List.Change.Data) => {
@@ -44,7 +43,7 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ class: { "filer-fragment": true } },
-			this.filer.map((ls) => {
+			this.filer.list.map((ls) => {
 				return vue.h(ListComponent.V, {
 					i: ls.i,
 					list: ls.list,

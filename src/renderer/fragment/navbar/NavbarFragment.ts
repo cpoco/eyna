@@ -1,36 +1,26 @@
+import * as Native from "@eyna/native/ts/renderer"
 import * as vue from "@vue/runtime-dom"
 
-import * as Bridge from "@/bridge/Bridge"
 import * as Unicode from "@/renderer/dom/Unicode"
-import root from "@/renderer/Root"
-
-type reactive = {
-	title: string
-}
+import * as FilerProvider from "@/renderer/fragment/filer/FilerProvider"
 
 const TAG = "navbar"
 
 export const V = vue.defineComponent({
 	setup() {
-		const reactive = vue.reactive<reactive>({
-			title: "",
-		})
-
-		vue.onMounted(() => {
-			root
-				.on(Bridge.Navbar.Title.CH, (_: number, data: Bridge.Navbar.Title.Data) => {
-					reactive.title = data
-				})
-		})
+		const filer = FilerProvider.inject()
 
 		return {
-			reactive,
+			title: filer.reactive.title,
 		}
 	},
 
 	render() {
+		const title = this.title.attr[0]?.full ?? this.title.wd
+		const err = this.title.attr[0]?.file_type == Native.AttributeFileType.None
+
 		return vue.h(TAG, { class: { "navbar-fragment": true } }, [
-			vue.h("div", { class: { "navbar-title": true } }, Unicode.highlight(this.reactive.title)),
+			vue.h("div", { class: { "navbar-title": true } }, Unicode.highlight(title, err)),
 		])
 	},
 })

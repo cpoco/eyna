@@ -68,74 +68,40 @@ export class Dir {
 		}
 	}
 
-	list(dp: number, rg: RegExp | null, cb: (wd: string, ls: Native.Attributes[], e: number) => void) {
+	async list(
+		dp: number,
+		rg: RegExp | null,
+		cb: (wd: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
+	) {
+		_log(`"${this.wd}"`, { dp: dp, rg: rg })
+		let _time = perf_hooks.performance.now()
+
 		if (this.wd == Dir.HOME) {
 			this.dp = 0
 			this.rg = null
-			let _time = perf_hooks.performance.now()
+			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then((vol: Native.Volume[]) => {
-				console.log(`\u001b[36m[dir]\u001b[0m`, "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+				_log(`"${this.wd}"`, "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 				let ls: Native.Attributes[] = []
 				vol.forEach((v) => {
-					ls.push([{
-						file_type: Native.AttributeFileType.drive,
-						full: v.full,
-						base: "",
-						rltv: v.name,
-						name: v.name,
-						stem: "",
-						ext: "",
-						link_type: Native.AttributeLinkType.none,
-						link: "",
-						size: 0n,
-						time: 0,
-						nsec: 0,
-						readonly: false,
-						hidden: false,
-						system: false,
-						pseudo: false,
-					}])
+					ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
 				})
-				ls.push([{
-					file_type: Native.AttributeFileType.homeuser,
-					full: Path.home(),
-					base: "",
-					rltv: "user",
-					name: "user",
-					stem: "",
-					ext: "",
-					link_type: Native.AttributeLinkType.none,
-					link: "",
-					size: 0n,
-					time: 0,
-					nsec: 0,
-					readonly: false,
-					hidden: false,
-					system: false,
-					pseudo: false,
-				}])
-				cb(this.wd, ls, 0)
+				ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
+				cb(this.wd, st, ls, 0)
 			})
 		}
 		else {
 			this.dp = dp
 			this.rg = rg
-			console.log(`\u001b[36m[dir]\u001b[0m`, `"${this.wd}"`, { dp: dp, rg: rg })
-			let _time = perf_hooks.performance.now()
+			let st = await Native.getAttribute(this.wd)
 			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				console.log(
-					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.full}"`,
-					"directory",
-					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
-					{
-						s: dir.s,
-						d: dir.d,
-						f: dir.f,
-						e: dir.e,
-						len: dir.list.length,
-					},
-				)
+				_log(`"${dir.full}"`, "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+					s: dir.s,
+					d: dir.d,
+					f: dir.f,
+					e: dir.e,
+					len: dir.list.length,
+				})
 				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
@@ -143,56 +109,75 @@ export class Dir {
 					ls.push(await Native.getAttribute(attr.rltv, dir.full))
 				}
 
-				console.log(
-					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.full}"`,
-					"attribute",
-					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
-				)
+				_log(`"${dir.full}"`, "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 				_time = perf_hooks.performance.now()
 
-				ls.sort((a, b) => {
-					let type = _type(a, b)
-					if (type == DIR_SORT) {
-						return _name(a, b)
-					}
-					if (type == 0) {
-						let ext = _ext(a, b)
-						if (ext == 0) {
-							return _name(a, b)
-						}
-						return ext
-					}
-					return type
-				})
+				_sort(ls)
 
-				console.log(
-					`\u001b[36m[dir]\u001b[0m`,
-					`"${dir.full}"`,
-					"sort",
-					`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
-				)
+				_log(`"${dir.full}"`, "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-				cb(dir.full, ls, dir.e)
+				cb(dir.full, st, ls, dir.e)
 			})
 		}
 	}
 }
 
-const DIR_SORT = 1024
+function _log(...args: any) {
+	console.log(`\u001b[36m[dir]\u001b[0m`, ...args)
+}
+
+function _attr(file_type: Native.AttributeFileType, full: string, name: string): Native.Attribute {
+	return {
+		file_type: file_type,
+		full: full,
+		base: "",
+		rltv: name,
+		name: name,
+		stem: "",
+		ext: "",
+		link_type: Native.AttributeLinkType.None,
+		link: "",
+		size: 0n,
+		time: 0,
+		nsec: 0,
+		readonly: false,
+		hidden: false,
+		system: false,
+		pseudo: false,
+	}
+}
+
+const GROUP_DIRECTORIES_FIRST = 1024
+
+function _sort(ls: Native.Attributes[]) {
+	ls.sort((a, b) => {
+		let type = _type(a, b)
+		if (type == GROUP_DIRECTORIES_FIRST) {
+			return _name(a, b)
+		}
+		if (type == 0) {
+			let ext = _ext(a, b)
+			if (ext == 0) {
+				return _name(a, b)
+			}
+			return ext
+		}
+		return type
+	})
+}
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.none
-	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.none
+	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.None
+	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.None
 
-	if (aa == Native.AttributeFileType.none) {
-		aa = Native.AttributeFileType.file
+	if (aa == Native.AttributeFileType.None) {
+		aa = Native.AttributeFileType.File
 	}
-	if (bb == Native.AttributeFileType.none) {
-		bb = Native.AttributeFileType.file
+	if (bb == Native.AttributeFileType.None) {
+		bb = Native.AttributeFileType.File
 	}
-	if (aa == Native.AttributeFileType.directory && bb == Native.AttributeFileType.directory) {
-		return DIR_SORT
+	if (aa == Native.AttributeFileType.Directory && bb == Native.AttributeFileType.Directory) {
+		return GROUP_DIRECTORIES_FIRST
 	}
 
 	return aa - bb
@@ -208,8 +193,7 @@ function _name(a: Native.Attributes, b: Native.Attributes): number {
 	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
 	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
 	let lc = aa.localeCompare(bb, undefined, { numeric: true })
-	if (lc == 0) {
-		return aa.length - bb.length
-	}
-	return lc
+	return lc == 0
+		? aa.length - bb.length
+		: lc
 }

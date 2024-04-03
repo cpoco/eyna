@@ -1,3 +1,4 @@
+import * as Native from "@eyna/native/ts/renderer"
 import * as Util from "@eyna/util"
 import * as vue from "@vue/runtime-dom"
 
@@ -5,10 +6,20 @@ import * as Bridge from "@/bridge/Bridge"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
 
-type reactive = {
+type title = {
+	wd: string
+	attr: Native.Attributes
+}
+
+type list = {
 	i: number
 	list: ListComponent.List
 	cell: CellComponent.Cell[]
+}
+
+type reactive = {
+	title: title
+	list: list[]
 }
 
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
@@ -21,15 +32,19 @@ function _create(count: number) {
 		return undefined
 	})
 
-	const reactive = vue.reactive<reactive[]>(
-		Util.array<reactive>(0, count, (i) => {
+	const reactive = vue.reactive<reactive>({
+		title: {
+			wd: "",
+			attr: [],
+		},
+		list: Util.array<list>(0, count, (i) => {
 			return {
 				i,
 				list: ListComponent.InitList(),
 				cell: [],
 			}
 		}),
-	)
+	})
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
 		_data[i]! = vue.markRaw(data)
@@ -90,14 +105,15 @@ function _create(count: number) {
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
 		_data[i]!.watch = data.watch
 
-		reactive[i]!.list.info.sync = _data[i]!.watch == 0
+		reactive.list[i]!.list.info.sync = _data[i]!.watch == 0
 	}
 
 	const _update = (i: number) => {
 		const d = _data[i]!
-		const r = reactive[i]!
+		const r = reactive.list[i]!
 
 		r.list.wd = d.wd
+		r.list.st = d.st
 		r.list.search = d.search
 		r.list.info.show = !d.search && d.wd != "home"
 		r.list.info.sync = d.watch == 0
@@ -106,8 +122,8 @@ function _create(count: number) {
 		r.list.info.error = d.error
 		r.list.info.elapse = d.elapse
 		r.list.stat.status = d.status
-		r.list.stat.active = d.status == Bridge.Status.active
-		r.list.stat.target = d.status == Bridge.Status.target
+		r.list.stat.active = d.status == Bridge.Status.Active
+		r.list.stat.target = d.status == Bridge.Status.Target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 
@@ -118,7 +134,7 @@ function _create(count: number) {
 				const k = d.drawIndex + j
 				const t = d.drawPosition + j * d.drawSize
 				const s = d.mk?.[k] ?? false
-				const c = d.status == Bridge.Status.active && d.cursor == k
+				const c = d.status == Bridge.Status.Active && d.cursor == k
 				return {
 					style: {
 						top: `${t}px`,
@@ -131,6 +147,11 @@ function _create(count: number) {
 				}
 			},
 		)
+
+		if (d.status == Bridge.Status.Active) {
+			reactive.title.wd = d.wd
+			reactive.title.attr = vue.markRaw(d.ls?.[d.cursor] ?? d.st)
+		}
 	}
 
 	return {
@@ -151,6 +172,6 @@ export function create(count: number): ReturnType<typeof _create> {
 	return v
 }
 
-// export function inject(): ReturnType<typeof _create> {
-// 	return vue.inject(KEY)!
-// }
+export function inject(): ReturnType<typeof _create> {
+	return vue.inject(KEY)!
+}

@@ -2,8 +2,6 @@
 	"$schema": "./key.schema",
 	"ver": "0.1",
 	"key": [
-		{ "when": "filer",  "key": "z",                 "cmd": "list.test" },
-
 		{ "when": "filer",  "key": "up",                "cmd": "list.up"    },
 		{ "when": "filer",  "key": "down",              "cmd": "list.down"  },
 		{ "when": "filer",  "key": "left",              "cmd": "list.left"  },

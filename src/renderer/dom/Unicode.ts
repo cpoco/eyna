@@ -5,7 +5,7 @@ const DSC = "/"
 const LRO = "\u{202D}"
 const RLO = "\u{202E}"
 
-export function highlight(str: string | null | undefined): vue.VNodeArrayChildren | undefined {
+export function highlight(str: string | null | undefined, err: boolean = false): vue.VNodeArrayChildren | undefined {
 	if (str == null) {
 		return undefined
 	}
@@ -21,7 +21,7 @@ export function highlight(str: string | null | undefined): vue.VNodeArrayChildre
 			ret.push(vue.h("span", { class: { "c-trv": true } }, s))
 		}
 		else if (s == DSC) {
-			ret.push(vue.h("span", { class: { "c-dsc": true } }, s))
+			ret.push(vue.h("span", { class: { "c-dsc": !err, "c-err": err } }, s))
 		}
 		else if (s == LRO) {
 			ret.push(vue.h("span", { class: { "c-lro": true } }, "[LRO]"))

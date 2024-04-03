@@ -1,4 +1,4 @@
-import * as path from "node:path/posix"
+import { dirname, join } from "node:path/posix"
 import { Extension } from "./_type"
 
 const title = "rename"
@@ -23,14 +23,13 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	const src = path.join(src_base, src_item)
-	const dst = path.join(dst_base, prompt.text)
+	const src = join(src_base, src_item)
+	const dst = join(dst_base, prompt.text)
 
-	if (
-		src == dst
-		|| path.dirname(src) != path.dirname(dst)
-		|| await ex.filer.exists(dst)
-	) {
+	if (src == dst || dirname(src) != dirname(dst)) {
+		return
+	}
+	if (src_item.toLowerCase() != prompt.text.toLowerCase() && await ex.filer.exists(dst)) {
 		return
 	}
 

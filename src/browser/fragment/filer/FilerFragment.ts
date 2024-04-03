@@ -40,15 +40,14 @@ export class FilerFragment extends AbstractFragment {
 				i,
 				(Storage.manager.data.wd ?? [])[i] ?? null,
 				this.index.active == i
-					? Bridge.Status.active
+					? Bridge.Status.Active
 					: this.index.target == i
-					? Bridge.Status.target
-					: Bridge.Status.none,
+					? Bridge.Status.Target
+					: Bridge.Status.None,
 			)
 		})
 
 		this.ipc()
-		this.commandTest()
 		this.commandExtension()
 		this.commandList()
 		this.commandListImage()
@@ -65,12 +64,10 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	update() {
-		this.active.update().then(() => {
-			this.title()
-		})
+		this.active.update()
 		this.target.update()
 		this.core.forEach((fm) => {
-			if (fm.data.status == Bridge.Status.none) {
+			if (fm.data.status == Bridge.Status.None) {
 				if (fm.pwd == this.active.pwd || fm.pwd == this.target.pwd) {
 					fm.update()
 				}
@@ -78,20 +75,11 @@ export class FilerFragment extends AbstractFragment {
 		})
 	}
 
-	private title() {
-		let a = this.active.data.ls[this.active.data.cursor] ?? []
-		root.setTitle(a[0]?.full ?? this.active.data.wd)
-	}
-
 	private ipc() {
 		root
 			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_LINE_HEIGHT).then(() => {
-						if (this.index.active == i) {
-							this.title()
-						}
-					})
+					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_LINE_HEIGHT)
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.data.h)
@@ -99,29 +87,6 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
 				root.drag(data.data.full)
-			})
-	}
-
-	private commandTest() {
-		this
-			.on2("list.test", (active, target) => {
-				root.runExtension("list.test.js", {
-					active: {
-						wd: active.pwd,
-						cursor: active.data.ls[active.data.cursor] ?? null,
-						select: Util.array(0, active.data.length, (i) => {
-							return active.data.mk[i] ? active.data.ls[i]! : undefined
-						}),
-					},
-					target: {
-						wd: target.pwd,
-						cursor: target.data.ls[target.data.cursor] ?? null,
-						select: Util.array(0, target.data.length, (i) => {
-							return target.data.mk[i] ? target.data.ls[i]! : undefined
-						}),
-					},
-				})
-				return Promise.resolve()
 			})
 	}
 
@@ -143,7 +108,6 @@ export class FilerFragment extends AbstractFragment {
 					}),
 				},
 			})
-			this.title()
 			return Promise.resolve()
 		})
 	}
@@ -158,7 +122,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorUp()
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.pageup", (active, _target) => {
@@ -169,7 +132,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorUp(active.mv)
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.down", (active, _target) => {
@@ -180,7 +142,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorDown()
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.pagedown", (active, _target) => {
@@ -191,7 +152,6 @@ export class FilerFragment extends AbstractFragment {
 				active.cursorDown(active.mv)
 				active.scroll()
 				active.sendCursor()
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.left", (_active, _target) => {
@@ -199,13 +159,12 @@ export class FilerFragment extends AbstractFragment {
 				this.index.active = (this.index.active + Conf.LIST_COUNT - 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
-						? Bridge.Status.active
+						? Bridge.Status.Active
 						: this.index.target == i
-						? Bridge.Status.target
-						: Bridge.Status.none
+						? Bridge.Status.Target
+						: Bridge.Status.None
 					fm.sendActive()
 				})
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.right", (_active, _target) => {
@@ -213,19 +172,17 @@ export class FilerFragment extends AbstractFragment {
 				this.index.active = (this.index.active + 1) % Conf.LIST_COUNT
 				this.core.forEach((fm, i) => {
 					fm.data.status = this.index.active == i
-						? Bridge.Status.active
+						? Bridge.Status.Active
 						: this.index.target == i
-						? Bridge.Status.target
-						: Bridge.Status.none
+						? Bridge.Status.Target
+						: Bridge.Status.None
 					fm.sendActive()
 				})
-				this.title()
 				return Promise.resolve()
 			})
 			.on2("list.update", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
 					await active.update()
-					this.title()
 					resolve()
 				})
 			})
@@ -259,7 +216,6 @@ export class FilerFragment extends AbstractFragment {
 						active.sendScan()
 						active.sendAttribute()
 					}
-					this.title()
 					resolve()
 				})
 			})
@@ -283,8 +239,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					if (
 						lattr == null || ltrgt == null || rattr == null || rtrgt == null
-						|| ltrgt.file_type != Native.AttributeFileType.file
-						|| rtrgt.file_type != Native.AttributeFileType.file
+						|| ltrgt.file_type != Native.AttributeFileType.File
+						|| rtrgt.file_type != Native.AttributeFileType.File
 						|| ltrgt.full == rtrgt.full
 					) {
 						resolve()
@@ -318,38 +274,36 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.drive
-						|| attr.file_type == Native.AttributeFileType.homeuser
-						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.file_type == Native.AttributeFileType.link
-							&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.Drive
+						|| attr.file_type == Native.AttributeFileType.HomeUser
+						|| attr.file_type == Native.AttributeFileType.Directory
+						|| attr.file_type == Native.AttributeFileType.Link
+							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await active.sendChange(attr.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
 							active.sendAttribute()
 						}
-						this.title()
 						resolve()
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.file
-						&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.File
+						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await active.sendChange(trgt.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
 							active.sendAttribute()
 						}
-						this.title()
 						resolve()
 					}
 					// file
 					// file(shortcut or bookmark) -> file
 					// link(symbolic or junction) -> file
 					else if (
-						trgt.file_type == Native.AttributeFileType.file
+						trgt.file_type == Native.AttributeFileType.File
 					) {
 						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
@@ -394,7 +348,6 @@ export class FilerFragment extends AbstractFragment {
 						active.sendScan()
 						active.sendAttribute()
 					}
-					this.title()
 					resolve()
 				})
 			})
@@ -421,11 +374,11 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.drive
-						|| attr.file_type == Native.AttributeFileType.homeuser
-						|| attr.file_type == Native.AttributeFileType.directory
-						|| attr.file_type == Native.AttributeFileType.link
-							&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.Drive
+						|| attr.file_type == Native.AttributeFileType.HomeUser
+						|| attr.file_type == Native.AttributeFileType.Directory
+						|| attr.file_type == Native.AttributeFileType.Link
+							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await target.sendChange(attr.full, 0, null, null)) {
 							target.scroll()
@@ -436,8 +389,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.file
-						&& trgt.file_type == Native.AttributeFileType.directory
+						attr.file_type == Native.AttributeFileType.File
+						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
 						if (await target.sendChange(trgt.full, 0, null, null)) {
 							target.scroll()
@@ -477,7 +430,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.file) {
+					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
@@ -486,7 +439,6 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					this.title()
 					break
 				}
 				return Promise.resolve()
@@ -501,7 +453,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.file) {
+					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
@@ -510,7 +462,6 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					this.title()
 					break
 				}
 				return Promise.resolve()

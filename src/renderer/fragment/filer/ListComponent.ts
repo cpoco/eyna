@@ -1,3 +1,4 @@
+import * as Native from "@eyna/native/ts/renderer"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
@@ -16,6 +17,7 @@ const TAG_SCROLL = "scroll"
 
 export type List = {
 	wd: string
+	st: Native.Attributes
 	search: boolean
 	info: {
 		show: boolean
@@ -38,6 +40,7 @@ export type List = {
 export function InitList(): List {
 	return {
 		wd: "",
+		st: [],
 		search: false,
 		info: {
 			show: false,
@@ -48,7 +51,7 @@ export function InitList(): List {
 			elapse: 0,
 		},
 		stat: {
-			status: Status.none,
+			status: Status.None,
 			active: false,
 			target: false,
 		},
@@ -132,22 +135,30 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
+		const err = this.list.st[0]?.file_type == Native.AttributeFileType.None
+
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h("div", { class: { "filer-dir": true } }, Unicode.highlight(this.list.wd)),
+				vue.h(
+					"div",
+					{ class: { "filer-dir": true } },
+					Unicode.highlight(this.list.wd, err),
+				),
 				vue.h(
 					"div",
 					{ class: { "filer-val": true } },
 					this.list.info.show
 						? [
-							vue.h("span", { class: { "filer-vicon": true } }, this.list.info.sync ? Font.sync : Font.sync_ignored),
+							vue.h(
+								"span",
+								{ class: { "filer-vicon": true } },
+								this.list.info.sync ? Font.Icon.Sync : Font.Icon.SyncIgnored,
+							),
 							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.mark}/${this.list.info.total}`),
-							vue.h("span", { class: { "filer-vicon": true } }, Font.circle_slash),
+							vue.h("span", { class: { "filer-vicon": true } }, Font.Icon.CircleSlash),
 							vue.h("span", { class: { "filer-vdata": true } }, this.list.info.error),
-							vue.h("span", { class: { "filer-vicon": true } }, Font.history),
+							vue.h("span", { class: { "filer-vicon": true } }, Font.Icon.History),
 							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
-							// vue.h("span", { class: { "filer-vicon": true } }, Font.source_control),
-							// vue.h("span", { class: { "filer-vdata": true } }, "-"),
 						]
 						: undefined,
 				),
@@ -165,11 +176,13 @@ export const V = vue.defineComponent({
 					? vue.h("div", { class: { "filer-prog": true } }, undefined)
 					: undefined,
 			),
-			vue.h(TAG_DATA, { ref: "el", class: { "filer-data": true } }, [
+			vue.h(
+				TAG_DATA,
+				{ ref: "el", class: { "filer-data": true } },
 				this.cell.map((cell) => {
 					return vue.h(CellComponent.V, { cell })
 				}),
-			]),
+			),
 			vue.h(
 				TAG_SCROLL,
 				{ class: { "filer-scroll": true } },

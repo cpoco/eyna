@@ -10,5 +10,6 @@ export { last } from "./ts/_last"
 export { merge } from "./ts/_merge"
 export { split } from "./ts/_split"
 
+export { DateTime } from "./ts/DateTime"
 export { DeferredPromise } from "./ts/DeferredPromise"
 export { SleepPromise } from "./ts/SleepPromise"
