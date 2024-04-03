@@ -14,6 +14,7 @@ type title = {
 type list = {
 	i: number
 	list: ListComponent.List
+	ctop: number
 	cell: CellComponent.Cell[]
 }
 
@@ -41,6 +42,7 @@ function _create(count: number) {
 			return {
 				i,
 				list: ListComponent.InitList(),
+				ctop: 0,
 				cell: [],
 			}
 		}),
@@ -127,6 +129,7 @@ function _create(count: number) {
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 
+		r.ctop = d.drawIndex
 		r.cell = Util.array<CellComponent.Cell>(
 			0,
 			d.drawCount,

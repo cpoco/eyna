@@ -64,7 +64,6 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{
-				key: this.cell.attr[0]?.full ?? "",
 				class: {
 					"filer-cell": true,
 				},

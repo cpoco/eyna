@@ -72,6 +72,10 @@ export const V = vue.defineComponent({
 			required: true,
 			type: Object as vue.PropType<List>,
 		},
+		ctop: {
+			required: true,
+			type: Number,
+		},
 		cell: {
 			required: true,
 			type: Object as vue.PropType<CellComponent.Cell[]>,
@@ -179,8 +183,8 @@ export const V = vue.defineComponent({
 			vue.h(
 				TAG_DATA,
 				{ ref: "el", class: { "filer-data": true } },
-				this.cell.map((cell) => {
-					return vue.h(CellComponent.V, { cell })
+				this.cell.map((cell, i) => {
+					return vue.h(CellComponent.V, { key: this.ctop + i, cell })
 				}),
 			),
 			vue.h(

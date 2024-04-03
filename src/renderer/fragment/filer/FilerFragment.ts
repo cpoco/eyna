@@ -47,6 +47,7 @@ export const V = vue.defineComponent({
 				return vue.h(ListComponent.V, {
 					i: ls.i,
 					list: ls.list,
+					ctop: ls.ctop,
 					cell: ls.cell,
 				})
 			}),
