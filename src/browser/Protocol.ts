@@ -1,6 +1,5 @@
-import * as timers from "node:timers/promises"
-
 import * as electron from "electron"
+import * as timers from "node:timers/promises"
 
 import * as Native from "@eyna/native/ts/browser"
 import * as util from "@eyna/util"
@@ -43,27 +42,23 @@ async function worker(): Promise<void> {
 			await timers.setTimeout(10)
 			continue
 		}
-		const front = queue.shift()!
+		const first = queue.shift()!
 		try {
-			const icon = await Native.getIcon(front.abst)
-			if (front.deferred.resolve) {
-				front.deferred.resolve(
-					new Response(
-						icon,
-						{
-							headers: {
-								"content-type": "image/png",
-								"cache-control": "no-store",
-							},
+			const icon = await Native.getIcon(first.abst)
+			first.deferred.resolve?.(
+				new Response(
+					icon,
+					{
+						headers: {
+							"content-type": "image/png",
+							"cache-control": "no-store",
 						},
-					),
-				)
-			}
+					},
+				),
+			)
 		}
 		catch (err) {
-			if (front.deferred.reject) {
-				front.deferred.reject(err)
-			}
+			first.deferred.reject?.(err)
 		}
 	}
 }
