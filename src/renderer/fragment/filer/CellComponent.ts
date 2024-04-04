@@ -9,26 +9,26 @@ import root from "@/renderer/Root"
 
 const TAG = "cell"
 
-type style =
-	& {
-		class: {
-			"filer-cfile"?: boolean
-			"filer-clink"?: boolean
-			"filer-ctrgt"?: boolean
+type class_cell =
+	| "filer-cell-attr-file"
+	| "filer-cell-attr-link"
+	| "filer-cell-attr-trgt"
 
-			"c-operator"?: boolean
-			"c-drive"?: boolean
-			"c-homeuser"?: boolean
-			"c-link"?: boolean
-			"c-file"?: boolean
-			"c-directory"?: boolean
-			"c-shortcut"?: boolean
-			"c-bookmark"?: boolean
-			"c-special"?: boolean
-			"c-warn"?: boolean
-			"c-miss"?: boolean
-		}
-	}
+type class_color =
+	| "c-operator"
+	| "c-drive"
+	| "c-homeuser"
+	| "c-link"
+	| "c-file"
+	| "c-directory"
+	| "c-shortcut"
+	| "c-bookmark"
+	| "c-special"
+	| "c-warn"
+	| "c-miss"
+
+type style =
+	& { class: { [key in class_cell | class_color]?: boolean } }
 	& vue.AllowedComponentProps
 
 export type Cell = {
@@ -64,9 +64,7 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{
-				class: {
-					"filer-cell": true,
-				},
+				class: { "filer-cell": true },
 				style: this.cell.style,
 			},
 			this.is_empty
@@ -95,9 +93,9 @@ const back = vue.defineComponent({
 			"span",
 			{
 				class: {
-					"filer-cback": true,
-					"filer-cback-select": this.back.select,
-					"filer-cback-cursor": this.back.cursor,
+					"filer-cell-back": true,
+					"filer-cell-back-select": this.back.select,
+					"filer-cell-back-cursor": this.back.cursor,
 				},
 			},
 		)
@@ -106,7 +104,7 @@ const back = vue.defineComponent({
 
 const spnr = vue.defineComponent({
 	render() {
-		return vue.h("span", { class: { "filer-spinner": true } })
+		return vue.h("span", { class: { "filer-cell-spinner": true } })
 	},
 })
 
@@ -131,7 +129,7 @@ const attr = vue.defineComponent({
 		})
 
 		const name = vue.computed((): style => {
-			const ret: style = { class: { "filer-cfile": true } }
+			const ret: style = { class: { "filer-cell-attr-file": true } }
 
 			const f = props.attr[0]?.file_type
 			if (f == Native.AttributeFileType.File) {
@@ -169,11 +167,11 @@ const attr = vue.defineComponent({
 		})
 
 		const link = vue.computed((): style => {
-			return { class: { "filer-clink": true, "c-operator": true } }
+			return { class: { "filer-cell-attr-link": true, "c-operator": true } }
 		})
 
 		const trgt = vue.computed((): style => {
-			const ret: style = { class: { "filer-ctrgt": true } }
+			const ret: style = { class: { "filer-cell-attr-trgt": true } }
 
 			const f = props.attr[1]?.file_type
 			if (f == Native.AttributeFileType.File) {
@@ -260,21 +258,21 @@ const attr = vue.defineComponent({
 	render() {
 		return vue.h(
 			"span",
-			{ class: { "filer-cflex": true } },
+			{ class: { "filer-cell-attr": true } },
 			[
 				vue.h(
 					"span",
-					{ class: { "filer-cicon": true }, draggable: true, onDragstart: this.dragstart },
+					{ class: { "filer-cell-attr-icon": true }, draggable: true, onDragstart: this.dragstart },
 					[
 						vue.h("img", {
-							class: { "filer-cimg": true },
+							class: { "filer-cell-attr-img": true },
 							src: `eyna://icon/${encodeURIComponent(this.attr[0]?.full ?? "")}`,
 						}),
 					],
 				),
 				vue.h(
 					"span",
-					{ class: { "filer-cname": true } },
+					{ class: { "filer-cell-attr-name": true } },
 					this.is_link
 						? [
 							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
@@ -285,9 +283,9 @@ const attr = vue.defineComponent({
 							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
 						],
 				),
-				vue.h("span", { class: { "filer-csize": true } }, this.size),
-				vue.h("span", { class: { "filer-cdate": true } }, this.date?.date),
-				vue.h("span", { class: { "filer-ctime": true } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-size": true } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true } }, this.date?.time),
 			],
 		)
 	},

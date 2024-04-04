@@ -83,7 +83,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const el = vue.ref<HTMLElement>() // data.filer-data
+		const el = vue.ref<HTMLElement>() // TAG_DATA element
 
 		const _mounted = () => {
 			let d: DOMRect = el.value!.getBoundingClientRect()
@@ -155,14 +155,16 @@ export const V = vue.defineComponent({
 						? [
 							vue.h(
 								"span",
-								{ class: { "filer-vicon": true } },
-								this.list.info.sync ? Font.Icon.Sync : Font.Icon.SyncIgnored,
+								{ class: { "filer-val-icon": true } },
+								this.list.info.sync
+									? Font.Icon.Sync
+									: Font.Icon.SyncIgnored,
 							),
-							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.mark}/${this.list.info.total}`),
-							vue.h("span", { class: { "filer-vicon": true } }, Font.Icon.CircleSlash),
-							vue.h("span", { class: { "filer-vdata": true } }, this.list.info.error),
-							vue.h("span", { class: { "filer-vicon": true } }, Font.Icon.History),
-							vue.h("span", { class: { "filer-vdata": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
+							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.mark}/${this.list.info.total}`),
+							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
+							vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
+							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.History),
+							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
 						]
 						: undefined,
 				),
