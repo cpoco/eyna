@@ -1,12 +1,12 @@
 export class DeferredPromise<T> {
 	public promise: Promise<T>
-	public resolve: Function | null = null
-	public reject: Function | null = null
+	public resolve: ((value: T | PromiseLike<T>) => void) | null = null
+	public reject: ((reason?: any) => void) | null = null
 
 	constructor() {
-		this.promise = new Promise<T>((_resolve, _reject) => {
-			this.resolve = _resolve
-			this.reject = _reject
+		this.promise = new Promise<T>((resolve, reject) => {
+			this.resolve = resolve
+			this.reject = reject
 		})
 	}
 }

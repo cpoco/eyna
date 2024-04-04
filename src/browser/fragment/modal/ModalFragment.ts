@@ -41,9 +41,7 @@ export class ModalFragment extends AbstractFragment {
 				}
 				else if (data.event == "closed" || data.event == "canceled") {
 					Command.manager.whenType = Command.When.Filer
-					if (this.deferred?.resolve) {
-						this.deferred?.resolve(data.result)
-					}
+					this.deferred?.resolve?.(data.result)
 					this.deferred = null
 				}
 			})
