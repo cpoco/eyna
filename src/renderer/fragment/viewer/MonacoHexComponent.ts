@@ -74,7 +74,7 @@ export const V = vue.defineComponent({
 				})
 				.then((buf) => {
 					const decoder = new TextDecoder()
-					const view = new DataView(buf)
+					const view = new DataView(buf, 0, Math.min(buf.byteLength, 0x100000))
 					const cols = 16
 					const line: string[] = []
 					for (let row = 0; row < view.byteLength; row += cols) {
