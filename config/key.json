@@ -30,6 +30,7 @@
 
 		{ "when": "filer",  "key": "f",                 "cmd": "list.find" },
 		{ "when": "filer",  "key": "v",                 "cmd": "list.diff" },
+		{ "when": "filer",  "key": "b",                 "cmd": "list.hex"  },
 		{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },
 		{ "when": "filer",  "key": "x",                 "cmd": "list.extension", "prm": "list.terminal" },
 

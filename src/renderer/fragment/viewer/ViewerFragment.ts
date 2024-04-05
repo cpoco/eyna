@@ -5,11 +5,12 @@ import * as AudioComponent from "@/renderer/fragment/viewer/AudioComponent"
 import * as ImageComponent from "@/renderer/fragment/viewer/ImageComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import * as MonacoDiffComponent from "@/renderer/fragment/viewer/MonacoDiffComponent"
+import * as MonacoHexComponent from "@/renderer/fragment/viewer/MonacoHexComponent"
 import * as VideoComponent from "@/renderer/fragment/viewer/VideoComponent"
 import root from "@/renderer/Root"
 
 type reactive = {
-	type: "text" | "diff" | "image" | "audio" | "video" | null
+	type: "text" | "diff" | "hex" | "image" | "audio" | "video" | null
 	path: string[]
 	size: bigint[]
 }
@@ -89,6 +90,18 @@ export const V = vue.defineComponent({
 					modified: this.reactive.path[1] ?? "",
 					original_size: this.reactive.size[0] ?? 0n,
 					modified_size: this.reactive.size[1] ?? 0n,
+				}, undefined),
+			])
+		}
+		if (this.reactive.type == "hex") {
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+				},
+			}, [
+				vue.h(MonacoHexComponent.V, {
+					path: this.reactive.path[0] ?? "",
+					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
 			])
 		}
