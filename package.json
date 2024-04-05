@@ -19,7 +19,7 @@
 		"monaco-editor": "0.47.0",
 		"pug": "3.0.2",
 		"stylus": "0.63.0",
-		"typescript": "5.4.3"
+		"typescript": "5.4.4"
 	},
 	"overrides": {
 		"make-fetch-happen": "13.0.0"
