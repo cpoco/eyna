@@ -220,6 +220,9 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.diff", (active, target) => {
+				if (active.data.search || target.data.search) {
+					return Promise.resolve()
+				}
 				return new Promise(async (resolve, reject) => {
 					let lattr: Native.Attribute | null = null
 					let ltrgt: Native.Attribute | null = null
@@ -255,6 +258,31 @@ export class FilerFragment extends AbstractFragment {
 						path: [ltrgt.full, rtrgt.full],
 						size: [ltrgt.size, rtrgt.size],
 					})
+					resolve()
+				})
+			})
+			.on2("list.hex", (active, _target) => {
+				if (active.data.search) {
+					return Promise.resolve()
+				}
+				return new Promise(async (resolve, reject) => {
+					let attr = Util.first(active.data.ls[active.data.cursor])
+					let trgt = Util.last(active.data.ls[active.data.cursor])
+					if (attr == null || trgt == null) {
+						resolve()
+						return
+					}
+					if (trgt.file_type == Native.AttributeFileType.File) {
+						if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+							reject("file too large")
+							return
+						}
+						root.viewer({
+							type: "hex",
+							path: [trgt.full],
+							size: [trgt.size],
+						})
+					}
 					resolve()
 				})
 			})

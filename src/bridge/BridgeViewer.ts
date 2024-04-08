@@ -28,7 +28,7 @@ export namespace Viewer {
 				Data,
 			]
 		}
-		export type Data = DataText | DataDiff | DataImage | DataAudio | DataVideo
+		export type Data = DataText | DataHex | DataDiff | DataImage | DataAudio | DataVideo
 		export type DataText = {
 			type: "text"
 			path: [string]
@@ -38,6 +38,11 @@ export namespace Viewer {
 			type: "diff"
 			path: [string, string]
 			size: [bigint, bigint]
+		}
+		export type DataHex = {
+			type: "hex"
+			path: [string]
+			size: [bigint]
 		}
 		export type DataImage = {
 			type: "image"
