@@ -15,6 +15,9 @@ export const V = vue.defineComponent({
 			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
 				sys.reactive.active = data
 			})
+			.on(Bridge.System.Dialog.CH, (_i: number, data: Bridge.System.Dialog.Data) => {
+				sys.reactive.dialog = data
+			})
 
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
@@ -38,6 +41,7 @@ export const V = vue.defineComponent({
 					root.log("ipc.invoke.result", data)
 					sys.reactive.ready = true
 					sys.reactive.active = data.active
+					sys.reactive.dialog = data.dialog
 					sys.reactive.dynamicFontSize = data.fontSize
 					sys.reactive.dynamicLineHeight = data.lineHeight
 				})
@@ -56,7 +60,47 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ ref: "el", class: { "system-fragment": true } },
-			undefined,
+			vue.h(dialog),
+		)
+	},
+})
+
+const dialog = vue.defineComponent({
+	setup() {
+		const el = vue.ref<HTMLDialogElement>()
+		const sys = SystemProvider.inject()
+		const refs = vue.toRefs(sys.reactive)
+
+		const show = (v: boolean) => {
+			if (v) {
+				el.value!.showModal()
+			}
+			else {
+				el.value!.close()
+			}
+		}
+
+		vue.onMounted(() => {
+			show(refs.dialog.value)
+		})
+
+		vue.watch(refs.dialog, (v) => {
+			show(v)
+		})
+
+		return {
+			el,
+		}
+	},
+
+	render() {
+		return vue.h(
+			"dialog",
+			{
+				ref: "el",
+				class: { "system-dialog": true },
+			},
+			"WIP",
 		)
 	},
 })

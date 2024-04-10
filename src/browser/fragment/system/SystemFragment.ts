@@ -1,12 +1,11 @@
-import * as electron from "electron"
-
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
-import * as Native from "@eyna/native/ts/browser"
 
 export class SystemFragment extends AbstractFragment {
+	private dialog: boolean = false
+
 	constructor() {
 		super()
 
@@ -19,6 +18,7 @@ export class SystemFragment extends AbstractFragment {
 			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Style.Data => {
 				return {
 					active: root.isActive(),
+					dialog: this.dialog,
 					fontSize: Conf.DYNAMIC_FONT_SIZE,
 					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 				}
@@ -48,15 +48,11 @@ export class SystemFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on("system.version", () => {
-				root.showMessageBox([
-					`version: ${electron.app.getVersion()}`,
-					`admin: ${Native.isElevated()}`,
-					"",
-					`electron: ${process.versions.electron}`,
-					`node: ${process.versions.node}`,
-					`chrome: ${process.versions.chrome}`,
-					`v8: ${process.versions.v8}`,
-				].join("\n"))
+				this.dialog = !this.dialog
+				root.send<Bridge.System.Dialog.Send>({
+					ch: Bridge.System.Dialog.CH,
+					args: [-1, this.dialog],
+				})
 				return Promise.resolve()
 			})
 			.on("system.devtool", () => {

@@ -174,10 +174,6 @@ class Root {
 		this.browser.reload()
 	}
 
-	showMessageBox(message: string) {
-		electron.dialog.showMessageBox(this.browser, { "message": message })
-	}
-
 	devTools() {
 		if (this.browser.webContents.isDevToolsOpened()) {
 			this.browser.webContents.closeDevTools()

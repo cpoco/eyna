@@ -8,6 +8,7 @@ function _create() {
 	const reactive = vue.reactive({
 		ready: false,
 		active: false,
+		dialog: false,
 		dynamicFontSize: Conf.DYNAMIC_FONT_SIZE,
 		dynamicLineHeight: Conf.DYNAMIC_LINE_HEIGHT,
 	})
