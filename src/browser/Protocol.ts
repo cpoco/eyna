@@ -28,6 +28,9 @@ export class Protocol {
 			else if (url.host == "metrics") {
 				return metrics()
 			}
+			else if (url.host == "versions") {
+				return versions()
+			}
 			return new Response(null, { status: 500 })
 		})
 		IconWorker.run()
@@ -103,3 +106,27 @@ const metrics = (): Response => {
 		},
 	)
 }
+
+const versions = (): Response => {
+	return new Response(
+		JSON.stringify({
+			app: {
+				version: electron.app.getVersion(),
+				admin: Native.isElevated(),
+			},
+			system: {
+				electron: process.versions.electron,
+				node: process.versions.node,
+				chrome: process.versions.chrome,
+				v8: process.versions.v8,
+			},
+		}),
+		{
+			headers: {
+				"content-type": "application/json",
+				"cache-control": "no-store",
+			},
+		},
+	)
+}
+
