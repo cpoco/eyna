@@ -8,12 +8,27 @@ const schema = "eyna"
 
 export class Protocol {
 	static register() {
-		electron.protocol.registerSchemesAsPrivileged([{ scheme: schema }])
+		electron.protocol.registerSchemesAsPrivileged([
+			{
+				scheme: schema,
+				privileges: {
+					supportFetchAPI: true,
+				},
+			},
+		])
 	}
 
 	static handle() {
 		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
-			return IconWorker.push(req)
+			const url = new URL(req.url)
+
+			if (url.host == "icon") {
+				return IconWorker.push(url)
+			}
+			else if (url.host == "metrics") {
+				return metrics()
+			}
+			return new Response(null, { status: 500 })
 		})
 		IconWorker.run()
 	}
@@ -31,8 +46,8 @@ class IconWorker {
 		return ary.length == 2
 	}
 
-	static async push(req: Request): Promise<Response> {
-		const path = (new URL(req.url)).pathname.split("/")
+	static async push(url: URL): Promise<Response> {
+		const path = url.pathname.split("/")
 
 		if (!this.verify(path)) {
 			return new Response(null, { status: 400 })
@@ -75,4 +90,16 @@ class IconWorker {
 			}
 		}
 	}
+}
+
+const metrics = (): Response => {
+	return new Response(
+		JSON.stringify({ metrics: electron.app.getAppMetrics() }),
+		{
+			headers: {
+				"content-type": "application/json",
+				"cache-control": "no-store",
+			},
+		},
+	)
 }
