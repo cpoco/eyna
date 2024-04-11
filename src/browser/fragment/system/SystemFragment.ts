@@ -1,10 +1,12 @@
-import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
+import { Style } from "@/browser/core/Style"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class SystemFragment extends AbstractFragment {
-	private dialog: boolean = false
+	private dialog = {
+		version: false,
+	}
 
 	constructor() {
 		super()
@@ -15,12 +17,14 @@ export class SystemFragment extends AbstractFragment {
 
 	private ipc() {
 		root
-			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Style.Data => {
+			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Dom.Result => {
 				return {
-					active: root.isActive(),
+					app: {
+						ready: true,
+						active: root.isActive(),
+					},
 					dialog: this.dialog,
-					fontSize: Conf.DYNAMIC_FONT_SIZE,
-					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+					style: Style.Dynamic,
 				}
 			})
 	}
@@ -48,10 +52,10 @@ export class SystemFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on("system.version", () => {
-				this.dialog = !this.dialog
-				root.send<Bridge.System.Dialog.Send>({
-					ch: Bridge.System.Dialog.CH,
-					args: [-1, this.dialog],
+				this.dialog.version = !this.dialog.version
+				root.send<Bridge.System.Version.Send>({
+					ch: Bridge.System.Version.CH,
+					args: [-1, this.dialog.version],
 				})
 				return Promise.resolve()
 			})

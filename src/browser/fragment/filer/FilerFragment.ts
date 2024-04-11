@@ -8,6 +8,7 @@ import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Path } from "@/browser/core/Path"
 import { Storage } from "@/browser/core/Storage"
+import { Style } from "@/browser/core/Style"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerManager } from "@/browser/fragment/filer/FilerManager"
 import root from "@/browser/Root"
@@ -79,7 +80,7 @@ export class FilerFragment extends AbstractFragment {
 		root
 			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Conf.DYNAMIC_LINE_HEIGHT)
+					this.core[i]?.mounted(data.data.h, Style.Dynamic.lineHeight)
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.data.h)

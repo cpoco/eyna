@@ -13,16 +13,16 @@ export const V = vue.defineComponent({
 
 		root
 			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
-				sys.reactive.active = data
+				sys.reactive.app.active = data
 			})
-			.on(Bridge.System.Dialog.CH, (_i: number, data: Bridge.System.Dialog.Data) => {
-				sys.reactive.dialog = data
+			.on(Bridge.System.Version.CH, (_i: number, data: Bridge.System.Version.Data) => {
+				sys.reactive.dialog.version = data
 			})
 
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
 			root
-				.invoke<Bridge.System.Dom.Send, Bridge.System.Style.Data>({
+				.invoke<Bridge.System.Dom.Send, Bridge.System.Dom.Result>({
 					ch: "system-dom",
 					args: [
 						-1,
@@ -37,13 +37,11 @@ export const V = vue.defineComponent({
 						},
 					],
 				})
-				.then((data: Bridge.System.Style.Data) => {
+				.then((data: Bridge.System.Dom.Result) => {
 					root.log("ipc.invoke.result", data)
-					sys.reactive.ready = true
-					sys.reactive.active = data.active
+					sys.reactive.app = data.app
 					sys.reactive.dialog = data.dialog
-					sys.reactive.dynamicFontSize = data.fontSize
-					sys.reactive.dynamicLineHeight = data.lineHeight
+					sys.reactive.style = data.style
 				})
 		}
 
@@ -69,7 +67,6 @@ const dialog = vue.defineComponent({
 	setup() {
 		const el = vue.ref<HTMLDialogElement>()
 		const sys = SystemProvider.inject()
-		const refs = vue.toRefs(sys.reactive)
 
 		const show = (v: boolean) => {
 			if (v) {
@@ -81,12 +78,17 @@ const dialog = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
-			show(refs.dialog.value)
+			show(sys.reactive.dialog.version)
 		})
 
-		vue.watch(refs.dialog, (v) => {
-			show(v)
-		})
+		vue.watch(
+			() => {
+				return sys.reactive.dialog.version
+			},
+			(v) => {
+				show(v)
+			},
+		)
 
 		return {
 			el,

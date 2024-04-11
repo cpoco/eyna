@@ -33,10 +33,10 @@ const V = vue.defineComponent({
 	render() {
 		return vue.h("root", undefined, [
 			vue.h(SystemFragment.V),
-			this.sys.ready ? vue.h(NavbarFragment.V) : undefined,
-			this.sys.ready ? vue.h(FilerFragment.V) : undefined,
-			this.sys.ready ? vue.h(ModalFragment.V) : undefined,
-			this.sys.ready ? vue.h(ViewerFragment.V) : undefined,
+			this.sys.app.ready ? vue.h(NavbarFragment.V) : undefined,
+			this.sys.app.ready ? vue.h(FilerFragment.V) : undefined,
+			this.sys.app.ready ? vue.h(ModalFragment.V) : undefined,
+			this.sys.app.ready ? vue.h(ViewerFragment.V) : undefined,
 		])
 	},
 })

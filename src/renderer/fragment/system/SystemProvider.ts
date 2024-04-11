@@ -2,31 +2,52 @@ import * as vue from "@vue/runtime-dom"
 
 import * as Conf from "@/app/Conf"
 
+type reactive = {
+	app: {
+		ready: boolean
+		active: boolean
+	}
+	dialog: {
+		version: boolean
+	}
+	style: {
+		fontSize: number
+		lineHeight: number
+	}
+}
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("SystemProvider")
 
 function _create() {
-	const reactive = vue.reactive({
-		ready: false,
-		active: false,
-		dialog: false,
-		dynamicFontSize: Conf.DYNAMIC_FONT_SIZE,
-		dynamicLineHeight: Conf.DYNAMIC_LINE_HEIGHT,
-	})
-	const refs = vue.toRefs(reactive)
-
-	const style = document.documentElement.style
-
-	style.setProperty(Conf.DYNAMIC_NAVBAR_HEIGHT_STYLE, `${Conf.DYNAMIC_NAVBAR_HEIGHT}px`)
-	style.setProperty(Conf.DYNAMIC_FONT_SIZE_STYLE, `${Conf.DYNAMIC_FONT_SIZE}px`)
-	style.setProperty(Conf.DYNAMIC_LINE_HEIGHT_STYLE, `${Conf.DYNAMIC_LINE_HEIGHT}px`)
-
-	vue.watch(refs.dynamicFontSize, (v) => {
-		style.setProperty(Conf.DYNAMIC_FONT_SIZE_STYLE, `${v}px`)
+	const reactive = vue.reactive<reactive>({
+		app: {
+			ready: false,
+			active: false,
+		},
+		dialog: {
+			version: false,
+		},
+		style: {
+			fontSize: 0,
+			lineHeight: 0,
+		},
 	})
 
-	vue.watch(refs.dynamicLineHeight, (v) => {
-		style.setProperty(Conf.DYNAMIC_LINE_HEIGHT_STYLE, `${v}px`)
-	})
+	vue.watch(
+		() => {
+			return reactive.style.fontSize
+		},
+		(v) => {
+			document.documentElement.style.setProperty(Conf.STYLE_FONT_SIZE, `${v}px`)
+		},
+	)
+	vue.watch(
+		() => {
+			return reactive.style.lineHeight
+		},
+		(v) => {
+			document.documentElement.style.setProperty(Conf.STYLE_LINE_HEIGHT, `${v}px`)
+		},
+	)
 
 	return {
 		reactive,

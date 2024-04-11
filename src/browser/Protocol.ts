@@ -129,4 +129,3 @@ const versions = (): Response => {
 		},
 	)
 }
-

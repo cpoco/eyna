@@ -66,9 +66,9 @@
 	&-fragment
 		position: absolute
 		overflow: hidden
-		top: var(--dynamic-navbar-height)
+		top: _navbar_height
 		width: 100%
-		height: calc(100% - var(--dynamic-navbar-height))
+		height: s("calc(100% - %s)", _navbar_height)
 
 		display: flex
 		flex-direction: row

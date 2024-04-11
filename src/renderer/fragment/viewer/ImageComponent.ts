@@ -30,11 +30,16 @@ export const V = vue.defineComponent({
 			})
 		})
 
-		vue.watch(vue.toRefs(props).path, () => {
-			vue.nextTick(() => {
-				img.value!.src = `file://${props.path}`
-			})
-		})
+		vue.watch(
+			() => {
+				return props.path
+			},
+			(v) => {
+				vue.nextTick(() => {
+					img.value!.src = `file://${v}`
+				})
+			},
+		)
 
 		return {
 			head,

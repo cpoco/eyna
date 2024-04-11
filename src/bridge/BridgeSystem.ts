@@ -13,8 +13,8 @@ export namespace System {
 	}
 
 	// renderer -> browser
-	export namespace Dialog {
-		export const CH = "system-dialog"
+	export namespace Version {
+		export const CH = "system-version"
 		export type Send = {
 			ch: typeof CH
 			args: [
@@ -25,7 +25,7 @@ export namespace System {
 		export type Data = boolean
 	}
 
-	// renderer -> browser
+	// renderer -> browser -> renderer
 	export namespace Dom {
 		export const CH = "system-dom"
 		export type Send = {
@@ -44,15 +44,18 @@ export namespace System {
 				h: number
 			}
 		}
-	}
-
-	// browser -> renderer
-	export namespace Style {
-		export type Data = {
-			active: boolean
-			dialog: boolean
-			fontSize: number
-			lineHeight: number
+		export type Result = {
+			app: {
+				ready: boolean
+				active: boolean
+			}
+			dialog: {
+				version: boolean
+			}
+			style: {
+				fontSize: number
+				lineHeight: number
+			}
 		}
 	}
 }
