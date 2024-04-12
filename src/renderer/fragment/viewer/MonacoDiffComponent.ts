@@ -70,6 +70,7 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
+			editor.addCommand(globalThis.monaco.KeyCode.F1, () => {})
 			editor.setModel({
 				original: original,
 				modified: modified,
