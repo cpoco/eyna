@@ -59,7 +59,7 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ ref: "el", class: { "system-fragment": true } },
-			this.sys.overlay.version ? vue.h(overlay) : undefined
+			this.sys.overlay.version ? vue.h(overlay) : undefined,
 		)
 	},
 })
@@ -73,34 +73,33 @@ const overlay = vue.defineComponent({
 
 		vue.onMounted(() => {
 			fetch("eyna://versions/")
-			.then((res) => {
-				return res.json()
-			})
-			.then((json: versions) => {
-				ver.value = [
-					` version: ${json.app.version}`,
-					`electron: ${json.system.electron}`,
-					`    node: ${json.system.node}`,
-					`  chrome: ${json.system.chrome}`,
-					`      v8: ${json.system.v8}`,
-				].join("\n")
-			})
-
-			id = setInterval(() => {
-				fetch("eyna://metrics/")
 				.then((res) => {
 					return res.json()
 				})
-				.then((json: metrics) => {
-					const line: string[] = []
-					for (const m of json.metrics) {
-						line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)
-					}
-					met.value = line.join("\n")
+				.then((json: versions) => {
+					ver.value = [
+						` version: ${json.app.version}`,
+						`electron: ${json.system.electron}`,
+						`    node: ${json.system.node}`,
+						`  chrome: ${json.system.chrome}`,
+						`      v8: ${json.system.v8}`,
+					].join("\n")
 				})
+
+			id = setInterval(() => {
+				fetch("eyna://metrics/")
+					.then((res) => {
+						return res.json()
+					})
+					.then((json: metrics) => {
+						const line: string[] = []
+						for (const m of json.metrics) {
+							line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)
+						}
+						met.value = line.join("\n")
+					})
 			}, 1000)
 		})
-
 
 		vue.onUnmounted(() => {
 			clearInterval(id)
@@ -126,18 +125,17 @@ const overlay = vue.defineComponent({
 	},
 })
 
-
 type versions = {
 	app: {
 		version: string
 		admin: boolean
-	},
+	}
 	system: {
 		electron: string
 		node: string
 		chrome: string
 		v8: string
-	},
+	}
 }
 
 type metrics = {
