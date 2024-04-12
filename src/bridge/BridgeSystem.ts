@@ -49,7 +49,7 @@ export namespace System {
 				ready: boolean
 				active: boolean
 			}
-			dialog: {
+			overlay: {
 				version: boolean
 			}
 			style: {

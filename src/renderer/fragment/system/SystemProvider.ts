@@ -7,7 +7,7 @@ type reactive = {
 		ready: boolean
 		active: boolean
 	}
-	dialog: {
+	overlay: {
 		version: boolean
 	}
 	style: {
@@ -23,7 +23,7 @@ function _create() {
 			ready: false,
 			active: false,
 		},
-		dialog: {
+		overlay: {
 			version: false,
 		},
 		style: {

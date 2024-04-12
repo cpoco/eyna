@@ -16,7 +16,7 @@ export const V = vue.defineComponent({
 				sys.reactive.app.active = data
 			})
 			.on(Bridge.System.Version.CH, (_i: number, data: Bridge.System.Version.Data) => {
-				sys.reactive.dialog.version = data
+				sys.reactive.overlay.version = data
 			})
 
 		const _mounted = () => {
@@ -40,7 +40,7 @@ export const V = vue.defineComponent({
 				.then((data: Bridge.System.Dom.Result) => {
 					root.log("ipc.invoke.result", data)
 					sys.reactive.app = data.app
-					sys.reactive.dialog = data.dialog
+					sys.reactive.overlay = data.overlay
 					sys.reactive.style = data.style
 				})
 		}
@@ -51,6 +51,7 @@ export const V = vue.defineComponent({
 
 		return {
 			el,
+			sys: sys.reactive,
 		}
 	},
 
@@ -58,18 +59,17 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ ref: "el", class: { "system-fragment": true } },
-			vue.h(dialog),
+			this.sys.overlay.version ? vue.h(overlay) : undefined
 		)
 	},
 })
 
-const dialog = vue.defineComponent({
+const overlay = vue.defineComponent({
 	setup() {
-		const el = vue.ref<HTMLDialogElement>()
-		const sys = SystemProvider.inject()
-
 		const ver = vue.ref<string>("")
 		const met = vue.ref<string>("")
+
+		let id: NodeJS.Timeout
 
 		vue.onMounted(() => {
 			fetch("eyna://versions/")
@@ -86,10 +86,7 @@ const dialog = vue.defineComponent({
 				].join("\n")
 			})
 
-			setInterval(() => {
-				if (!sys.reactive.dialog.version) {
-					return
-				}
+			id = setInterval(() => {
 				fetch("eyna://metrics/")
 				.then((res) => {
 					return res.json()
@@ -97,29 +94,19 @@ const dialog = vue.defineComponent({
 				.then((json: metrics) => {
 					const line: string[] = []
 					for (const m of json.metrics) {
-						line.push(`${m.type}\t${m.memory.workingSetSize}\t${m.memory.peakWorkingSetSize}`)
+						line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)
 					}
 					met.value = line.join("\n")
 				})
 			}, 1000)
 		})
 
-		vue.watch(
-			() => {
-				return sys.reactive.dialog.version
-			},
-			(v) => {
-				if (v) {
-					el.value?.showModal()
-				}
-				else {
-					el.value?.close()
-				}
-			},
-		)
+
+		vue.onUnmounted(() => {
+			clearInterval(id)
+		})
 
 		return {
-			el,
 			ver,
 			met,
 		}
@@ -127,15 +114,14 @@ const dialog = vue.defineComponent({
 
 	render() {
 		return vue.h(
-			"dialog",
+			"overlay",
 			{
-				ref: "el",
-				class: { "system-dialog": true },
+				class: { "system-overlay": true },
 			},
-			vue.h("div", { class: { "system-version": true } }, [
-				vue.h("pre", { class: { "system-version-item": true } }, this.ver),
-				vue.h("pre", { class: { "system-version-item": true } }, this.met),
-			]),
+			[
+				vue.h("pre", { class: { "system-overlay-item": true } }, this.ver),
+				vue.h("pre", { class: { "system-overlay-item": true } }, this.met),
+			],
 		)
 	},
 })

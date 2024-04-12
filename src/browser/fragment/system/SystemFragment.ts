@@ -4,7 +4,7 @@ import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class SystemFragment extends AbstractFragment {
-	private dialog = {
+	private overlay = {
 		version: false,
 	}
 
@@ -23,7 +23,7 @@ export class SystemFragment extends AbstractFragment {
 						ready: true,
 						active: root.isActive(),
 					},
-					dialog: this.dialog,
+					overlay: this.overlay,
 					style: Style.Dynamic,
 				}
 			})
@@ -52,10 +52,10 @@ export class SystemFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on("system.version", () => {
-				this.dialog.version = !this.dialog.version
+				this.overlay.version = !this.overlay.version
 				root.send<Bridge.System.Version.Send>({
 					ch: Bridge.System.Version.CH,
-					args: [-1, this.dialog.version],
+					args: [-1, this.overlay.version],
 				})
 				return Promise.resolve()
 			})
