@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.34",
+	"version": "0.0.35",
 	"private": true,
 	"main": "./app/browser.js",
 	"workspaces": [
@@ -13,13 +13,13 @@
 		"@eyna/native": "*",
 		"@eyna/util": "*",
 		"@vue/runtime-dom": "3.4.21",
-		"electron": "29.2.0",
+		"electron": "29.3.0",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.20.2",
 		"monaco-editor": "0.47.0",
 		"pug": "3.0.2",
 		"stylus": "0.63.0",
-		"typescript": "5.4.4"
+		"typescript": "5.4.5"
 	},
 	"overrides": {
 		"make-fetch-happen": "13.0.0"

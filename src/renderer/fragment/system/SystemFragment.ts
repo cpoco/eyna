@@ -13,13 +13,16 @@ export const V = vue.defineComponent({
 
 		root
 			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
-				sys.reactive.active = data
+				sys.reactive.app.active = data
+			})
+			.on(Bridge.System.Version.CH, (_i: number, data: Bridge.System.Version.Data) => {
+				sys.reactive.overlay.version = data
 			})
 
 		const _mounted = () => {
 			let r: DOMRect = el.value!.getBoundingClientRect()
 			root
-				.invoke<Bridge.System.Dom.Send, Bridge.System.Style.Data>({
+				.invoke<Bridge.System.Dom.Send, Bridge.System.Dom.Result>({
 					ch: "system-dom",
 					args: [
 						-1,
@@ -34,12 +37,11 @@ export const V = vue.defineComponent({
 						},
 					],
 				})
-				.then((data: Bridge.System.Style.Data) => {
+				.then((data: Bridge.System.Dom.Result) => {
 					root.log("ipc.invoke.result", data)
-					sys.reactive.ready = true
-					sys.reactive.active = data.active
-					sys.reactive.dynamicFontSize = data.fontSize
-					sys.reactive.dynamicLineHeight = data.lineHeight
+					sys.reactive.app = data.app
+					sys.reactive.overlay = data.overlay
+					sys.reactive.style = data.style
 				})
 		}
 
@@ -49,6 +51,7 @@ export const V = vue.defineComponent({
 
 		return {
 			el,
+			sys: sys.reactive,
 		}
 	},
 
@@ -56,7 +59,92 @@ export const V = vue.defineComponent({
 		return vue.h(
 			TAG,
 			{ ref: "el", class: { "system-fragment": true } },
-			undefined,
+			this.sys.overlay.version ? vue.h(overlay) : undefined,
 		)
 	},
 })
+
+const overlay = vue.defineComponent({
+	setup() {
+		const ver = vue.ref<string>("")
+		const met = vue.ref<string>("")
+
+		let id: NodeJS.Timeout
+
+		vue.onMounted(() => {
+			fetch("eyna://versions/")
+				.then((res) => {
+					return res.json()
+				})
+				.then((json: versions) => {
+					ver.value = [
+						` version: ${json.app.version}`,
+						`electron: ${json.system.electron}`,
+						`    node: ${json.system.node}`,
+						`  chrome: ${json.system.chrome}`,
+						`      v8: ${json.system.v8}`,
+					].join("\n")
+				})
+
+			id = setInterval(() => {
+				fetch("eyna://metrics/")
+					.then((res) => {
+						return res.json()
+					})
+					.then((json: metrics) => {
+						const line: string[] = []
+						for (const m of json.metrics) {
+							line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)
+						}
+						met.value = line.join("\n")
+					})
+			}, 1000)
+		})
+
+		vue.onUnmounted(() => {
+			clearInterval(id)
+		})
+
+		return {
+			ver,
+			met,
+		}
+	},
+
+	render() {
+		return vue.h(
+			"overlay",
+			{
+				class: { "system-overlay": true },
+			},
+			[
+				vue.h("pre", { class: { "system-overlay-item": true } }, this.ver),
+				vue.h("pre", { class: { "system-overlay-item": true } }, this.met),
+			],
+		)
+	},
+})
+
+type versions = {
+	app: {
+		version: string
+		admin: boolean
+	}
+	system: {
+		electron: string
+		node: string
+		chrome: string
+		v8: string
+	}
+}
+
+type metrics = {
+	metrics: {
+		type: string
+		pid: number
+		memory: {
+			workingSetSize: number
+			peakWorkingSetSize: number
+		}
+	}[]
+}

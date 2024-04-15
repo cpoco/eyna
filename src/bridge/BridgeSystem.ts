@@ -13,6 +13,19 @@ export namespace System {
 	}
 
 	// renderer -> browser
+	export namespace Version {
+		export const CH = "system-version"
+		export type Send = {
+			ch: typeof CH
+			args: [
+				number,
+				Data,
+			]
+		}
+		export type Data = boolean
+	}
+
+	// renderer -> browser -> renderer
 	export namespace Dom {
 		export const CH = "system-dom"
 		export type Send = {
@@ -31,14 +44,18 @@ export namespace System {
 				h: number
 			}
 		}
-	}
-
-	// browser -> renderer
-	export namespace Style {
-		export type Data = {
-			active: boolean
-			fontSize: number
-			lineHeight: number
+		export type Result = {
+			app: {
+				ready: boolean
+				active: boolean
+			}
+			overlay: {
+				version: boolean
+			}
+			style: {
+				fontSize: number
+				lineHeight: number
+			}
 		}
 	}
 }

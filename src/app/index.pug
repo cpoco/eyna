@@ -1,10 +1,18 @@
+- var _default = "default-src 'none';"
+- var _script  = "script-src 'self';"
+- var _style   = "style-src 'self' 'unsafe-inline';"
+- var _img     = "img-src 'self' data: eyna:;"
+- var _font    = "font-src 'self';"
+- var _connect = "connect-src 'self' eyna:;"
+- var _media   = "media-src 'self';"
+
 doctype
 html
 	head
 		meta(charset="utf-8")
 		meta(
 			http-equiv="Content-Security-Policy",
-			content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: eyna:; font-src 'self'; connect-src 'self'; media-src 'self';"
+			content=_default + _script + _style + _img + _font + _connect + _media
 		)
 		link(rel="stylesheet", href="style.css")
 		script(src="renderer.js")

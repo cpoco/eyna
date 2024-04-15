@@ -1,6 +1,8 @@
 import native from "@eyna/native/esm/index.mjs"
+import fs from "node:fs"
 import path from "node:path"
 import process from "node:process"
+import timers from "node:timers/promises"
 
 if (process.platform == "win32") {
 	var wd = path.join("C:", "Users", "Public", "eyna test")
@@ -16,22 +18,25 @@ const dir = path.join(wd, "watch_test")
 await native.createDirectory(dir)
 await native.moveToTrash(dir)
 
+// ウオッチ開始で直前の操作が通知されるのは fs.watch と同様なのか確認する
+
+const ID = 0
 native.watch(
-	0,
+	ID,
 	wd,
 	(id, depth, path) => {
 		console.log("native.watch\tcallback", id, depth, path)
 	},
 )
 
-import fs from "node:fs"
-fs.watch(
+const fsw = fs.watch(
 	wd,
 	(event, filename) => {
 		console.log("fs.watch\tcallback", event, filename)
 	},
 )
 
-setTimeout(() => {
-	process.exit()
-}, 3000)
+await timers.setTimeout(3000)
+
+native.unwatch(ID)
+fsw.close()

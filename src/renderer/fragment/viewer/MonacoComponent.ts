@@ -5,7 +5,7 @@ declare global {
 import * as vue from "@vue/runtime-dom"
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
 
-import * as Conf from "@/app/Conf"
+import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 
 export const V = vue.defineComponent({
 	props: {
@@ -20,6 +20,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
+		const sys = SystemProvider.inject()
 		const el = vue.ref<HTMLElement>()
 
 		const head = vue.ref<string>("")
@@ -47,13 +48,14 @@ export const V = vue.defineComponent({
 
 					renderWhitespace: "all",
 					theme: "vs-dark",
-					fontSize: Conf.DYNAMIC_FONT_SIZE,
-					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+					fontSize: sys.reactive.style.fontSize,
+					lineHeight: sys.reactive.style.lineHeight,
 					matchBrackets: "never",
 					wordWrap: "on",
 					wrappingIndent: "same",
 				},
 			)
+			editor.addCommand(globalThis.monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
 
 			prog.value = true

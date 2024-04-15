@@ -1,12 +1,13 @@
-import * as electron from "electron"
-
-import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
+import { Style } from "@/browser/core/Style"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
-import * as Native from "@eyna/native/ts/browser"
 
 export class SystemFragment extends AbstractFragment {
+	private overlay = {
+		version: false,
+	}
+
 	constructor() {
 		super()
 
@@ -16,11 +17,14 @@ export class SystemFragment extends AbstractFragment {
 
 	private ipc() {
 		root
-			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Style.Data => {
+			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Dom.Result => {
 				return {
-					active: root.isActive(),
-					fontSize: Conf.DYNAMIC_FONT_SIZE,
-					lineHeight: Conf.DYNAMIC_LINE_HEIGHT,
+					app: {
+						ready: true,
+						active: root.isActive(),
+					},
+					overlay: this.overlay,
+					style: Style.Dynamic,
 				}
 			})
 	}
@@ -48,15 +52,11 @@ export class SystemFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on("system.version", () => {
-				root.showMessageBox([
-					`version: ${electron.app.getVersion()}`,
-					`admin: ${Native.isElevated()}`,
-					"",
-					`electron: ${process.versions.electron}`,
-					`node: ${process.versions.node}`,
-					`chrome: ${process.versions.chrome}`,
-					`v8: ${process.versions.v8}`,
-				].join("\n"))
+				this.overlay.version = !this.overlay.version
+				root.send<Bridge.System.Version.Send>({
+					ch: Bridge.System.Version.CH,
+					args: [-1, this.overlay.version],
+				})
 				return Promise.resolve()
 			})
 			.on("system.devtool", () => {
