@@ -14,6 +14,8 @@
 
 		{ "when": "filer",  "key": "u",                 "cmd": "list.update"              },
 		{ "when": "filer",  "key": "space",             "cmd": ["list.mark", "list.down"] },
+		{ "when": "filer",  "key": "home",              "cmd": "list.allmark"             },
+		{ "when": "filer",  "key": "end",               "cmd": "list.allrevoke"           },
 		{ "when": "filer",  "key": "enter",             "cmd": "list.select"              },
 		{ "when": "filer",  "key": "backspace",         "cmd": "list.updir"               },
 
