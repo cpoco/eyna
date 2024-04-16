@@ -283,9 +283,9 @@ const attr = vue.defineComponent({
 							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-size": true } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.pseudo } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.pseudo } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.pseudo } }, this.date?.time),
 			],
 		)
 	},
