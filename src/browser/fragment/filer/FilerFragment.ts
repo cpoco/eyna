@@ -194,7 +194,7 @@ export class FilerFragment extends AbstractFragment {
 				active.sendMark(active.data.cursor, active.data.cursor + 1)
 				return Promise.resolve()
 			})
-			.on2("list.allmark", (active, _target) => {
+			.on2("list.markall", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
@@ -204,7 +204,7 @@ export class FilerFragment extends AbstractFragment {
 				active.sendMark()
 				return Promise.resolve()
 			})
-			.on2("list.allrevoke", (active, _target) => {
+			.on2("list.markclear", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
