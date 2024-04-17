@@ -23,7 +23,7 @@ export async function Build(arch) {
 		"rebuild",
 		`--target=${electron.version}`,
 		`--arch=${arch}`,
-		"--dist-url=https://electronjs.org/header",
+		"--dist-url=https://electronjs.org/headers",
 	]
 
 	await new Promise((resolve, reject) => {
