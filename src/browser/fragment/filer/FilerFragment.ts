@@ -94,14 +94,14 @@ export class FilerFragment extends AbstractFragment {
 	private commandExtension() {
 		this.on2("list.extension", (active, target, file) => {
 			root.runExtension(`${file}.js`, {
-				active: active.isHome ? null : {
+				active: (active.data.search || active.isHome) ? null : {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
 					select: Util.array(0, active.data.length, (i) => {
 						return active.data.mk[i] ? active.data.ls[i]! : undefined
 					}),
 				},
-				target: target.isHome ? null : {
+				target: (target.data.search || target.isHome) ? null : {
 					wd: target.pwd,
 					cursor: target.data.ls[target.data.cursor] ?? null,
 					select: Util.array(0, target.data.length, (i) => {
@@ -116,40 +116,36 @@ export class FilerFragment extends AbstractFragment {
 	private commandList() {
 		this
 			.on2("list.up", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
-
 				active.cursorUp()
 				active.scroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
 			.on2("list.pageup", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
-
 				active.cursorUp(active.mv)
 				active.scroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
 			.on2("list.down", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
-
 				active.cursorDown()
 				active.scroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
 			.on2("list.pagedown", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
-
 				active.cursorDown(active.mv)
 				active.scroll()
 				active.sendCursor()
@@ -182,30 +178,46 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.update", (active, _target) => {
+				if (active.data.search) {
+					return Promise.resolve()
+				}
 				return new Promise(async (resolve, _reject) => {
 					await active.update()
 					resolve()
 				})
 			})
 			.on2("list.mark", (active, _target) => {
-				if (active.isHome) {
-					return Promise.reject("execution skip")
-				}
-
-				let attr = Util.first(active.data.ls[active.data.cursor])
-				if (attr == null) {
+				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-
 				active.data.mk[active.data.cursor] = !active.data.mk[active.data.cursor]
 				active.sendMark(active.data.cursor, active.data.cursor + 1)
 				return Promise.resolve()
 			})
-			.on2("list.find", (active, _target) => {
-				if (active.isHome) {
-					return Promise.reject("execution skip")
+			.on2("list.markall", (active, _target) => {
+				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
+					return Promise.resolve()
 				}
-
+				for (let i = 0; i < active.data.mk.length; i++) {
+					active.data.mk[i] = true
+				}
+				active.sendMark()
+				return Promise.resolve()
+			})
+			.on2("list.markclear", (active, _target) => {
+				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
+					return Promise.resolve()
+				}
+				for (let i = 0; i < active.data.mk.length; i++) {
+					active.data.mk[i] = false
+				}
+				active.sendMark()
+				return Promise.resolve()
+			})
+			.on2("list.find", (active, _target) => {
+				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
+					return Promise.resolve()
+				}
 				return new Promise(async (resolve, _reject) => {
 					let find = await root.find({ type: "find", title: active.pwd, rg: "^.+$", dp: "0" })
 					if (find == null) {
@@ -221,7 +233,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.diff", (active, target) => {
-				if (active.data.search || target.data.search) {
+				if (active.data.search || active.data.ls.length == 0 || target.data.search || target.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 				return new Promise(async (resolve, reject) => {
@@ -263,7 +275,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.hex", (active, _target) => {
-				if (active.data.search) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 				return new Promise(async (resolve, reject) => {
@@ -288,7 +300,7 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.select", (active, _target) => {
-				if (active.data.search) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 				return new Promise(async (resolve, reject) => {
@@ -431,6 +443,9 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.shellopne", (active, _target) => {
+				if (active.data.search || active.data.ls.length == 0) {
+					return Promise.resolve()
+				}
 				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
@@ -439,6 +454,9 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.shellproperty", (active, _target) => {
+				if (active.data.search || active.data.ls.length == 0) {
+					return Promise.resolve()
+				}
 				let attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr == null) {
 					return Promise.resolve()
@@ -451,7 +469,7 @@ export class FilerFragment extends AbstractFragment {
 	private commandListImage() {
 		this
 			.on2("list.imageup", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 				for (let i = active.data.cursor - 1; 0 <= i; i--) {
@@ -473,7 +491,7 @@ export class FilerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on2("list.imagedown", (active, _target) => {
-				if (active.data.ls.length == 0) {
+				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
 
