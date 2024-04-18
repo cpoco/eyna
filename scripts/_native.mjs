@@ -23,6 +23,7 @@ export async function Build(arch) {
 		"rebuild",
 		`--target=${electron.version}`,
 		`--arch=${arch}`,
+		`--devdir=${path.join(__top, ".cache")}`,
 		"--dist-url=https://electronjs.org/headers",
 	]
 
