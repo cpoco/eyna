@@ -13,19 +13,23 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
 
 - ファイル操作
 - 正規表現による再帰検索
-- メディアビューア
-  - gif / jpg / jpeg / png / webp
-  - mp3 / m4a / ogg / wav / wave
-  - mp4 / webm
-- テキストビューアとテキスト比較(diff)
-- バイナリビューア
+- ビューア
+  - 画像 (gif / jpg / jpeg / png / webp)
+  - 音声 (mp3 / m4a / ogg / wav / wave)
+  - 動画 (mp4 / webm)
+  - テキスト
+  - バイナリ
+  - diff
 - リンク 解決
   - シンボリックリンク
-  - ショートカット(Windows)
-  - エイリアス(Mac)
-- RLO 対策
+  - ショートカット (Windows)
+  - エイリアス (Mac)
+- クラウドファイル 判定
+  - FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS (Windows)
+  - NSURLUbiquitousItemDownloadingStatusNotDownloaded (Mac)
+- Unicode制御文字 対策 (LRO / RLO)
 
-## 画面
+## スクリーンショット
 
 ### Windows
 
