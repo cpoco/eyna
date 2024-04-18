@@ -6,7 +6,7 @@
 	},
 	"scripts": {
 		"install": "node install.js",
-		"ide:win": "node-gyp configure",
+		"ide:win": "node-gyp configure -- -f msvs",
 		"ide:mac": "node-gyp configure -- -f xcode"
 	}
 }
