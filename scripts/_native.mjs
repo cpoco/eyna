@@ -1,5 +1,5 @@
+import { BuildElectron } from "@eyna/native/scripts/build.mjs"
 import fse from "fs-extra"
-import child_process from "node:child_process"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
@@ -17,37 +17,9 @@ export async function Build(arch) {
 	let _time = perf_hooks.performance.now()
 	await fse.ensureDir(outdir)
 
-	const cmd = [
-		"npx",
-		"node-gyp",
-		"rebuild",
-		`--target=${electron.version}`,
-		`--arch=${arch}`,
-		`--devdir=${path.join(__top, ".cache")}`,
-		"--dist-url=https://electronjs.org/headers",
-	]
+	const outfile = await BuildElectron(electron.version, arch)
 
-	await new Promise((resolve, reject) => {
-		child_process.exec(
-			cmd.join(" "),
-			{
-				cwd: path.join(__top, "node_modules/@eyna/native"),
-			},
-			(error, _stdout, _stderr) => {
-				if (error) {
-					reject(error)
-				}
-				else {
-					resolve()
-				}
-			},
-		)
-	})
-
-	await fse.copyFile(
-		path.join(__top, "node_modules/@eyna/native/build/Release/native.node"),
-		path.join(outdir, "native.node"),
-	)
+	await fse.copyFile(outfile, path.join(outdir, "native.node"))
 
 	console.log(`native ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
 }
