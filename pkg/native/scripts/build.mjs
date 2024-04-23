@@ -20,7 +20,7 @@ export async function BuildNode(version, arch) {
 		"rebuild",
 		`--target=${version}`,
 		`--arch=${arch}`,
-		`--devdir=${path.join(__top, "cache")}`,
+		`--devdir=\"${path.join(__top, "cache")}\"`,
 	]
 
 	const exec = util.promisify(child_process.exec)
@@ -44,7 +44,7 @@ export async function BuildElectron(version, arch) {
 		"rebuild",
 		`--target=${version}`,
 		`--arch=${arch}`,
-		`--devdir=${path.join(__top, "cache")}`,
+		`--devdir=\"${path.join(__top, "cache")}\"`,
 		"--dist-url=https://electronjs.org/headers",
 	]
 
