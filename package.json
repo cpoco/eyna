@@ -11,7 +11,7 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.4.23",
+		"@vue/runtime-dom": "3.4.24",
 		"electron": "30.0.1",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.20.2",
@@ -19,9 +19,6 @@
 		"pug": "3.0.2",
 		"stylus": "0.63.0",
 		"typescript": "5.4.5"
-	},
-	"overrides": {
-		"make-fetch-happen": "13.0.0"
 	},
 	"scripts": {
 		"b": "node scripts/b.mjs",
