@@ -18,26 +18,21 @@ jobs:
         os: [windows-latest, macos-latest]
         arch: [x64, arm64]
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: setup-node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: install
-        run: |
+      - run: |
           npm ci
-      - name: build
-        run: npm run b -- ${{ matrix.arch }}
-      - name: package
-        run: npm run p -- ${{ matrix.arch }}
-      - name: upload-artifact
-        uses: actions/upload-artifact@v4
+      - run: |
+          npm run b -- ${{ matrix.arch }}
+      - run: |
+          npm run p -- ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}
           path: dist/*.7z
-      - name: release
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.sha }}
           draft: true
