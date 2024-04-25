@@ -1,6 +1,6 @@
 .DS_Store
-/.codeql
 /.vscode
 /build
+/codeql
 /dist
 /node_modules

@@ -10,14 +10,10 @@ const codeql = process.env["GITHUB_ACTIONS"] == "true"
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
 
-const __db = path.join(__top, ".codeql", "db")
-const __out = path.join(__top, ".codeql", "out")
-
-await fse.rm(__db, { force: true, recursive: true })
-await fse.rm(__out, { force: true, recursive: true })
+const __db = path.join(__top, "codeql", "db")
+const __out = path.join(__top, "codeql")
 
 await fse.mkdirp(__db)
-await fse.mkdirp(__out)
 
 await new Promise((resolve) => {
 	const cmd = [
@@ -25,6 +21,7 @@ await new Promise((resolve) => {
 		`database`,
 		`create`,
 		`--threads=0`,
+		`--overwrite`,
 		`--db-cluster`,
 		`--language="cpp,javascript"`,
 		`--command="npm run b"`,
