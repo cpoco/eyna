@@ -6,25 +6,23 @@ import { Platform } from "@/browser/core/Platform"
 
 export namespace Path {
 	export function generic(p: string): string {
-		return path.posix.normalize(p)
+		return Platform.win ? p.replace(/\\/g, "/") : p
 	}
 
 	export function preferred(p: string): string {
-		return Platform.win
-			? path.win32.normalize(p)
-			: path.posix.normalize(p)
+		return Platform.win ? p.replace(/\//g, "\\") : p
 	}
 
-	export function app(): string {
-		return generic(electron.app.getAppPath())
+	export function app(...paths: string[]): string {
+		return generic(path.join(electron.app.getAppPath(), ...paths))
 	}
 
-	export function data(): string {
-		return generic(electron.app.getPath("userData"))
+	export function data(...paths: string[]): string {
+		return generic(path.join(electron.app.getPath("userData"), ...paths))
 	}
 
-	export function home(): string {
-		return generic(electron.app.getPath("home"))
+	export function home(...paths: string[]): string {
+		return generic(path.join(electron.app.getPath("home"), ...paths))
 	}
 
 	export function toFileURL(path: string): string {
