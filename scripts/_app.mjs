@@ -72,7 +72,6 @@ export async function Build() {
 		// },
 		bundle: true,
 		minify: true,
-		format: "cjs",
 		target: ["es2020"],
 		external: [
 			"electron",
@@ -88,6 +87,7 @@ export async function Build() {
 			browser: path.join(__top, "src/browser/Main.ts"),
 		},
 		platform: "node",
+		format: "cjs",
 	}))
 
 	let renderer = esbuild.build(Object.assign(common, {
@@ -98,6 +98,7 @@ export async function Build() {
 			renderer: path.join(__top, "src/renderer/Main.ts"),
 		},
 		platform: "browser",
+		format: "esm",
 	}))
 
 	return Promise.all([browser, renderer])
