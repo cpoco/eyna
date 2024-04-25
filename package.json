@@ -22,8 +22,8 @@
 	},
 	"scripts": {
 		"q": "node scripts/ql.mjs",
-		"b": "node scripts/b.mjs",
-		"p": "node scripts/p.mjs",
+		"b": "node scripts/build.mjs",
+		"p": "node scripts/package.mjs",
 		"s": "electron ./build"
 	}
 }
