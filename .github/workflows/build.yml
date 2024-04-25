@@ -3,12 +3,10 @@ name: build
 on:
   push:
     branches:
-      - main
+      - develop
 
 # https://github.com/actions/checkout
 # https://github.com/actions/setup-node
-# https://github.com/actions/upload-artifact
-# https://github.com/softprops/action-gh-release
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -29,17 +27,3 @@ jobs:
           npm ci
       - name: build
         run: npm run b -- ${{ matrix.arch }}
-      - name: package
-        run: npm run p -- ${{ matrix.arch }}
-      - name: upload-artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-${{ matrix.arch }}
-          path: dist/*.7z
-      - name: release
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ github.sha }}
-          draft: true
-          prerelease: true
-          files: dist/*.7z

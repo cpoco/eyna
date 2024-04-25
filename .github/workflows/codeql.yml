@@ -1,9 +1,9 @@
 name: codeql
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - develop
 
 # https://github.com/actions/checkout
 # https://github.com/actions/setup-node
@@ -29,23 +29,15 @@ jobs:
           node-version: "20"
       - name: install
         run: |
-          pip3 install setuptools
           npm ci
-      - name: codeql init
-        uses: github/codeql-action/init@v2
+      - name: init
+        uses: github/codeql-action/init@v3
         with:
-          languages: javascript, cpp
-      - name: codeql database create
+          languages: cpp,javascript
+      - name: codeql
         run: |
-          mkdir -p .codeql/db
-          $CODEQL_DIST/codeql database create --threads=0 --language=javascript --source-root=.                                            -- .codeql/db/javascript
-          $CODEQL_DIST/codeql database create --threads=0 --language=cpp        --source-root=. --command="node scripts/trace-command.mjs" -- .codeql/db/cpp
-      - name: codeql database analyze
-        run: |
-          mkdir -p .codeql/out
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/javascript.sarif -- .codeql/db/javascript javascript-lgtm-full.qls
-          $CODEQL_DIST/codeql database analyze --threads=0 --format=sarif-latest --output=.codeql/out/cpp.sarif        -- .codeql/db/cpp        cpp-lgtm-full.qls
+          npm run q
       - name: upload-sarif
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: .codeql/out
