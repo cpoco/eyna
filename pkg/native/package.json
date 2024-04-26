@@ -1,6 +1,7 @@
 {
 	"name": "@eyna/native",
 	"private": true,
+	"types": "./types/index.d.ts",
 	"devDependencies": {
 		"node-gyp": "*"
 	},
