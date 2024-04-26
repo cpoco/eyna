@@ -1,9 +1,9 @@
 declare global {
-	var monaco: typeof import("monaco-editor/esm/vs/editor/editor.api")
+	var monaco: typeof import("monaco-editor")
 }
 
 import * as vue from "@vue/runtime-dom"
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
+import * as monaco from "monaco-editor"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 
