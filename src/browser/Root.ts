@@ -78,7 +78,7 @@ class Root {
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
-				preload: Path.app("app", "preload.js"),
+				preload: Path.app("app", "preload.cjs"),
 				sandbox: true,
 				spellcheck: false,
 			},
@@ -227,7 +227,7 @@ class Root {
 		console.log("\u001b[0m")
 
 		try {
-			const code = fs.readFileSync(Path.app("extension", file), "utf8")
+			const code = fs.readFileSync(Path.app("extension", `${file}.cjs`), "utf8")
 			const sbox = {
 				module: {},
 				require: require,

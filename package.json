@@ -2,7 +2,6 @@
 	"name": "eyna",
 	"version": "0.0.36",
 	"private": true,
-	"main": "./app/browser.js",
 	"workspaces": [
 		"pkg/native",
 		"pkg/util"

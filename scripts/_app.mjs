@@ -22,7 +22,7 @@ export async function Node() {
 		JSON.stringify({
 			name: json.name,
 			version: json.version,
-			main: json.main,
+			main: "app/browser.cjs",
 		}),
 	)
 }
@@ -86,19 +86,27 @@ export async function Build() {
 			preload: path.join(__top, "src/browser/Preload.ts"),
 			browser: path.join(__top, "src/browser/Main.ts"),
 		},
-		platform: "node",
 		format: "cjs",
+		platform: "node",
+		outExtension: {
+			".js": ".cjs",
+		},
 	}))
 
 	let renderer = esbuild.build(Object.assign(common, {
 		define: {
+			"__VUE_OPTIONS_API__": JSON.stringify(false),
 			"__VUE_PROD_DEVTOOLS__": JSON.stringify(false),
+			"__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": JSON.stringify(false),
 		},
 		entryPoints: {
 			renderer: path.join(__top, "src/renderer/Main.ts"),
 		},
-		platform: "browser",
 		format: "esm",
+		platform: "browser",
+		outExtension: {
+			".js": ".mjs",
+		},
 	}))
 
 	return Promise.all([browser, renderer])

@@ -59,6 +59,9 @@ export async function Build() {
 		platform: "node",
 		target: ["es2020"],
 		outdir: outdir,
+		outExtension: {
+			".js": ".cjs",
+		},
 	})
 		.then(() => {
 			console.log(`ext.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
