@@ -1,8 +1,8 @@
-import native from "@eyna/native/lib/index.mjs"
+const native = require("@eyna/native/lib/index.cjs")
 
-import fs from "node:fs/promises"
-import path from "node:path"
-import timers from "node:timers/promises"
+const fs = require("node:fs/promises")
+const path = require("node:path")
+const timers = require("node:timers/promises")
 
 if (process.platform == "win32") {
 	var wd = path.join("C:", "Users", "Public", "eyna test")
