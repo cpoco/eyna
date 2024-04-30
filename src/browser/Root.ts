@@ -221,7 +221,7 @@ class Root {
 		this.fragment[index.viewer].opne(option)
 	}
 
-	runExtension(file: string, option: Option) {
+	async runExtension(file: string, option: Option) {
 		console.log("\u001b[35m")
 		console.log("run extension ----------------------------------------------")
 		console.log("\u001b[0m")
@@ -235,9 +235,7 @@ class Root {
 					console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
 				},
 			}
-			const func = vm.runInNewContext(code, sbox)
-
-			func({
+			const args = {
 				active: option.active,
 				target: option.target,
 				filer: {
@@ -288,16 +286,19 @@ class Root {
 						this.fragment[index.modal].cancel()
 					},
 				},
-			})
-				.then(() => {
-					console.log("\u001b[35m")
-					console.log("end extension ----------------------------------------------")
-					console.log("\u001b[0m")
-				})
+			}
+
+			const func: (_: typeof args) => Promise<void> = vm.runInNewContext(code, sbox)
+
+			await func(args)
 		}
 		catch (err) {
 			console.error(err)
 		}
+
+		console.log("\u001b[35m")
+		console.log("end extension ----------------------------------------------")
+		console.log("\u001b[0m")
 	}
 }
 

@@ -93,7 +93,7 @@ export class FilerFragment extends AbstractFragment {
 
 	private commandExtension() {
 		this.on2("list.extension", (active, target, file) => {
-			root.runExtension(file, {
+			return root.runExtension(file, {
 				active: (active.data.search || active.isHome) ? null : {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
@@ -109,7 +109,6 @@ export class FilerFragment extends AbstractFragment {
 					}),
 				},
 			})
-			return Promise.resolve()
 		})
 	}
 
