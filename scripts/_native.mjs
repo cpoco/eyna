@@ -9,7 +9,7 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 const __top = path.join(__dirname, "..")
 const __build = path.join(__top, "build")
 
-const outdir = path.join(__build, "app")
+const outdir = path.join(__build, "bin")
 
 const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 

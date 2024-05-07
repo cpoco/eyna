@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as native from "./native.node"
+import * as native from "../bin/native.node"
 
 import * as Type from "@eyna/native/ts/_type"
 
