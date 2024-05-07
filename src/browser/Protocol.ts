@@ -1,7 +1,7 @@
 import * as electron from "electron"
 import * as timers from "node:timers/promises"
 
-import * as Native from "@eyna/native/ts/browser"
+import * as Native from "@eyna/native/lib/browser"
 import * as util from "@eyna/util"
 
 const schema = "eyna"

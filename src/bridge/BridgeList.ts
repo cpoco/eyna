@@ -1,4 +1,4 @@
-import * as Native from "@eyna/native/ts/renderer"
+import * as Native from "@eyna/native/lib/renderer"
 
 import { Status } from "@/bridge/Status"
 

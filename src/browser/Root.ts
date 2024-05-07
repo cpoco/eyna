@@ -2,7 +2,7 @@ import * as electron from "electron"
 import * as fs from "node:fs"
 import * as vm from "node:vm"
 
-import * as Native from "@eyna/native/ts/browser"
+import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
