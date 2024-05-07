@@ -7,8 +7,7 @@ const codeql = process.env["GITHUB_ACTIONS"] == "true"
 	? path.join(process.env["CODEQL_DIST"], "codeql")
 	: "codeql"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 
 const __db = path.join(__top, "codeql", "db")
 const __out = path.join(__top, "codeql")

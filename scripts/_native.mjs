@@ -3,10 +3,8 @@ import fse from "fs-extra"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
-import url from "node:url"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "bin")

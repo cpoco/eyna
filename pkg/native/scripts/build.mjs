@@ -1,10 +1,8 @@
 import child_process from "node:child_process"
 import path from "node:path"
-import url from "node:url"
 import util from "node:util"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 
 export async function BuildNode(version, arch) {
 	if (!version) {

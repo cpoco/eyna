@@ -1,10 +1,8 @@
 import fse from "fs-extra"
 import path from "node:path"
-import url from "node:url"
 import stylus from "stylus"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "app")

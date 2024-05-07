@@ -2,11 +2,9 @@ import esbuild from "esbuild"
 import fse from "fs-extra"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
-import url from "node:url"
 import ts from "typescript"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "extension")

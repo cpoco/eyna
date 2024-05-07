@@ -1,9 +1,7 @@
 import electron_builder from "electron-builder"
 import path from "node:path"
-import url from "node:url"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 export async function Package(arch) {
