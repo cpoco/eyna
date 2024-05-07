@@ -1,7 +1,6 @@
-// @ts-ignore
-import * as native from "../bin/native.node"
+export * from "./_type"
 
-import * as Type from "@eyna/native/ts/_type"
+import * as native from "../bin/native.node"
 
 export function copy(abstract_src: string, abstract_dst: string): Promise<void> {
 	return native.copy(abstract_src, abstract_dst)

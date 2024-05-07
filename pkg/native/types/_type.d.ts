@@ -54,6 +54,7 @@ declare namespace Type {
 	type Resolves = Resolve[]
 	type Resolve = {
 		full: string
+		real: string
 	}
 	type WatchCallback = (id: number, depth: number, abstract: string) => void
 }

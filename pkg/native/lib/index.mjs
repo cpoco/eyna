@@ -1,5 +1,5 @@
 import module from "node:module"
-const native = module.createRequire(import.meta.url)("../build/Release/native.node")
+const native = module.createRequire(import.meta.url)("../bin/native.node")
 
 export default {
 	copy: (abstract_src, abstract_dst) => {

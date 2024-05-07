@@ -1,4 +1,4 @@
-/// <reference path="./_type.d.ts" />
+/// <reference types="./_type.d.ts" />
 
 declare namespace Native {
 	function copy(abstract_src: string, abstract_dst: string): Promise<void>

@@ -1,4 +1,4 @@
-const native = require("../build/Release/native.node")
+const native = require("../bin/native.node")
 
 module.exports = {
 	copy: (abstract_src, abstract_dst) => {
