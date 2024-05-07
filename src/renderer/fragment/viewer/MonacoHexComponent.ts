@@ -1,9 +1,6 @@
-declare global {
-	var monaco: typeof import("monaco-editor")
-}
+/// <reference types="monaco-editor/monaco.d.ts" />
 
 import * as vue from "@vue/runtime-dom"
-import * as monaco from "monaco-editor"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 
@@ -30,8 +27,8 @@ export const V = vue.defineComponent({
 		let editor: monaco.editor.IStandaloneCodeEditor | null = null
 
 		vue.onMounted(() => {
-			globalThis.monaco.languages.register({ id: "hex" })
-			globalThis.monaco.languages.setMonarchTokensProvider("hex", {
+			monaco.languages.register({ id: "hex" })
+			monaco.languages.setMonarchTokensProvider("hex", {
 				tokenizer: {
 					root: [
 						[/[0-9A-Fa-f]{8}:/, "keyword"],
@@ -46,8 +43,8 @@ export const V = vue.defineComponent({
 			})
 
 			head.value = `${props.size.toLocaleString()} byte`
-			model = globalThis.monaco.editor.createModel("", "hex")
-			editor = globalThis.monaco.editor.create(
+			model = monaco.editor.createModel("", "hex")
+			editor = monaco.editor.create(
 				el.value!,
 				{
 					readOnly: true,
@@ -66,7 +63,7 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			editor.addCommand(globalThis.monaco.KeyCode.F1, () => {})
+			editor.addCommand(monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
 
 			prog.value = true
