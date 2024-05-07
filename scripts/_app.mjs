@@ -22,7 +22,7 @@ export async function Node() {
 		JSON.stringify({
 			name: json.name,
 			version: json.version,
-			main: "app/browser.cjs",
+			main: json.main,
 		}),
 	)
 }
