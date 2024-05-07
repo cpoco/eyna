@@ -25,12 +25,6 @@ export class FilerFragment extends AbstractFragment {
 		return this.core[this.index.target]!
 	}
 
-	get pwd(): string[] {
-		return this.core.map((f) => {
-			return f.pwd
-		})
-	}
-
 	constructor() {
 		super()
 
@@ -52,6 +46,13 @@ export class FilerFragment extends AbstractFragment {
 		this.commandExtension()
 		this.commandList()
 		this.commandListImage()
+	}
+
+	exit(): string[] {
+		return this.core.map((f) => {
+			f.unwatch()
+			return f.pwd
+		})
 	}
 
 	private on2(

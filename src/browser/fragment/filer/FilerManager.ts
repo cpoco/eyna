@@ -33,6 +33,10 @@ export class FilerManager {
 		this.data.status = status
 	}
 
+	unwatch() {
+		Native.unwatch(this.id)
+	}
+
 	mounted(screenSize: number, contentsSize: number): Promise<void> {
 		this.sc.screenSize = screenSize
 		this.sc.contentsSize = contentsSize

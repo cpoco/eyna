@@ -97,7 +97,7 @@ class Root {
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getBounds()
-			Storage.manager.data.wd = this.fragment[index.filer].pwd
+			Storage.manager.data.wd = this.fragment[index.filer].exit()
 			Storage.manager.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
