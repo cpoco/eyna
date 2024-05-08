@@ -7,4 +7,4 @@ console.log(`\u001b[34m[versions]\u001b[0m`, process.versions)
 
 Storage.manager.load(Path.data("conf.json"))
 Command.manager.load(Path.app("config", "key.json"))
-root.create(Path.toFileURL(Path.app("app", "index.html")))
+root.create(Path.app("app", "index.html"))

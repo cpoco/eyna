@@ -45,13 +45,13 @@ enum index {
 }
 
 class Root {
-	private url: string = ""
+	private path: string = ""
 	private fragment!: [SystemFragment, NavbarFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
 	private active: boolean = false
 
-	create(url: string) {
-		this.url = url
+	create(path: string) {
+		this.path = path
 		this.fragment = [
 			new SystemFragment(),
 			new NavbarFragment(),
@@ -86,7 +86,7 @@ class Root {
 		}
 		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
-		this.browser.loadURL(this.url)
+		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
 			this.active = true
 			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
