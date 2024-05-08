@@ -13,7 +13,7 @@
 		"@vue/runtime-dom": "3.4.27",
 		"electron": "30.0.2",
 		"electron-builder": "24.13.3",
-		"esbuild": "0.20.2",
+		"esbuild": "0.21.1",
 		"fs-extra": "11.2.0",
 		"monaco-editor": "0.48.0",
 		"pug": "3.0.2",
