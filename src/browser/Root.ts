@@ -96,7 +96,7 @@ class Root {
 			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
 		})
 		this.browser.on("close", (_event: electron.Event) => {
-			Storage.manager.data.window = this.browser.getBounds()
+			Storage.manager.data.window = this.browser.getNormalBounds()
 			Storage.manager.data.wd = this.fragment[index.filer].exit()
 			Storage.manager.save()
 		})
