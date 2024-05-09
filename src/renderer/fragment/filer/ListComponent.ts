@@ -161,10 +161,14 @@ export const V = vue.defineComponent({
 									: Font.Icon.SyncIgnored,
 							),
 							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.mark}/${this.list.info.total}`),
-							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
-							vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
 							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.History),
 							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
+							...(0 < this.list.info.error
+								? [
+									vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
+									vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
+								]
+								: []),
 						]
 						: undefined,
 				),
