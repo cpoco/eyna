@@ -12,6 +12,6 @@
 		"**/node_modules"
 	],
 	"plugins": [
-		"https://plugins.dprint.dev/typescript-0.90.3.wasm"
+		"https://plugins.dprint.dev/typescript-0.90.5.wasm"
 	]
 }
