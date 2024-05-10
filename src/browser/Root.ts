@@ -18,6 +18,10 @@ import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
 
+// @ts-ignore
+import drugBase64 from "@/app/asset/drug.png"
+const drug = electron.nativeImage.createFromDataURL(`data:image/png;base64,${drugBase64}`)
+
 type Option = {
 	active: {
 		wd: string
@@ -31,10 +35,6 @@ type Option = {
 	} | null
 }
 
-// 1x1 transparent
-const icon = electron.nativeImage.createFromDataURL(
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
-)
 
 enum index {
 	system = 0,
@@ -186,7 +186,7 @@ class Root {
 	drag(full: string) {
 		this.browser.webContents.startDrag({
 			file: full,
-			icon: icon,
+			icon: drug,
 		})
 	}
 

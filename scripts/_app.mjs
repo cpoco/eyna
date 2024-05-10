@@ -76,6 +76,9 @@ export async function Build() {
 			"monaco-editor",
 			"*.node",
 		],
+		loader: {
+			".png": "base64",
+		},
 		outdir: outdir,
 	}
 
