@@ -43,8 +43,8 @@ export class Dir {
 			return 0
 		}
 
-		for (let i = 0; i < ls.length; i++) {
-			if ((ls[i]?.[0]?.rltv ?? null) == rltv) {
+		for (const [i, attr] of ls.entries()) {
+			if (attr[0]?.rltv == rltv) {
 				return i
 			}
 		}
@@ -83,9 +83,9 @@ export class Dir {
 			Native.getVolume().then((vol: Native.Volume[]) => {
 				_log(`"${this.wd}"`, "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 				let ls: Native.Attributes[] = []
-				vol.forEach((v) => {
+				for (const v of vol) {
 					ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
-				})
+				}
 				ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
 				cb(this.wd, st, ls, 0)
 			})
@@ -105,7 +105,7 @@ export class Dir {
 				_time = perf_hooks.performance.now()
 
 				let ls: Native.Attributes[] = []
-				for (let attr of dir.list) {
+				for (const attr of dir.list) {
 					ls.push(await Native.getAttribute(attr.rltv, dir.full))
 				}
 

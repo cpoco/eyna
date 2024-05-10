@@ -68,13 +68,13 @@ export class FilerFragment extends AbstractFragment {
 	update() {
 		this.active.update()
 		this.target.update()
-		this.core.forEach((fm) => {
+		for (const fm of this.core) {
 			if (fm.data.status == Bridge.Status.None) {
 				if (fm.pwd == this.active.pwd || fm.pwd == this.target.pwd) {
 					fm.update()
 				}
 			}
-		})
+		}
 	}
 
 	private ipc() {
@@ -154,27 +154,27 @@ export class FilerFragment extends AbstractFragment {
 			.on2("list.left", (_active, _target) => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + Conf.LIST_COUNT - 1) % Conf.LIST_COUNT
-				this.core.forEach((fm, i) => {
+				for (const [i, fm] of this.core.entries()) {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.Active
 						: this.index.target == i
 						? Bridge.Status.Target
 						: Bridge.Status.None
 					fm.sendActive()
-				})
+				}
 				return Promise.resolve()
 			})
 			.on2("list.right", (_active, _target) => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + 1) % Conf.LIST_COUNT
-				this.core.forEach((fm, i) => {
+				for (const [i, fm] of this.core.entries()) {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.Active
 						: this.index.target == i
 						? Bridge.Status.Target
 						: Bridge.Status.None
 					fm.sendActive()
-				})
+				}
 				return Promise.resolve()
 			})
 			.on2("list.update", (active, _target) => {
