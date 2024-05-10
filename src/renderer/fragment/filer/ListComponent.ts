@@ -89,18 +89,14 @@ export const V = vue.defineComponent({
 			let d: DOMRect = el.value!.getBoundingClientRect()
 			root.send<Bridge.List.Dom.Send>({
 				ch: "filer-dom",
-				args: [
-					props.i,
-					{
-						event: "mounted",
-						data: {
-							x: d.x,
-							y: d.y,
-							w: d.width,
-							h: d.height,
-						},
-					},
-				],
+				id: props.i,
+				data: {
+					event: "mounted",
+					x: d.x,
+					y: d.y,
+					w: d.width,
+					h: d.height,
+				},
 			})
 		}
 
@@ -108,18 +104,14 @@ export const V = vue.defineComponent({
 			let d: DOMRect = el.value!.getBoundingClientRect()
 			root.send<Bridge.List.Dom.Send>({
 				ch: "filer-dom",
-				args: [
-					props.i,
-					{
-						event: "resized",
-						data: {
-							x: d.x,
-							y: d.y,
-							w: d.width,
-							h: d.height,
-						},
-					},
-				],
+				id: props.i,
+				data: {
+					event: "resized",
+					x: d.x,
+					y: d.y,
+					w: d.width,
+					h: d.height,
+				},
 			})
 		}
 

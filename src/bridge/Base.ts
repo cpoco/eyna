@@ -1,9 +1,7 @@
 export namespace Base {
 	export type Send = {
 		ch: string
-		args: [
-			number,
-			unknown,
-		]
+		id: number
+		data: unknown
 	}
 }

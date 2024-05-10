@@ -17,7 +17,8 @@ export class ViewerFragment extends AbstractFragment {
 		Command.manager.whenType = Command.When.Viewer
 		root.send<Bridge.Viewer.Open.Send>({
 			ch: Bridge.Viewer.Open.CH,
-			args: [-1, option],
+			id: -1,
+			data: option,
 		})
 		this.type = option.type
 	}
@@ -25,7 +26,8 @@ export class ViewerFragment extends AbstractFragment {
 	close() {
 		root.send<Bridge.Viewer.Close.Send>({
 			ch: Bridge.Viewer.Close.CH,
-			args: [-1, {}],
+			id: -1,
+			data: null,
 		})
 		this.type = null
 	}
@@ -33,10 +35,10 @@ export class ViewerFragment extends AbstractFragment {
 	private ipc() {
 		root
 			.on(Bridge.Viewer.Event.CH, (_i: number, data: Bridge.Viewer.Event.Data) => {
-				if (data.event == "opened") {
+				if (data == "opened") {
 					Command.manager.whenType = Command.When.Viewer
 				}
-				else if (data.event == "closed") {
+				else if (data == "closed") {
 					Command.manager.whenType = Command.When.Filer
 				}
 			})
@@ -70,7 +72,8 @@ export class ViewerFragment extends AbstractFragment {
 				}
 				root.send<Bridge.Viewer.Diff.Send>({
 					ch: Bridge.Viewer.Diff.CH,
-					args: [-1, "prev"],
+					id: -1,
+					data: "prev",
 				})
 				return Promise.resolve()
 			})
@@ -80,7 +83,8 @@ export class ViewerFragment extends AbstractFragment {
 				}
 				root.send<Bridge.Viewer.Diff.Send>({
 					ch: Bridge.Viewer.Diff.CH,
-					args: [-1, "next"],
+					id: -1,
+					data: "next",
 				})
 				return Promise.resolve()
 			})

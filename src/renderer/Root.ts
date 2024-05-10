@@ -65,13 +65,13 @@ class Root {
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		this.log("ipc.send", send.ch, send.args[0], send.args[1])
-		window.ipc.send(send.ch, ...send.args)
+		this.log("ipc.send", send.ch, send.id, send.data)
+		window.ipc.send(send.ch, send.id, send.data)
 	}
 
 	invoke<T extends Bridge.Base.Send, U>(send: T): Promise<U> {
-		this.log("ipc.invoke", send.ch, send.args[0], send.args[1])
-		return window.ipc.invoke<U>(send.ch, ...send.args)
+		this.log("ipc.invoke", send.ch, send.id, send.data)
+		return window.ipc.invoke<U>(send.ch, send.id, send.data)
 	}
 
 	log(label: string, ...agrs: any[]) {

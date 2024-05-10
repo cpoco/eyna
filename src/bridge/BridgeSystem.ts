@@ -4,10 +4,8 @@ export namespace System {
 		export const CH = "system-active"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = boolean
 	}
@@ -17,10 +15,8 @@ export namespace System {
 		export const CH = "system-version"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = boolean
 	}
@@ -30,10 +26,8 @@ export namespace System {
 		export const CH = "system-dom"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				-1,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = {
 			event: "mounted"

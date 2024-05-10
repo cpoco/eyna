@@ -19,7 +19,8 @@ export class ModalFragment extends AbstractFragment {
 		Command.manager.whenType = Command.When.Modal
 		root.send<Bridge.Modal.Open.Send>({
 			ch: Bridge.Modal.Open.CH,
-			args: [-1, option],
+			id: -1,
+			data: option,
 		})
 
 		this.deferred = new Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
@@ -29,7 +30,8 @@ export class ModalFragment extends AbstractFragment {
 	cancel() {
 		root.send<Bridge.Modal.Cancel.Send>({
 			ch: Bridge.Modal.Cancel.CH,
-			args: [-1, {}],
+			id: -1,
+			data: null,
 		})
 	}
 

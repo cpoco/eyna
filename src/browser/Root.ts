@@ -89,11 +89,11 @@ class Root {
 		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
 			this.active = true
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
 		})
 		this.browser.on("blur", () => {
 			this.active = false
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getNormalBounds()
@@ -209,8 +209,8 @@ class Root {
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.args[0] /*, send.args[1]*/)
-		this.browser.webContents.send(send.ch, ...send.args)
+		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.id /*, send.data*/)
+		this.browser.webContents.send(send.ch, send.id, send.data)
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {

@@ -233,14 +233,10 @@ const attr = vue.defineComponent({
 			event.preventDefault()
 			root.send<Bridge.List.Drag.Send>({
 				ch: "filer-drag",
-				args: [
-					-1,
-					{
-						data: {
-							full: props.attr[0]?.full ?? "",
-						},
-					},
-				],
+				id: -1,
+				data: {
+					full: props.attr[0]?.full ?? "",
+				},
 			})
 		}
 

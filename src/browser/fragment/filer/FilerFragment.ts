@@ -81,14 +81,14 @@ export class FilerFragment extends AbstractFragment {
 		root
 			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Style.Dynamic.lineHeight)
+					this.core[i]?.mounted(data.h, Style.Dynamic.lineHeight)
 				}
 				else if (data.event == "resized") {
-					this.core[i]?.resized(data.data.h)
+					this.core[i]?.resized(data.h)
 				}
 			})
 			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
-				root.drag(data.data.full)
+				root.drag(data.full)
 			})
 	}
 
