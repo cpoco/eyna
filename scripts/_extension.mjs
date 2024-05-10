@@ -21,13 +21,13 @@ export async function Check() {
 			...program.getSemanticDiagnostics(),
 			...program.getSyntacticDiagnostics(),
 		]
-		diagnostics.forEach((d) => {
+		for (const d of diagnostics) {
 			console.log(
 				d.file.fileName,
 				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
 				ts.flattenDiagnosticMessageText(d.messageText, "\n"),
 			)
-		})
+		}
 		resolve()
 	})
 		.then(() => {
