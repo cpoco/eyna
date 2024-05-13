@@ -1,4 +1,4 @@
-// node -r esbuild-register is.ts
+// npx tsx test/is.ts
 
 import * as Util from "@eyna/util"
 import assert from "node:assert"
