@@ -8,6 +8,7 @@ export { isNumber } from "./ts/_is_number"
 export { isString } from "./ts/_is_string"
 export { last } from "./ts/_last"
 export { merge } from "./ts/_merge"
+export { proxyArray } from "./ts/_proxy_array"
 export { split } from "./ts/_split"
 
 export { DateTime } from "./ts/DateTime"
