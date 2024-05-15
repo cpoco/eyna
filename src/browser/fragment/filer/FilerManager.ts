@@ -66,7 +66,8 @@ export class FilerManager {
 			if (await this.sendChange(this.pwd, 0, null, this.data.cursor)) {
 				this.scroll()
 				this.sendScan()
-				this.sendAttribute()
+				this.sendAttrAll()
+				this.sendMarkAll()
 			}
 			resolve()
 		})
@@ -234,13 +235,13 @@ export class FilerManager {
 		})
 	}
 
-	sendAttribute() {
+	sendAttrAll() {
 		for (let i = 0; i < this.data.length; i += 1000) {
-			this._sendAttribute(i, Math.min(i + 1000, this.data.length))
+			this.sendAttr(i, Math.min(i + 1000, this.data.length))
 		}
 	}
 
-	_sendAttribute(start: number = 0, end: number = this.data.length) {
+	sendAttr(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
 			ch: Bridge.List.Attribute.CH,
 			id: this.id,
@@ -250,6 +251,12 @@ export class FilerManager {
 				}),
 			},
 		})
+	}
+
+	sendMarkAll() {
+		for (let i = 0; i < this.data.length; i += 1000) {
+			this.sendMark(i, Math.min(i + 1000, this.data.length))
+		}
 	}
 
 	sendMark(start: number = 0, end: number = this.data.length) {

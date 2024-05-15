@@ -201,7 +201,7 @@ export class FilerFragment extends AbstractFragment {
 				for (let i = 0; i < active.data.mk.length; i++) {
 					active.data.mk[i] = true
 				}
-				active.sendMark()
+				active.sendMarkAll()
 				return Promise.resolve()
 			})
 			.on2("list.markclear", (active, _target) => {
@@ -211,7 +211,7 @@ export class FilerFragment extends AbstractFragment {
 				for (let i = 0; i < active.data.mk.length; i++) {
 					active.data.mk[i] = false
 				}
-				active.sendMark()
+				active.sendMarkAll()
 				return Promise.resolve()
 			})
 			.on2("list.find", (active, _target) => {
@@ -227,7 +227,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null)) {
 						active.scroll()
 						active.sendScan()
-						active.sendAttribute()
+						active.sendAttrAll()
 					}
 					resolve()
 				})
@@ -324,7 +324,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await active.sendChange(attr.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
-							active.sendAttribute()
+							active.sendAttrAll()
 						}
 						resolve()
 					}
@@ -336,7 +336,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await active.sendChange(trgt.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
-							active.sendAttribute()
+							active.sendAttrAll()
 						}
 						resolve()
 					}
@@ -387,7 +387,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await active.sendChange(Dir.dirname(active.pwd), 0, null, Dir.basename(active.pwd))) {
 						active.scroll()
 						active.sendScan()
-						active.sendAttribute()
+						active.sendAttrAll()
 					}
 					resolve()
 				})
@@ -397,7 +397,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await target.sendChange(active.pwd, 0, null, null)) {
 						target.scroll()
 						target.sendScan()
-						target.sendAttribute()
+						target.sendAttrAll()
 					}
 					resolve()
 				})
@@ -424,7 +424,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await target.sendChange(attr.full, 0, null, null)) {
 							target.scroll()
 							target.sendScan()
-							target.sendAttribute()
+							target.sendAttrAll()
 						}
 						resolve()
 					}
@@ -436,7 +436,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await target.sendChange(trgt.full, 0, null, null)) {
 							target.scroll()
 							target.sendScan()
-							target.sendAttribute()
+							target.sendAttrAll()
 						}
 						resolve()
 					}

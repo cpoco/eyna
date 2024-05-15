@@ -132,7 +132,7 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Attribute {
-		export const CH = "filer-attribute"
+		export const CH = "filer-attr"
 		export type Send = {
 			ch: typeof CH
 			id: number
