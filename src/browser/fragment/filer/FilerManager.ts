@@ -13,7 +13,8 @@ export class FilerManager {
 
 	private readonly dir: Dir = new Dir()
 	private readonly sc: Scroll = new Scroll()
-	private readonly history: { [abstract: string]: string | null } = {}
+	private readonly mk: Set<string> = new Set()
+	private readonly history: Map<string, string | null> = new Map()
 
 	// 画面高さに対してのカーソル移動数
 	get mv() {
@@ -30,6 +31,7 @@ export class FilerManager {
 
 	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.None) {
 		this.dir.cd(wd)
+		this.mk.clear()
 		this.data.status = status
 	}
 
@@ -63,10 +65,32 @@ export class FilerManager {
 
 	markToggle() {
 		this.data.mk[this.data.cursor] = !this.data.mk[this.data.cursor]
+
+		const attr = Util.first(this.data.ls[this.data.cursor])
+		if (attr) {
+			if (this.data.mk[this.data.cursor]) {
+				this.mk.add(attr.rltv)
+			}
+			else {
+				this.mk.delete(attr.rltv)
+			}
+		}
 	}
 
 	markAll(mk: boolean) {
 		this.data.mk.fill(mk)
+
+		if (mk) {
+			for (const attrs of this.data.ls) {
+				const attr = Util.first(attrs)
+				if (attr) {
+					this.mk.add(attr.rltv)
+				}
+			}
+		}
+		else {
+			this.mk.clear()
+		}
 	}
 
 	update(): Promise<void> {
@@ -101,13 +125,13 @@ export class FilerManager {
 	}
 
 	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
-		let history = Dir.findRltv(this.data.ls, this.data.cursor)
+		const history = Dir.findRltv(this.data.ls, this.data.cursor)
 		if (history) {
-			this.history[this.data.wd] = history
+			this.history.set(this.data.wd, history)
 		}
 
 		if (wd == Dir.HOME) {
-			cursor = this.history[Dir.HOME] ?? null
+			cursor = this.history.get(Dir.HOME) ?? null
 		}
 
 		let create = perf_hooks.performance.now()
@@ -144,6 +168,9 @@ export class FilerManager {
 		})
 
 		return new Promise(async (resolve, _reject) => {
+			if (this.dir.pwd != wd) {
+				this.mk.clear()
+			}
 			this.dir.cd(wd)
 			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
 				if (create != this.data.create) {
@@ -155,12 +182,15 @@ export class FilerManager {
 				this.data.search = false
 				this.data.cursor = Util.isNumber(cursor)
 					? Math.max(0, Math.min(cursor, ls.length - 1))
-					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+					: Dir.findIndex(ls, cursor ?? this.history.get(wd) ?? null)
 				this.data.length = ls.length
 				this.data.wd = wd
 				this.data.st = st
 				this.data.ls = ls
-				this.data.mk = Util.array(0, ls.length, () => false)
+				this.data.mk = Util.array(0, ls.length, (i) => {
+					const attr = Util.first(ls[i])
+					return attr ? this.mk.has(attr.rltv) : false
+				})
 				this.data.watch = 0
 				this.data.error = e
 
