@@ -190,7 +190,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				active.data.mk[active.data.cursor] = !active.data.mk[active.data.cursor]
+				active.markToggle()
 				active.sendMark(active.data.cursor, active.data.cursor + 1)
 				return Promise.resolve()
 			})
@@ -198,9 +198,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				for (let i = 0; i < active.data.mk.length; i++) {
-					active.data.mk[i] = true
-				}
+				active.markAll(true)
 				active.sendMarkAll()
 				return Promise.resolve()
 			})
@@ -208,9 +206,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				for (let i = 0; i < active.data.mk.length; i++) {
-					active.data.mk[i] = false
-				}
+				active.markAll(false)
 				active.sendMarkAll()
 				return Promise.resolve()
 			})

@@ -9,11 +9,11 @@ import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
 export class FilerManager {
-	data: Bridge.List.Data = Bridge.List.InitData()
+	readonly data: Bridge.List.Data = Bridge.List.InitData()
 
-	private dir: Dir = new Dir()
-	private sc: Scroll = new Scroll()
-	private history: { [abstract: string]: string | null } = {}
+	private readonly dir: Dir = new Dir()
+	private readonly sc: Scroll = new Scroll()
+	private readonly history: { [abstract: string]: string | null } = {}
 
 	// 画面高さに対してのカーソル移動数
 	get mv() {
@@ -59,6 +59,14 @@ export class FilerManager {
 
 	cursorDown(mv: number = 1) {
 		this.data.cursor = Math.min(this.data.cursor + mv, this.data.ls.length - 1)
+	}
+
+	markToggle() {
+		this.data.mk[this.data.cursor] = !this.data.mk[this.data.cursor]
+	}
+
+	markAll(mk: boolean) {
+		this.data.mk.fill(mk)
 	}
 
 	update(): Promise<void> {
