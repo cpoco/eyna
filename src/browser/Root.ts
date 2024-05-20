@@ -35,7 +35,6 @@ type Option = {
 	} | null
 }
 
-
 enum index {
 	system = 0,
 	navbar = 1,

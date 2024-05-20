@@ -51,7 +51,7 @@ export class FilerManager {
 
 			if (this.data.elapse <= 250) {
 				await this.update()
-			} 
+			}
 			else {
 				this.data.watch = 1
 				root.send<Bridge.List.Watch.Send>({
