@@ -16,6 +16,9 @@ export class FilerManager {
 	private readonly mk: Set<string> = new Set()
 	private readonly history: Map<string, string | null> = new Map()
 
+	private watch_run: boolean = false
+	private readonly watch_queue: string[] = []
+
 	// 画面高さに対してのカーソル移動数
 	get mv() {
 		return Math.max(1, Math.floor(this.sc.screenSize / this.sc.contentsSize) - 1)
@@ -35,7 +38,35 @@ export class FilerManager {
 		this.data.status = status
 	}
 
+	async run(): Promise<void> {
+		this.watch_run = true
+		while (this.watch_run) {
+			if (this.watch_queue.length == 0) {
+				await timers.setTimeout(250)
+				continue
+			}
+			if (this.data.wd != this.watch_queue.shift()) {
+				continue
+			}
+
+			if (this.data.elapse <= 250) {
+				await this.update()
+			} 
+			else {
+				this.data.watch = 1
+				root.send<Bridge.List.Watch.Send>({
+					ch: Bridge.List.Watch.CH,
+					id: this.id,
+					data: {
+						watch: this.data.watch,
+					},
+				})
+			}
+		}
+	}
+
 	exit() {
+		this.watch_run = false
 		Native.unwatch(this.id)
 	}
 
@@ -146,14 +177,9 @@ export class FilerManager {
 				if (create != this.data.create || dp < depth) {
 					return
 				}
-				this.data.watch = 1
-				root.send<Bridge.List.Watch.Send>({
-					ch: Bridge.List.Watch.CH,
-					id: this.id,
-					data: {
-						watch: this.data.watch,
-					},
-				})
+				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != wd) {
+					this.watch_queue.push(wd)
+				}
 			})
 		}
 

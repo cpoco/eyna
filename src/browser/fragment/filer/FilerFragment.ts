@@ -42,6 +42,10 @@ export class FilerFragment extends AbstractFragment {
 			)
 		})
 
+		for (const fm of this.core) {
+			fm.run()
+		}
+
 		this.ipc()
 		this.commandExtension()
 		this.commandList()
