@@ -50,7 +50,7 @@ export class FilerFragment extends AbstractFragment {
 
 	exit(): string[] {
 		return this.core.map((f) => {
-			f.unwatch()
+			f.exit()
 			return f.pwd
 		})
 	}

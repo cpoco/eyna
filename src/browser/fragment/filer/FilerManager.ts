@@ -35,7 +35,7 @@ export class FilerManager {
 		this.data.status = status
 	}
 
-	unwatch() {
+	exit() {
 		Native.unwatch(this.id)
 	}
 
@@ -141,6 +141,21 @@ export class FilerManager {
 		this.data.search = true
 
 		Native.unwatch(this.id)
+		if (wd != Dir.HOME) {
+			Native.watch(this.id, wd, (_id, depth, _abstract) => {
+				if (create != this.data.create || dp < depth) {
+					return
+				}
+				this.data.watch = 1
+				root.send<Bridge.List.Watch.Send>({
+					ch: Bridge.List.Watch.CH,
+					id: this.id,
+					data: {
+						watch: this.data.watch,
+					},
+				})
+			})
+		}
 
 		root.send<Bridge.List.Change.Send>({
 			ch: Bridge.List.Change.CH,
@@ -195,27 +210,6 @@ export class FilerManager {
 				this.data.error = e
 
 				resolve(true)
-
-				if (wd == Dir.HOME) {
-					return
-				}
-
-				await timers.setTimeout(10)
-
-				Native.watch(this.id, wd, (_id, depth, _abstract) => {
-					if (create != this.data.create || dp < depth) {
-						return
-					}
-
-					this.data.watch = 1
-					root.send<Bridge.List.Watch.Send>({
-						ch: Bridge.List.Watch.CH,
-						id: this.id,
-						data: {
-							watch: this.data.watch,
-						},
-					})
-				})
 			})
 		})
 	}
