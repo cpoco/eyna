@@ -42,14 +42,14 @@ export class FilerManager {
 		this.watch_run = true
 		while (this.watch_run) {
 			if (this.watch_queue.length == 0) {
-				await timers.setTimeout(250)
+				await timers.setTimeout(100)
 				continue
 			}
 			if (this.data.wd != this.watch_queue.shift()) {
 				continue
 			}
 
-			if (this.data.elapse <= 250) {
+			if (this.data.elapse <= 100 && this.data.ls.length <= 100) {
 				await this.update()
 			}
 			else {
