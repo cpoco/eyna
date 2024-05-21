@@ -198,10 +198,6 @@ void attribute(_attribute& attribute)
 
 		if (-1 != lstat(attribute.full.c_str(), &st)) {
 
-			attribute.size = st.st_size;
-			attribute.time = st.st_mtimespec.tv_sec;
-			attribute.nsec = st.st_mtimespec.tv_nsec;
-
 			NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:attribute.full.c_str() encoding:NSUTF8StringEncoding]];
 
 			NSError* error = nil;
@@ -212,6 +208,14 @@ void attribute(_attribute& attribute)
 				NSURLIsHiddenKey,
 				NSURLIsSystemImmutableKey
 			] error:&error];
+
+			if (error != nil) {
+				return;
+			}
+
+			attribute.size = st.st_size;
+			attribute.time = st.st_mtimespec.tv_sec;
+			attribute.nsec = st.st_mtimespec.tv_nsec;
 
 			NSString* type = [dic objectForKey:NSURLFileResourceTypeKey];
 
