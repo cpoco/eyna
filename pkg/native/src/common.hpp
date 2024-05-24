@@ -92,6 +92,11 @@ v8::Local<v8::String> to_string(const _string_t& str)
 	#endif
 }
 
+bool is_relative(const std::filesystem::path& path)
+{
+	return !path.is_absolute();
+}
+
 bool is_traversal(const std::filesystem::path& path)
 {
 	for (const std::filesystem::path& p : path) {

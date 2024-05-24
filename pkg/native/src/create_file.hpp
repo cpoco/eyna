@@ -39,7 +39,7 @@ static void create_file_complete(uv_work_t* req, int status)
 	create_file_work* work = static_cast<create_file_work*>(req->data);
 
 	if (work->error) {
-		work->promise.Get(ISOLATE)->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(V("failed")));
 		work->promise.Reset();
     }
 	else {
@@ -68,8 +68,8 @@ void create_file(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
-	if (is_traversal(work->abst)) {
-		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+	if (is_relative(work->abst) || is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
 		delete work;
 		return;
 	}

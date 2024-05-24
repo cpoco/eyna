@@ -77,7 +77,7 @@ static void copy_complete(uv_work_t* req, int status)
 	copy_work* work = static_cast<copy_work*>(req->data);
 
 	if (work->error) {
-		work->promise.Get(ISOLATE)->Reject(CONTEXT, v8::Undefined(ISOLATE));
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(V("failed")));
 		work->promise.Reset();
 	}
 	else {
@@ -106,15 +106,15 @@ void copy(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->src = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
-	if (is_traversal(work->src)) {
-		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+	if (is_relative(work->src) || is_traversal(work->src)) {
+		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
 		delete work;
 		return;
 	}
 
 	work->dst = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
-	if (is_traversal(work->dst)) {
-		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+	if (is_relative(work->dst) || is_traversal(work->dst)) {
+		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
 		delete work;
 		return;
 	}
