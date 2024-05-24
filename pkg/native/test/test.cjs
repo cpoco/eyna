@@ -1,5 +1,6 @@
 const native = require("@eyna/native/lib/index.cjs")
 
+const assert = require("node:assert")
 const fs = require("node:fs/promises")
 const path = require("node:path")
 const timers = require("node:timers/promises")
@@ -26,6 +27,13 @@ const main = async () => {
 	console.log("getAttribute", await native.getAttribute(wd + "/", wd))
 	console.log("getAttribute", await native.getAttribute(wd, path.join(wd, "..")))
 	console.log("getAttribute", await native.getAttribute(wd + "/", path.join(wd, "..")))
+
+	{
+		const attr1 = await native.getAttribute(wd)
+		const attr2 = await native.getAttribute(wd + "/")
+		assert(wd == attr1[0].full)
+		assert(wd == attr2[0].full)
+	}
 
 	console.log("getDirectory", await native.getDirectory(wd))
 	console.log("getDirectory", await native.getDirectory(wd + "/"))
