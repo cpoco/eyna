@@ -107,14 +107,16 @@ bool is_traversal(const std::filesystem::path& path)
 	return false;
 }
 
-std::filesystem::path generic_path(const std::filesystem::path& path)
+std::filesystem::path generic_path(const std::filesystem::path& path, const bool normalize = false)
 {
-	return std::filesystem::path(path.generic_string<_char_t>());
-}
-
-std::filesystem::path normalize_generic_path(const std::filesystem::path& path)
-{
-	return std::filesystem::path(path.lexically_normal().generic_string<_char_t>());
+	std::filesystem::path p(normalize
+		? path.lexically_normal().generic_string<_char_t>()
+		: path.generic_string<_char_t>()
+	);
+	if (p.has_filename()) {
+		return p;
+	}
+	return std::filesystem::path(p.parent_path().generic_string<_char_t>());
 }
 
 #include "common_attribute.hpp"

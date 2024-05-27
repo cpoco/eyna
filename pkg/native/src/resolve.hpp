@@ -40,7 +40,7 @@ static void resolve_async(uv_work_t* req)
 		now.full = generic_path(pre.full / p);
 
 		std::vector<_attribute> attr;
-		attribute(normalize_generic_path(pre.real / p), attr);
+		attribute(generic_path(pre.real / p, true), attr);
 		_attribute& a = attr.back();
 		now.real = a.full;
 	}
