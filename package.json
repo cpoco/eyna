@@ -16,9 +16,12 @@
 		"esbuild": "0.21.3",
 		"fs-extra": "11.2.0",
 		"monaco-editor": "0.48.0",
-		"pug": "3.0.2",
+		"pug": "3.0.3",
 		"stylus": "0.63.0",
 		"typescript": "5.4.5"
+	},
+	"overrides": {
+		"glob": "10"
 	},
 	"scripts": {
 		"q": "node scripts/ql.mjs",
