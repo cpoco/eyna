@@ -6,10 +6,12 @@ import path from "node:path"
 import timers from "node:timers/promises"
 
 if (process.platform == "win32") {
-	var wd = path.join("C:", "Users", "Public", "eyna test")
+	var root = "C:/"
+	var wd = path.join(root, "Users", "Public", "eyna test")
 }
 else if (process.platform == "darwin") {
-	var wd = path.join("/", "Users", "Shared", "eyna test")
+	var root = "/"
+	var wd = path.join(root, "Users", "Shared", "eyna test")
 }
 else {
 	process.exit()
@@ -21,12 +23,17 @@ const main = async () => {
 	console.log("getVolume", await native.getVolume())
 	console.log("exists", await native.exists(wd))
 
-	console.log("getAttribute", await native.getAttribute(wd, ""))
-	console.log("getAttribute", await native.getAttribute(wd + "/", ""))
-	console.log("getAttribute", await native.getAttribute(wd, wd))
-	console.log("getAttribute", await native.getAttribute(wd + "/", wd))
-	console.log("getAttribute", await native.getAttribute(wd, path.join(wd, "..")))
-	console.log("getAttribute", await native.getAttribute(wd + "/", path.join(wd, "..")))
+	for (const abst of [root, wd, wd + "/"]) {
+		for (const base of ["", root, wd, wd + "/", path.join(wd, ".."), path.join(wd, "..") + "/"]) {
+			console.log("getAttribute", await native.getAttribute(abst, base))
+			console.log("getDirectory", await native.getDirectory(abst, base))
+		}
+	}
+
+	{
+		const root1 = await native.getAttribute(root)
+		assert(root == root1[0].full)
+	}
 
 	{
 		const attr1 = await native.getAttribute(wd)
@@ -34,13 +41,6 @@ const main = async () => {
 		assert(wd == attr1[0].full)
 		assert(wd == attr2[0].full)
 	}
-
-	console.log("getDirectory", await native.getDirectory(wd))
-	console.log("getDirectory", await native.getDirectory(wd + "/"))
-	console.log("getDirectory", await native.getDirectory(wd, wd))
-	console.log("getDirectory", await native.getDirectory(wd + "/", wd))
-	console.log("getDirectory", await native.getDirectory(wd, path.join(wd, "..")))
-	console.log("getDirectory", await native.getDirectory(wd + "/", path.join(wd, "..")))
 
 	{
 		const data = await native.getIcon(wd)
