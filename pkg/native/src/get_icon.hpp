@@ -100,6 +100,7 @@ static void get_icon_async(uv_work_t* req)
 		work->data = new char[work->size];
 
 		memcpy(work->data, [png bytes], png.length);
+
 	#endif
 }
 
