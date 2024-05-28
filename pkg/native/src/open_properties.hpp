@@ -20,9 +20,7 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	#if _OS_WIN_
 
-		std::replace(abst.begin(), abst.end(), L'/', L'\\');
-
-		SHObjectProperties(NULL, SHOP_FILEPATH, abst.c_str(), NULL);
+		SHObjectProperties(NULL, SHOP_FILEPATH, abst.make_preferred().c_str(), NULL);
 
 	#elif _OS_MAC_
 
