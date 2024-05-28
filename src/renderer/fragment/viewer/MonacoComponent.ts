@@ -1,9 +1,6 @@
-declare global {
-	var monaco: typeof import("monaco-editor/esm/vs/editor/editor.api")
-}
+/// <reference types="monaco-editor/monaco.d.ts" />
 
 import * as vue from "@vue/runtime-dom"
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 
@@ -31,12 +28,12 @@ export const V = vue.defineComponent({
 
 		vue.onMounted(() => {
 			head.value = `${props.size.toLocaleString()} byte`
-			model = globalThis.monaco.editor.createModel(
+			model = monaco.editor.createModel(
 				"",
 				undefined,
-				globalThis.monaco.Uri.file(props.path),
+				monaco.Uri.file(props.path),
 			)
-			editor = globalThis.monaco.editor.create(
+			editor = monaco.editor.create(
 				el.value!,
 				{
 					readOnly: true,
@@ -55,7 +52,7 @@ export const V = vue.defineComponent({
 					wrappingIndent: "same",
 				},
 			)
-			editor.addCommand(globalThis.monaco.KeyCode.F1, () => {})
+			editor.addCommand(monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
 
 			prog.value = true

@@ -1,25 +1,31 @@
 import * as electron from "electron"
+import * as path from "node:path"
+import * as url from "node:url"
 
 import { Platform } from "@/browser/core/Platform"
 
 export namespace Path {
-	export function generic(path: string): string {
-		return Platform.win ? path.replace(/\\/g, "/") : path
+	export function generic(p: string): string {
+		return Platform.win ? p.replace(/\\/g, "/") : p
 	}
 
-	export function preferred(path: string): string {
-		return Platform.win ? path.replace(/\//g, "\\") : path
+	export function preferred(p: string): string {
+		return Platform.win ? p.replace(/\//g, "\\") : p
 	}
 
-	export function appPath(): string {
-		return generic(electron.app.getAppPath())
+	export function app(...paths: string[]): string {
+		return generic(path.join(electron.app.getAppPath(), ...paths))
 	}
 
-	export function userPath(): string {
-		return generic(electron.app.getPath("userData"))
+	export function data(...paths: string[]): string {
+		return generic(path.join(electron.app.getPath("userData"), ...paths))
 	}
 
-	export function home(): string {
-		return generic(electron.app.getPath("home"))
+	export function home(...paths: string[]): string {
+		return generic(path.join(electron.app.getPath("home"), ...paths))
+	}
+
+	export function toFileURL(path: string): string {
+		return url.pathToFileURL(path).toString()
 	}
 }

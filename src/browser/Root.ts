@@ -2,7 +2,7 @@ import * as electron from "electron"
 import * as fs from "node:fs"
 import * as vm from "node:vm"
 
-import * as Native from "@eyna/native/ts/browser"
+import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
@@ -18,6 +18,10 @@ import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
 
+// @ts-ignore
+import drugBase64 from "@/app/asset/drug.png"
+const drug = electron.nativeImage.createFromDataURL(`data:image/png;base64,${drugBase64}`)
+
 type Option = {
 	active: {
 		wd: string
@@ -31,11 +35,6 @@ type Option = {
 	} | null
 }
 
-// 1x1 transparent
-const icon = electron.nativeImage.createFromDataURL(
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
-)
-
 enum index {
 	system = 0,
 	navbar = 1,
@@ -45,13 +44,13 @@ enum index {
 }
 
 class Root {
-	private url: string = ""
+	private path: string = ""
 	private fragment!: [SystemFragment, NavbarFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
 	private active: boolean = false
 
-	create(url: string) {
-		this.url = url
+	create(path: string) {
+		this.path = path
 		this.fragment = [
 			new SystemFragment(),
 			new NavbarFragment(),
@@ -78,7 +77,7 @@ class Root {
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
-				preload: `${Path.appPath()}/app/preload.js`,
+				preload: Path.app("app", "preload.cjs"),
 				sandbox: true,
 				spellcheck: false,
 			},
@@ -86,18 +85,18 @@ class Root {
 		}
 		Util.merge(op, Storage.manager.data.window)
 		this.browser = new electron.BrowserWindow(op)
-		this.browser.loadURL(this.url)
+		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
 			this.active = true
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
 		})
 		this.browser.on("blur", () => {
 			this.active = false
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", args: [-1, this.active] })
+			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
 		})
 		this.browser.on("close", (_event: electron.Event) => {
-			Storage.manager.data.window = this.browser.getBounds()
-			Storage.manager.data.wd = this.fragment[index.filer].pwd
+			Storage.manager.data.window = this.browser.getNormalBounds()
+			Storage.manager.data.wd = this.fragment[index.filer].exit()
 			Storage.manager.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
@@ -186,7 +185,7 @@ class Root {
 	drag(full: string) {
 		this.browser.webContents.startDrag({
 			file: full,
-			icon: icon,
+			icon: drug,
 		})
 	}
 
@@ -209,8 +208,8 @@ class Root {
 	}
 
 	send<T extends Bridge.Base.Send>(send: T) {
-		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.args[0] /*, send.args[1]*/)
-		this.browser.webContents.send(send.ch, ...send.args)
+		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.id /*, send.data*/)
+		this.browser.webContents.send(send.ch, send.id, send.data)
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
@@ -221,13 +220,13 @@ class Root {
 		this.fragment[index.viewer].opne(option)
 	}
 
-	runExtension(file: string, option: Option) {
+	async runExtension(file: string, option: Option) {
 		console.log("\u001b[35m")
 		console.log("run extension ----------------------------------------------")
 		console.log("\u001b[0m")
 
 		try {
-			const code = fs.readFileSync(`${Path.appPath()}/extension/${file}`, "utf8")
+			const code = fs.readFileSync(Path.app("extension", `${file}.cjs`), "utf8")
 			const sbox = {
 				module: {},
 				require: require,
@@ -235,9 +234,7 @@ class Root {
 					console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
 				},
 			}
-			const func = vm.runInNewContext(code, sbox)
-
-			func({
+			const args = {
 				active: option.active,
 				target: option.target,
 				filer: {
@@ -288,16 +285,19 @@ class Root {
 						this.fragment[index.modal].cancel()
 					},
 				},
-			})
-				.then(() => {
-					console.log("\u001b[35m")
-					console.log("end extension ----------------------------------------------")
-					console.log("\u001b[0m")
-				})
+			}
+
+			const func: (_: typeof args) => Promise<void> = vm.runInNewContext(code, sbox)
+
+			await func(args)
 		}
 		catch (err) {
 			console.error(err)
 		}
+
+		console.log("\u001b[35m")
+		console.log("end extension ----------------------------------------------")
+		console.log("\u001b[0m")
 	}
 }
 

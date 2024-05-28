@@ -1,60 +1,113 @@
-import native from "@eyna/native/esm/index.mjs"
+import native from "@eyna/native/lib/index.mjs"
+
+import assert from "node:assert"
 import fs from "node:fs/promises"
 import path from "node:path"
-import process from "node:process"
 import timers from "node:timers/promises"
 
 if (process.platform == "win32") {
-	var wd = path.join("C:", "Users", "Public", "eyna test")
+	var root = "C:/"
+	var wd = path.join(root, "Users", "Public", "eyna test")
 }
 else if (process.platform == "darwin") {
-	var wd = path.join("/", "Users", "Shared", "eyna test")
+	var root = "/"
+	var wd = path.join(root, "Users", "Shared", "eyna test")
 }
 else {
 	process.exit()
 }
 
-console.log("isElevated", native.isElevated())
+const main = async () => {
+	console.log(native)
 
-console.log("getVolume", await native.getVolume())
+	{
+		assert(typeof native.isElevated() == "boolean")
+	}
 
-console.log("exists", await native.exists(wd))
+	{
+		const v = await native.getVolume()
+		assert(0 < v.length)
+	}
 
-console.log("getAttribute", await native.getAttribute(wd, ""))
-console.log("getAttribute", await native.getAttribute(wd + "/", ""))
-console.log("getAttribute", await native.getAttribute(wd, wd))
-console.log("getAttribute", await native.getAttribute(wd + "/", wd))
-console.log("getAttribute", await native.getAttribute(wd, path.join(wd, "..")))
-console.log("getAttribute", await native.getAttribute(wd + "/", path.join(wd, "..")))
+	{
+		assert(await native.exists(wd) == true)
+		assert(await native.exists(path.join(wd, "fake")) == false)
+	}
 
-console.log("getDirectory", await native.getDirectory(wd, "", false, 0, null))
-console.log("getDirectory", await native.getDirectory(wd + "/", "", false, 0, null))
-console.log("getDirectory", await native.getDirectory(wd, wd, false, 0, null))
-console.log("getDirectory", await native.getDirectory(wd + "/", wd, false, 0, null))
-console.log("getDirectory", await native.getDirectory(wd, path.join(wd, ".."), false, 0, null))
-console.log("getDirectory", await native.getDirectory(wd + "/", path.join(wd, ".."), false, 0, null))
+	{
+		const d = await native.getDirectory(root)
+		assert(d.full == root)
+		assert(d.base == "")
+		assert(0 < d.list.length)
+		const a = await native.getAttribute(root)
+		assert(0 < a.length)
+		assert(a[0].full == root)
+		assert(a[0].base == "")
+	}
 
-const data = await native.getIcon(wd)
-const png = path.join(wd, "test.png")
-await fs.writeFile(png, data)
-await native.moveToTrash(png)
+	{
+		const a1 = await native.getAttribute(wd)
+		const a2 = await native.getAttribute(wd + "/")
+		assert(a1[0].full == wd)
+		assert(a2[0].full == wd)
+	}
 
-const ID = 0
-native.watch(
-	ID,
-	wd,
-	(id, depth, path) => {
-		console.log("watch callback", id, depth, path)
-	},
-)
+	for (const abst of [root, wd, wd + "/"]) {
+		for (const base of ["", root, wd, wd + "/", path.join(wd, ".."), path.join(wd, "..") + "/"]) {
+			const a = await native.getAttribute(abst, base)
+			const d = await native.getDirectory(abst, base)
+			console.log(a, d)
+			assert(0 < a.length)
+			assert(0 < d.list.length)
+			assert(d.e == 0)
+			assert(a[0].full == d.full)
+			assert(a[0].base == d.base)
+			if (base == "") {
+				assert(a[0].rltv == a[0].full)
+			}
+			if (abst == base) {
+				assert(a[0].rltv == ".")
+			}
+		}
+	}
 
-await native.createDirectory(path.join(wd, "watch", "d", "d"))
-await native.createFile(path.join(wd, "watch", "f"))
-await native.moveToTrash(path.join(wd, "watch", "f"))
-await native.moveToTrash(path.join(wd, "watch", "d", "d"))
-await native.moveToTrash(path.join(wd, "watch", "d"))
-await native.moveToTrash(path.join(wd, "watch"))
+	{
+		const data = await native.getIcon(wd)
+		const png = path.join(wd, `test-${(new Date()).getTime()}.png`)
+		await fs.writeFile(png, data)
+		await native.moveToTrash(png)
+	}
 
-await timers.setTimeout(3000)
+	{
+		const ID = 0
 
-native.unwatch(ID)
+		native.watch(
+			ID,
+			wd,
+			(id, depth, path) => {
+				console.log("watch callback", id, depth, path)
+			},
+		)
+
+		await native.createDirectory(path.join(wd, "watch", "d", "d"))
+		await native.createFile(path.join(wd, "watch", "f"))
+		await native.moveToTrash(path.join(wd, "watch", "f"))
+		await native.moveToTrash(path.join(wd, "watch", "d", "d"))
+		await native.moveToTrash(path.join(wd, "watch", "d"))
+		await native.moveToTrash(path.join(wd, "watch"))
+
+		await timers.setTimeout(3000)
+
+		native.unwatch(ID)
+	}
+}
+
+try {
+	main().then(() => {
+		console.log("")
+		console.log("done")
+	})
+}
+catch (err) {
+	console.error(err)
+}

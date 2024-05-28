@@ -1,5 +1,4 @@
 import { join } from "node:path/posix"
-import { Attributes, Extension, Item } from "./_type"
 
 const title = "copy"
 

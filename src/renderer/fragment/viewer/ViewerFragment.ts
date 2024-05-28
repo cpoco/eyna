@@ -32,7 +32,8 @@ export const V = vue.defineComponent({
 				.on(Bridge.Viewer.Open.CH, (_: number, data: Bridge.Viewer.Open.Data) => {
 					root.send<Bridge.Viewer.Event.Send>({
 						ch: "viewer-event",
-						args: [-1, { event: "opened" }],
+						id: -1,
+						data: "opened",
 					})
 					if (data.type != null) {
 						reactive.type = data.type
@@ -43,7 +44,8 @@ export const V = vue.defineComponent({
 				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
 					root.send<Bridge.Viewer.Event.Send>({
 						ch: "viewer-event",
-						args: [-1, { event: "closed" }],
+						id: -1,
+						data: "closed",
 					})
 					reactive.type = null
 					reactive.path = []

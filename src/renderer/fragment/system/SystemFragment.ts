@@ -24,18 +24,16 @@ export const V = vue.defineComponent({
 			root
 				.invoke<Bridge.System.Dom.Send, Bridge.System.Dom.Result>({
 					ch: "system-dom",
-					args: [
-						-1,
-						{
-							event: "mounted",
-							root: {
-								x: r.x,
-								y: r.y,
-								w: r.width,
-								h: r.height,
-							},
+					id: -1,
+					data: {
+						event: "mounted",
+						root: {
+							x: r.x,
+							y: r.y,
+							w: r.width,
+							h: r.height,
 						},
-					],
+					},
 				})
 				.then((data: Bridge.System.Dom.Result) => {
 					root.log("ipc.invoke.result", data)

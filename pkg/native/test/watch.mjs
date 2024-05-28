@@ -1,7 +1,7 @@
-import native from "@eyna/native/esm/index.mjs"
+import native from "@eyna/native/lib/index.mjs"
+
 import fs from "node:fs"
 import path from "node:path"
-import process from "node:process"
 import timers from "node:timers/promises"
 
 if (process.platform == "win32") {

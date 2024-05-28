@@ -63,7 +63,7 @@ export namespace Command {
 				let loadConfig: LoadConfig = JSON.parse(fs.readFileSync(this.path, "utf8"))
 				// console.log(JSON.stringify(loadConfig, null, 2))
 
-				loadConfig.key.forEach((conf) => {
+				for (const conf of loadConfig.key) {
 					try {
 						let code: number = acceleratorToCode(conf.key)
 						if (0 < code) {
@@ -80,7 +80,7 @@ export namespace Command {
 					catch (err) {
 						console.error(err)
 					}
-				})
+				}
 				// console.log(JSON.stringify(this.keyData, null, 2))
 			}
 			catch (err) {
@@ -125,12 +125,12 @@ export namespace Command {
 		let ret: number = 0
 		let ary: string[] = Util.isString(key) ? [key] : Util.isArray(key) ? key : []
 
-		ary.forEach((key: string) => {
-			key = key.toLowerCase()
-			ret |= (FlagMap[key] ?? 0) << 12
-			ret |= CodeMap[key] ?? 0
-			ret |= KeyMap[key] ?? 0
-		})
+		for (const key of ary) {
+			const k = key.toLowerCase()
+			ret |= (FlagMap[k] ?? 0) << 12
+			ret |= CodeMap[k] ?? 0
+			ret |= KeyMap[k] ?? 0
+		}
 
 		return ret
 	}

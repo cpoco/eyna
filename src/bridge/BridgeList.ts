@@ -1,4 +1,4 @@
-import * as Native from "@eyna/native/ts/renderer"
+import * as Native from "@eyna/native/lib/renderer"
 
 import { Status } from "@/bridge/Status"
 
@@ -51,19 +51,15 @@ export namespace List {
 		export const CH = "filer-dom"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			event: "mounted" | "resized"
-			data: {
-				x: number
-				y: number
-				w: number
-				h: number
-			}
+			x: number
+			y: number
+			w: number
+			h: number
 		}
 	}
 
@@ -72,15 +68,11 @@ export namespace List {
 		export const CH = "filer-drag"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = {
-			data: {
-				full: string
-			}
+			full: string
 		}
 	}
 
@@ -89,10 +81,8 @@ export namespace List {
 		export const CH = "filer-change"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = List.Data
 	}
@@ -102,10 +92,8 @@ export namespace List {
 		export const CH = "filer-scan"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = List.Data
 	}
@@ -115,10 +103,8 @@ export namespace List {
 		export const CH = "filer-status"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			status: Status
@@ -130,10 +116,8 @@ export namespace List {
 		export const CH = "filer-cursor"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			cursor: number
@@ -148,13 +132,11 @@ export namespace List {
 
 	// browser -> renderer
 	export namespace Attribute {
-		export const CH = "filer-attribute"
+		export const CH = "filer-attr"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			_slice: Slice
@@ -169,10 +151,8 @@ export namespace List {
 		export const CH = "filer-mark"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			_slice: Slice
@@ -187,10 +167,8 @@ export namespace List {
 		export const CH = "filer-watch"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: number
+			data: Data
 		}
 		export type Data = {
 			watch: number

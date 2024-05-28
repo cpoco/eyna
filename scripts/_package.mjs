@@ -1,9 +1,7 @@
 import electron_builder from "electron-builder"
 import path from "node:path"
-import url from "node:url"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 export async function Package(arch) {
@@ -23,6 +21,7 @@ export async function Package(arch) {
 					target: "7z",
 					arch: arch,
 				},
+				icon: path.join(__top, "src", "app", "asset", "icon.ico"),
 			},
 			// https://www.electron.build/configuration/mac
 			mac: {
@@ -30,6 +29,7 @@ export async function Package(arch) {
 					target: "7z",
 					arch: arch,
 				},
+				icon: path.join(__top, "src", "app", "asset", "icon.icns"),
 				identity: null,
 			},
 		},

@@ -1,8 +1,8 @@
 import * as electron from "electron"
 import * as timers from "node:timers/promises"
 
-import * as Native from "@eyna/native/ts/browser"
-import * as util from "@eyna/util"
+import * as Native from "@eyna/native/lib/browser"
+import * as Util from "@eyna/util"
 
 const schema = "eyna"
 
@@ -39,7 +39,7 @@ export class Protocol {
 
 type task = {
 	abst: string
-	deferred: util.DeferredPromise<Response>
+	deferred: Util.DeferredPromise<Response>
 }
 
 class IconWorker {
@@ -56,7 +56,7 @@ class IconWorker {
 			return new Response(null, { status: 400 })
 		}
 
-		const deferred = new util.DeferredPromise<Response>()
+		const deferred = new Util.DeferredPromise<Response>()
 		this.queue.push({
 			abst: decodeURIComponent(path[1]),
 			deferred: deferred,

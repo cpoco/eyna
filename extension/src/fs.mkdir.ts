@@ -1,5 +1,4 @@
 import { join } from "node:path/posix"
-import { Extension } from "./_type"
 
 const title = "mkdir"
 

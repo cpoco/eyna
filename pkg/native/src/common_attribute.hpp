@@ -73,10 +73,6 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
-	if (attribute.full.filename().empty()) {
-		attribute.full = generic_path(attribute.full.parent_path());
-	}
-
 	#if _OS_WIN_
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
@@ -198,10 +194,6 @@ void attribute(_attribute& attribute)
 
 		if (-1 != lstat(attribute.full.c_str(), &st)) {
 
-			attribute.size = st.st_size;
-			attribute.time = st.st_mtimespec.tv_sec;
-			attribute.nsec = st.st_mtimespec.tv_nsec;
-
 			NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:attribute.full.c_str() encoding:NSUTF8StringEncoding]];
 
 			NSError* error = nil;
@@ -212,6 +204,14 @@ void attribute(_attribute& attribute)
 				NSURLIsHiddenKey,
 				NSURLIsSystemImmutableKey
 			] error:&error];
+
+			if (error != nil) {
+				return;
+			}
+
+			attribute.size = st.st_size;
+			attribute.time = st.st_mtimespec.tv_sec;
+			attribute.nsec = st.st_mtimespec.tv_nsec;
 
 			NSString* type = [dic objectForKey:NSURLFileResourceTypeKey];
 
@@ -290,10 +290,10 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
-			attribute(normalize_generic_path(attr.link), vector);
+			attribute(generic_path(attr.link, true), vector);
 		}
 		else if (attr.link.is_relative()) {
-			attribute(normalize_generic_path(attr.full.parent_path() / attr.link), vector);
+			attribute(generic_path(attr.full.parent_path() / attr.link, true), vector);
 		}
 		else {
 			vector.push_back({});

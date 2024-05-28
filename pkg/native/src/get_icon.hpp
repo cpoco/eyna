@@ -77,12 +77,24 @@ static void get_icon_async(uv_work_t* req)
 	#elif _OS_MAC_
 
 		NSImage* src = [[NSWorkspace sharedWorkspace] iconForFile:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
-		NSImage* dst = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
-		[dst lockFocus];
-		[src drawInRect:NSMakeRect(0, 0, dst.size.width, dst.size.height) fromRect:NSMakeRect(0, 0, src.size.width, src.size.height) operation:NSCompositingOperationSourceOver fraction:1.0];
-		[dst unlockFocus];
+		NSBitmapImageRep* dst =
+			[[NSBitmapImageRep alloc]
+				initWithBitmapDataPlanes:NULL
+				pixelsWide:32
+				pixelsHigh:32
+				bitsPerSample:8
+				samplesPerPixel:4
+				hasAlpha:YES
+				isPlanar:NO
+				colorSpaceName:NSCalibratedRGBColorSpace
+				bitmapFormat:0
+				bytesPerRow:0
+				bitsPerPixel:0];
 
-		NSData* png = [[NSBitmapImageRep imageRepWithData:[dst TIFFRepresentation]] representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+		[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:dst]];
+		[src drawInRect:NSMakeRect(0, 0, dst.size.width, dst.size.height) fromRect:NSMakeRect(0, 0, src.size.width, src.size.height) operation:NSCompositingOperationCopy fraction:1.0];
+
+		NSData* png = [dst representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 
 		work->size = png.length;
 		work->data = new char[work->size];
@@ -122,13 +134,12 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
-	if (is_traversal(work->abst)) {
-		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	if (is_relative(work->abst) || is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
 		delete work;
 		return;
 	}
-	work->abst = abst;
 
 	work->data = nullptr;
 

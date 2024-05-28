@@ -16,7 +16,7 @@ export function highlight(str: string | null | undefined, err: boolean = false):
 	ary = Util.split(ary, RLO)
 
 	let ret: vue.VNodeArrayChildren = []
-	for (var s of ary) {
+	for (const s of ary) {
 		if (s == "." || s == "..") {
 			ret.push(vue.h("span", { class: { "c-trv": true } }, s))
 		}

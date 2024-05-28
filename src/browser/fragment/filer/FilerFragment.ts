@@ -1,6 +1,6 @@
 import * as electron from "electron"
 
-import * as Native from "@eyna/native/ts/browser"
+import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
@@ -25,12 +25,6 @@ export class FilerFragment extends AbstractFragment {
 		return this.core[this.index.target]!
 	}
 
-	get pwd(): string[] {
-		return this.core.map((f) => {
-			return f.pwd
-		})
-	}
-
 	constructor() {
 		super()
 
@@ -48,10 +42,21 @@ export class FilerFragment extends AbstractFragment {
 			)
 		})
 
+		for (const fm of this.core) {
+			fm.run()
+		}
+
 		this.ipc()
 		this.commandExtension()
 		this.commandList()
 		this.commandListImage()
+	}
+
+	exit(): string[] {
+		return this.core.map((f) => {
+			f.exit()
+			return f.pwd
+		})
 	}
 
 	private on2(
@@ -67,33 +72,33 @@ export class FilerFragment extends AbstractFragment {
 	update() {
 		this.active.update()
 		this.target.update()
-		this.core.forEach((fm) => {
+		for (const fm of this.core) {
 			if (fm.data.status == Bridge.Status.None) {
 				if (fm.pwd == this.active.pwd || fm.pwd == this.target.pwd) {
 					fm.update()
 				}
 			}
-		})
+		}
 	}
 
 	private ipc() {
 		root
 			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.data.h, Style.Dynamic.lineHeight)
+					this.core[i]?.mounted(data.h, Style.Dynamic.lineHeight)
 				}
 				else if (data.event == "resized") {
-					this.core[i]?.resized(data.data.h)
+					this.core[i]?.resized(data.h)
 				}
 			})
 			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
-				root.drag(data.data.full)
+				root.drag(data.full)
 			})
 	}
 
 	private commandExtension() {
 		this.on2("list.extension", (active, target, file) => {
-			root.runExtension(`${file}.js`, {
+			return root.runExtension(file, {
 				active: (active.data.search || active.isHome) ? null : {
 					wd: active.pwd,
 					cursor: active.data.ls[active.data.cursor] ?? null,
@@ -109,7 +114,6 @@ export class FilerFragment extends AbstractFragment {
 					}),
 				},
 			})
-			return Promise.resolve()
 		})
 	}
 
@@ -154,27 +158,27 @@ export class FilerFragment extends AbstractFragment {
 			.on2("list.left", (_active, _target) => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + Conf.LIST_COUNT - 1) % Conf.LIST_COUNT
-				this.core.forEach((fm, i) => {
+				for (const [i, fm] of this.core.entries()) {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.Active
 						: this.index.target == i
 						? Bridge.Status.Target
 						: Bridge.Status.None
 					fm.sendActive()
-				})
+				}
 				return Promise.resolve()
 			})
 			.on2("list.right", (_active, _target) => {
 				this.index.target = this.index.active
 				this.index.active = (this.index.active + 1) % Conf.LIST_COUNT
-				this.core.forEach((fm, i) => {
+				for (const [i, fm] of this.core.entries()) {
 					fm.data.status = this.index.active == i
 						? Bridge.Status.Active
 						: this.index.target == i
 						? Bridge.Status.Target
 						: Bridge.Status.None
 					fm.sendActive()
-				})
+				}
 				return Promise.resolve()
 			})
 			.on2("list.update", (active, _target) => {
@@ -190,7 +194,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				active.data.mk[active.data.cursor] = !active.data.mk[active.data.cursor]
+				active.markToggle()
 				active.sendMark(active.data.cursor, active.data.cursor + 1)
 				return Promise.resolve()
 			})
@@ -198,20 +202,16 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				for (let i = 0; i < active.data.mk.length; i++) {
-					active.data.mk[i] = true
-				}
-				active.sendMark()
+				active.markAll(true)
+				active.sendMarkAll()
 				return Promise.resolve()
 			})
 			.on2("list.markclear", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0 || active.isHome) {
 					return Promise.resolve()
 				}
-				for (let i = 0; i < active.data.mk.length; i++) {
-					active.data.mk[i] = false
-				}
-				active.sendMark()
+				active.markAll(false)
+				active.sendMarkAll()
 				return Promise.resolve()
 			})
 			.on2("list.find", (active, _target) => {
@@ -227,7 +227,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null)) {
 						active.scroll()
 						active.sendScan()
-						active.sendAttribute()
+						active.sendAttrAll()
 					}
 					resolve()
 				})
@@ -324,7 +324,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await active.sendChange(attr.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
-							active.sendAttribute()
+							active.sendAttrAll()
 						}
 						resolve()
 					}
@@ -336,7 +336,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await active.sendChange(trgt.full, 0, null, null)) {
 							active.scroll()
 							active.sendScan()
-							active.sendAttribute()
+							active.sendAttrAll()
 						}
 						resolve()
 					}
@@ -387,7 +387,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await active.sendChange(Dir.dirname(active.pwd), 0, null, Dir.basename(active.pwd))) {
 						active.scroll()
 						active.sendScan()
-						active.sendAttribute()
+						active.sendAttrAll()
 					}
 					resolve()
 				})
@@ -397,7 +397,7 @@ export class FilerFragment extends AbstractFragment {
 					if (await target.sendChange(active.pwd, 0, null, null)) {
 						target.scroll()
 						target.sendScan()
-						target.sendAttribute()
+						target.sendAttrAll()
 					}
 					resolve()
 				})
@@ -424,7 +424,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await target.sendChange(attr.full, 0, null, null)) {
 							target.scroll()
 							target.sendScan()
-							target.sendAttribute()
+							target.sendAttrAll()
 						}
 						resolve()
 					}
@@ -436,7 +436,7 @@ export class FilerFragment extends AbstractFragment {
 						if (await target.sendChange(trgt.full, 0, null, null)) {
 							target.scroll()
 							target.sendScan()
-							target.sendAttribute()
+							target.sendAttrAll()
 						}
 						resolve()
 					}

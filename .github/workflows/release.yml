@@ -1,0 +1,40 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+# https://github.com/actions/checkout
+# https://github.com/actions/setup-node
+# https://github.com/actions/upload-artifact
+# https://github.com/softprops/action-gh-release
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        arch: [x64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: |
+          npm ci
+      - run: |
+          npm run b -- ${{ matrix.arch }}
+      - run: |
+          npm run p -- ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/*.7z
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.sha }}
+          draft: true
+          prerelease: true
+          files: dist/*.7z

@@ -1,4 +1,4 @@
-import * as Native from "@eyna/native/ts/renderer"
+import * as Native from "@eyna/native/lib/renderer"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
@@ -89,18 +89,14 @@ export const V = vue.defineComponent({
 			let d: DOMRect = el.value!.getBoundingClientRect()
 			root.send<Bridge.List.Dom.Send>({
 				ch: "filer-dom",
-				args: [
-					props.i,
-					{
-						event: "mounted",
-						data: {
-							x: d.x,
-							y: d.y,
-							w: d.width,
-							h: d.height,
-						},
-					},
-				],
+				id: props.i,
+				data: {
+					event: "mounted",
+					x: d.x,
+					y: d.y,
+					w: d.width,
+					h: d.height,
+				},
 			})
 		}
 
@@ -108,18 +104,14 @@ export const V = vue.defineComponent({
 			let d: DOMRect = el.value!.getBoundingClientRect()
 			root.send<Bridge.List.Dom.Send>({
 				ch: "filer-dom",
-				args: [
-					props.i,
-					{
-						event: "resized",
-						data: {
-							x: d.x,
-							y: d.y,
-							w: d.width,
-							h: d.height,
-						},
-					},
-				],
+				id: props.i,
+				data: {
+					event: "resized",
+					x: d.x,
+					y: d.y,
+					w: d.width,
+					h: d.height,
+				},
 			})
 		}
 
@@ -161,10 +153,14 @@ export const V = vue.defineComponent({
 									: Font.Icon.SyncIgnored,
 							),
 							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.mark}/${this.list.info.total}`),
-							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
-							vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
 							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.History),
 							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
+							...(0 < this.list.info.error
+								? [
+									vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
+									vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
+								]
+								: []),
 						]
 						: undefined,
 				),

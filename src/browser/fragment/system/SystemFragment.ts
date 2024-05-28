@@ -55,7 +55,8 @@ export class SystemFragment extends AbstractFragment {
 				this.overlay.version = !this.overlay.version
 				root.send<Bridge.System.Version.Send>({
 					ch: Bridge.System.Version.CH,
-					args: [-1, this.overlay.version],
+					id: -1,
+					data: this.overlay.version,
 				})
 				return Promise.resolve()
 			})

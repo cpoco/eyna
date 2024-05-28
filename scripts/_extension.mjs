@@ -2,11 +2,9 @@ import esbuild from "esbuild"
 import fse from "fs-extra"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
-import url from "node:url"
 import ts from "typescript"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "extension")
@@ -23,13 +21,13 @@ export async function Check() {
 			...program.getSemanticDiagnostics(),
 			...program.getSyntacticDiagnostics(),
 		]
-		diagnostics.forEach((d) => {
+		for (const d of diagnostics) {
 			console.log(
 				d.file.fileName,
 				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
 				ts.flattenDiagnosticMessageText(d.messageText, "\n"),
 			)
-		})
+		}
 		resolve()
 	})
 		.then(() => {
@@ -59,6 +57,9 @@ export async function Build() {
 		platform: "node",
 		target: ["es2020"],
 		outdir: outdir,
+		outExtension: {
+			".js": ".cjs",
+		},
 	})
 		.then(() => {
 			console.log(`ext.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)

@@ -40,7 +40,7 @@ static void resolve_async(uv_work_t* req)
 		now.full = generic_path(pre.full / p);
 
 		std::vector<_attribute> attr;
-		attribute(normalize_generic_path(pre.real / p), attr);
+		attribute(generic_path(pre.real / p, true), attr);
 		_attribute& a = attr.back();
 		now.real = a.full;
 	}
@@ -92,8 +92,8 @@ void resolve(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->promise.Reset(ISOLATE, promise);
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
-	if (is_traversal(work->abst)) {
-		promise->Reject(CONTEXT, to_string(V("traversal path not available")));
+	if (is_relative(work->abst) || is_traversal(work->abst)) {
+		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
 		delete work;
 		return;
 	}

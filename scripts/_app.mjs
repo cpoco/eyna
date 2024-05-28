@@ -3,11 +3,9 @@ import fse from "fs-extra"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
-import url from "node:url"
 import ts from "typescript"
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
-const __top = path.join(__dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "app")
@@ -42,13 +40,13 @@ export async function Check() {
 			...program.getSemanticDiagnostics(),
 			...program.getSyntacticDiagnostics(),
 		]
-		diagnostics.forEach((d) => {
+		for (const d of diagnostics) {
 			console.log(
 				d.file.fileName,
 				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
 				ts.flattenDiagnosticMessageText(d.messageText, "\n"),
 			)
-		})
+		}
 		resolve()
 	})
 		.then(() => {
@@ -72,13 +70,15 @@ export async function Build() {
 		// },
 		bundle: true,
 		minify: true,
-		format: "cjs",
 		target: ["es2020"],
 		external: [
 			"electron",
 			"monaco-editor",
 			"*.node",
 		],
+		loader: {
+			".png": "base64",
+		},
 		outdir: outdir,
 	}
 
@@ -87,17 +87,27 @@ export async function Build() {
 			preload: path.join(__top, "src/browser/Preload.ts"),
 			browser: path.join(__top, "src/browser/Main.ts"),
 		},
+		format: "cjs",
 		platform: "node",
+		outExtension: {
+			".js": ".cjs",
+		},
 	}))
 
 	let renderer = esbuild.build(Object.assign(common, {
 		define: {
+			"__VUE_OPTIONS_API__": JSON.stringify(false),
 			"__VUE_PROD_DEVTOOLS__": JSON.stringify(false),
+			"__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": JSON.stringify(false),
 		},
 		entryPoints: {
 			renderer: path.join(__top, "src/renderer/Main.ts"),
 		},
+		format: "esm",
 		platform: "browser",
+		outExtension: {
+			".js": ".mjs",
+		},
 	}))
 
 	return Promise.all([browser, renderer])

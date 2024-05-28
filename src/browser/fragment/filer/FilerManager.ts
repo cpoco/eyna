@@ -5,15 +5,19 @@ import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
-import * as Native from "@eyna/native/ts/browser"
+import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
 export class FilerManager {
-	data: Bridge.List.Data = Bridge.List.InitData()
+	readonly data: Bridge.List.Data = Bridge.List.InitData()
 
-	private dir: Dir = new Dir()
-	private sc: Scroll = new Scroll()
-	private history: { [abstract: string]: string | null } = {}
+	private readonly dir: Dir = new Dir()
+	private readonly sc: Scroll = new Scroll()
+	private readonly mk: Set<string> = new Set()
+	private readonly history: Map<string, string | null> = new Map()
+
+	private watch_run: boolean = false
+	private readonly watch_queue: string[] = []
 
 	// 画面高さに対してのカーソル移動数
 	get mv() {
@@ -30,7 +34,40 @@ export class FilerManager {
 
 	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.None) {
 		this.dir.cd(wd)
+		this.mk.clear()
 		this.data.status = status
+	}
+
+	async run(): Promise<void> {
+		this.watch_run = true
+		while (this.watch_run) {
+			if (this.watch_queue.length == 0) {
+				await timers.setTimeout(100)
+				continue
+			}
+			if (this.data.wd != this.watch_queue.shift()) {
+				continue
+			}
+
+			if (this.data.elapse <= 100 && this.data.ls.length <= 100) {
+				await this.update()
+			}
+			else {
+				this.data.watch = 1
+				root.send<Bridge.List.Watch.Send>({
+					ch: Bridge.List.Watch.CH,
+					id: this.id,
+					data: {
+						watch: this.data.watch,
+					},
+				})
+			}
+		}
+	}
+
+	exit() {
+		this.watch_run = false
+		Native.unwatch(this.id)
 	}
 
 	mounted(screenSize: number, contentsSize: number): Promise<void> {
@@ -57,12 +94,43 @@ export class FilerManager {
 		this.data.cursor = Math.min(this.data.cursor + mv, this.data.ls.length - 1)
 	}
 
+	markToggle() {
+		this.data.mk[this.data.cursor] = !this.data.mk[this.data.cursor]
+
+		const attr = Util.first(this.data.ls[this.data.cursor])
+		if (attr) {
+			if (this.data.mk[this.data.cursor]) {
+				this.mk.add(attr.rltv)
+			}
+			else {
+				this.mk.delete(attr.rltv)
+			}
+		}
+	}
+
+	markAll(mk: boolean) {
+		this.data.mk.fill(mk)
+
+		if (mk) {
+			for (const attrs of this.data.ls) {
+				const attr = Util.first(attrs)
+				if (attr) {
+					this.mk.add(attr.rltv)
+				}
+			}
+		}
+		else {
+			this.mk.clear()
+		}
+	}
+
 	update(): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
 			if (await this.sendChange(this.pwd, 0, null, this.data.cursor)) {
 				this.scroll()
 				this.sendScan()
-				this.sendAttribute()
+				this.sendAttrAll()
+				this.sendMarkAll()
 			}
 			resolve()
 		})
@@ -88,13 +156,13 @@ export class FilerManager {
 	}
 
 	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
-		let history = Dir.findRltv(this.data.ls, this.data.cursor)
+		const history = Dir.findRltv(this.data.ls, this.data.cursor)
 		if (history) {
-			this.history[this.data.wd] = history
+			this.history.set(this.data.wd, history)
 		}
 
 		if (wd == Dir.HOME) {
-			cursor = this.history[Dir.HOME] ?? null
+			cursor = this.history.get(Dir.HOME) ?? null
 		}
 
 		let create = perf_hooks.performance.now()
@@ -104,35 +172,46 @@ export class FilerManager {
 		this.data.search = true
 
 		Native.unwatch(this.id)
+		if (wd != Dir.HOME) {
+			Native.watch(this.id, wd, (_id, depth, _abstract) => {
+				if (create != this.data.create || dp < depth) {
+					return
+				}
+				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != wd) {
+					this.watch_queue.push(wd)
+				}
+			})
+		}
 
 		root.send<Bridge.List.Change.Send>({
 			ch: Bridge.List.Change.CH,
-			args: [
-				this.id,
-				{
-					create: this.data.create,
-					elapse: this.data.elapse,
-					status: this.data.status,
-					search: this.data.search,
-					cursor: 0,
-					length: 0,
-					wd: wd,
-					st: [],
-					ls: [],
-					mk: [],
-					drawCount: 0,
-					drawIndex: 0,
-					drawPosition: 0,
-					drawSize: this.sc.contentsSize,
-					knobPosition: 0,
-					knobSize: 0,
-					watch: 0,
-					error: 0,
-				},
-			],
+			id: this.id,
+			data: {
+				create: this.data.create,
+				elapse: this.data.elapse,
+				status: this.data.status,
+				search: this.data.search,
+				cursor: 0,
+				length: 0,
+				wd: wd,
+				st: [],
+				ls: [],
+				mk: [],
+				drawCount: 0,
+				drawIndex: 0,
+				drawPosition: 0,
+				drawSize: this.sc.contentsSize,
+				knobPosition: 0,
+				knobSize: 0,
+				watch: 0,
+				error: 0,
+			},
 		})
 
 		return new Promise(async (resolve, _reject) => {
+			if (this.dir.pwd != wd) {
+				this.mk.clear()
+			}
 			this.dir.cd(wd)
 			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
 				if (create != this.data.create) {
@@ -144,39 +223,19 @@ export class FilerManager {
 				this.data.search = false
 				this.data.cursor = Util.isNumber(cursor)
 					? Math.max(0, Math.min(cursor, ls.length - 1))
-					: Dir.findIndex(ls, cursor ?? this.history[wd] ?? null)
+					: Dir.findIndex(ls, cursor ?? this.history.get(wd) ?? null)
 				this.data.length = ls.length
 				this.data.wd = wd
 				this.data.st = st
 				this.data.ls = ls
-				this.data.mk = Util.array(0, ls.length, () => false)
+				this.data.mk = Util.array(0, ls.length, (i) => {
+					const attr = Util.first(ls[i])
+					return attr ? this.mk.has(attr.rltv) : false
+				})
 				this.data.watch = 0
 				this.data.error = e
 
 				resolve(true)
-
-				if (wd == Dir.HOME) {
-					return
-				}
-
-				await timers.setTimeout(10)
-
-				Native.watch(this.id, wd, (_id, depth, _abstract) => {
-					if (create != this.data.create || dp < depth) {
-						return
-					}
-
-					this.data.watch = 1
-					root.send<Bridge.List.Watch.Send>({
-						ch: Bridge.List.Watch.CH,
-						args: [
-							this.id,
-							{
-								watch: this.data.watch,
-							},
-						],
-					})
-				})
 			})
 		})
 	}
@@ -184,93 +243,89 @@ export class FilerManager {
 	sendScan() {
 		root.send<Bridge.List.Scan.Send>({
 			ch: Bridge.List.Scan.CH,
-			args: [
-				this.id,
-				{
-					create: this.data.create,
-					elapse: this.data.elapse,
-					status: this.data.status,
-					search: this.data.search,
-					cursor: this.data.cursor,
-					length: this.data.length,
-					wd: this.data.wd,
-					st: this.data.st,
-					ls: [],
-					mk: [],
-					drawCount: Math.min(this.sc.drawCount(), this.data.length),
-					drawIndex: this.sc.drawIndex(0),
-					drawPosition: this.sc.drawPosition(0),
-					drawSize: this.sc.contentsSize,
-					knobPosition: this.sc.knobPosition,
-					knobSize: this.sc.knobSize,
-					watch: this.data.watch,
-					error: this.data.error,
-				},
-			],
+			id: this.id,
+			data: {
+				create: this.data.create,
+				elapse: this.data.elapse,
+				status: this.data.status,
+				search: this.data.search,
+				cursor: this.data.cursor,
+				length: this.data.length,
+				wd: this.data.wd,
+				st: this.data.st,
+				ls: [],
+				mk: [],
+				drawCount: Math.min(this.sc.drawCount(), this.data.length),
+				drawIndex: this.sc.drawIndex(0),
+				drawPosition: this.sc.drawPosition(0),
+				drawSize: this.sc.contentsSize,
+				knobPosition: this.sc.knobPosition,
+				knobSize: this.sc.knobSize,
+				watch: this.data.watch,
+				error: this.data.error,
+			},
 		})
 	}
 
 	sendActive() {
 		root.send<Bridge.List.Active.Send>({
 			ch: Bridge.List.Active.CH,
-			args: [
-				this.id,
-				{
-					status: this.data.status,
-				},
-			],
+			id: this.id,
+			data: {
+				status: this.data.status,
+			},
 		})
 	}
 
 	sendCursor() {
 		root.send<Bridge.List.Cursor.Send>({
 			ch: Bridge.List.Cursor.CH,
-			args: [
-				this.id,
-				{
-					cursor: this.data.cursor,
-					drawCount: Math.min(this.sc.drawCount(), this.data.length),
-					drawIndex: this.sc.drawIndex(0),
-					drawPosition: this.sc.drawPosition(0),
-					drawSize: this.sc.contentsSize,
-					knobPosition: this.sc.knobPosition,
-					knobSize: this.sc.knobSize,
-				},
-			],
+			id: this.id,
+			data: {
+				cursor: this.data.cursor,
+				drawCount: Math.min(this.sc.drawCount(), this.data.length),
+				drawIndex: this.sc.drawIndex(0),
+				drawPosition: this.sc.drawPosition(0),
+				drawSize: this.sc.contentsSize,
+				knobPosition: this.sc.knobPosition,
+				knobSize: this.sc.knobSize,
+			},
 		})
 	}
 
-	sendAttribute() {
+	sendAttrAll() {
 		for (let i = 0; i < this.data.length; i += 1000) {
-			this._sendAttribute(i, Math.min(i + 1000, this.data.length))
+			this.sendAttr(i, Math.min(i + 1000, this.data.length))
 		}
 	}
 
-	_sendAttribute(start: number = 0, end: number = this.data.length) {
+	sendAttr(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Attribute.Send>({
 			ch: Bridge.List.Attribute.CH,
-			args: [
-				this.id,
-				{
-					_slice: Util.dict<Native.Attributes>(start, end, (i) => {
-						return this.data.ls[i]
-					}),
-				},
-			],
+			id: this.id,
+			data: {
+				_slice: Util.dict<Native.Attributes>(start, end, (i) => {
+					return this.data.ls[i]
+				}),
+			},
 		})
+	}
+
+	sendMarkAll() {
+		for (let i = 0; i < this.data.length; i += 1000) {
+			this.sendMark(i, Math.min(i + 1000, this.data.length))
+		}
 	}
 
 	sendMark(start: number = 0, end: number = this.data.length) {
 		root.send<Bridge.List.Mark.Send>({
 			ch: Bridge.List.Mark.CH,
-			args: [
-				this.id,
-				{
-					_slice: Util.dict<boolean>(start, end, (i) => {
-						return this.data.mk[i]
-					}),
-				},
-			],
+			id: this.id,
+			data: {
+				_slice: Util.dict<boolean>(start, end, (i) => {
+					return this.data.mk[i]
+				}),
+			},
 		})
 	}
 }

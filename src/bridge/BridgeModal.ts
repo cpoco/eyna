@@ -4,10 +4,8 @@ export namespace Modal {
 		export const CH = "modal-event"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = opened | closed | canceled
 		type opened = {
@@ -33,10 +31,8 @@ export namespace Modal {
 		export const CH = "modal-open"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
 		export type Data = DataAlert | DataPrompt | DataFind
 		export type DataAlert = {
@@ -64,11 +60,9 @@ export namespace Modal {
 		export const CH = "modal-cancel"
 		export type Send = {
 			ch: typeof CH
-			args: [
-				number,
-				Data,
-			]
+			id: -1
+			data: Data
 		}
-		export type Data = {}
+		export type Data = null
 	}
 }

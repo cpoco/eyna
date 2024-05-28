@@ -1,4 +1,4 @@
-import * as Native from "@eyna/native/ts/renderer"
+import * as Native from "@eyna/native/lib/renderer"
 import * as Util from "@eyna/util"
 import * as vue from "@vue/runtime-dom"
 
@@ -233,14 +233,10 @@ const attr = vue.defineComponent({
 			event.preventDefault()
 			root.send<Bridge.List.Drag.Send>({
 				ch: "filer-drag",
-				args: [
-					-1,
-					{
-						data: {
-							full: props.attr[0]?.full ?? "",
-						},
-					},
-				],
+				id: -1,
+				data: {
+					full: props.attr[0]?.full ?? "",
+				},
 			})
 		}
 
