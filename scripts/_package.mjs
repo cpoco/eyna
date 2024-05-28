@@ -21,7 +21,7 @@ export async function Package(arch) {
 					target: "7z",
 					arch: arch,
 				},
-				// icon: path.join(__top, "src", "app", "asset", "icon.ico"),
+				icon: path.join(__top, "src", "app", "asset", "icon.ico"),
 			},
 			// https://www.electron.build/configuration/mac
 			mac: {
@@ -29,7 +29,7 @@ export async function Package(arch) {
 					target: "7z",
 					arch: arch,
 				},
-				// icon: path.join(__top, "src", "app", "asset", "icon.icns"),
+				icon: path.join(__top, "src", "app", "asset", "icon.icns"),
 				identity: null,
 			},
 		},
