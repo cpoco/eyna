@@ -1,4 +1,4 @@
-export { Base } from "@/bridge/Base"
+export type { Base } from "@/bridge/Base"
 export { List } from "@/bridge/BridgeList"
 export { Modal } from "@/bridge/BridgeModal"
 export { System } from "@/bridge/BridgeSystem"

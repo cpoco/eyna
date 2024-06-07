@@ -1,6 +1,14 @@
 #ifndef NATIVE_COMMON
 #define NATIVE_COMMON
 
+#if defined(_WIN64)
+	#define _OS_WIN_ 1
+#elif defined(__APPLE__) && defined(__MACH__)
+	#define _OS_MAC_ 1
+#else
+	#error "unsupported os"
+#endif
+
 #include <filesystem>
 #include <fstream>
 #include <map>
@@ -11,17 +19,6 @@
 #include <node_buffer.h>
 #include <uv.h>
 
-#if defined(_WIN64)
-	#define _OS_WIN_ 1
-#elif defined(__APPLE__) && defined(__MACH__)
-	#define _OS_MAC_ 1
-#else
-	#error "unsupported os"
-#endif
-
-#define ISOLATE v8::Isolate::GetCurrent()
-#define CONTEXT v8::Isolate::GetCurrent()->GetCurrentContext()
-
 #if _OS_WIN_
 	#include <windows.h>
 	#include <shlobj.h>
@@ -31,6 +28,9 @@
 	#import <AppKit/AppKit.h>
 	#include <unistd.h>
 #endif
+
+#define ISOLATE v8::Isolate::GetCurrent()
+#define CONTEXT v8::Isolate::GetCurrent()->GetCurrentContext()
 
 #if _OS_WIN_
 	#define V(s)                        L ## s
