@@ -1,4 +1,14 @@
 export namespace Viewer {
+	export enum Type {
+		Text = "text",
+		Diff = "diff",
+		Hex = "hex",
+		Image = "image",
+		Audio = "audio",
+		Video = "video",
+		Embed = "embed",
+	}
+
 	// renderer -> browser
 	export namespace Event {
 		export const CH = "viewer-event"
@@ -18,34 +28,46 @@ export namespace Viewer {
 			id: -1
 			data: Data
 		}
-		export type Data = DataText | DataHex | DataDiff | DataImage | DataAudio | DataVideo
+		export type Data = DataText | DataHex | DataDiff | DataImage | DataAudio | DataVideo | DataEmbed
 		export type DataText = {
-			type: "text"
+			type: Type.Text
+			mime: []
 			path: [string]
 			size: [bigint]
 		}
 		export type DataDiff = {
-			type: "diff"
+			type: Type.Diff
+			mime: []
 			path: [string, string]
 			size: [bigint, bigint]
 		}
 		export type DataHex = {
-			type: "hex"
+			type: Type.Hex
+			mime: []
 			path: [string]
 			size: [bigint]
 		}
 		export type DataImage = {
-			type: "image"
+			type: Type.Image
+			mime: []
 			path: [string]
 			size: [bigint]
 		}
 		export type DataAudio = {
-			type: "audio"
+			type: Type.Audio
+			mime: []
 			path: [string]
 			size: [bigint]
 		}
 		export type DataVideo = {
-			type: "video"
+			type: Type.Video
+			mime: []
+			path: [string]
+			size: [bigint]
+		}
+		export type DataEmbed = {
+			type: Type.Embed
+			mime: [string]
 			path: [string]
 			size: [bigint]
 		}

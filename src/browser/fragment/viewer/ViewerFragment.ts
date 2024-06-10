@@ -4,7 +4,7 @@ import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class ViewerFragment extends AbstractFragment {
-	private type: "text" | "diff" | "hex" | "image" | "audio" | "video" | null = null
+	private type: Bridge.Viewer.Type | null = null
 
 	constructor() {
 		super()
@@ -47,7 +47,7 @@ export class ViewerFragment extends AbstractFragment {
 	private command() {
 		this
 			.on("viewer.imageprev", () => {
-				if (this.type != "image") {
+				if (this.type != Bridge.Viewer.Type.Image) {
 					return Promise.resolve()
 				}
 				return root.command({
@@ -57,7 +57,7 @@ export class ViewerFragment extends AbstractFragment {
 				})
 			})
 			.on("viewer.imagenext", () => {
-				if (this.type != "image") {
+				if (this.type != Bridge.Viewer.Type.Image) {
 					return Promise.resolve()
 				}
 				return root.command({
@@ -67,7 +67,7 @@ export class ViewerFragment extends AbstractFragment {
 				})
 			})
 			.on("viewer.diffprev", () => {
-				if (this.type != "diff") {
+				if (this.type != Bridge.Viewer.Type.Diff) {
 					return Promise.resolve()
 				}
 				root.send<Bridge.Viewer.Diff.Send>({
@@ -78,7 +78,7 @@ export class ViewerFragment extends AbstractFragment {
 				return Promise.resolve()
 			})
 			.on("viewer.diffnext", () => {
-				if (this.type != "diff") {
+				if (this.type != Bridge.Viewer.Type.Diff) {
 					return Promise.resolve()
 				}
 				root.send<Bridge.Viewer.Diff.Send>({
