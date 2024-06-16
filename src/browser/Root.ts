@@ -35,7 +35,7 @@ type Option = {
 	} | null
 }
 
-enum index {
+enum Index {
 	system = 0,
 	navbar = 1,
 	filer = 2,
@@ -96,7 +96,7 @@ class Root {
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getNormalBounds()
-			Storage.manager.data.wd = this.fragment[index.filer].exit()
+			Storage.manager.data.wd = this.fragment[Index.filer].exit()
 			Storage.manager.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
@@ -123,16 +123,16 @@ class Root {
 		let f: AbstractFragment | null = null
 		switch (conf.when) {
 			case Command.When.Always:
-				f = this.fragment[index.system]
+				f = this.fragment[Index.system]
 				break
 			case Command.When.Filer:
-				f = this.fragment[index.filer]
+				f = this.fragment[Index.filer]
 				break
 			case Command.When.Modal:
-				f = this.fragment[index.modal]
+				f = this.fragment[Index.modal]
 				break
 			case Command.When.Viewer:
-				f = this.fragment[index.viewer]
+				f = this.fragment[Index.viewer]
 				break
 			default:
 				return
@@ -213,11 +213,11 @@ class Root {
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
-		return this.fragment[index.modal].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
+		return this.fragment[Index.modal].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
 	viewer(option: Bridge.Viewer.Open.Data) {
-		this.fragment[index.viewer].opne(option)
+		this.fragment[Index.viewer].opne(option)
 	}
 
 	async runExtension(file: string, option: Option) {
@@ -240,7 +240,7 @@ class Root {
 				filer: {
 					update: () => {
 						sbox.log("filer.update")
-						this.fragment[index.filer].update()
+						this.fragment[Index.filer].update()
 					},
 					exists: (full: string): Promise<boolean> => {
 						sbox.log("filer.exists", { full })
@@ -276,13 +276,13 @@ class Root {
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
 						sbox.log("dialog.opne", option)
-						return this.fragment[index.modal].opne(option) as Promise<
+						return this.fragment[Index.modal].opne(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
 					},
 					cancel: () => {
 						sbox.log("dialog.cancel")
-						this.fragment[index.modal].cancel()
+						this.fragment[Index.modal].cancel()
 					},
 				},
 			}

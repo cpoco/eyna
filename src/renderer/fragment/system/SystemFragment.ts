@@ -74,7 +74,7 @@ const overlay = vue.defineComponent({
 				.then((res) => {
 					return res.json()
 				})
-				.then((json: versions) => {
+				.then((json: Versions) => {
 					ver.value = [
 						` version: ${json.app.version}`,
 						`electron: ${json.system.electron}`,
@@ -89,7 +89,7 @@ const overlay = vue.defineComponent({
 					.then((res) => {
 						return res.json()
 					})
-					.then((json: metrics) => {
+					.then((json: Metrics) => {
 						const line: string[] = []
 						for (const m of json.metrics) {
 							line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)
@@ -123,7 +123,7 @@ const overlay = vue.defineComponent({
 	},
 })
 
-type versions = {
+type Versions = {
 	app: {
 		version: string
 		admin: boolean
@@ -136,7 +136,7 @@ type versions = {
 	}
 }
 
-type metrics = {
+type Metrics = {
 	metrics: {
 		type: string
 		pid: number

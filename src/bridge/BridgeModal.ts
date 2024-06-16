@@ -7,15 +7,15 @@ export namespace Modal {
 			id: -1
 			data: Data
 		}
-		export type Data = opened | closed | canceled
-		type opened = {
+		export type Data = Opened | Closed | Canceled
+		type Opened = {
 			event: "opened"
 		}
-		type closed = {
+		type Closed = {
 			event: "closed"
 			result: ResultClose
 		}
-		type canceled = {
+		type Canceled = {
 			event: "canceled"
 			result: ResultCancel
 		}

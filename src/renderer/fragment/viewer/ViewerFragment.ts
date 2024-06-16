@@ -10,7 +10,7 @@ import * as MonacoHexComponent from "@/renderer/fragment/viewer/MonacoHexCompone
 import * as VideoComponent from "@/renderer/fragment/viewer/VideoComponent"
 import root from "@/renderer/Root"
 
-type reactive = {
+type Reactive = {
 	type: Bridge.Viewer.Type | null
 	mime: string[]
 	path: string[]
@@ -23,7 +23,7 @@ export const V = vue.defineComponent({
 	setup() {
 		const diff = vue.ref<InstanceType<typeof MonacoDiffComponent.V>>()
 
-		const reactive = vue.reactive<reactive>({
+		const reactive = vue.reactive<Reactive>({
 			type: null,
 			mime: [],
 			path: [],

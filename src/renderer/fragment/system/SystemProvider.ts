@@ -2,7 +2,7 @@ import * as vue from "@vue/runtime-dom"
 
 import * as Conf from "@/app/Conf"
 
-type reactive = {
+type Reactive = {
 	app: {
 		ready: boolean
 		active: boolean
@@ -18,7 +18,7 @@ type reactive = {
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("SystemProvider")
 
 function _create() {
-	const reactive = vue.reactive<reactive>({
+	const reactive = vue.reactive<Reactive>({
 		app: {
 			ready: false,
 			active: false,

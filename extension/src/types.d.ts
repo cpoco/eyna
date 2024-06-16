@@ -28,18 +28,18 @@ declare type Extension = {
 		find: (full: string, base: string) => Promise<Directory>
 	}
 	dialog: {
-		opne: (option: alert_option | prompt_option) => Promise<{ text: string } | null>
+		opne: (option: AlertOption | PromptOption) => Promise<{ text: string } | null>
 		cancel: () => void
 	}
 }
 
-type alert_option = {
+type AlertOption = {
 	type: "alert"
 	title: string
 	text: string
 }
 
-type prompt_option = {
+type PromptOption = {
 	type: "prompt"
 	title: string
 	text: string

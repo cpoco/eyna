@@ -37,13 +37,13 @@ export class Protocol {
 	}
 }
 
-type task = {
+type Task = {
 	abst: string
 	deferred: Util.DeferredPromise<Response>
 }
 
 class IconWorker {
-	private static queue: task[] = []
+	private static queue: Task[] = []
 
 	private static verify(ary: string[]): ary is [string, string] {
 		return ary.length == 2
