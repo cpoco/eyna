@@ -23,4 +23,4 @@ jobs:
       - run: |
           npm ci
       - run: |
-          npm run b -- ${{ matrix.arch }}
+          npm run b
