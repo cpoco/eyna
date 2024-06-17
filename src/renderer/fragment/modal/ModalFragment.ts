@@ -6,7 +6,7 @@ import * as DialogFind from "@/renderer/fragment/modal/DialogFind"
 import * as DialogPrompt from "@/renderer/fragment/modal/DialogPrompt"
 import root from "@/renderer/Root"
 
-type reactive = {
+type Reactive = {
 	type: "alert" | "prompt" | "find" | null
 	alert: {
 		title: string
@@ -29,7 +29,7 @@ const TAG = "modal"
 
 export const V = vue.defineComponent({
 	setup() {
-		const reactive = vue.reactive<reactive>({
+		const reactive = vue.reactive<Reactive>({
 			type: null,
 			alert: {
 				title: "",

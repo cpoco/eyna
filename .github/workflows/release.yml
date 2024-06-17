@@ -25,9 +25,9 @@ jobs:
       - run: |
           npm ci
       - run: |
-          npm run b -- ${{ matrix.arch }}
+          npm run b
       - run: |
-          npm run p -- ${{ matrix.arch }}
+          npm run p
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}

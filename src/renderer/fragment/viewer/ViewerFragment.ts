@@ -2,6 +2,7 @@ import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import * as AudioComponent from "@/renderer/fragment/viewer/AudioComponent"
+import * as EmbedComponent from "@/renderer/fragment/viewer/EmbedComponent"
 import * as ImageComponent from "@/renderer/fragment/viewer/ImageComponent"
 import * as MonacoComponent from "@/renderer/fragment/viewer/MonacoComponent"
 import * as MonacoDiffComponent from "@/renderer/fragment/viewer/MonacoDiffComponent"
@@ -9,8 +10,9 @@ import * as MonacoHexComponent from "@/renderer/fragment/viewer/MonacoHexCompone
 import * as VideoComponent from "@/renderer/fragment/viewer/VideoComponent"
 import root from "@/renderer/Root"
 
-type reactive = {
-	type: "text" | "diff" | "hex" | "image" | "audio" | "video" | null
+type Reactive = {
+	type: Bridge.Viewer.Type | null
+	mime: string[]
 	path: string[]
 	size: bigint[]
 }
@@ -21,8 +23,9 @@ export const V = vue.defineComponent({
 	setup() {
 		const diff = vue.ref<InstanceType<typeof MonacoDiffComponent.V>>()
 
-		const reactive = vue.reactive<reactive>({
+		const reactive = vue.reactive<Reactive>({
 			type: null,
+			mime: [],
 			path: [],
 			size: [],
 		})
@@ -37,6 +40,7 @@ export const V = vue.defineComponent({
 					})
 					if (data.type != null) {
 						reactive.type = data.type
+						reactive.mime = data.mime
 						reactive.path = data.path
 						reactive.size = data.size
 					}
@@ -48,6 +52,7 @@ export const V = vue.defineComponent({
 						data: "closed",
 					})
 					reactive.type = null
+					reactive.mime = []
 					reactive.path = []
 					reactive.size = []
 				})
@@ -68,7 +73,7 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		if (this.reactive.type == "text") {
+		if (this.reactive.type == Bridge.Viewer.Type.Text) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -80,7 +85,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == "diff") {
+		else if (this.reactive.type == Bridge.Viewer.Type.Diff) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -95,7 +100,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		if (this.reactive.type == "hex") {
+		if (this.reactive.type == Bridge.Viewer.Type.Hex) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -107,7 +112,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == "image") {
+		else if (this.reactive.type == Bridge.Viewer.Type.Image) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -119,7 +124,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == "audio") {
+		else if (this.reactive.type == Bridge.Viewer.Type.Audio) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -131,13 +136,26 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == "video") {
+		else if (this.reactive.type == Bridge.Viewer.Type.Video) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
 				},
 			}, [
 				vue.h(VideoComponent.V, {
+					path: this.reactive.path[0] ?? "",
+					size: this.reactive.size[0] ?? 0n,
+				}, undefined),
+			])
+		}
+		else if (this.reactive.type == Bridge.Viewer.Type.Embed) {
+			return vue.h(TAG, {
+				class: {
+					"viewer-fragment": true,
+				},
+			}, [
+				vue.h(EmbedComponent.V, {
+					mime: this.reactive.mime[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),

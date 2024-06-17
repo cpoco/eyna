@@ -5,6 +5,8 @@
 - var _font    = "font-src 'self';"
 - var _connect = "connect-src 'self' eyna:;"
 - var _media   = "media-src 'self';"
+- var _frame   = "frame-src file:;"
+- var _object  = "object-src file:;"
 
 doctype
 html
@@ -12,7 +14,7 @@ html
 		meta(charset="utf-8")
 		meta(
 			http-equiv="Content-Security-Policy",
-			content=_default + _script + _style + _img + _font + _connect + _media
+			content=_default + _script + _style + _img + _font + _connect + _media + _frame + _object
 		)
 		link(rel="stylesheet", href="style.css")
 		script(async="async", type="module", src="renderer.mjs")

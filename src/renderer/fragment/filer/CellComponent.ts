@@ -9,12 +9,12 @@ import root from "@/renderer/Root"
 
 const TAG = "cell"
 
-type class_cell =
+type ClassCell =
 	| "filer-cell-attr-file"
 	| "filer-cell-attr-link"
 	| "filer-cell-attr-trgt"
 
-type class_color =
+type ClassColor =
 	| "c-operator"
 	| "c-drive"
 	| "c-homeuser"
@@ -27,8 +27,8 @@ type class_color =
 	| "c-warn"
 	| "c-miss"
 
-type style =
-	& { class: { [key in class_cell | class_color]?: boolean } }
+type Style =
+	& { class: { [key in ClassCell | ClassColor]?: boolean } }
 	& vue.AllowedComponentProps
 
 export type Cell = {
@@ -128,8 +128,8 @@ const attr = vue.defineComponent({
 			return props.attr[0]?.link_type != Native.AttributeLinkType.None
 		})
 
-		const name = vue.computed((): style => {
-			const ret: style = { class: { "filer-cell-attr-file": true } }
+		const name = vue.computed((): Style => {
+			const ret: Style = { class: { "filer-cell-attr-file": true } }
 
 			const f = props.attr[0]?.file_type
 			if (f == Native.AttributeFileType.File) {
@@ -166,12 +166,12 @@ const attr = vue.defineComponent({
 			return ret
 		})
 
-		const link = vue.computed((): style => {
+		const link = vue.computed((): Style => {
 			return { class: { "filer-cell-attr-link": true, "c-operator": true } }
 		})
 
-		const trgt = vue.computed((): style => {
-			const ret: style = { class: { "filer-cell-attr-trgt": true } }
+		const trgt = vue.computed((): Style => {
+			const ret: Style = { class: { "filer-cell-attr-trgt": true } }
 
 			const f = props.attr[1]?.file_type
 			if (f == Native.AttributeFileType.File) {

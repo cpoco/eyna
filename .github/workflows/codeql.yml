@@ -31,7 +31,7 @@ jobs:
         with:
           languages: cpp,javascript
       - run: |
-          npm run b -- ${{ matrix.arch }}
+          npm run b
       - uses: github/codeql-action/analyze@v3
         with:
           category: ${{ matrix.os }}

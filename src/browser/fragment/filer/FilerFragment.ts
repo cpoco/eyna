@@ -267,7 +267,8 @@ export class FilerFragment extends AbstractFragment {
 						return
 					}
 					root.viewer({
-						type: "diff",
+						type: Bridge.Viewer.Type.Diff,
+						mime: [],
 						path: [ltrgt.full, rtrgt.full],
 						size: [ltrgt.size, rtrgt.size],
 					})
@@ -291,7 +292,8 @@ export class FilerFragment extends AbstractFragment {
 							return
 						}
 						root.viewer({
-							type: "hex",
+							type: Bridge.Viewer.Type.Hex,
+							mime: [],
 							path: [trgt.full],
 							size: [trgt.size],
 						})
@@ -348,21 +350,32 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
 							root.viewer({
-								type: "image",
+								type: Bridge.Viewer.Type.Image,
+								mime: [],
 								path: [trgt.full],
 								size: [trgt.size],
 							})
 						}
 						else if (Conf.VIEWER_AUDIO_EXT.test(trgt.ext)) {
 							root.viewer({
-								type: "audio",
+								type: Bridge.Viewer.Type.Audio,
+								mime: [],
 								path: [trgt.full],
 								size: [trgt.size],
 							})
 						}
 						else if (Conf.VIEWER_VIDEO_EXT.test(trgt.ext)) {
 							root.viewer({
-								type: "video",
+								type: Bridge.Viewer.Type.Video,
+								mime: [],
+								path: [trgt.full],
+								size: [trgt.size],
+							})
+						}
+						else if (Conf.VIEWER_PDF_EXT.test(trgt.ext)) {
+							root.viewer({
+								type: Bridge.Viewer.Type.Embed,
+								mime: ["application/pdf"],
 								path: [trgt.full],
 								size: [trgt.size],
 							})
@@ -373,7 +386,8 @@ export class FilerFragment extends AbstractFragment {
 								return
 							}
 							root.viewer({
-								type: "text",
+								type: Bridge.Viewer.Type.Text,
+								mime: [],
 								path: [trgt.full],
 								size: [trgt.size],
 							})

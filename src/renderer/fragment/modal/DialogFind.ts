@@ -3,7 +3,7 @@ import * as vue from "@vue/runtime-dom"
 import * as Bridge from "@/bridge/Bridge"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
-type reactive = {
+type Reactive = {
 	rg: [string, string]
 	dp: [string, string]
 }
@@ -38,7 +38,7 @@ export const V = vue.defineComponent({
 		const rg = vue.ref<HTMLElement>()
 		const dp = vue.ref<HTMLElement>()
 
-		const reactive = vue.reactive<reactive>({
+		const reactive = vue.reactive<Reactive>({
 			rg: [props.rg, props.rg],
 			dp: [props.dp, props.dp],
 		})

@@ -1,7 +1,6 @@
 import fse from "fs-extra"
 import child_process from "node:child_process"
 import path from "node:path"
-import url from "node:url"
 
 const codeql = process.env["GITHUB_ACTIONS"] == "true"
 	? path.join(process.env["CODEQL_DIST"], "codeql")

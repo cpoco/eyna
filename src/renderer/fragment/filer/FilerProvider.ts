@@ -6,21 +6,21 @@ import * as Bridge from "@/bridge/Bridge"
 import * as CellComponent from "@/renderer/fragment/filer/CellComponent"
 import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
 
-type title = {
+type Title = {
 	wd: string
 	attr: Native.Attributes
 }
 
-type list = {
+type List = {
 	i: number
 	list: ListComponent.List
 	ctop: number
 	cell: CellComponent.Cell[]
 }
 
-type reactive = {
-	title: title
-	list: list[]
+type Reactive = {
+	title: Title
+	list: List[]
 }
 
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
@@ -33,12 +33,12 @@ function _create(count: number) {
 		return undefined
 	})
 
-	const reactive = vue.reactive<reactive>({
+	const reactive = vue.reactive<Reactive>({
 		title: {
 			wd: "",
 			attr: [],
 		},
-		list: Util.array<list>(0, count, (i) => {
+		list: Util.array<List>(0, count, (i) => {
 			return {
 				i,
 				list: ListComponent.InitList(),

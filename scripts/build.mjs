@@ -4,7 +4,7 @@ import * as native from "./_native.mjs"
 import * as pug from "./_pug.mjs"
 import * as stylus from "./_stylus.mjs"
 
-const arch = process.argv?.[2] == "arm64" ? "arm64" : "x64"
+const arch = process.argv?.[2] ?? process.arch
 console.log(`build (${arch})\n`)
 
 app.Node()

@@ -4,7 +4,7 @@ import * as Bridge from "@/bridge/Bridge"
 import { Selection } from "@/renderer/dom/Selection"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
-type reactive = {
+type Reactive = {
 	prompt: [string, string]
 }
 
@@ -41,7 +41,7 @@ export const V = vue.defineComponent({
 	setup(props) {
 		const prompt = vue.ref<HTMLElement>()
 
-		const reactive = vue.reactive<reactive>({
+		const reactive = vue.reactive<Reactive>({
 			prompt: [props.text, props.text],
 		})
 
