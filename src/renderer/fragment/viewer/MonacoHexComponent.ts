@@ -36,7 +36,8 @@ export const V = vue.defineComponent({
 						[/"/, { token: "string", bracket: "@open", next: "@_string" }],
 					],
 					_string: [
-						[/\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{2})/, "keyword"],
+						[/\\[abfnrtv\\"']/, "keyword"],
+						[/\\x[0-9A-Fa-f]{2}/, "number"],
 						[/"/, { token: "string", bracket: "@close", next: "@pop" }],
 					],
 				},
