@@ -36,7 +36,8 @@ export const V = vue.defineComponent({
 						[/"/, { token: "string", bracket: "@open", next: "@_string" }],
 					],
 					_string: [
-						[/\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/, "keyword"],
+						[/\\[abfnrtv\\"']/, "keyword"],
+						[/\\x[0-9A-Fa-f]{2}/, "number"],
 						[/"/, { token: "string", bracket: "@close", next: "@pop" }],
 					],
 				},
@@ -83,7 +84,18 @@ export const V = vue.defineComponent({
 								? view.getUint8(off).toString(16).padStart(2, "0")
 								: "  ")
 						}
-						text += "  " + JSON.stringify(decoder.decode(view.buffer.slice(row, Math.min(row + cols, view.byteLength))))
+						text += "  \"" + Array.from(decoder.decode(view.buffer.slice(row, Math.min(row + cols, view.byteLength))))
+							.reduce((text, char) => {
+								const code = char.charCodeAt(0)
+								if (escape[code]) {
+									return text + escape[code]
+								}
+								if ((0x00 <= code && code <= 0x1f) || (0x7f <= code && code <= 0x9f)) {
+									return text + "\\x" + code.toString(16).padStart(2, "0")
+								}
+								return text + char
+							}, "")
+							+ "\""
 						line.push(text)
 					}
 					return line.join("\n")
@@ -121,3 +133,16 @@ export const V = vue.defineComponent({
 		])
 	},
 })
+
+const escape: { [key: number]: string } = {
+	0x07: "\\a",
+	0x08: "\\b",
+	0x09: "\\t",
+	0x0a: "\\n",
+	0x0b: "\\v",
+	0x0c: "\\f",
+	0x0d: "\\r",
+	0x22: "\\\"",
+	0x27: "\\'",
+	0x5c: "\\\\",
+}
