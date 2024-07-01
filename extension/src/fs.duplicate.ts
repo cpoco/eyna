@@ -11,7 +11,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 	const dst_base = ex.active.wd
 	const src_item = ex.active.cursor[0]!.rltv
 
-	const prompt = await ex.dialog.opne({
+	const prompt = await ex.dialog.open({
 		type: "prompt",
 		title: title,
 		text: src_item,

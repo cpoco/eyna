@@ -213,11 +213,11 @@ class Root {
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {
-		return this.fragment[Index.Modal].opne(option) as Promise<Bridge.Modal.Event.ResultFind | null>
+		return this.fragment[Index.Modal].open(option) as Promise<Bridge.Modal.Event.ResultFind | null>
 	}
 
 	viewer(option: Bridge.Viewer.Open.Data) {
-		this.fragment[Index.Viewer].opne(option)
+		this.fragment[Index.Viewer].open(option)
 	}
 
 	async runExtension(file: string, option: Option) {
@@ -272,11 +272,11 @@ class Root {
 					},
 				},
 				dialog: {
-					opne: (
+					open: (
 						option: Bridge.Modal.Open.DataAlert | Bridge.Modal.Open.DataPrompt,
 					): Promise<Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null> => {
-						sbox.log("dialog.opne", option)
-						return this.fragment[Index.Modal].opne(option) as Promise<
+						sbox.log("dialog.open", option)
+						return this.fragment[Index.Modal].open(option) as Promise<
 							Bridge.Modal.Event.ResultAlert | Bridge.Modal.Event.ResultPrompt | null
 						>
 					},

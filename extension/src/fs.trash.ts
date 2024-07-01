@@ -6,7 +6,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 	}
 
 	if (ex.active.select.length == 0) {
-		let alert = await ex.dialog.opne({
+		let alert = await ex.dialog.open({
 			type: "alert",
 			title: title,
 			text: ex.active.cursor[0]!.full,
@@ -17,7 +17,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		}
 	}
 	else {
-		let alert = await ex.dialog.opne({
+		let alert = await ex.dialog.open({
 			type: "alert",
 			title: title,
 			text: `${ex.active.select.length} files`,

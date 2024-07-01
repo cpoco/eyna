@@ -7,14 +7,14 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	let txet = "new file"
+	let text = "new file"
 
-	let dir = await ex.dialog.opne({
+	let dir = await ex.dialog.open({
 		type: "prompt",
 		title: title,
-		text: txet,
+		text: text,
 		start: 0,
-		end: txet.length,
+		end: text.length,
 	})
 	if (dir == null || dir.text == "") {
 		return
@@ -23,7 +23,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 	let full = join(ex.active.wd, dir.text)
 
 	if (await ex.filer.exists(full)) {
-		await ex.dialog.opne({
+		await ex.dialog.open({
 			type: "alert",
 			title: title,
 			text: "exists",

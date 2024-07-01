@@ -28,7 +28,7 @@ declare type Extension = {
 		find: (full: string, base: string) => Promise<Directory>
 	}
 	dialog: {
-		opne: (option: AlertOption | PromptOption) => Promise<{ text: string } | null>
+		open: (option: AlertOption | PromptOption) => Promise<{ text: string } | null>
 		cancel: () => void
 	}
 }

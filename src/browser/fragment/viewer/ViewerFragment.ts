@@ -13,7 +13,7 @@ export class ViewerFragment extends AbstractFragment {
 		this.command()
 	}
 
-	opne(option: Bridge.Viewer.Open.Data) {
+	open(option: Bridge.Viewer.Open.Data) {
 		Command.manager.whenType = Command.When.Viewer
 		root.send<Bridge.Viewer.Open.Send>({
 			ch: Bridge.Viewer.Open.CH,
