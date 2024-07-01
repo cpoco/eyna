@@ -68,6 +68,7 @@ export async function Build() {
 		// 	"process.env.NODE_ENV": JSON.stringify("production"),
 		// 	"process.env.NODE_ENV": JSON.stringify("development"),
 		// },
+		packages: "bundle",
 		bundle: true,
 		minify: true,
 		target: ["es2020"],
