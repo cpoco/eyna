@@ -28,11 +28,23 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		const toggle = () => {
+			if (aud.value) {
+				if (aud.value.paused) {
+					aud.value.play()
+				}
+				else {
+					aud.value.pause()
+				}
+			}
+		}
+
 		return {
 			head,
 			prog,
 			aud,
 			src,
+			toggle,
 		}
 	},
 

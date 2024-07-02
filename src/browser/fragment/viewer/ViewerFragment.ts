@@ -67,25 +67,40 @@ export class ViewerFragment extends AbstractFragment {
 				})
 			})
 			.on("viewer.diffprev", () => {
-				if (this.type != Bridge.Viewer.Type.Diff) {
-					return Promise.resolve()
+				if (this.type == Bridge.Viewer.Type.Diff) {
+					root.send<Bridge.Viewer.Diff.Send>({
+						ch: Bridge.Viewer.Diff.CH,
+						id: -1,
+						data: "prev",
+					})
 				}
-				root.send<Bridge.Viewer.Diff.Send>({
-					ch: Bridge.Viewer.Diff.CH,
-					id: -1,
-					data: "prev",
-				})
 				return Promise.resolve()
 			})
 			.on("viewer.diffnext", () => {
-				if (this.type != Bridge.Viewer.Type.Diff) {
-					return Promise.resolve()
+				if (this.type == Bridge.Viewer.Type.Diff) {
+					root.send<Bridge.Viewer.Diff.Send>({
+						ch: Bridge.Viewer.Diff.CH,
+						id: -1,
+						data: "next",
+					})
 				}
-				root.send<Bridge.Viewer.Diff.Send>({
-					ch: Bridge.Viewer.Diff.CH,
-					id: -1,
-					data: "next",
-				})
+				return Promise.resolve()
+			})
+			.on("viewer.mediatoggle", () => {
+				if (this.type == Bridge.Viewer.Type.Audio) {
+					root.send<Bridge.Viewer.Audio.Send>({
+						ch: Bridge.Viewer.Audio.CH,
+						id: -1,
+						data: "toggle",
+					})
+				}
+				else if (this.type == Bridge.Viewer.Type.Video) {
+					root.send<Bridge.Viewer.Video.Send>({
+						ch: Bridge.Viewer.Video.CH,
+						id: -1,
+						data: "toggle",
+					})
+				}
 				return Promise.resolve()
 			})
 			.on("viewer.close", () => {

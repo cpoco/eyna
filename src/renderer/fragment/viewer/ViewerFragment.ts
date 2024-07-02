@@ -22,6 +22,8 @@ const TAG = "viewer"
 export const V = vue.defineComponent({
 	setup() {
 		const diff = vue.ref<InstanceType<typeof MonacoDiffComponent.V>>()
+		const audio = vue.ref<InstanceType<typeof AudioComponent.V>>()
+		const video = vue.ref<InstanceType<typeof VideoComponent.V>>()
 
 		const reactive = vue.reactive<Reactive>({
 			type: null,
@@ -64,11 +66,23 @@ export const V = vue.defineComponent({
 						diff.value?.next()
 					}
 				})
+				.on(Bridge.Viewer.Audio.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
+					if (data == "toggle") {
+						audio.value?.toggle()
+					}
+				})
+				.on(Bridge.Viewer.Video.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
+					if (data == "toggle") {
+						video.value?.toggle()
+					}
+				})
 		})
 
 		return {
 			reactive,
 			diff,
+			audio,
+			video,
 		}
 	},
 
@@ -131,6 +145,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(AudioComponent.V, {
+					ref: "audio",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -143,6 +158,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(VideoComponent.V, {
+					ref: "video",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),

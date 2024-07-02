@@ -47,6 +47,8 @@
 		{ "when": "viewer", "key": ["alt", "up"],       "cmd": "viewer.diffprev" },
 		{ "when": "viewer", "key": ["alt", "down"],     "cmd": "viewer.diffnext" },
 
+		{ "when": "viewer", "key": "space",             "cmd": "viewer.mediatoggle" },
+
 		{ "when": "viewer", "key": "enter",             "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "backspace",         "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "esc",               "cmd": "viewer.close" },

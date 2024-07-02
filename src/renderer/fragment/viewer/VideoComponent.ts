@@ -32,11 +32,23 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		const toggle = () => {
+			if (vid.value) {
+				if (vid.value.paused) {
+					vid.value.play()
+				}
+				else {
+					vid.value.pause()
+				}
+			}
+		}
+
 		return {
 			head,
 			prog,
 			vid,
 			src,
+			toggle,
 		}
 	},
 

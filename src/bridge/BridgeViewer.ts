@@ -94,4 +94,26 @@ export namespace Viewer {
 		}
 		export type Data = "prev" | "next"
 	}
+
+	// browser -> renderer
+	export namespace Audio {
+		export const CH = "viewer-audio"
+		export type Send = {
+			ch: typeof CH
+			id: -1
+			data: Data
+		}
+		export type Data = "toggle"
+	}
+
+	// browser -> renderer
+	export namespace Video {
+		export const CH = "viewer-video"
+		export type Send = {
+			ch: typeof CH
+			id: -1
+			data: Data
+		}
+		export type Data = "toggle"
+	}
 }
