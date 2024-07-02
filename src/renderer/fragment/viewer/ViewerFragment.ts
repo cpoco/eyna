@@ -59,22 +59,13 @@ export const V = vue.defineComponent({
 					reactive.size = []
 				})
 				.on(Bridge.Viewer.Diff.CH, (_: number, data: Bridge.Viewer.Diff.Data) => {
-					if (data == "prev") {
-						diff.value?.prev()
-					}
-					else if (data == "next") {
-						diff.value?.next()
-					}
+					diff.value?.[data]()
 				})
 				.on(Bridge.Viewer.Audio.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
-					if (data == "toggle") {
-						audio.value?.toggle()
-					}
+					audio.value?.[data]()
 				})
 				.on(Bridge.Viewer.Video.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
-					if (data == "toggle") {
-						video.value?.toggle()
-					}
+					video.value?.[data]()
 				})
 		})
 

@@ -39,12 +39,26 @@ export const V = vue.defineComponent({
 			}
 		}
 
+		const ff = () => {
+			if (aud.value) {
+				aud.value.currentTime += 10
+			}
+		}
+
+		const rw = () => {
+			if (aud.value) {
+				aud.value.currentTime -= 10
+			}
+		}
+
 		return {
 			head,
 			prog,
 			aud,
 			src,
 			toggle,
+			ff,
+			rw,
 		}
 	},
 

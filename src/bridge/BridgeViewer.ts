@@ -103,7 +103,7 @@ export namespace Viewer {
 			id: -1
 			data: Data
 		}
-		export type Data = "toggle"
+		export type Data = "toggle" | "ff" | "rw"
 	}
 
 	// browser -> renderer
@@ -114,6 +114,6 @@ export namespace Viewer {
 			id: -1
 			data: Data
 		}
-		export type Data = "toggle"
+		export type Data = "toggle" | "ff" | "rw"
 	}
 }

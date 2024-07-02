@@ -43,12 +43,26 @@ export const V = vue.defineComponent({
 			}
 		}
 
+		const ff = () => {
+			if (vid.value) {
+				vid.value.currentTime += 10
+			}
+		}
+
+		const rw = () => {
+			if (vid.value) {
+				vid.value.currentTime -= 10
+			}
+		}
+
 		return {
 			head,
 			prog,
 			vid,
 			src,
 			toggle,
+			ff,
+			rw,
 		}
 	},
 

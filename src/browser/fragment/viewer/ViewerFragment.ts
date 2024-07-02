@@ -103,6 +103,40 @@ export class ViewerFragment extends AbstractFragment {
 				}
 				return Promise.resolve()
 			})
+			.on("viewer.mediaff", () => {
+				if (this.type == Bridge.Viewer.Type.Audio) {
+					root.send<Bridge.Viewer.Audio.Send>({
+						ch: Bridge.Viewer.Audio.CH,
+						id: -1,
+						data: "ff",
+					})
+				}
+				else if (this.type == Bridge.Viewer.Type.Video) {
+					root.send<Bridge.Viewer.Video.Send>({
+						ch: Bridge.Viewer.Video.CH,
+						id: -1,
+						data: "ff",
+					})
+				}
+				return Promise.resolve()
+			})
+			.on("viewer.mediarw", () => {
+				if (this.type == Bridge.Viewer.Type.Audio) {
+					root.send<Bridge.Viewer.Audio.Send>({
+						ch: Bridge.Viewer.Audio.CH,
+						id: -1,
+						data: "rw",
+					})
+				}
+				else if (this.type == Bridge.Viewer.Type.Video) {
+					root.send<Bridge.Viewer.Video.Send>({
+						ch: Bridge.Viewer.Video.CH,
+						id: -1,
+						data: "rw",
+					})
+				}
+				return Promise.resolve()
+			})
 			.on("viewer.close", () => {
 				this.close()
 				return Promise.resolve()
