@@ -39,7 +39,12 @@ export type Cell = {
 		select: boolean
 		cursor: boolean
 	}
+	pad: Pad
 	attr: Native.Attributes
+}
+
+type Pad = {
+	size: number
 }
 
 export const V = vue.defineComponent({
@@ -74,7 +79,7 @@ export const V = vue.defineComponent({
 				]
 				: [
 					vue.h(back, { back: this.cell.back }),
-					vue.h(attr, { attr: this.cell.attr }),
+					vue.h(attr, { pad: this.cell.pad, attr: this.cell.attr }),
 				],
 		)
 	},
@@ -110,6 +115,10 @@ const spnr = vue.defineComponent({
 
 const attr = vue.defineComponent({
 	props: {
+		pad: {
+			required: true,
+			type: Object as vue.PropType<Pad>,
+		},
 		attr: {
 			required: true,
 			type: Object as vue.PropType<Native.Attributes>,
@@ -215,7 +224,7 @@ const attr = vue.defineComponent({
 			) {
 				return undefined
 			}
-			return props.attr[0]?.size.toLocaleString()
+			return props.attr[0]?.size.toLocaleString().padStart(props.pad.size, " ")
 		})
 
 		const date = vue.computed((): { date: string; time: string } | undefined => {
