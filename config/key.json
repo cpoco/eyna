@@ -36,7 +36,7 @@
 		{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },
 		{ "when": "filer",  "key": "x",                 "cmd": "list.extension", "prm": "list.terminal" },
 
-		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopne"     },
+		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopen"     },
 		{ "when": "filer",  "key": ["alt",   "enter"],  "cmd": "list.shellproperty" },
 
 		{ "when": "modal",  "key": "esc",               "cmd": "modal.cancel" },
@@ -46,6 +46,10 @@
 
 		{ "when": "viewer", "key": ["alt", "up"],       "cmd": "viewer.diffprev" },
 		{ "when": "viewer", "key": ["alt", "down"],     "cmd": "viewer.diffnext" },
+
+		{ "when": "viewer", "key": "space",             "cmd": "viewer.mediatoggle" },
+		{ "when": "viewer", "key": "left",              "cmd": "viewer.mediarw" },
+		{ "when": "viewer", "key": "right",             "cmd": "viewer.mediaff" },
 
 		{ "when": "viewer", "key": "enter",             "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "backspace",         "cmd": "viewer.close" },

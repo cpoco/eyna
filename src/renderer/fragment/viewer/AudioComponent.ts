@@ -28,11 +28,37 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		const toggle = () => {
+			if (aud.value) {
+				if (aud.value.paused) {
+					aud.value.play()
+				}
+				else {
+					aud.value.pause()
+				}
+			}
+		}
+
+		const ff = () => {
+			if (aud.value) {
+				aud.value.currentTime += 10
+			}
+		}
+
+		const rw = () => {
+			if (aud.value) {
+				aud.value.currentTime -= 10
+			}
+		}
+
 		return {
 			head,
 			prog,
 			aud,
 			src,
+			toggle,
+			ff,
+			rw,
 		}
 	},
 

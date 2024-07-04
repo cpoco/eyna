@@ -129,6 +129,13 @@ function _create(count: number) {
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 
+		const size = d.ls.reduce((max, attr) => {
+			if (attr[0]?.file_type == Native.AttributeFileType.File) {
+				return Math.max(max, attr[0]?.size.toLocaleString().length ?? 0)
+			}
+			return max
+		}, 0)
+
 		r.ctop = d.drawIndex
 		r.cell = Util.array<CellComponent.Cell>(
 			0,
@@ -145,6 +152,9 @@ function _create(count: number) {
 					back: {
 						select: s,
 						cursor: c,
+					},
+					pad: {
+						size: size,
 					},
 					attr: vue.markRaw(d.ls?.[k] ?? []),
 				}

@@ -7,7 +7,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 	if (ex.active.wd == ex.target.wd) {
-		await ex.dialog.opne({
+		await ex.dialog.open({
 			type: "alert",
 			title: title,
 			text: "same directory",
@@ -21,7 +21,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		? [ex.active.cursor]
 		: ex.active.select
 
-	const alert = await ex.dialog.opne({
+	const alert = await ex.dialog.open({
 		type: "alert",
 		title: title,
 		text: `${ls.length} files\n${src_base}\n${dst_base}`,

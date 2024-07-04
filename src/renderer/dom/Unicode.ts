@@ -1,22 +1,21 @@
-import * as Util from "@eyna/util"
 import * as vue from "@vue/runtime-dom"
 
 const DSC = "/"
 const LRO = "\u{202D}"
 const RLO = "\u{202E}"
 
+const REG = new RegExp(`(${DSC}|${LRO}|${RLO})`, "u")
+
 export function highlight(str: string | null | undefined, err: boolean = false): vue.VNodeArrayChildren | undefined {
 	if (str == null) {
 		return undefined
 	}
 
-	let ary = [str]
-	ary = Util.split(ary, DSC)
-	ary = Util.split(ary, LRO)
-	ary = Util.split(ary, RLO)
-
 	let ret: vue.VNodeArrayChildren = []
-	for (const s of ary) {
+	for (const s of str.split(REG)) {
+		if (s == "") {
+			continue
+		}
 		if (s == "." || s == "..") {
 			ret.push(vue.h("span", { class: { "c-trv": true } }, s))
 		}
@@ -30,7 +29,7 @@ export function highlight(str: string | null | undefined, err: boolean = false):
 			ret.push(vue.h("span", { class: { "c-rlo": true } }, "[RLO]"))
 		}
 		else {
-			ret.push(s)
+			ret.push(vue.h("span", s))
 		}
 	}
 	return ret

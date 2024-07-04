@@ -456,7 +456,7 @@ export class FilerFragment extends AbstractFragment {
 					}
 				})
 			})
-			.on2("list.shellopne", (active, _target) => {
+			.on2("list.shellopen", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}

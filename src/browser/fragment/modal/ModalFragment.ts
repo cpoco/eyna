@@ -15,7 +15,7 @@ export class ModalFragment extends AbstractFragment {
 		this.command()
 	}
 
-	opne(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
+	open(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
 		Command.manager.whenType = Command.When.Modal
 		root.send<Bridge.Modal.Open.Send>({
 			ch: Bridge.Modal.Open.CH,
