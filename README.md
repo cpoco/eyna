@@ -28,7 +28,7 @@ Windows と Mac で同じファイラーを使いたかったので作りまし�
 - クラウドファイル 判定
   - FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS (Windows)
   - NSURLUbiquitousItemDownloadingStatusNotDownloaded (Mac)
-- Unicode制御文字 対策 (LRO / RLO)
+- 双方向テキスト 対策
 
 ## スクリーンショット
 
