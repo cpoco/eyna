@@ -2,21 +2,16 @@
 // https://github.com/microsoft/TypeScript/blob/main/src/compiler/commandLineParser.ts
 {
 	"include": [
-		"src/*",
+		"src/**/*",
 	],
 
 	"compilerOptions": {
-		// Diagnostics.Language_and_Environment
-		"target": "ES2022",
+		"target": "ESNext",
+		"module": "Preserve",
+		"moduleResolution": "Bundler",
 
-		// Basic
-		// Diagnostics.Modules
-		"module": "nodenext",
-
-		// Basic
-		// Diagnostics.Emit
-		"removeComments": true,
-		"newLine": "LF",
+		"baseUrl": "./",
+		"paths": {},
 
 		// Strict Type Checks
 		// Diagnostics.Type_Checking
@@ -40,15 +35,14 @@
 		"noImplicitOverride": true,
 		"noPropertyAccessFromIndexSignature": true,
 
-		// Advanced
+		// Interop Constraints
 		// Diagnostics.Interop_Constraints
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-
-		// Module Resolution
-		// Diagnostics.Modules
-		"moduleResolution": "nodenext",
-		"baseUrl": ".",
-		"paths": {
-		},
+		// "isolatedDeclarations": true,
+		"isolatedModules": true,
+		"preserveSymlinks": true,
+		"verbatimModuleSyntax": true,
 	}
 }

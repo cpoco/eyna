@@ -1,10 +1,8 @@
 // https://www.typescriptlang.org/tsconfig
 // https://github.com/microsoft/TypeScript/blob/main/src/compiler/commandLineParser.ts
 {
-	"files": [
-		"src/browser/Preload.ts",
-		"src/browser/Main.ts",
-		"src/renderer/Main.ts",
+	"include": [
+		"src/**/*",
 	],
 
 	"compilerOptions": {
@@ -12,7 +10,7 @@
 		"module": "Preserve",
 		"moduleResolution": "Bundler",
 
-		"baseUrl": ".",
+		"baseUrl": "./",
 		"paths": {
 			"@/*": [
 				"src/*",
