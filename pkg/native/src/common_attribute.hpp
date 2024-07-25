@@ -62,7 +62,7 @@ struct _attribute
 	bool readonly = false;
 	bool hidden = false;
 	bool system = false;
-	bool pseudo = false;
+	bool cloud = false;
 
 	// https://docs.microsoft.com/ja-jp/windows/desktop/FileIO/file-attribute-constants
 	unsigned long win_attribute = 0;
@@ -106,7 +106,7 @@ void attribute(_attribute& attribute)
 			attribute.readonly = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_READONLY);
 			attribute.hidden   = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_HIDDEN);
 			attribute.system   = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_SYSTEM);
-			attribute.pseudo   = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+			attribute.cloud    = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
 
 			if (attribute.file_type == FILE_TYPE::FILE_TYPE_LINK) {
 
@@ -234,10 +234,10 @@ void attribute(_attribute& attribute)
 			attribute.hidden = [[dic objectForKey:NSURLIsHiddenKey] boolValue];
 			attribute.system = [[dic objectForKey:NSURLIsSystemImmutableKey] boolValue];
 
-			NSString* pseudo;
-			if ([url getResourceValue:&pseudo forKey:NSURLUbiquitousItemDownloadingStatusKey error:&error]) {
-				if ([pseudo isEqualToString:NSURLUbiquitousItemDownloadingStatusNotDownloaded]) {
-					attribute.pseudo = true;
+			NSString* cloud;
+			if ([url getResourceValue:&cloud forKey:NSURLUbiquitousItemDownloadingStatusKey error:&error]) {
+				if ([cloud isEqualToString:NSURLUbiquitousItemDownloadingStatusNotDownloaded]) {
+					attribute.cloud = true;
 				}
 			}
 
