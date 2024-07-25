@@ -60,6 +60,10 @@ for (const f of ff) {
 {
 	const uni = path.join(wd, "UNICODE")
 	await fs.mkdir(uni)
+	await fs.mkdir(path.join(uni, ".\u{202C}"))
+	await fs.mkdir(path.join(uni, "..\u{202C}"))
+	await fs.mkdir(path.join(uni, ".\u{202C}."))
+	await fs.mkdir(path.join(uni, "..\u{202C}.."))
 	await fs.mkdir(path.join(uni, "123 456 789"))
 	await fs.mkdir(path.join(uni, "\u{061C}123 456 789"))
 	await fs.mkdir(path.join(uni, "\u{200E}123 456 789"))
