@@ -348,7 +348,7 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.File
 					) {
-						if (Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
+						if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Image,
 								mime: [],
@@ -356,7 +356,7 @@ export class FilerFragment extends AbstractFragment {
 								size: [trgt.size],
 							})
 						}
-						else if (Conf.VIEWER_AUDIO_EXT.test(trgt.ext)) {
+						else if (Conf.VIEWER_AUDIO_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Audio,
 								mime: [],
@@ -364,7 +364,7 @@ export class FilerFragment extends AbstractFragment {
 								size: [trgt.size],
 							})
 						}
-						else if (Conf.VIEWER_VIDEO_EXT.test(trgt.ext)) {
+						else if (Conf.VIEWER_VIDEO_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Video,
 								mime: [],
@@ -372,7 +372,7 @@ export class FilerFragment extends AbstractFragment {
 								size: [trgt.size],
 							})
 						}
-						else if (Conf.VIEWER_PDF_EXT.test(trgt.ext)) {
+						else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Embed,
 								mime: ["application/pdf"],
@@ -494,7 +494,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
+					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i
@@ -517,7 +517,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXT.test(trgt.ext)) {
+					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i

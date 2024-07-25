@@ -134,7 +134,7 @@ function _attr(file_type: Native.AttributeFileType, full: string, name: string):
 		rltv: name,
 		name: name,
 		stem: "",
-		ext: "",
+		exte: "",
 		link_type: Native.AttributeLinkType.None,
 		link: "",
 		size: 0n,
@@ -143,7 +143,7 @@ function _attr(file_type: Native.AttributeFileType, full: string, name: string):
 		readonly: false,
 		hidden: false,
 		system: false,
-		pseudo: false,
+		cloud: false,
 	}
 }
 
@@ -184,8 +184,8 @@ function _type(a: Native.Attributes, b: Native.Attributes): number {
 }
 
 function _ext(a: Native.Attributes, b: Native.Attributes): number {
-	let aa: string = a[0]?.ext.toLocaleLowerCase() ?? ""
-	let bb: string = b[0]?.ext.toLocaleLowerCase() ?? ""
+	let aa: string = a[0]?.exte.toLocaleLowerCase() ?? ""
+	let bb: string = b[0]?.exte.toLocaleLowerCase() ?? ""
 	return aa.localeCompare(bb)
 }
 

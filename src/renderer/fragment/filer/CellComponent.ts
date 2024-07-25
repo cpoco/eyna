@@ -217,6 +217,17 @@ const attr = vue.defineComponent({
 			return ret
 		})
 
+		const exte = vue.computed((): string | undefined => {
+			if (
+				is_empty.value
+				|| props.attr[0]?.file_type != Native.AttributeFileType.File
+				|| props.attr[0]?.link_type != Native.AttributeLinkType.None
+			) {
+				return undefined
+			}
+			return props.attr[0]?.exte.replace(/^\./, "")
+		})
+
 		const size = vue.computed((): string | undefined => {
 			if (
 				is_empty.value
@@ -254,6 +265,7 @@ const attr = vue.defineComponent({
 			name,
 			link,
 			trgt,
+			exte,
 			size,
 			date,
 			dragstart,
@@ -288,9 +300,10 @@ const attr = vue.defineComponent({
 							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.pseudo } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.pseudo } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.pseudo } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.attr[0]?.cloud } }, this.exte),
+				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.cloud } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.time),
 			],
 		)
 	},
