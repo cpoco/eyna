@@ -98,6 +98,10 @@ for (const f of ff) {
 	await fs.symlink("../UNICODE/\u{202D}0123456789", path.join(uni, "lr_\u{202D}0123456789"))
 	await fs.symlink("../UNICODE/\u{202E}9876543210", path.join(uni, "lr_\u{202E}9876543210"))
 	await fs.symlink("../UNICODE/\u{202D}01234\u{202E}98765", path.join(uni, "lr_\u{202D}01234\u{202E}98765"))
+	await fs.symlink(".\u{202C}", path.join(uni, "01"))
+	await fs.symlink("..\u{202C}", path.join(uni, "02"))
+	await fs.symlink(".\u{202C}.", path.join(uni, "03"))
+	await fs.symlink("..\u{202C}..", path.join(uni, "04"))
 }
 
 {
