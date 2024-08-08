@@ -9,28 +9,6 @@ import root from "@/renderer/Root"
 
 const TAG = "cell"
 
-type ClassCell =
-	| "filer-cell-attr-file"
-	| "filer-cell-attr-link"
-	| "filer-cell-attr-trgt"
-
-type ClassColor =
-	| "c-operator"
-	| "c-drive"
-	| "c-homeuser"
-	| "c-link"
-	| "c-file"
-	| "c-directory"
-	| "c-shortcut"
-	| "c-bookmark"
-	| "c-special"
-	| "c-warn"
-	| "c-miss"
-
-type Style =
-	& { class: { [key in ClassCell | ClassColor]?: boolean } }
-	& vue.AllowedComponentProps
-
 export type Cell = {
 	style: {
 		top: string
@@ -137,84 +115,72 @@ const attr = vue.defineComponent({
 			return props.attr[0]?.link_type != Native.AttributeLinkType.None
 		})
 
-		const name = vue.computed((): Style => {
-			const ret: Style = { class: { "filer-cell-attr-file": true } }
-
+		const name_class = vue.computed((): string => {
 			const f = props.attr[0]?.file_type
 			if (f == Native.AttributeFileType.File) {
 				const l = props.attr[0]?.link_type
 				if (l == Native.AttributeLinkType.Shortcut) {
-					ret.class["c-shortcut"] = true
+					return "c-shortcut"
 				}
 				else if (l == Native.AttributeLinkType.Bookmark) {
-					ret.class["c-bookmark"] = true
+					return "c-bookmark"
 				}
 				else {
-					ret.class["c-file"] = true
+					return "c-file"
 				}
 			}
 			else if (f == Native.AttributeFileType.Link) {
-				ret.class["c-link"] = true
+				return "c-link"
 			}
 			else if (f == Native.AttributeFileType.Directory) {
-				ret.class["c-directory"] = true
+				return "c-directory"
 			}
 			else if (f == Native.AttributeFileType.Drive) {
-				ret.class["c-drive"] = true
+				return "c-drive"
 			}
 			else if (f == Native.AttributeFileType.HomeUser) {
-				ret.class["c-homeuser"] = true
+				return "c-homeuser"
 			}
 			else if (f == Native.AttributeFileType.Special) {
-				ret.class["c-special"] = true
+				return "c-special"
 			}
 			else {
-				ret.class["c-miss"] = true
+				return "c-miss"
 			}
-
-			return ret
 		})
 
-		const link = vue.computed((): Style => {
-			return { class: { "filer-cell-attr-link": true, "c-operator": true } }
-		})
-
-		const trgt = vue.computed((): Style => {
-			const ret: Style = { class: { "filer-cell-attr-trgt": true } }
-
+		const trgt_class = vue.computed((): string => {
 			const f = props.attr[1]?.file_type
 			if (f == Native.AttributeFileType.File) {
 				const l = props.attr[1]?.link_type
 				if (l == Native.AttributeLinkType.Shortcut) {
-					ret.class["c-shortcut"] = true
+					return "c-shortcut"
 				}
 				else if (l == Native.AttributeLinkType.Bookmark) {
-					ret.class["c-bookmark"] = true
+					return "c-bookmark"
 				}
 				else {
-					ret.class["c-file"] = true
+					return "c-file"
 				}
 			}
 			else if (f == Native.AttributeFileType.Link) {
 				const last = Util.last(props.attr)
 				if (last == null || last.file_type == Native.AttributeFileType.None) {
-					ret.class["c-warn"] = true
+					return "c-warn"
 				}
 				else {
-					ret.class["c-link"] = true
+					return "c-link"
 				}
 			}
 			else if (f == Native.AttributeFileType.Directory) {
-				ret.class["c-directory"] = true
+				return "c-directory"
 			}
 			else if (f == Native.AttributeFileType.Special) {
-				ret.class["c-special"] = true
+				return "c-special"
 			}
 			else {
-				ret.class["c-miss"] = true
+				return "c-miss"
 			}
-
-			return ret
 		})
 
 		const exte = vue.computed((): string | undefined => {
@@ -262,9 +228,8 @@ const attr = vue.defineComponent({
 
 		return {
 			is_link,
-			name,
-			link,
-			trgt,
+			name_class,
+			trgt_class,
 			exte,
 			size,
 			date,
@@ -292,12 +257,24 @@ const attr = vue.defineComponent({
 					{ class: { "filer-cell-attr-name": true } },
 					this.is_link
 						? [
-							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
-							vue.h("span", this.link, Font.Icon.ArrowRight),
-							vue.h("span", this.trgt, Unicode.highlight(this.attr[0]?.link)),
+							vue.h(
+								"span",
+								{ class: { "filer-cell-attr-file": true, [this.name_class]: true } },
+								Unicode.highlight(this.attr[0]?.rltv),
+							),
+							vue.h("span", { class: { "filer-cell-attr-link": true, "c-operator": true } }, Font.Icon.ArrowRight),
+							vue.h(
+								"span",
+								{ class: { "filer-cell-attr-trgt": true, [this.trgt_class]: true } },
+								Unicode.highlight(this.attr[0]?.link),
+							),
 						]
 						: [
-							vue.h("span", this.name, Unicode.highlight(this.attr[0]?.rltv)),
+							vue.h(
+								"span",
+								{ class: { "filer-cell-attr-file": true, [this.name_class]: true } },
+								Unicode.highlight(this.attr[0]?.rltv),
+							),
 						],
 				),
 				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.attr[0]?.cloud } }, this.exte),
