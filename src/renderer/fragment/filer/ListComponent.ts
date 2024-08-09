@@ -62,6 +62,8 @@ export function InitList(): List {
 	}
 }
 
+const DATA = "data"
+
 export const V = vue.defineComponent({
 	props: {
 		i: {
@@ -83,7 +85,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const el = vue.ref<HTMLElement>() // TAG_DATA element
+		const el = vue.useTemplateRef<HTMLElement>(DATA)
 
 		const _mounted = () => {
 			let d: DOMRect = el.value!.getBoundingClientRect()
@@ -125,9 +127,7 @@ export const V = vue.defineComponent({
 
 		window.addEventListener("resize", _resized)
 
-		return {
-			el,
-		}
+		return {}
 	},
 
 	render() {
@@ -180,7 +180,7 @@ export const V = vue.defineComponent({
 			),
 			vue.h(
 				TAG_DATA,
-				{ ref: "el", class: { "filer-data": true } },
+				{ ref: DATA, class: { "filer-data": true } },
 				this.cell.map((cell, i) => {
 					return vue.h(CellComponent.V, { key: this.ctop + i, cell })
 				}),

@@ -19,11 +19,15 @@ type Reactive = {
 
 const TAG = "viewer"
 
+const DIFF = "diff"
+const AUDIO = "audio"
+const VIDEO = "video"
+
 export const V = vue.defineComponent({
 	setup() {
-		const diff = vue.ref<InstanceType<typeof MonacoDiffComponent.V>>()
-		const audio = vue.ref<InstanceType<typeof AudioComponent.V>>()
-		const video = vue.ref<InstanceType<typeof VideoComponent.V>>()
+		const diff = vue.useTemplateRef<InstanceType<typeof MonacoDiffComponent.V>>(DIFF)
+		const audio = vue.useTemplateRef<InstanceType<typeof AudioComponent.V>>(AUDIO)
+		const video = vue.useTemplateRef<InstanceType<typeof VideoComponent.V>>(VIDEO)
 
 		const reactive = vue.reactive<Reactive>({
 			type: null,
@@ -71,9 +75,6 @@ export const V = vue.defineComponent({
 
 		return {
 			reactive,
-			diff,
-			audio,
-			video,
 		}
 	},
 
@@ -97,7 +98,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoDiffComponent.V, {
-					ref: "diff",
+					ref: DIFF,
 					original: this.reactive.path[0] ?? "",
 					modified: this.reactive.path[1] ?? "",
 					original_size: this.reactive.size[0] ?? 0n,
@@ -136,7 +137,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(AudioComponent.V, {
-					ref: "audio",
+					ref: AUDIO,
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -149,7 +150,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(VideoComponent.V, {
-					ref: "video",
+					ref: VIDEO,
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),

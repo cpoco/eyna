@@ -1,5 +1,8 @@
 import * as vue from "@vue/runtime-dom"
 
+const AUD = "aud"
+const SRC = "src"
+
 export const V = vue.defineComponent({
 	props: {
 		path: {
@@ -13,8 +16,8 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const aud = vue.ref<HTMLAudioElement>()
-		const src = vue.ref<HTMLSourceElement>()
+		const aud = vue.useTemplateRef<HTMLAudioElement>(AUD)
+		const src = vue.useTemplateRef<HTMLSourceElement>(SRC)
 
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
@@ -54,8 +57,6 @@ export const V = vue.defineComponent({
 		return {
 			head,
 			prog,
-			aud,
-			src,
 			toggle,
 			ff,
 			rw,
@@ -74,7 +75,7 @@ export const V = vue.defineComponent({
 			),
 			vue.h("div", { class: { "viewer-audio-back": true } }, [
 				vue.h("audio", {
-					ref: "aud",
+					ref: AUD,
 					class: { "viewer-audio-aud": true },
 					autoplay: "",
 					controls: "",
@@ -82,7 +83,7 @@ export const V = vue.defineComponent({
 					loop: "",
 				}, [
 					vue.h("source", {
-						ref: "src",
+						ref: SRC,
 					}, undefined),
 				]),
 			]),

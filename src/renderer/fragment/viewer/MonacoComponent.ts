@@ -4,6 +4,8 @@ import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
 
+const EDIT = "edit"
+
 export const V = vue.defineComponent({
 	props: {
 		path: {
@@ -18,7 +20,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const sys = SystemProvider.inject()
-		const el = vue.ref<HTMLElement>()
+		const edit = vue.useTemplateRef<HTMLElement>(EDIT)
 
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
@@ -34,7 +36,7 @@ export const V = vue.defineComponent({
 				monaco.Uri.file(props.path),
 			)
 			editor = monaco.editor.create(
-				el.value!,
+				edit.value!,
 				{
 					readOnly: true,
 					domReadOnly: true,
@@ -75,7 +77,6 @@ export const V = vue.defineComponent({
 		return {
 			head,
 			prog,
-			el,
 		}
 	},
 
@@ -89,7 +90,7 @@ export const V = vue.defineComponent({
 					? vue.h("div", { class: { "viewer-monaco-prog": true } }, undefined)
 					: undefined,
 			),
-			vue.h("div", { ref: "el", class: { "viewer-monaco-edit": true } }),
+			vue.h("div", { ref: EDIT, class: { "viewer-monaco-edit": true } }),
 		])
 	},
 })

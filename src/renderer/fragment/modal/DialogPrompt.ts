@@ -10,6 +10,8 @@ type Reactive = {
 
 const TAG = "dialog-prompt"
 
+const PR = "pr"
+
 export const V = vue.defineComponent({
 	props: {
 		title: {
@@ -39,7 +41,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const prompt = vue.ref<HTMLElement>()
+		const pr = vue.useTemplateRef<HTMLElement>(PR)
 
 		const reactive = vue.reactive<Reactive>({
 			prompt: [props.text, props.text],
@@ -64,15 +66,14 @@ export const V = vue.defineComponent({
 
 		vue.onMounted(() => {
 			setTimeout(() => {
-				prompt.value!.focus()
+				pr.value!.focus()
 				if (props.start != null && props.end != null) {
-					Selection.text(<Text> prompt.value!.childNodes[0]!, props.start, props.end)
+					Selection.text(<Text> pr.value!.childNodes[0]!, props.start, props.end)
 				}
 			}, FOCUS_DELAY)
 		})
 
 		return {
-			prompt,
 			reactive,
 			keydown,
 			input,
@@ -87,7 +88,7 @@ export const V = vue.defineComponent({
 		}, [
 			vue.h("div", { class: { "modal-title": true } }, this.title),
 			vue.h("div", {
-				ref: "prompt",
+				ref: PR,
 				class: { "modal-prompt": true },
 				contenteditable: "plaintext-only",
 				onInput: this.input,
