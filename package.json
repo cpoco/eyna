@@ -10,7 +10,7 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.4.36",
+		"@vue/runtime-dom": "3.5.0-beta.1",
 		"electron": "31.3.1",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.23.0",
@@ -21,7 +21,7 @@
 		"typescript": "5.5.4"
 	},
 	"overrides": {
-		"glob": "10"
+		"glob": "11"
 	},
 	"scripts": {
 		"q": "node scripts/ql.mjs",
