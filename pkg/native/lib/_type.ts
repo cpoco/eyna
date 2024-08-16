@@ -27,7 +27,7 @@ export type Attribute = {
 
 	name: string
 	stem: string
-	ext: string
+	exte: string
 
 	link_type: AttributeLinkType
 	link: string | null
@@ -39,7 +39,7 @@ export type Attribute = {
 	readonly: boolean
 	hidden: boolean
 	system: boolean
-	pseudo: boolean
+	cloud: boolean
 }
 
 export type Volume = {

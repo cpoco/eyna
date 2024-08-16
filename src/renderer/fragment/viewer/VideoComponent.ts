@@ -1,5 +1,8 @@
 import * as vue from "@vue/runtime-dom"
 
+const VID = "vid"
+const SRC = "src"
+
 export const V = vue.defineComponent({
 	props: {
 		path: {
@@ -13,8 +16,8 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const vid = vue.ref<HTMLVideoElement>()
-		const src = vue.ref<HTMLSourceElement>()
+		const vid = vue.useTemplateRef<HTMLVideoElement>(VID)
+		const src = vue.useTemplateRef<HTMLSourceElement>(SRC)
 
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
@@ -58,8 +61,6 @@ export const V = vue.defineComponent({
 		return {
 			head,
 			prog,
-			vid,
-			src,
 			toggle,
 			ff,
 			rw,
@@ -78,7 +79,7 @@ export const V = vue.defineComponent({
 			),
 			vue.h("div", { class: { "viewer-video-back": true } }, [
 				vue.h("video", {
-					ref: "vid",
+					ref: VID,
 					class: { "viewer-video-vid": true },
 					autoplay: "",
 					controls: "",
@@ -87,7 +88,7 @@ export const V = vue.defineComponent({
 					loop: "",
 				}, [
 					vue.h("source", {
-						ref: "src",
+						ref: SRC,
 					}, undefined),
 				]),
 			]),

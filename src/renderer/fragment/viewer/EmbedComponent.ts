@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+const EMBED = "embed"
+
 export const V = vue.defineComponent({
 	props: {
 		mime: {
@@ -17,7 +19,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const embed = vue.ref<HTMLEmbedElement>()
+		const embed = vue.useTemplateRef<HTMLEmbedElement>(EMBED)
 
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
@@ -35,7 +37,6 @@ export const V = vue.defineComponent({
 		return {
 			head,
 			prog,
-			embed,
 		}
 	},
 
@@ -50,7 +51,7 @@ export const V = vue.defineComponent({
 					: undefined,
 			),
 			vue.h("embed", {
-				ref: "embed",
+				ref: EMBED,
 				class: { "viewer-embed-embed": true },
 			}, undefined),
 		])

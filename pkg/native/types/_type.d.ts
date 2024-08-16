@@ -23,7 +23,7 @@ declare namespace Type {
 		rltv: string
 		name: string
 		stem: string
-		ext: string
+		exte: string
 		link_type: AttributeLinkType
 		link: string | null
 		size: bigint
@@ -32,7 +32,7 @@ declare namespace Type {
 		readonly: boolean
 		hidden: boolean
 		system: boolean
-		pseudo: boolean
+		cloud: boolean
 	}
 	type Volume = {
 		full: string

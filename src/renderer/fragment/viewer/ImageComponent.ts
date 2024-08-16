@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+const IMG = "img"
+
 export const V = vue.defineComponent({
 	props: {
 		path: {
@@ -13,7 +15,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const img = vue.ref<HTMLImageElement>()
+		const img = vue.useTemplateRef<HTMLImageElement>(IMG)
 
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
@@ -44,7 +46,6 @@ export const V = vue.defineComponent({
 		return {
 			head,
 			prog,
-			img,
 		}
 	},
 
@@ -60,7 +61,7 @@ export const V = vue.defineComponent({
 			),
 			vue.h("div", { class: { "viewer-image-back": true } }, [
 				vue.h("img", {
-					ref: "img",
+					ref: IMG,
 					class: { "viewer-image-img": true },
 				}, undefined),
 			]),

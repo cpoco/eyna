@@ -44,7 +44,6 @@
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-		"isolatedDeclarations": true,
 		"isolatedModules": true,
 		"preserveSymlinks": true,
 		"verbatimModuleSyntax": true,

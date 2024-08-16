@@ -14,10 +14,8 @@ const RLI = "\u{2067}"
 const FSI = "\u{2068}"
 const PDI = "\u{2069}"
 
-const REG = new RegExp(
-	`(${DSC}|${ALM}|${LRM}|${RLM}|${LRE}|${RLE}|${PDF}|${LRO}|${RLO}|${LRI}|${RLI}|${FSI}|${PDI})`,
-	"u",
-)
+const REG1 = new RegExp(`(${DSC})`, "u")
+const REG2 = new RegExp(`(${ALM}|${LRM}|${RLM}|${LRE}|${RLE}|${PDF}|${LRO}|${RLO}|${LRI}|${RLI}|${FSI}|${PDI})`, "u")
 
 const MAP: { [s: string]: string } = {
 	[ALM]: "[ALM]",
@@ -40,23 +38,28 @@ export function highlight(str: string | null | undefined, err: boolean = false):
 	}
 
 	let ret: vue.VNodeArrayChildren = []
-	for (const s of str.split(REG)) {
-		if (s == "") {
+	for (const s1 of str.split(REG1)) {
+		if (s1 == "") {
 			continue
 		}
-		if (s == "." || s == "..") {
-			ret.push(vue.h("span", { class: { "c-trv": true } }, s))
+		if (s1 == "." || s1 == "..") {
+			ret.push(vue.h("span", { class: { "c-trv": true } }, s1))
 		}
-		else if (s == DSC) {
-			ret.push(vue.h("span", { class: { "c-dsc": !err, "c-err": err } }, s))
+		else if (s1 == DSC) {
+			ret.push(vue.h("span", { class: { "c-dsc": !err, "c-err": err } }, s1))
 		}
 		else {
-			const ss = MAP[s]
-			if (ss) {
-				ret.push(vue.h("span", { class: { "c-unicode": true } }, ss))
-			}
-			else {
-				ret.push(vue.h("span", s))
+			for (const s2 of s1.split(REG2)) {
+				if (s2 == "") {
+					continue
+				}
+				const ss = MAP[s2]
+				if (ss) {
+					ret.push(vue.h("span", { class: { "c-unicode": true } }, ss))
+				}
+				else {
+					ret.push(vue.h("span", s2))
+				}
 			}
 		}
 	}

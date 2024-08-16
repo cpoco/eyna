@@ -6,10 +6,12 @@ import root from "@/renderer/Root"
 
 const TAG = "system"
 
+const SF = "sf"
+
 export const V = vue.defineComponent({
 	setup() {
-		const el = vue.ref<HTMLElement>()
 		const sys = SystemProvider.inject()
+		const sf = vue.useTemplateRef<HTMLElement>(SF)
 
 		root
 			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
@@ -20,7 +22,7 @@ export const V = vue.defineComponent({
 			})
 
 		const _mounted = () => {
-			let r: DOMRect = el.value!.getBoundingClientRect()
+			let r: DOMRect = sf.value!.getBoundingClientRect()
 			root
 				.invoke<Bridge.System.Dom.Send, Bridge.System.Dom.Result>({
 					ch: "system-dom",
@@ -48,7 +50,6 @@ export const V = vue.defineComponent({
 		})
 
 		return {
-			el,
 			sys: sys.reactive,
 		}
 	},
@@ -56,7 +57,7 @@ export const V = vue.defineComponent({
 	render() {
 		return vue.h(
 			TAG,
-			{ ref: "el", class: { "system-fragment": true } },
+			{ ref: SF, class: { "system-fragment": true } },
 			this.sys.overlay.version ? vue.h(overlay) : undefined,
 		)
 	},

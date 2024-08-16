@@ -10,6 +10,8 @@ type Reactive = {
 
 const TAG = "dialog-find"
 
+const RG = "rg"
+
 export const V = vue.defineComponent({
 	props: {
 		title: {
@@ -35,8 +37,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const rg = vue.ref<HTMLElement>()
-		const dp = vue.ref<HTMLElement>()
+		const rg = vue.useTemplateRef<HTMLElement>(RG)
 
 		const reactive = vue.reactive<Reactive>({
 			rg: [props.rg, props.rg],
@@ -71,8 +72,6 @@ export const V = vue.defineComponent({
 		})
 
 		return {
-			rg,
-			dp,
 			reactive,
 			keydown,
 			input1,
@@ -88,13 +87,12 @@ export const V = vue.defineComponent({
 		}, [
 			vue.h("div", { class: { "modal-title": true } }, this.title),
 			vue.h("div", {
-				ref: "rg",
+				ref: RG,
 				class: { "modal-prompt": true },
 				contenteditable: "plaintext-only",
 				onInput: this.input1,
 			}, this.reactive.rg[1]),
 			vue.h("div", {
-				ref: "dp",
 				class: { "modal-prompt": true },
 				contenteditable: "plaintext-only",
 				onInput: this.input2,

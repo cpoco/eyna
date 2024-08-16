@@ -5,6 +5,8 @@ import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
 const TAG = "dialog-alert"
 
+const EL = "el"
+
 export const V = vue.defineComponent({
 	props: {
 		title: {
@@ -26,7 +28,7 @@ export const V = vue.defineComponent({
 	},
 
 	setup(props) {
-		const el = vue.ref<HTMLElement>()
+		const el = vue.useTemplateRef<HTMLElement>(EL)
 
 		const keydown = (key: KeyboardEvent) => {
 			if (key.isComposing) {
@@ -48,14 +50,13 @@ export const V = vue.defineComponent({
 		})
 
 		return {
-			el,
 			keydown,
 		}
 	},
 
 	render() {
 		return vue.h(TAG, {
-			ref: "el",
+			ref: EL,
 			class: { "modal-dialog": true },
 			tabindex: 0,
 			onKeydown: this.keydown,

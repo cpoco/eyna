@@ -2,6 +2,6 @@
 	"name": "@eyna/util",
 	"private": true,
 	"devDependencies": {
-		"tsx": "4.16.2"
+		"tsx": "4.17.0"
 	}
 }
