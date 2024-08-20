@@ -167,7 +167,6 @@ export class FilerManager {
 
 		let create = perf_hooks.performance.now()
 
-		this.mk.clear()
 		this.data.create = create
 		this.data.elapse = 0
 		this.data.search = true
@@ -210,6 +209,9 @@ export class FilerManager {
 		})
 
 		return new Promise(async (resolve, _reject) => {
+			if (this.dir.pwd != wd) {
+				this.mk.clear()
+			}
 			this.dir.cd(wd)
 			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
 				if (create != this.data.create) {
