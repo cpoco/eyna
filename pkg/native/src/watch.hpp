@@ -46,7 +46,7 @@ public:
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
-		uv_fs_event_start(data->event, &_watch_map::callback, data->path.u8string().c_str(), UV_FS_EVENT_RECURSIVE);
+		uv_fs_event_start(data->event, &_watch_map::callback, data->path.string().c_str(), UV_FS_EVENT_RECURSIVE);
 	}
 
 	void remove(const int32_t _id)
@@ -75,18 +75,18 @@ public:
 			return;
 		}
 
-		std::basic_string<char> u8filename(_filename);
+		std::basic_string<char> filename(_filename);
 		#if _OS_WIN_
-		int depth = std::count(u8filename.cbegin(), u8filename.cend(), '\\');
+		int depth = std::count(filename.cbegin(), filename.cend(), '\\');
 		#elif _OS_MAC_
-		int depth = std::count(u8filename.cbegin(), u8filename.cend(), '/');
+		int depth = std::count(filename.cbegin(), filename.cend(), '/');
 		#endif
 
 		const int argc = 3;
 		v8::Local<v8::Value> argv[argc] = {
 			v8::Number::New(ISOLATE, data->id),
 			v8::Number::New(ISOLATE, depth),
-			to_string(generic_path(data->path / std::filesystem::u8path(u8filename)))
+			to_string(generic_path(data->path / std::filesystem::path(filename)))
 		};
 		data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
 	}

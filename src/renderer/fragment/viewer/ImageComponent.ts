@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+import * as url from "@/renderer/util/url"
+
 const IMG = "img"
 
 export const V = vue.defineComponent({
@@ -28,7 +30,7 @@ export const V = vue.defineComponent({
 					+ ` | ${window.devicePixelRatio}`
 			}
 			vue.nextTick(() => {
-				img.value!.src = `file://${props.path}`
+				img.value!.src = url.fileUrl(props.path)
 			})
 		})
 
@@ -38,7 +40,7 @@ export const V = vue.defineComponent({
 			},
 			(v) => {
 				vue.nextTick(() => {
-					img.value!.src = `file://${v}`
+					img.value!.src = url.fileUrl(v)
 				})
 			},
 		)

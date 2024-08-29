@@ -15,7 +15,7 @@
 						"VCCLCompilerTool": {
 							"ExceptionHandling": "2", # /EHa
 							"AdditionalOptions": [
-								"/std:c++17",
+								"/std:c++20",
 							],
 							"DisableSpecificWarnings": [
 								"4819",
@@ -35,7 +35,7 @@
 					},
 					"xcode_settings": {
 						"MACOSX_DEPLOYMENT_TARGET": "10.15",
-						"CLANG_CXX_LANGUAGE_STANDARD": "c++17",
+						"CLANG_CXX_LANGUAGE_STANDARD": "c++20",
 						"CLANG_CXX_LIBRARY": "libc++",
 						"GCC_ENABLE_CPP_EXCEPTIONS": "YES",
 						"OTHER_CFLAGS": [

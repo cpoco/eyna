@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+import * as url from "@/renderer/util/url"
+
 const AUD = "aud"
 const SRC = "src"
 
@@ -27,7 +29,7 @@ export const V = vue.defineComponent({
 				head.value = `${aud.value!.duration} sec | ${props.size.toLocaleString()} byte`
 			}
 			vue.nextTick(() => {
-				src.value!.src = `file://${props.path}`
+				src.value!.src = url.fileUrl(props.path)
 			})
 		})
 

@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+import * as url from "@/renderer/util/url"
+
 const EMBED = "embed"
 
 export const V = vue.defineComponent({
@@ -30,7 +32,7 @@ export const V = vue.defineComponent({
 			}
 			vue.nextTick(() => {
 				embed.value!.type = props.mime
-				embed.value!.src = `file://${props.path}`
+				embed.value!.src = url.fileUrl(props.path)
 			})
 		})
 

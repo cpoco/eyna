@@ -3,6 +3,7 @@
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import * as url from "@/renderer/util/url"
 
 const EDIT = "edit"
 
@@ -35,6 +36,12 @@ export const V = vue.defineComponent({
 				undefined,
 				monaco.Uri.file(props.path),
 			)
+			model.updateOptions({
+				bracketColorizationOptions: {
+					enabled: false,
+					independentColorPoolPerBracketType: false,
+				},
+			})
 			editor = monaco.editor.create(
 				edit.value!,
 				{
@@ -58,7 +65,7 @@ export const V = vue.defineComponent({
 			editor.setModel(model)
 
 			prog.value = true
-			fetch(`file://${props.path}`)
+			fetch(url.fileUrl(props.path))
 				.then((res) => {
 					return res.text()
 				})
