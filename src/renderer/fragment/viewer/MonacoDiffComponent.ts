@@ -3,6 +3,7 @@
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import * as url from "@/renderer/util/url"
 
 const EDIT = "edit"
 
@@ -76,11 +77,11 @@ export const V = vue.defineComponent({
 
 			prog.value = true
 			Promise.all([
-				fetch(`file://${props.original}`)
+				fetch(url.fileUrl(props.original))
 					.then((res) => {
 						return res.text()
 					}),
-				fetch(`file://${props.modified}`)
+				fetch(url.fileUrl(props.modified))
 					.then((res) => {
 						return res.text()
 					}),

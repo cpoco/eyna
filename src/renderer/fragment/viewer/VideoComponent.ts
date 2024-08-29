@@ -1,5 +1,7 @@
 import * as vue from "@vue/runtime-dom"
 
+import * as url from "@/renderer/util/url"
+
 const VID = "vid"
 const SRC = "src"
 
@@ -31,7 +33,7 @@ export const V = vue.defineComponent({
 					+ ` | ${window.devicePixelRatio}`
 			}
 			vue.nextTick(() => {
-				src.value!.src = `file://${props.path}`
+				src.value!.src = url.fileUrl(props.path)
 			})
 		})
 
