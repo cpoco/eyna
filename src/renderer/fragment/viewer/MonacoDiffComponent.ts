@@ -46,11 +46,23 @@ export const V = vue.defineComponent({
 				undefined,
 				monaco.Uri.file(props.original),
 			)
+			original.updateOptions({
+				bracketColorizationOptions: {
+					enabled: false,
+					independentColorPoolPerBracketType: false,
+				},
+			})
 			modified = monaco.editor.createModel(
 				"",
 				undefined,
 				monaco.Uri.file(props.modified),
 			)
+			modified.updateOptions({
+				bracketColorizationOptions: {
+					enabled: false,
+					independentColorPoolPerBracketType: false,
+				},
+			})
 			editor = monaco.editor.createDiffEditor(
 				edit.value!,
 				{
