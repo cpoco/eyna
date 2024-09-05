@@ -10,8 +10,8 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.5.0",
-		"electron": "32.0.1",
+		"@vue/runtime-dom": "3.5.1",
+		"electron": "32.0.2",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.23.1",
 		"fs-extra": "11.2.0",
