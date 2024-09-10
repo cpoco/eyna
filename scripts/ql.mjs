@@ -1,5 +1,5 @@
-import fse from "fs-extra"
 import child_process from "node:child_process"
+import fs from "node:fs/promises"
 import path from "node:path"
 
 const codeql = process.env["GITHUB_ACTIONS"] == "true"
@@ -11,7 +11,7 @@ const __top = path.join(import.meta.dirname, "..")
 const __db = path.join(__top, "codeql", "db")
 const __out = path.join(__top, "codeql")
 
-await fse.mkdirp(__db)
+await fs.mkdir(__db, { recursive: true })
 
 await new Promise((resolve) => {
 	const cmd = [

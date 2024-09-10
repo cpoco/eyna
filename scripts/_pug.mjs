@@ -1,4 +1,4 @@
-import fse from "fs-extra"
+import fs from "node:fs/promises"
 import path from "node:path"
 import * as pug from "pug"
 
@@ -10,6 +10,6 @@ const file = path.join(__top, "src/app/index.pug")
 const out = path.join(outdir, "index.html")
 
 export async function Build() {
-	await fse.ensureDir(outdir)
-	return fse.writeFile(out, pug.renderFile(file))
+	await fs.mkdir(outdir, { recursive: true })
+	return fs.writeFile(out, pug.renderFile(file))
 }

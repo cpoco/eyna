@@ -1,4 +1,4 @@
-import fse from "fs-extra"
+import fs from "node:fs/promises"
 import path from "node:path"
 import stylus from "stylus"
 
@@ -29,12 +29,12 @@ async function render(str) {
 }
 
 export async function Build() {
-	await fse.ensureDir(outdir)
-	return fse.readFile(file)
+	await fs.mkdir(outdir, { recursive: true })
+	return fs.readFile(file)
 		.then((buff) => {
 			return render(buff.toString())
 		})
 		.then((css) => {
-			return fse.writeFile(out, css)
+			return fs.writeFile(out, css)
 		})
 }

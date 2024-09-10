@@ -1,5 +1,5 @@
 import esbuild from "esbuild"
-import fse from "fs-extra"
+import fs from "node:fs/promises"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
@@ -14,8 +14,8 @@ const base = __top
 
 export async function Node() {
 	const json = module.createRequire(import.meta.url)(path.join(__top, "package.json"))
-	await fse.ensureDir(__build)
-	return fse.writeFile(
+	await fs.mkdir(__build, { recursive: true })
+	return fs.writeFile(
 		path.join(__build, "package.json"),
 		JSON.stringify({
 			name: json.name,
@@ -26,8 +26,8 @@ export async function Node() {
 }
 
 export async function Conf() {
-	await fse.ensureDir(__build)
-	return fse.copy(path.join(__top, "config"), path.join(__build, "config"))
+	await fs.mkdir(__build, { recursive: true })
+	return fs.cp(path.join(__top, "config"), path.join(__build, "config"), { recursive: true })
 }
 
 export async function Check() {
@@ -57,11 +57,8 @@ export async function Check() {
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()
-	await fse.ensureDir(outdir)
-	await fse.copy(
-		path.join(__top, "node_modules/monaco-editor/min/vs"),
-		path.join(outdir, "vs"),
-	)
+	await fs.mkdir(outdir, { recursive: true })
+	await fs.cp(path.join(__top, "node_modules/monaco-editor/min/vs"), path.join(outdir, "vs"), { recursive: true })
 
 	let common = {
 		// define: {
