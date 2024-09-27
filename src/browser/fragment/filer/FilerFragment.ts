@@ -224,7 +224,7 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null)) {
+					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null, false)) {
 						active.scroll()
 						active.sendScan()
 						active.sendAttrAll()
@@ -323,7 +323,7 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type == Native.AttributeFileType.Link
 							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await active.sendChange(attr.full, 0, null, null)) {
+						if (await active.sendChange(attr.full, 0, null, null, false)) {
 							active.scroll()
 							active.sendScan()
 							active.sendAttrAll()
@@ -335,7 +335,7 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.File
 						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await active.sendChange(trgt.full, 0, null, null)) {
+						if (await active.sendChange(trgt.full, 0, null, null, false)) {
 							active.scroll()
 							active.sendScan()
 							active.sendAttrAll()
@@ -398,7 +398,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.updir", (active, _target) => {
 				return new Promise(async (resolve, _reject) => {
-					if (await active.sendChange(Dir.dirname(active.pwd), 0, null, Dir.basename(active.pwd))) {
+					if (await active.sendChange(Dir.dirname(active.pwd), 0, null, Dir.basename(active.pwd), false)) {
 						active.scroll()
 						active.sendScan()
 						active.sendAttrAll()
@@ -408,7 +408,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetequal", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					if (await target.sendChange(active.pwd, 0, null, null)) {
+					if (await target.sendChange(active.pwd, 0, null, null, false)) {
 						target.scroll()
 						target.sendScan()
 						target.sendAttrAll()
@@ -435,7 +435,7 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type == Native.AttributeFileType.Link
 							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await target.sendChange(attr.full, 0, null, null)) {
+						if (await target.sendChange(attr.full, 0, null, null, false)) {
 							target.scroll()
 							target.sendScan()
 							target.sendAttrAll()
@@ -447,7 +447,7 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.File
 						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await target.sendChange(trgt.full, 0, null, null)) {
+						if (await target.sendChange(trgt.full, 0, null, null, false)) {
 							target.scroll()
 							target.sendScan()
 							target.sendAttrAll()

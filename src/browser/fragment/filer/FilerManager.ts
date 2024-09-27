@@ -126,7 +126,7 @@ export class FilerManager {
 
 	update(): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.pwd, 0, null, this.data.cursor)) {
+			if (await this.sendChange(this.pwd, 0, null, this.data.cursor, false)) {
 				this.scroll()
 				this.sendScan()
 				this.sendAttrAll()
@@ -155,7 +155,13 @@ export class FilerManager {
 		this.sc.update()
 	}
 
-	sendChange(wd: string, dp: number, rg: RegExp | null, cursor: number | string | null): Promise<boolean> {
+	sendChange(
+		wd: string,
+		dp: number,
+		rg: RegExp | null,
+		cursor: number | string | null,
+		forceMarkClear: boolean,
+	): Promise<boolean> {
 		const history = Dir.findRltv(this.data.ls, this.data.cursor)
 		if (history) {
 			this.history.set(this.data.wd, history)
@@ -209,7 +215,7 @@ export class FilerManager {
 		})
 
 		return new Promise(async (resolve, _reject) => {
-			if (this.dir.pwd != wd) {
+			if (this.dir.pwd != wd || forceMarkClear) {
 				this.mk.clear()
 			}
 			this.dir.cd(wd)
