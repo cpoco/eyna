@@ -285,6 +285,11 @@ class Root {
 						this.fragment[Index.Modal].cancel()
 					},
 				},
+				util: {
+					home: (...paths: string[]): string  => {
+						return Path.home(...paths)
+					}
+				}
 			}
 
 			const func: (_: typeof args) => Promise<void> = vm.runInNewContext(code, sbox)

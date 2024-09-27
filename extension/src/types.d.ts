@@ -31,6 +31,9 @@ declare type Extension = {
 		open: (option: AlertOption | PromptOption) => Promise<{ text: string } | null>
 		cancel: () => void
 	}
+	util: {
+		home: (...paths: string[]) => string
+	}
 }
 
 type AlertOption = {
