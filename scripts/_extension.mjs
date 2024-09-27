@@ -49,6 +49,7 @@ export async function Build() {
 			path.join(base, "src/fs.rename.ts"),
 			path.join(base, "src/fs.trash.ts"),
 			path.join(base, "src/list.code.ts"),
+			path.join(base, "src/list.fork.ts"),
 			path.join(base, "src/list.terminal.ts"),
 		],
 		packages: "external",

@@ -34,6 +34,7 @@
 		{ "when": "filer",  "key": "v",                 "cmd": "list.diff" },
 		{ "when": "filer",  "key": "b",                 "cmd": "list.hex"  },
 		{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },
+		{ "when": "filer",  "key": "g",                 "cmd": "list.extension", "prm": "list.fork"     },
 		{ "when": "filer",  "key": "x",                 "cmd": "list.extension", "prm": "list.terminal" },
 
 		{ "when": "filer",  "key": ["shift", "enter"],  "cmd": "list.shellopen"     },
