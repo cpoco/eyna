@@ -50,7 +50,7 @@ export class FilerManager {
 			}
 
 			if (this.data.elapse <= 100 && this.data.ls.length <= 100) {
-				await this.update()
+				await this.update(false)
 			}
 			else {
 				this.data.watch = 1
@@ -75,7 +75,7 @@ export class FilerManager {
 		this.sc.contentsSize = contentsSize
 		this.sc.contentsCount = 0
 
-		return this.update()
+		return this.update(false)
 	}
 
 	resized(h: number) {
@@ -124,9 +124,9 @@ export class FilerManager {
 		}
 	}
 
-	update(): Promise<void> {
+	update(forceMarkClear: boolean): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.pwd, 0, null, this.data.cursor, false)) {
+			if (await this.sendChange(this.pwd, 0, null, this.data.cursor, forceMarkClear)) {
 				this.scroll()
 				this.sendScan()
 				this.sendAttrAll()

@@ -70,12 +70,12 @@ export class FilerFragment extends AbstractFragment {
 	}
 
 	update() {
-		this.active.update()
-		this.target.update()
+		this.active.update(true)
+		this.target.update(false)
 		for (const fm of this.core) {
 			if (fm.data.status == Bridge.Status.None) {
 				if (fm.pwd == this.active.pwd || fm.pwd == this.target.pwd) {
-					fm.update()
+					fm.update(false)
 				}
 			}
 		}
@@ -186,7 +186,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.resolve()
 				}
 				return new Promise(async (resolve, _reject) => {
-					await active.update()
+					await active.update(false)
 					resolve()
 				})
 			})
