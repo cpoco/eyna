@@ -287,6 +287,7 @@ class Root {
 				},
 				util: {
 					home: (...paths: string[]): string => {
+						sbox.log("util.home")
 						return Path.home(...paths)
 					},
 				},
