@@ -36,9 +36,11 @@
 		word-break: break-all
 
 	&-prompt
+		height: calc(var(--dynamic-line-height) + 6px)
+		line-height: calc(var(--dynamic-line-height))
 		margin: 4px
 		overflow: hidden
-		padding: 0 4px
+		padding: 2px 4px
 		border: solid 1px rgba(80, 80, 80, 1)
 		&:focus
 			border: solid 1px var(--focus)
