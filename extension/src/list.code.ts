@@ -11,6 +11,6 @@ module.exports = async (ex: Extension): Promise<void> => {
 		spawn("C:/Program Files/Microsoft VS Code/Code.exe", ["-n", full], { detached: true })
 	}
 	else if (platform == "darwin") {
-		spawn("/usr/local/bin/code", ["-n", full])
+		spawn("/usr/local/bin/code", ["-n", full], { detached: true })
 	}
 }
