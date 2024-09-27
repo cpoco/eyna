@@ -286,10 +286,10 @@ class Root {
 					},
 				},
 				util: {
-					home: (...paths: string[]): string  => {
+					home: (...paths: string[]): string => {
 						return Path.home(...paths)
-					}
-				}
+					},
+				},
 			}
 
 			const func: (_: typeof args) => Promise<void> = vm.runInNewContext(code, sbox)
