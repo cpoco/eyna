@@ -8,9 +8,9 @@ module.exports = async (ex: Extension): Promise<void> => {
 	let full = ex.active.cursor[0]!.full
 
 	if (platform == "win32") {
-		spawn("C:/Program Files/Microsoft VS Code/Code.exe", ["-n", full], { detached: true })
+		spawn(ex.util.home("AppData", "Local", "Fork", "Fork.exe"), ["open", full], { detached: true })
 	}
 	else if (platform == "darwin") {
-		spawn("/usr/local/bin/code", ["-n", full], { detached: true })
+		spawn("/usr/local/bin/fork", ["open", full], { detached: true })
 	}
 }

@@ -247,7 +247,7 @@ const attr = vue.defineComponent({
 					{ class: { "filer-cell-attr-icon": true }, draggable: true, onDragstart: this.dragstart },
 					[
 						vue.h("img", {
-							class: { "filer-cell-attr-img": true },
+							class: { "filer-cell-attr-icon-img": true },
 							src: `eyna://icon/${encodeURIComponent(this.attr[0]?.full ?? "")}`,
 						}),
 					],
@@ -259,20 +259,24 @@ const attr = vue.defineComponent({
 						? [
 							vue.h(
 								"span",
-								{ class: { "filer-cell-attr-file": true, [this.name_class]: true } },
+								{ class: { "filer-cell-attr-name-file": true, [this.name_class]: true } },
 								Unicode.highlight(this.attr[0]?.rltv),
 							),
-							vue.h("span", { class: { "filer-cell-attr-link": true, "c-operator": true } }, Font.Icon.ArrowRight),
 							vue.h(
 								"span",
-								{ class: { "filer-cell-attr-trgt": true, [this.trgt_class]: true } },
+								{ class: { "filer-cell-attr-name-link": true, "c-operator": true } },
+								Font.Icon.ArrowRight,
+							),
+							vue.h(
+								"span",
+								{ class: { "filer-cell-attr-name-trgt": true, [this.trgt_class]: true } },
 								Unicode.highlight(this.attr[0]?.link),
 							),
 						]
 						: [
 							vue.h(
 								"span",
-								{ class: { "filer-cell-attr-file": true, [this.name_class]: true } },
+								{ class: { "filer-cell-attr-name-file": true, [this.name_class]: true } },
 								Unicode.highlight(this.attr[0]?.rltv),
 							),
 						],

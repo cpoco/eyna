@@ -1,5 +1,5 @@
 import esbuild from "esbuild"
-import fse from "fs-extra"
+import fs from "node:fs/promises"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 import ts from "typescript"
@@ -38,7 +38,7 @@ export async function Check() {
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()
-	await fse.ensureDir(outdir)
+	await fs.mkdir(outdir, { recursive: true })
 	return esbuild.build({
 		entryPoints: [
 			path.join(base, "src/fs.copy.ts"),
@@ -49,6 +49,7 @@ export async function Build() {
 			path.join(base, "src/fs.rename.ts"),
 			path.join(base, "src/fs.trash.ts"),
 			path.join(base, "src/list.code.ts"),
+			path.join(base, "src/list.fork.ts"),
 			path.join(base, "src/list.terminal.ts"),
 		],
 		packages: "external",

@@ -1,5 +1,5 @@
-import fs from "fs-extra"
 import child_process from "node:child_process"
+import fs from "node:fs/promises"
 import path from "node:path"
 
 if (process.platform == "win32") {
@@ -12,10 +12,8 @@ else {
 	process.exit()
 }
 
-if (fs.existsSync(wd)) {
-	await fs.rm(wd, { recursive: true })
-}
-await fs.mkdirp(wd)
+await fs.rm(wd, { recursive: true, force: true })
+await fs.mkdir(wd, { recursive: true })
 
 const dd = [
 	".でぃれくとり",

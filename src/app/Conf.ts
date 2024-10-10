@@ -1,4 +1,4 @@
-export const NAVBAR_HEIGHT = 28 // _1_settings.styl#_navbar_height
+export const NAVBAR_HEIGHT = 32 // _1_settings.styl#_navbar_height
 export const LIST_COUNT = 3 // 2 〜 any
 
 export const COLOR_FOREGROUND = "#d4d4d4" // _1_settings.styl#_foreground
