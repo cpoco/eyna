@@ -11,7 +11,7 @@
 		"@eyna/native": "*",
 		"@eyna/util": "*",
 		"@vue/runtime-dom": "3.5.12",
-		"electron": "32.2.0",
+		"electron": "33.0.0",
 		"electron-builder": "24.13.3",
 		"esbuild": "0.24.0",
 		"monaco-editor": "0.50.0",
