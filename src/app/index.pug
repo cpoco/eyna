@@ -17,7 +17,7 @@ html
 			content=_default + _script + _style + _img + _font + _connect + _media + _frame + _object
 		)
 		link(rel="stylesheet", href="style.css")
-		script(async="async", type="module", src="renderer.mjs")
-		script(async="async", src="vs/loader.js")
-		script(async="async", src="vs/editor/editor.main.js")
+		script(async, type="module", src="renderer.mjs")
+		script(defer, src="vs/loader.js")
+		script(defer, src="vs/editor/editor.main.js")
 	body
