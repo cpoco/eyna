@@ -19,7 +19,6 @@ declare namespace Native {
 	function move(abstract_src: string, abstract_dst: string): Promise<void>
 	function moveToTrash(abstract: string): Promise<void>
 	function openProperties(abstract: string): boolean
-	function resolve(abstract: string): Promise<Type.Resolves>
 	function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean
 	function unwatch(id: number): boolean
 }

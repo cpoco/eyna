@@ -56,10 +56,6 @@ export function openProperties(abstract: string): boolean {
 	return native.openProperties(abstract)
 }
 
-export function resolve(abstract: string): Promise<Type.Resolves> {
-	return native.resolve(abstract)
-}
-
 export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean {
 	return native.watch(id, abstract, callback)
 }

@@ -62,11 +62,4 @@ export type Item = {
 	rltv: string
 }
 
-export type Resolves = Resolve[]
-
-export type Resolve = {
-	full: string
-	real: string
-}
-
 export type WatchCallback = (id: number, depth: number, abstract: string) => void
