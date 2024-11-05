@@ -7,7 +7,6 @@ on:
 
 # https://github.com/actions/checkout
 # https://github.com/actions/setup-node
-# https://github.com/actions/upload-artifact
 # https://github.com/softprops/action-gh-release
 jobs:
   release:
@@ -23,15 +22,11 @@ jobs:
         with:
           node-version: 22
       - run: |
-          npm ci
+          npm ci --omit=optional
       - run: |
           npm run b -- ${{ matrix.arch }}
       - run: |
           npm run p -- ${{ matrix.arch }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-${{ matrix.arch }}
-          path: dist/*.7z
       - uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.sha }}

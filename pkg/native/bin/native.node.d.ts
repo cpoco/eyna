@@ -18,6 +18,5 @@ export function isElevated(): boolean
 export function move(abstract_src: string, abstract_dst: string): Promise<void>
 export function moveToTrash(abstract: string): Promise<void>
 export function openProperties(abstract: string): boolean
-export function resolve(abstract: string): Promise<Type.Resolves>
 export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean
 export function unwatch(id: number): boolean

@@ -44,6 +44,9 @@
 	typedef std::basic_regex<_char_t>   _regex_t;
 #endif
 
+#define ERROR_INVALID_ARGUMENT V("invalid argument")
+#define ERROR_INVALID_PATH     V("relative or traversal paths are not allowed")
+
 /*
 std::basic_string<char> string_to_char(const _string_t& str)
 {

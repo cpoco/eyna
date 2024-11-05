@@ -38,9 +38,6 @@ export default {
 	openProperties: (abstract) => {
 		return native.openProperties(abstract)
 	},
-	resolve: (abstract) => {
-		return native.resolve(abstract)
-	},
 	watch: (id, abstract, callback) => {
 		return native.watch(id, abstract, callback)
 	},

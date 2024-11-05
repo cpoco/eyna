@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.45",
+	"version": "0.0.46",
 	"private": true,
 	"main": "app/browser.cjs",
 	"workspaces": [
@@ -10,17 +10,18 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.5.11",
-		"electron": "32.2.0",
-		"electron-builder": "24.13.3",
+		"@vue/runtime-dom": "3.5.12",
+		"electron": "33.0.2",
+		"electron-builder": "25.1.8",
 		"esbuild": "0.24.0",
 		"monaco-editor": "0.50.0",
 		"pug": "3.0.3",
-		"stylus": "0.63.0",
+		"stylus": "0.64.0",
 		"typescript": "5.6.3"
 	},
 	"overrides": {
-		"glob": "11"
+		"glob": "11",
+		"node-gyp": "10"
 	},
 	"scripts": {
 		"q": "node scripts/ql.mjs",
