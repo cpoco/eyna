@@ -51,7 +51,7 @@ void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 1 || !info[0]->IsString()) {
-		promise->Reject(CONTEXT, to_string(V("invalid argument")));
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		return;
 	}
 
@@ -62,7 +62,7 @@ void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
 	if (is_relative(work->abst) || is_traversal(work->abst)) {
-		promise->Reject(CONTEXT, to_string(V("relative or traversal paths are not allowed")));
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
