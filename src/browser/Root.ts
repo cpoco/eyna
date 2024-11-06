@@ -258,6 +258,10 @@ class Root {
 						sbox.log("filer.mkfile", { full })
 						return Native.createFile(full)
 					},
+					mkslink: (full_link: string, full_trgt: string): Promise<void> => {
+						sbox.log("filer.mkslink", { full_link, full_trgt })
+						return Native.createSymlink(full_link, full_trgt)
+					},
 					copy: (full_src: string, full_dst: string): Promise<void> => {
 						sbox.log("filer.copy", { src: full_src, dst: full_dst })
 						return Native.copy(full_src, full_dst)

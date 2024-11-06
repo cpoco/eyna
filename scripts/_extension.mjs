@@ -45,6 +45,7 @@ export async function Build() {
 			path.join(base, "src/fs.duplicate.ts"),
 			path.join(base, "src/fs.mkdir.ts"),
 			path.join(base, "src/fs.mkfile.ts"),
+			path.join(base, "src/fs.mkslink.ts"),
 			path.join(base, "src/fs.move.ts"),
 			path.join(base, "src/fs.rename.ts"),
 			path.join(base, "src/fs.trash.ts"),
