@@ -70,7 +70,6 @@ struct _attribute
 	_string_t mac_attribute;
 };
 
-
 void attribute(_attribute& attribute)
 {
 	#if _OS_WIN_

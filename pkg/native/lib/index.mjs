@@ -11,6 +11,9 @@ export default {
 	createFile: (abstract) => {
 		return native.createFile(abstract)
 	},
+	createSymlink: (abstract_link, abstract_trgt) => {
+		return native.createSymlink(abstract_link, abstract_trgt)
+	},
 	exists: (abstract) => {
 		return native.exists(abstract)
 	},

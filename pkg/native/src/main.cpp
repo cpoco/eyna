@@ -2,6 +2,7 @@
 #include "copy.hpp"
 #include "create_directory.hpp"
 #include "create_file.hpp"
+#include "create_symlink.hpp"
 #include "exists.hpp"
 #include "get_attribute.hpp"
 #include "get_directory.hpp"
@@ -31,6 +32,7 @@ void init(v8::Local<v8::Object> exports)
 	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
 	NODE_SET_METHOD(exports, "createFile", create_file);
+	NODE_SET_METHOD(exports, "createSymlink", create_symlink);
 	NODE_SET_METHOD(exports, "exists", exists);
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
 	NODE_SET_METHOD(exports, "getDirectory", get_directory);

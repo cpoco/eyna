@@ -4,6 +4,7 @@ declare namespace Native {
 	function copy(abstract_src: string, abstract_dst: string): Promise<void>
 	function createDirectory(abstract: string): Promise<void>
 	function createFile(abstract: string): Promise<void>
+	function createSymlink(abstract_link: string, abstract_trgt: string): Promise<void>
 	function exists(abstract: string): Promise<boolean>
 	function getAttribute(abstract: string, base?: string): Promise<Type.Attributes>
 	function getDirectory(

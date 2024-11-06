@@ -14,6 +14,10 @@ export function createFile(abstract: string): Promise<void> {
 	return native.createFile(abstract)
 }
 
+export function createSymlink(abstract_link: string, abstract_trgt: string): Promise<void> {
+	return native.createSymlink(abstract_link, abstract_trgt)
+}
+
 export function exists(abstract: string): Promise<boolean> {
 	return native.exists(abstract)
 }
