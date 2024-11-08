@@ -20,10 +20,7 @@
 	--scroll-width: 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
 
-	--filer-info-height: calc(var(--dynamic-line-height) * 2)
 	--filer-stat-height: 2px
-	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
-	--filer-data-height: calc(100% - var(--filer-data-top))
 
 .c-operator
 	color: var(--operator)
@@ -71,27 +68,37 @@
 		width: 100%
 		height: s("calc(100% - %s)", _navbar_height)
 
-		display: flex
-		flex-direction: row
+		display: grid
+		// grid-template: _reactive
 
 	// ListComponent
 	&-list
-		position: relative
-		flex: 1
+		display: grid
+		grid-template: \
+			"path path"   var(--dynamic-line-height) \
+			"info info"   var(--dynamic-line-height) \
+			"stat stat"   var(--filer-stat-height)   \
+			"data scroll" 1fr                        \
+			/ 1fr var(--scroll-width)
+
+	&-path
+		grid-area: path
+		overflow: hidden
 
 	&-info
-		position: absolute
+		grid-area: info
 		overflow: hidden
-		top: 0px
-		width: 100%
-		height: var(--filer-info-height)
 
-	&-dir,
-	&-val
-		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
+	&-path
+	&-info
+		display: flex
+		flex-direction: row
+		flex-wrap: nowrap
+		align-items: center
 		font-size: var(--dynamic-font-size)
 		margin: 0px 4px
+
+	&-info
 		&-icon
 			font-family: icon
 			vertical-align: bottom
@@ -100,11 +107,8 @@
 			margin-right: 12px
 
 	&-stat
-		position: absolute
+		grid-area: stat
 		overflow: hidden
-		top: calc(var(--dynamic-line-height) * 2)
-		width: 100%
-		height: var(--filer-stat-height)
 		background-color: var(--stat-none)
 		&-active
 			background-color: var(--stat-active)
@@ -119,18 +123,14 @@
 		transform-origin: left center
 
 	&-data
-		position: absolute
+		grid-area: data / data / data / scroll
+		position: relative
 		overflow: hidden
-		top: var(--filer-data-top)
-		width: 100%
-		height: var(--filer-data-height)
 
 	&-scroll
-		position: absolute
-		top: var(--filer-data-top)
-		right: 0px
-		width: var(--scroll-width)
-		height: var(--filer-data-height)
+		grid-area: scroll
+		position: relative
+		overflow: hidden
 	&-knob
 		position: absolute
 		// top: _reactive

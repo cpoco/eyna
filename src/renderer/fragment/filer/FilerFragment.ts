@@ -11,6 +11,16 @@ export const V = vue.defineComponent({
 	setup() {
 		const filer = FilerProvider.inject()
 
+		const style = vue.computed<vue.StyleValue>(() => {
+			const row = "1fr"
+			const col = filer.reactive.list.map(() => {
+				return "1fr"
+			}).join(" ")
+			return {
+				gridTemplate: `${row} / ${col}`,
+			}
+		})
+
 		root
 			.on(Bridge.List.Change.CH, (i: number, data: Bridge.List.Change.Data) => {
 				filer.updateChange(i, data)
@@ -36,13 +46,14 @@ export const V = vue.defineComponent({
 
 		return {
 			filer: filer.reactive,
+			style: style,
 		}
 	},
 
 	render() {
 		return vue.h(
 			TAG,
-			{ class: { "filer-fragment": true } },
+			{ class: { "filer-fragment": true }, style: this.style },
 			this.filer.list.map((ls) => {
 				return vue.h(ListComponent.V, {
 					i: ls.i,
