@@ -1,7 +1,0 @@
-_width(width, margin)
-	@media (max-width: width - 1px)
-		min-width: s("calc(%s - %s)", 100%, margin)
-		max-width: s("calc(%s - %s)", 100%, margin)
-	@media (min-width: width)
-		min-width: s("calc(%s - %s)", width, margin)
-		max-width: s("calc(%s - %s)", 100%, margin)
