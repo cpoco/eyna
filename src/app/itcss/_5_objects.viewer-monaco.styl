@@ -2,16 +2,29 @@
 	width: 100%
 	height: 100%
 
+	display: grid
+	grid-template: \
+		"monaco-head" var(--dynamic-line-height) \
+		"monaco-stat" 2px                        \
+		"monaco-main" 1fr                        \
+		/ 1fr
+
 	&-head
-		width: 100%
-		height: var(--viewer-head-height)
-		line-height: var(--viewer-head-height)
-		background-color: var(--background)
+		grid-area: monaco-head
+		overflow: hidden
+
+		display: flex
+		flex-direction: row
+		flex-wrap: nowrap
+		align-items: center
 		margin: 0px 4px
 
+		background-color: var(--background)
+
 	&-stat
-		width: 100%
-		height: var(--viewer-stat-height)
+		grid-area: monaco-stat
+		overflow: hidden
+
 		background-color: var(--stat-active)
 
 	&-prog
@@ -22,9 +35,9 @@
 		transform-origin: left center
 
 	&-edit
-		width: 100%
-		height: var(--viewer-main-height)
-		background-color: var(--background)
+		grid-area: monaco-main
+		overflow: hidden
+		max-width: 100%
+		max-height: 100%
 
-.editor-banner
-	display: none !important
+		background-color: var(--background)

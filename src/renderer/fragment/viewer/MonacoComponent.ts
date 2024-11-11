@@ -57,8 +57,12 @@ export const V = vue.defineComponent({
 					fontSize: sys.reactive.style.fontSize,
 					lineHeight: sys.reactive.style.lineHeight,
 					matchBrackets: "never",
-					wordWrap: "on",
-					wrappingIndent: "same",
+					wordWrap: "off",
+
+					unicodeHighlight: {
+						ambiguousCharacters: false,
+						invisibleCharacters: false,
+					},
 				},
 			)
 			editor.addCommand(monaco.KeyCode.F1, () => {})
