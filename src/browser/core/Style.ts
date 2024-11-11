@@ -1,6 +1,8 @@
+import * as Conf from "@/app/Conf"
+
 export namespace Style {
 	export const Dynamic = {
-		fontSize: 14,
-		lineHeight: 18,
+		fontSize: Conf.FONT_SIZE,
+		lineHeight: Conf.LINE_HEIGHT,
 	}
 }

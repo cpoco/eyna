@@ -1,3 +1,5 @@
+_scroll_width = 6px
+
 :root
 	--ellipsis: _gray
 	--operator: _blue
@@ -17,10 +19,7 @@
 	--cell-cursor: rgba(0, 127, 212, 0.9)
 	--cell-select: rgba(255, 255, 255, 0.1)
 
-	--scroll-width: 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
-
-	--filer-stat-height: 2px
 
 .c-operator
 	color: var(--operator)
@@ -66,7 +65,7 @@
 		overflow: hidden
 
 		display: grid
-		// grid-template: _reactive
+		grid-template: _vue_reactive
 
 	// ListComponent
 	&-list
@@ -74,9 +73,9 @@
 		grid-template: \
 			"path path"   var(--dynamic-line-height) \
 			"info info"   var(--dynamic-line-height) \
-			"stat stat"   var(--filer-stat-height)   \
+			"stat stat"   2px                        \
 			"data scroll" 1fr                        \
-			/ 1fr var(--scroll-width)
+			/ 1fr _scroll_width
 
 	&-path
 		grid-area: path
@@ -129,15 +128,15 @@
 		overflow: hidden
 	&-knob
 		position: absolute
-		// top: _reactive
+		top: _vue_reactive
 		width: 100%
-		// height: _reactive
+		height: _vue_reactive
 		background-color: var(--scroll-knob)
 	
 	// CellComponent
 	&-cell
 		position: absolute
-		// top: _reactive
+		top: _vue_reactive
 		width: 100%
 		min-width: 300px
 		height: var(--dynamic-line-height)
@@ -174,10 +173,14 @@
 			height: var(--dynamic-line-height)
 			line-height: var(--dynamic-line-height)
 
+			> :first-child
+				margin-left: 4px
+			> :last-child
+				margin-right: _scroll_width
+
 			&-icon
 				width: var(--dynamic-line-height)
 				height: var(--dynamic-line-height)
-				margin-left: 4px
 
 				&-img
 					width: var(--dynamic-line-height)
@@ -190,21 +193,17 @@
 				flex: 1
 
 				&-file
+				&-link
+				&-trgt
 					margin-left: 2px
 
 				&-link
 					font-family: icon
 					vertical-align: bottom
-					margin-left: 2px
 
-				&-trgt
-					margin-left: 2px
-
-			&-exte,
-			&-size,
+			&-exte
+			&-size
 			&-date
-				margin-left: 6px
-
 			&-time
 				margin-left: 6px
-				margin-right: var(--scroll-width)
+
