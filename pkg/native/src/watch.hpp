@@ -46,7 +46,7 @@ public:
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
-		uv_fs_event_start(data->event, &_watch_map::callback, data->path.string().c_str(), UV_FS_EVENT_RECURSIVE);
+		uv_fs_event_start(data->event, &_watch_map::callback, (const char*)data->path.u8string().c_str(), UV_FS_EVENT_RECURSIVE);
 	}
 
 	void remove(const int32_t _id)
