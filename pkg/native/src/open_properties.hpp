@@ -12,7 +12,7 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	std::filesystem::path abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	std::filesystem::path abst = generic_path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
 	if (is_relative(abst) || is_traversal(abst)) {
 		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;

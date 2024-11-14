@@ -141,14 +141,14 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->abst = generic_path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
 	if (is_relative(work->abst) || is_traversal(work->abst)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
 
-	work->base = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	work->base = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
 	if (!work->base.empty() && (is_relative(work->base) || is_traversal(work->base))) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;

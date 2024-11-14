@@ -86,14 +86,14 @@ void create_symlink(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->link = generic_path(std::filesystem::path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked())));
+	work->link = generic_path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
 	if (is_relative(work->link) || is_traversal(work->link)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
 
-	work->trgt = generic_path(std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked())));
+	work->trgt = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
 	if (is_relative(work->trgt) || is_traversal(work->trgt)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;

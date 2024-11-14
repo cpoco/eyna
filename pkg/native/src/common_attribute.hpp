@@ -181,7 +181,7 @@ void attribute(_attribute& attribute)
 					int len = wcslen(out);
 					if (0 < len) {
 						attribute.link_type = LINK_TYPE::LINK_TYPE_SHORTCUT;
-						attribute.link = generic_path(std::filesystem::path(_string_t(out, len)));
+						attribute.link = generic_path(_string_t(out, len));
 					}
 				}
 			}

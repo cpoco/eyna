@@ -42,7 +42,7 @@ public:
 		data->event = new uv_fs_event_t();
 		data->event->data = data;
 		data->id = _id;
-		data->path = generic_path(std::filesystem::path(_path));
+		data->path = generic_path(_path);
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
