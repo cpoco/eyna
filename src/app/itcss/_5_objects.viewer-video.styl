@@ -2,16 +2,29 @@
 	width: 100%
 	height: 100%
 
+	display: grid
+	grid-template: \
+		"image-head" var(--dynamic-line-height) \
+		"image-stat" 2px                        \
+		"image-main" 1fr                        \
+		/ 1fr
+
 	&-head
-		width: 100%
-		height: var(--viewer-head-height)
-		line-height: var(--viewer-head-height)
-		background-color: var(--background)
+		grid-area: image-head
+		overflow: hidden
+
+		display: flex
+		flex-direction: row
+		flex-wrap: nowrap
+		align-items: center
 		margin: 0px 4px
 
+		background-color: var(--background)
+
 	&-stat
-		width: 100%
-		height: var(--viewer-stat-height)
+		grid-area: image-stat
+		overflow: hidden
+
 		background-color: var(--stat-active)
 
 	&-prog
@@ -22,13 +35,12 @@
 		transform-origin: left center
 
 	&-back
-		width: 100%
-		height: var(--viewer-main-height)
+		grid-area: image-main
+		overflow: hidden
 
-		display: flex
-		flex-direction: column
-		justify-content: center
-		align-items: center
+		display: grid
+		grid-template-rows: minmax(8px, 1fr) auto minmax(8px, 1fr)
+		grid-template-columns: minmax(8px, 1fr) auto minmax(8px, 1fr)
 
 		background-color: var(--background)
 		background-image:
@@ -38,5 +50,24 @@
 		background-size: 16px 16px
 
 	&-vid
+		grid-area: 2 / 2
+		overflow hidden
 		max-width: 100%
 		max-height: 100%
+
+	&-line-l
+		grid-area: 1 / 1 / -1 / 2
+		overflow hidden
+		border-right: 1px solid rgba(128, 128, 128, 0.5)
+	&-line-r
+		grid-area: 1 / -2 / -1 / -1
+		overflow hidden
+		border-left: 1px solid rgba(128, 128, 128, 0.5)
+	&-line-t
+		grid-area: 1 / 1 / 2 / -1
+		overflow hidden
+		border-bottom: 1px solid rgba(128, 128, 128, 0.5)
+	&-line-b
+		grid-area: -2 / 1 / -1 / -1
+		overflow hidden
+		border-top: 1px solid rgba(128, 128, 128, 0.5)

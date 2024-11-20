@@ -5,7 +5,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
-	let full = ex.active.cursor[0]!.full
+	const full = ex.active.cursor[0]!.full
 
 	if (platform == "win32") {
 		spawn("C:/Program Files/Microsoft VS Code/Code.exe", ["-n", full], { detached: true })

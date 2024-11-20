@@ -93,6 +93,10 @@ export const V = vue.defineComponent({
 						ref: SRC,
 					}, undefined),
 				]),
+				vue.h("div", { class: { "viewer-video-line-l": true } }),
+				vue.h("div", { class: { "viewer-video-line-r": true } }),
+				vue.h("div", { class: { "viewer-video-line-t": true } }),
+				vue.h("div", { class: { "viewer-video-line-b": true } }),
 			]),
 		])
 	},

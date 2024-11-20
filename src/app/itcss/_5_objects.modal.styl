@@ -1,22 +1,27 @@
 .modal
 	&-fragment
-		position: absolute
+		grid-area: client
 		overflow: hidden
-		top: _navbar_height
-		width: 100%
-		height: s("calc(100% - %s)", _navbar_height)
 
-		display: flex
-		flex-direction: column
-		justify-content: start
-		align-items: center
+		display: grid
+		grid-template-rows: 24px auto 1fr
+		grid-template-columns: 12px auto 12px
+
 		background-color: rgba(0, 0, 0, 0.75)
 
 	&-dialog
-		flex: none
-		margin-top: 24px
+		grid-area: 2 / 2
+		overflow hidden
+		place-self: center
+
+		@media (max-width: 600px + 24px - 1px)
+			min-width: 100%
+			max-width: 100%
+		@media (min-width: 600px + 24px)
+			min-width: 600px
+			max-width: 100%
+
 		padding: 8px
-		_width(600px, 24px)
 		background-color: rgba(40, 40, 40, 1)
 		border: solid 1px rgba(40, 40, 40, 1)
 		&:focus

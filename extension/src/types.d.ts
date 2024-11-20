@@ -23,6 +23,7 @@ declare type Extension = {
 		trash: (full: string) => Promise<void>
 		mkdir: (full: string) => Promise<void>
 		mkfile: (full: string) => Promise<void>
+		mkslink: (full_link: string, full_trgt: string) => Promise<void>
 		copy: (full_src: string, full_dst: string) => Promise<void>
 		move: (full_src: string, full_dst: string) => Promise<void>
 		find: (full: string, base: string) => Promise<Directory>

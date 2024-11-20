@@ -1,3 +1,5 @@
+_scroll_width = 6px
+
 :root
 	--ellipsis: _gray
 	--operator: _blue
@@ -17,13 +19,7 @@
 	--cell-cursor: rgba(0, 127, 212, 0.9)
 	--cell-select: rgba(255, 255, 255, 0.1)
 
-	--scroll-width: 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
-
-	--filer-info-height: calc(var(--dynamic-line-height) * 2)
-	--filer-stat-height: 2px
-	--filer-data-top: calc(var(--filer-info-height) + var(--filer-stat-height))
-	--filer-data-height: calc(100% - var(--filer-data-top))
 
 .c-operator
 	color: var(--operator)
@@ -65,33 +61,39 @@
 // FilerFragment
 .filer
 	&-fragment
-		position: absolute
+		grid-area: client
 		overflow: hidden
-		top: _navbar_height
-		width: 100%
-		height: s("calc(100% - %s)", _navbar_height)
 
-		display: flex
-		flex-direction: row
+		display: grid
+		grid-template: _vue_reactive
 
 	// ListComponent
 	&-list
-		position: relative
-		flex: 1
+		display: grid
+		grid-template: \
+			"path path"   var(--dynamic-line-height) \
+			"info info"   var(--dynamic-line-height) \
+			"stat stat"   2px                        \
+			"data scroll" 1fr                        \
+			/ 1fr _scroll_width
+
+	&-path
+		grid-area: path
+		overflow: hidden
 
 	&-info
-		position: absolute
+		grid-area: info
 		overflow: hidden
-		top: 0px
-		width: 100%
-		height: var(--filer-info-height)
 
-	&-dir,
-	&-val
-		height: var(--dynamic-line-height)
-		line-height: var(--dynamic-line-height)
-		font-size: var(--dynamic-font-size)
+	&-path
+	&-info
+		display: flex
+		flex-direction: row
+		flex-wrap: nowrap
+		align-items: center
 		margin: 0px 4px
+
+	&-info
 		&-icon
 			font-family: icon
 			vertical-align: bottom
@@ -100,11 +102,8 @@
 			margin-right: 12px
 
 	&-stat
-		position: absolute
+		grid-area: stat
 		overflow: hidden
-		top: calc(var(--dynamic-line-height) * 2)
-		width: 100%
-		height: var(--filer-stat-height)
 		background-color: var(--stat-none)
 		&-active
 			background-color: var(--stat-active)
@@ -119,29 +118,25 @@
 		transform-origin: left center
 
 	&-data
-		position: absolute
+		grid-area: data / data / data / scroll
+		position: relative
 		overflow: hidden
-		top: var(--filer-data-top)
-		width: 100%
-		height: var(--filer-data-height)
 
 	&-scroll
-		position: absolute
-		top: var(--filer-data-top)
-		right: 0px
-		width: var(--scroll-width)
-		height: var(--filer-data-height)
+		grid-area: scroll
+		position: relative
+		overflow: hidden
 	&-knob
 		position: absolute
-		// top: _reactive
+		top: _vue_reactive
 		width: 100%
-		// height: _reactive
+		height: _vue_reactive
 		background-color: var(--scroll-knob)
 	
 	// CellComponent
 	&-cell
 		position: absolute
-		// top: _reactive
+		top: _vue_reactive
 		width: 100%
 		min-width: 300px
 		height: var(--dynamic-line-height)
@@ -178,42 +173,37 @@
 			height: var(--dynamic-line-height)
 			line-height: var(--dynamic-line-height)
 
+			> :first-child
+				margin-left: 4px
+			> :last-child
+				margin-right: _scroll_width
+
 			&-icon
 				width: var(--dynamic-line-height)
 				height: var(--dynamic-line-height)
-				margin-left: 4px
 
 				&-img
 					width: var(--dynamic-line-height)
 					height: var(--dynamic-line-height)
 
 			&-name
-				font-size: var(--dynamic-font-size)
 				overflow: hidden
 				color: var(--ellipsis)
 				text-overflow: ellipsis
 				flex: 1
 
 				&-file
-					font-size: var(--dynamic-font-size)
+				&-link
+				&-trgt
 					margin-left: 2px
 
 				&-link
 					font-family: icon
 					vertical-align: bottom
-					margin-left: 2px
 
-				&-trgt
-					font-size: var(--dynamic-font-size)
-					margin-left: 2px
-
-			&-exte,
-			&-size,
+			&-exte
+			&-size
 			&-date
-				font-size: var(--dynamic-font-size)
+			&-time
 				margin-left: 6px
 
-			&-time
-				font-size: var(--dynamic-font-size)
-				margin-left: 6px
-				margin-right: var(--scroll-width)

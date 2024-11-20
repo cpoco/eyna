@@ -79,6 +79,11 @@ export const V = vue.defineComponent({
 					lineHeight: sys.reactive.style.lineHeight,
 					matchBrackets: "never",
 					wordWrap: "off",
+
+					unicodeHighlight: {
+						ambiguousCharacters: false,
+						invisibleCharacters: false,
+					},
 				},
 			)
 			editor.addCommand(monaco.KeyCode.F1, () => {})

@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.46",
+	"version": "0.0.47",
 	"private": true,
 	"main": "app/browser.cjs",
 	"workspaces": [
@@ -10,8 +10,8 @@
 	"devDependencies": {
 		"@eyna/native": "*",
 		"@eyna/util": "*",
-		"@vue/runtime-dom": "3.5.12",
-		"electron": "33.0.2",
+		"@vue/runtime-dom": "3.5.13",
+		"electron": "33.2.0",
 		"electron-builder": "25.1.8",
 		"esbuild": "0.24.0",
 		"monaco-editor": "0.50.0",

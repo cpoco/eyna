@@ -24,6 +24,7 @@
 
 		{ "when": "filer",  "key": "k",                 "cmd": "list.extension", "prm": "fs.mkdir"     },
 		{ "when": "filer",  "key": "n",                 "cmd": "list.extension", "prm": "fs.mkfile"    },
+		{ "when": "filer",  "key": "l",                 "cmd": "list.extension", "prm": "fs.mkslink"   },
 		{ "when": "filer",  "key": "d",                 "cmd": "list.extension", "prm": "fs.trash"     },
 		{ "when": "filer",  "key": "c",                 "cmd": "list.extension", "prm": "fs.copy"      },
 		{ "when": "filer",  "key": "w",                 "cmd": "list.extension", "prm": "fs.duplicate" },

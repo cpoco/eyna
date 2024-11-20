@@ -1,13 +1,14 @@
 import { join } from "node:path/posix"
 
-const title = "mkdir"
+const title = "mkslink"
 
 module.exports = async (ex: Extension): Promise<void> => {
-	if (ex.active == null) {
+	if (ex.active == null || ex.active.cursor == null) {
 		return
 	}
+	const full = ex.active.cursor[0]!.full
 
-	const text = "new directory"
+	const text = "new link"
 
 	const prompt = await ex.dialog.open({
 		type: "prompt",
@@ -20,9 +21,9 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	const full = join(ex.active.wd, prompt.text)
+	const link = join(ex.active.wd, prompt.text)
 
-	if (await ex.filer.exists(full)) {
+	if (await ex.filer.exists(link)) {
 		await ex.dialog.open({
 			type: "alert",
 			title: title,
@@ -31,7 +32,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	await ex.filer.mkdir(full)
+	await ex.filer.mkslink(link, full)
 
 	ex.filer.update()
 }

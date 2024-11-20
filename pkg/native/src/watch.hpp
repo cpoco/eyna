@@ -42,11 +42,11 @@ public:
 		data->event = new uv_fs_event_t();
 		data->event->data = data;
 		data->id = _id;
-		data->path = generic_path(std::filesystem::path(_path));
+		data->path = generic_path(_path);
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
-		uv_fs_event_start(data->event, &_watch_map::callback, data->path.string().c_str(), UV_FS_EVENT_RECURSIVE);
+		uv_fs_event_start(data->event, &_watch_map::callback, (const char*)data->path.u8string().c_str(), UV_FS_EVENT_RECURSIVE);
 	}
 
 	void remove(const int32_t _id)

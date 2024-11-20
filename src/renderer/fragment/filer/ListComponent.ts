@@ -10,6 +10,7 @@ import root from "@/renderer/Root"
 
 const TAG = "list"
 
+const TAG_PATH = "path"
 const TAG_INFO = "info"
 const TAG_STAT = "stat"
 const TAG_DATA = "data"
@@ -134,37 +135,35 @@ export const V = vue.defineComponent({
 		const err = this.list.st[0]?.file_type == Native.AttributeFileType.None
 
 		return vue.h(TAG, { class: { "filer-list": true } }, [
-			vue.h(TAG_INFO, { class: { "filer-info": true } }, [
-				vue.h(
-					"div",
-					{ class: { "filer-dir": true } },
-					Unicode.highlight(this.list.wd, err),
-				),
-				vue.h(
-					"div",
-					{ class: { "filer-val": true } },
-					this.list.info.show
-						? [
-							vue.h(
-								"span",
-								{ class: { "filer-val-icon": true } },
-								this.list.info.sync
-									? Font.Icon.Sync
-									: Font.Icon.SyncIgnored,
-							),
-							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.mark}/${this.list.info.total}`),
-							vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.History),
-							vue.h("span", { class: { "filer-val-text": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
-							...(0 < this.list.info.error
-								? [
-									vue.h("span", { class: { "filer-val-icon": true } }, Font.Icon.CircleSlash),
-									vue.h("span", { class: { "filer-val-text": true } }, this.list.info.error),
-								]
-								: []),
-						]
-						: undefined,
-				),
-			]),
+			vue.h(
+				TAG_PATH,
+				{ class: { "filer-path": true } },
+				Unicode.highlight(this.list.wd, err),
+			),
+			vue.h(
+				TAG_INFO,
+				{ class: { "filer-info": true } },
+				this.list.info.show
+					? [
+						vue.h(
+							"span",
+							{ class: { "filer-info-icon": true } },
+							this.list.info.sync
+								? Font.Icon.Sync
+								: Font.Icon.SyncIgnored,
+						),
+						vue.h("span", { class: { "filer-info-text": true } }, `${this.list.info.mark}/${this.list.info.total}`),
+						vue.h("span", { class: { "filer-info-icon": true } }, Font.Icon.History),
+						vue.h("span", { class: { "filer-info-text": true } }, `${this.list.info.elapse.toFixed(0)}ms`),
+						...(0 < this.list.info.error
+							? [
+								vue.h("span", { class: { "filer-info-icon": true } }, Font.Icon.CircleSlash),
+								vue.h("span", { class: { "filer-info-text": true } }, this.list.info.error),
+							]
+							: []),
+					]
+					: undefined,
+			),
 			vue.h(
 				TAG_STAT,
 				{

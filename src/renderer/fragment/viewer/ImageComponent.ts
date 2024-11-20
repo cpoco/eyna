@@ -66,6 +66,10 @@ export const V = vue.defineComponent({
 					ref: IMG,
 					class: { "viewer-image-img": true },
 				}, undefined),
+				vue.h("div", { class: { "viewer-image-line-l": true } }),
+				vue.h("div", { class: { "viewer-image-line-r": true } }),
+				vue.h("div", { class: { "viewer-image-line-t": true } }),
+				vue.h("div", { class: { "viewer-image-line-b": true } }),
 			]),
 		])
 	},
