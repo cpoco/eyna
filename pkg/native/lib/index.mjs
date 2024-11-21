@@ -26,6 +26,9 @@ export default {
 	getIcon: (abstract) => {
 		return native.getIcon(abstract)
 	},
+	getPathAttribute: (abstract) => {
+		return native.getPathAttribute(abstract)
+	},
 	getVolume: () => {
 		return native.getVolume()
 	},
