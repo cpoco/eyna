@@ -46,6 +46,7 @@
 
 #define ERROR_INVALID_ARGUMENT V("invalid argument")
 #define ERROR_INVALID_PATH     V("relative or traversal paths are not allowed")
+#define ERROR_FAILED           V("failed")
 
 /*
 std::basic_string<char> string_to_char(const _string_t& str)
