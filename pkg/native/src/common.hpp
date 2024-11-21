@@ -49,27 +49,13 @@
 #define ERROR_FAILED           V("failed")
 
 /*
-std::basic_string<char> string_to_char(const _string_t& str)
+#include <stdio.h>
+void _println(const _string_t& str)
 {
 	#if _OS_WIN_
-		int len = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0, NULL, NULL);
-		std::basic_string<char> buff(len, '\0');
-		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len, NULL, NULL);
-		return buff;
+		_putws(str.c_str());
 	#elif _OS_MAC_
-		return str;
-	#endif
-}
-
-_string_t char_to_string(const std::basic_string<char>& str)
-{
-	#if _OS_WIN_
-		int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), nullptr, 0);
-		std::basic_string<wchar_t> buff(len, '\0');
-		MultiByteToWideChar(CP_UTF8, 0, str.c_str(), str.length(), &buff[0], len);
-		return buff;
-	#elif _OS_MAC_
-		return str;
+		puts(str.c_str());
 	#endif
 }
 */
