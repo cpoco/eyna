@@ -39,9 +39,11 @@ const main = async () => {
 		assert(d.full == root)
 		assert(d.base == "")
 		assert(0 < d.list.length)
+		assert(d.list.length == d.d + d.f)
+		assert(d.e == 0)
 
 		const a = await native.getAttribute(root)
-		assert(0 < a.length)
+		assert(a.length == 1)
 		assert(a[0].file_type == 1)
 		assert(a[0].full == root)
 		assert(a[0].base == "")
@@ -80,6 +82,7 @@ const main = async () => {
 	{
 		const a1 = await native.getAttribute(wd)
 		const a2 = await native.getAttribute(wd + "/")
+		assert(a1.length == 1)
 		assert(a1[0].file_type == 1)
 		assert(a1[0].full == wd)
 		assert(a1[0].base == "")
@@ -89,6 +92,7 @@ const main = async () => {
 		assert(a1[0].exte == "")
 		assert(a1[0].link_type == 0)
 		assert(a1[0].link == null)
+		assert(a1.length       == a2.length)
 		assert(a1[0].file_type == a2[0].file_type)
 		assert(a1[0].full      == a2[0].full)
 		assert(a1[0].base      == a2[0].base)
@@ -101,35 +105,53 @@ const main = async () => {
 	}
 
 	{
-		const p = wd + "/LINK/la_self_0"
-		const l = await native.getAttribute(p)
+		const full = wd + "/LINK/la_self_0"
+		const link = wd + "/LINK"
+		const l = await native.getAttribute(full)
 		assert(l.length == 2)
 		assert(l[0].file_type == 2)
-		assert(l[0].full == p)
+		assert(l[0].full == full)
 		assert(l[0].base == "")
-		assert(l[0].rltv == p)
+		assert(l[0].rltv == full)
 		assert(l[0].name == "la_self_0")
 		assert(l[0].stem == "la_self_0")
 		assert(l[0].exte == "")
 		assert(l[0].link_type == 1)
-		assert(l[0].link == wd + "/LINK")
+		assert(l[0].link == link)
+		assert(l[1].file_type == 1)
+		assert(l[1].full == link)
+		assert(l[1].base == "")
+		assert(l[1].rltv == link)
+		assert(l[1].name == "LINK")
+		assert(l[1].stem == "LINK")
+		assert(l[1].exte == "")
+		assert(l[1].link_type == 0)
+		assert(l[1].link == null)
 	}
 
 	for (const abst of [root, wd, wd + "/"]) {
 		for (const base of ["", root, wd, wd + "/", path.join(wd, ".."), path.join(wd, "..") + "/"]) {
 			const a = await native.getAttribute(abst, base)
 			const d = await native.getDirectory(abst, base)
-			assert(0 < a.length)
-			assert(0 < d.list.length)
-			assert(d.e == 0)
+
 			assert(a[0].full == d.full)
 			assert(a[0].base == d.base)
+
+			assert(a.length == 1)
+			assert(a[0].file_type == 1)
+			assert(a[0].exte == "")
+			assert(a[0].link_type == 0)
+			assert(a[0].link == null)
 			if (base == "") {
 				assert(a[0].full == a[0].rltv)
 			}
 			if (abst == base) {
 				assert(a[0].rltv == ".")
 			}
+
+			assert(0 < d.list.length)
+			assert(d.list.length == d.d + d.f)
+			assert(d.e == 0)
 		}
 	}
 
