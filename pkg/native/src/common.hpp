@@ -97,6 +97,16 @@ bool is_traversal(const std::filesystem::path& path)
 	return false;
 }
 
+/*
+// _OS_WIN_
+_putws(generic_path(V("C:/path/dir")).c_str());     // C:/path/dir
+_putws(generic_path(V("C:/path/dir/")).c_str());    // C:/path/dir
+_putws(generic_path(V("C:\\path\\dir")).c_str());   // C:/path/dir
+_putws(generic_path(V("C:\\path\\dir\\")).c_str()); // C:/path/dir
+// _OS_MAC_
+puts(generic_path(V("/path/dir")).c_str());         // /path/dir
+puts(generic_path(V("/path/dir/")).c_str());        // /path/dir
+*/
 std::filesystem::path generic_path(const std::filesystem::path& path, const bool normalize = false)
 {
 	std::filesystem::path p(normalize
