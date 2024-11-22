@@ -27,7 +27,7 @@ public:
 		}
 	}
 
-	void add(const int32_t _id, const _string_t& _path, const v8::Local<v8::Function>& _callback)
+	void add(const int32_t _id, const std::filesystem::path& _path, const v8::Local<v8::Function>& _callback)
 	{
 		if (map.count(_id) != 0) {
 			remove(_id);
@@ -42,7 +42,7 @@ public:
 		data->event = new uv_fs_event_t();
 		data->event->data = data;
 		data->id = _id;
-		data->path = generic_path(_path);
+		data->path = _path;
 		data->callback.Reset(ISOLATE, _callback);
 	
 		uv_fs_event_init(uv_default_loop(), data->event);
@@ -86,7 +86,7 @@ public:
 		v8::Local<v8::Value> argv[argc] = {
 			v8::Number::New(ISOLATE, data->id),
 			v8::Number::New(ISOLATE, depth),
-			to_string(generic_path(data->path / std::filesystem::path(filename)))
+			to_string(generic_path(data->path / filename))
 		};
 		data->callback.Get(ISOLATE)->Call(CONTEXT, v8::Undefined(ISOLATE), argc, argv);
 	}
@@ -118,15 +118,13 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
 
-	std::filesystem::path abst = std::filesystem::path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
+	std::filesystem::path abst = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
 	if (is_relative(abst) || is_traversal(abst)) {
 		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
-	_string_t path = to_string(info[1]->ToString(CONTEXT).ToLocalChecked());
-
-	watch_map.add(id, path, v8::Local<v8::Function>::Cast(info[2]));
+	watch_map.add(id, abst, v8::Local<v8::Function>::Cast(info[2]));
 
 	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }
