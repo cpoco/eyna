@@ -164,24 +164,64 @@ const main = async () => {
 
 	{
 		const ID = 0
+		const dir = path.join(wd, "watch1")
+		await native.createDirectory(dir)
+
 		native.watch(
 			ID,
-			wd,
+			dir,
 			(id, depth, path) => {
-				console.log("watch callback", id, depth, path)
+				console.log("[watch callback]", id, depth, path)
 			},
 		)
+		await timers.setTimeout(3000)
 
-		await native.createDirectory(path.join(wd, "watch", "d", "d"))
-		await native.createFile(path.join(wd, "watch", "f"))
-		await native.moveToTrash(path.join(wd, "watch", "f"))
-		await native.moveToTrash(path.join(wd, "watch", "d", "d"))
-		await native.moveToTrash(path.join(wd, "watch", "d"))
-		await native.moveToTrash(path.join(wd, "watch"))
+		await native.createDirectory(path.join(dir, "watch2", "d", "dd"))
+		await native.createFile(path.join(dir, "watch2", "f"))
+		await native.createFile(path.join(dir, "watch2", "ff"))
+
+		await native.moveToTrash(path.join(dir, "watch2", "f"))
+		await native.moveToTrash(path.join(dir, "watch2", "ff"))
+		await native.moveToTrash(path.join(dir, "watch2", "d", "dd"))
+		await native.moveToTrash(path.join(dir, "watch2", "d"))
+		await native.moveToTrash(path.join(dir, "watch2"))
 
 		await timers.setTimeout(3000)
 
 		native.unwatch(ID)
+
+		await native.moveToTrash(dir)
+	}
+
+	{
+		const ID = 1
+		const dir = path.join(wd, "👀")
+		await native.createDirectory(dir)
+
+		native.watch(
+			ID,
+			dir,
+			(id, depth, path) => {
+				console.log("[watch callback]", id, depth, path)
+			},
+		)
+		await timers.setTimeout(3000)
+
+		await native.createDirectory(path.join(dir, "👀👀", "📁", "📁📁"))
+		await native.createFile(path.join(dir, "👀👀", "📝"))
+		await native.createFile(path.join(dir, "👀👀", "📝📝"))
+
+		await native.moveToTrash(path.join(dir, "👀👀", "📝"))
+		await native.moveToTrash(path.join(dir, "👀👀", "📝📝"))
+		await native.moveToTrash(path.join(dir, "👀👀", "📁", "📁📁"))
+		await native.moveToTrash(path.join(dir, "👀👀", "📁"))
+		await native.moveToTrash(path.join(dir, "👀👀"))
+
+		await timers.setTimeout(3000)
+
+		native.unwatch(ID)
+
+		await native.moveToTrash(dir)
 	}
 }
 

@@ -56,6 +56,14 @@ for (const f of ff) {
 }
 
 {
+	const emoji = path.join(wd, "EMOJI")
+	await fs.mkdir(emoji)
+	await fs.mkdir(path.join(emoji, "⭐"))
+	await fs.mkdir(path.join(emoji, "🌈"))
+	await fs.mkdir(path.join(emoji, "🧪"))
+}
+
+{
 	const uni = path.join(wd, "UNICODE")
 	await fs.mkdir(uni)
 	await fs.mkdir(path.join(uni, ".\u{202C}"))
