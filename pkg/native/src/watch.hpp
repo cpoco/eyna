@@ -75,11 +75,11 @@ public:
 			return;
 		}
 
-		std::basic_string<char> filename(_filename);
+		std::basic_string<char8_t> filename((char8_t*)_filename);
 		#if _OS_WIN_
-		int depth = std::count(filename.cbegin(), filename.cend(), '\\');
+		int depth = std::count(filename.cbegin(), filename.cend(), u8'\\');
 		#elif _OS_MAC_
-		int depth = std::count(filename.cbegin(), filename.cend(), '/');
+		int depth = std::count(filename.cbegin(), filename.cend(), u8'/');
 		#endif
 
 		const int argc = 3;
