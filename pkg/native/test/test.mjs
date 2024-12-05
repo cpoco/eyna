@@ -163,6 +163,36 @@ const main = async () => {
 	}
 
 	{
+		let catch_failed = false
+		try {
+			await native.moveToTrash(path.join(wd, "not-exist-parent"))
+		} catch (err) {
+			catch_failed = (err === "failed")
+		}
+		assert(catch_failed)
+	}
+
+	{
+		let catch_failed = false
+		try {
+			await native.createFile(path.join(wd, "not-exist-parent", "file"))
+		} catch (err) {
+			catch_failed = (err === "failed")
+		}
+		assert(catch_failed)
+	}
+
+	{
+		let catch_failed = false
+		try {
+			await native.createSymlink(path.join(wd, "not-exist-parent", "link"), wd)
+		} catch (err) {
+			catch_failed = (err === "failed")
+		}
+		assert(catch_failed)
+	}
+
+	{
 		const ID = 0
 		const dir = path.join(wd, "watch1")
 		await native.createDirectory(dir)
