@@ -17,6 +17,14 @@ static void move_to_trash_async(uv_work_t* req)
 {
 	move_to_trash_work* work = static_cast<move_to_trash_work*>(req->data);
 
+	std::error_code ec;
+	bool result = std::filesystem::exists(work->abst, ec);
+
+	if (!result || ec) {
+		work->error = true;
+		return;
+	}
+
 	#if _OS_WIN_
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
@@ -82,7 +90,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	create_directory_work* work = new create_directory_work();
+	move_to_trash_work* work = new move_to_trash_work();
 	work->request.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
