@@ -21,7 +21,7 @@
 	},
 	"overrides": {
 		"glob": "11",
-		"node-gyp": "10"
+		"node-gyp": "11"
 	},
 	"scripts": {
 		"q": "node scripts/ql.mjs",
