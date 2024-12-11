@@ -32,7 +32,7 @@ static void create_directory_complete(uv_work_t* req, int status)
 	create_directory_work* work = static_cast<create_directory_work*>(req->data);
 
 	if (work->error) {
-		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(V("failed")));
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
 		work->promise.Reset();
     }
 	else {

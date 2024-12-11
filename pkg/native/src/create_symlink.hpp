@@ -58,7 +58,7 @@ static void create_symlink_complete(uv_work_t* req, int status)
 	create_symlink_work* work = static_cast<create_symlink_work*>(req->data);
 
 	if (work->error) {
-		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(V("failed")));
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
 		work->promise.Reset();
 	}
 	else {

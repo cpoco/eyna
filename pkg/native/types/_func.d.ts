@@ -15,6 +15,7 @@ declare namespace Native {
 		regexp?: RegExp | null,
 	): Promise<Type.Directory>
 	function getIcon(abstract: string): Promise<Buffer>
+	function getPathAttribute(abstract: string): Promise<Type.Attributes>
 	function getVolume(): Promise<Type.Volume[]>
 	function isElevated(): boolean
 	function move(abstract_src: string, abstract_dst: string): Promise<void>

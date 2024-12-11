@@ -40,6 +40,10 @@ export function getIcon(abstract: string): Promise<Buffer> {
 	return native.getIcon(abstract)
 }
 
+export function getPathAttribute(abstract: string): Promise<Type.Attributes> {
+	return native.getPathAttribute(abstract)
+}
+
 export function getVolume(): Promise<Type.Volume[]> {
 	return native.getVolume()
 }

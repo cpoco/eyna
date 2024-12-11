@@ -7,6 +7,7 @@
 #include "get_attribute.hpp"
 #include "get_directory.hpp"
 #include "get_icon.hpp"
+#include "get_path_attribute.hpp"
 #include "get_volume.hpp"
 #include "is_elevated.hpp"
 #include "move.hpp"
@@ -37,6 +38,7 @@ void init(v8::Local<v8::Object> exports)
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
 	NODE_SET_METHOD(exports, "getDirectory", get_directory);
 	NODE_SET_METHOD(exports, "getIcon", get_icon);
+	NODE_SET_METHOD(exports, "getPathAttribute", get_path_attribute);
 	NODE_SET_METHOD(exports, "getVolume", get_volume);
 	NODE_SET_METHOD(exports, "isElevated", is_elevated);
 	NODE_SET_METHOD(exports, "move", move);
