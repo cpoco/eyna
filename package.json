@@ -8,8 +8,8 @@
 		"pkg/util"
 	],
 	"devDependencies": {
-		"@eyna/native": "*",
-		"@eyna/util": "*",
+		"@eyna/native": "workspace:*",
+		"@eyna/util": "workspace:*",
 		"@vue/runtime-dom": "3.5.13",
 		"electron": "33.2.1",
 		"electron-builder": "25.1.8",
