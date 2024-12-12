@@ -2,6 +2,9 @@ import module from "node:module"
 const native = module.createRequire(import.meta.url)("../bin/native.node")
 
 export default {
+	compare: (abstract_file1, abstract_file2) => {
+		return native.compare(abstract_file1, abstract_file2)
+	},
 	copy: (abstract_src, abstract_dst) => {
 		return native.copy(abstract_src, abstract_dst)
 	},

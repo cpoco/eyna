@@ -2,6 +2,10 @@ export * from "./_type"
 
 import * as native from "../bin/native.node"
 
+export function compare(abstract_file1: string, abstract_file2: string): Promise<boolean> {
+	return native.compare(abstract_file1, abstract_file2)
+}
+
 export function copy(abstract_src: string, abstract_dst: string): Promise<void> {
 	return native.copy(abstract_src, abstract_dst)
 }

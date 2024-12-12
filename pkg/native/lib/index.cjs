@@ -1,6 +1,9 @@
 const native = require("../bin/native.node")
 
 module.exports = {
+	compare: (abstract_file1, abstract_file2) => {
+		return native.compare(abstract_file1, abstract_file2)
+	},
 	copy: (abstract_src, abstract_dst) => {
 		return native.copy(abstract_src, abstract_dst)
 	},
