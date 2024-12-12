@@ -185,6 +185,22 @@ const main = async () => {
 	}
 
 	{
+		await native.createDirectory(path.join(wd, "compare"))
+		await native.createFile(path.join(wd, "compare", "file1"))
+		await native.createFile(path.join(wd, "compare", "file2"))
+		assert(await native.compare(path.join(wd, "compare", "file1"), path.join(wd, "compare", "file2")))
+
+		await fs.writeFile(path.join(wd, "compare", "file1"), "test")
+		await fs.writeFile(path.join(wd, "compare", "file2"), "test")
+		assert(await native.compare(path.join(wd, "compare", "file1"), path.join(wd, "compare", "file2")))
+
+		await fs.writeFile(path.join(wd, "compare", "file2"), "TEST")
+		assert(await native.compare(path.join(wd, "compare", "file1"), path.join(wd, "compare", "file2")) == false)
+
+		await native.moveToTrash(path.join(wd, "compare"))
+	}
+
+	{
 		let catch_failed = false
 		try {
 			await native.createSymlink(path.join(wd, "not-exist-parent", "link"), wd)
