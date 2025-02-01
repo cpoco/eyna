@@ -11,13 +11,13 @@
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
 		"@vue/runtime-dom": "3.5.13",
-		"electron": "33.2.1",
+		"electron": "34.0.2",
 		"electron-builder": "25.1.8",
-		"esbuild": "0.24.0",
+		"esbuild": "0.24.2",
 		"monaco-editor": "0.50.0",
 		"pug": "3.0.3",
 		"stylus": "0.64.0",
-		"typescript": "5.7.2"
+		"typescript": "5.7.3"
 	},
 	"overrides": {
 		"glob": "11",
