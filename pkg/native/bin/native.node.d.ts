@@ -1,5 +1,6 @@
 /// <reference types="../types/_type.d.ts" />
 
+export function compare(abstract_file1: string, abstract_file2: string): Promise<boolean>
 export function copy(abstract_src: string, abstract_dst: string): Promise<void>
 export function createDirectory(abstract: string): Promise<void>
 export function createFile(abstract: string): Promise<void>

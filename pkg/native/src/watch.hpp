@@ -82,7 +82,7 @@ public:
 		int depth = std::count(filename.cbegin(), filename.cend(), u8'/');
 		#endif
 
-		const int argc = 3;
+		constexpr int argc = 3;
 		v8::Local<v8::Value> argv[argc] = {
 			v8::Number::New(ISOLATE, data->id),
 			v8::Number::New(ISOLATE, depth),

@@ -1,6 +1,7 @@
 /// <reference types="./_type.d.ts" />
 
 declare namespace Native {
+	function compare(abstract_file1: string, abstract_file2: string): Promise<boolean>
 	function copy(abstract_src: string, abstract_dst: string): Promise<void>
 	function createDirectory(abstract: string): Promise<void>
 	function createFile(abstract: string): Promise<void>

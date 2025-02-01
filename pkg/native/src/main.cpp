@@ -1,4 +1,5 @@
 #include "common.hpp"
+#include "compare.hpp"
 #include "copy.hpp"
 #include "create_directory.hpp"
 #include "create_file.hpp"
@@ -30,6 +31,7 @@ void init(v8::Local<v8::Object> exports)
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
+	NODE_SET_METHOD(exports, "compare", compare);
 	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
 	NODE_SET_METHOD(exports, "createFile", create_file);
