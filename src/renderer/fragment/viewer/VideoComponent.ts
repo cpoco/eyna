@@ -37,6 +37,11 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		// vue.onBeforeUnmount(() => {
+		// 	src.value!.src = ""
+		// 	vid.value!.load()
+		// })
+
 		const toggle = () => {
 			if (vid.value) {
 				if (vid.value.paused) {
@@ -83,6 +88,7 @@ export const V = vue.defineComponent({
 				vue.h("video", {
 					ref: VID,
 					class: { "viewer-video-vid": true },
+					preload: "none",
 					autoplay: "",
 					controls: "",
 					controlslist: "nofullscreen",

@@ -33,6 +33,11 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		// vue.onBeforeUnmount(() => {
+		// 	src.value!.src = ""
+		// 	aud.value!.load()
+		// })
+
 		const toggle = () => {
 			if (aud.value) {
 				if (aud.value.paused) {
@@ -79,6 +84,7 @@ export const V = vue.defineComponent({
 				vue.h("audio", {
 					ref: AUD,
 					class: { "viewer-audio-aud": true },
+					preload: "none",
 					autoplay: "",
 					controls: "",
 					controlslist: "nofullscreen",
