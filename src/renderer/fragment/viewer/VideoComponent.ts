@@ -37,10 +37,10 @@ export const V = vue.defineComponent({
 			})
 		})
 
-		// vue.onBeforeUnmount(() => {
-		// 	src.value!.src = ""
-		// 	vid.value!.load()
-		// })
+		vue.onBeforeUnmount(() => {
+			src.value!.src = ""
+			vid.value!.load()
+		})
 
 		const toggle = () => {
 			if (vid.value) {
