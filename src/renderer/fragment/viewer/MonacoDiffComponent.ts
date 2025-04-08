@@ -111,10 +111,13 @@ export const V = vue.defineComponent({
 				})
 		})
 
-		vue.onUnmounted(() => {
+		vue.onBeforeUnmount(() => {
 			editor?.dispose()
 			modified?.dispose()
 			original?.dispose()
+			editor = null
+			modified = null
+			original = null
 		})
 
 		const prev = () => {

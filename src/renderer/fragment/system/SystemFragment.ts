@@ -100,7 +100,7 @@ const overlay = vue.defineComponent({
 			}, 1000)
 		})
 
-		vue.onUnmounted(() => {
+		vue.onBeforeUnmount(() => {
 			clearInterval(id)
 		})
 

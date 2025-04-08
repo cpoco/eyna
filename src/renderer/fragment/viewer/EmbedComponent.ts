@@ -32,7 +32,7 @@ export const V = vue.defineComponent({
 			}
 			vue.nextTick(() => {
 				embed.value!.type = props.mime
-				embed.value!.src = url.fileUrl(props.path)
+				embed.value!.src = url.fileUrl(props.path) + "#toolbar=0&view=Fit"
 			})
 		})
 

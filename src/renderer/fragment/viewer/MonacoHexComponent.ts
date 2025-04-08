@@ -114,9 +114,11 @@ export const V = vue.defineComponent({
 				})
 		})
 
-		vue.onUnmounted(() => {
+		vue.onBeforeUnmount(() => {
 			editor?.dispose()
 			model?.dispose()
+			editor = null
+			model = null
 		})
 
 		return {
