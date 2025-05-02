@@ -18,18 +18,20 @@ static void copy_async(uv_work_t* req)
 {
 	copy_work* work = static_cast<copy_work*>(req->data);
 
-	_attribute src = {};
-	src.full = work->src;
-	attribute(src);
+	{
+		_attribute src = {};
+		src.full = work->src;
+		attribute(src);
 
-	if (src.file_type != FILE_TYPE::FILE_TYPE_DIRECTORY && src.file_type != FILE_TYPE::FILE_TYPE_FILE) {
-		work->error = true;
-		return;
-	}
+		if (src.file_type != FILE_TYPE::FILE_TYPE_DIRECTORY && src.file_type != FILE_TYPE::FILE_TYPE_FILE) {
+			work->error = true;
+			return;
+		}
 
-	if (raw_exists(work->dst) != 0) {
-		work->error = true;
-		return;
+		if (raw_exists(work->dst) != 0) {
+			work->error = true;
+			return;
+		}
 	}
 
 	/*

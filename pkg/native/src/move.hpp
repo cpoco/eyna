@@ -18,18 +18,20 @@ static void move_async(uv_work_t* req)
 {
 	move_work* work = static_cast<move_work*>(req->data);
 
-	_attribute src = {};
-	src.full = work->src;
-	attribute(src);
+	{
+		_attribute src = {};
+		src.full = work->src;
+		attribute(src);
 
-	if (src.file_type != FILE_TYPE::FILE_TYPE_DIRECTORY && src.file_type != FILE_TYPE::FILE_TYPE_FILE) {
-		work->error = true;
-		return;
-	}
+		if (src.file_type != FILE_TYPE::FILE_TYPE_DIRECTORY && src.file_type != FILE_TYPE::FILE_TYPE_FILE) {
+			work->error = true;
+			return;
+		}
 
-	if (raw_exists(work->dst) != 0) {
-		work->error = true;
-		return;
+		if (raw_exists(work->dst) != 0) {
+			work->error = true;
+			return;
+		}
 	}
 
 	/*
