@@ -82,6 +82,16 @@ v8::Local<v8::String> to_string(const _string_t& str)
 	#endif
 }
 
+int raw_exists(const std::filesystem::path& path)
+{
+	std::error_code ec;
+	std::filesystem::file_status status = std::filesystem::symlink_status(path, ec);
+	if (ec && ec != std::errc::no_such_file_or_directory) {
+		return -1;
+	}
+	return status.type() != std::filesystem::file_type::not_found;
+}
+
 bool is_relative(const std::filesystem::path& path)
 {
 	return !path.is_absolute();
