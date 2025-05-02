@@ -17,10 +17,7 @@ static void move_to_trash_async(uv_work_t* req)
 {
 	move_to_trash_work* work = static_cast<move_to_trash_work*>(req->data);
 
-	std::error_code ec;
-	bool result = std::filesystem::exists(work->abst, ec);
-
-	if (!result || ec) {
+	if (raw_exists(work->abst) != 1) {
 		work->error = true;
 		return;
 	}
