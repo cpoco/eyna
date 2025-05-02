@@ -35,6 +35,25 @@ const main = async () => {
 	}
 
 	{
+		await native.createDirectory(path.join(wd, "exists"))
+
+		await native.createFile(path.join(wd, "exists", "file"))
+		assert(await native.exists(path.join(wd, "exists", "file")) == true)
+
+		await native.createSymlink(path.join(wd, "exists", "symlink"), path.join(wd, "exists", "file"))
+		assert(await native.exists(path.join(wd, "exists", "symlink")) == true)
+
+		await native.moveToTrash(path.join(wd, "exists", "file"))
+		assert(await native.exists(path.join(wd, "exists", "file")) == false)
+		assert(await native.exists(path.join(wd, "exists", "symlink")) == true)
+
+		await native.moveToTrash(path.join(wd, "exists", "symlink"))
+		assert(await native.exists(path.join(wd, "exists", "symlink")) == false)
+
+		await native.moveToTrash(path.join(wd, "exists"))
+	}
+
+	{
 		const d = await native.getDirectory(root)
 		assert(d.full == root)
 		assert(d.base == "")
