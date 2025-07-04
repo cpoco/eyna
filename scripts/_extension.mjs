@@ -53,7 +53,7 @@ export async function Build() {
 			path.join(base, "src/list.fork.ts"),
 			path.join(base, "src/list.terminal.ts"),
 		],
-		packages: "external",
+		packages: "bundle",
 		bundle: true,
 		minify: false,
 		format: "cjs",

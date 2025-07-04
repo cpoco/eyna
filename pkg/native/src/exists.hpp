@@ -11,21 +11,17 @@ struct exists_work
 
 	std::filesystem::path abst; // generic_path
 	bool exists;
+	bool error;
 };
 
 static void exists_async(uv_work_t* req)
 {
 	exists_work* work = static_cast<exists_work*>(req->data);
 
-	std::error_code ec;
-	bool result = std::filesystem::exists(work->abst, ec);
+	int code = raw_exists(work->abst);
 
-	if (!result || ec) {
-		work->exists = false;
-	}
-	else {
-		work->exists = true;
-	}
+	work->error = (code == -1);
+	work->exists = (code == 1);
 }
 
 static void exists_complete(uv_work_t* req, int status)
@@ -34,8 +30,14 @@ static void exists_complete(uv_work_t* req, int status)
 
 	exists_work* work = static_cast<exists_work*>(req->data);
 
-	work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Boolean::New(ISOLATE, work->exists));
-	work->promise.Reset();
+	if (work->error) {
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
+		work->promise.Reset();
+	}
+	else {
+		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Boolean::New(ISOLATE, work->exists));
+		work->promise.Reset();
+	}
 
 	delete work;
 }
@@ -65,6 +67,7 @@ void exists(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	work->exists = false;
+	work->error = false;
 
 	uv_queue_work(uv_default_loop(), &work->request, exists_async, exists_complete);
 }
