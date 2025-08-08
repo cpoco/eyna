@@ -78,7 +78,7 @@ class IconWorker {
 				const icon = await Native.getIcon(first.abst)
 				first.deferred.resolve?.(
 					new Response(
-						icon,
+						icon as BodyInit,
 						{
 							headers: {
 								"content-type": "image/png",
