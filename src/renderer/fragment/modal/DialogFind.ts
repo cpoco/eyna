@@ -3,6 +3,7 @@ import { EditorView } from "@codemirror/view"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
+import { bidiHighlight, singleLine } from "@/renderer/cm/bidi"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
 
 const TAG = "dialog-find"
@@ -78,10 +79,12 @@ export const V = vue.defineComponent({
 					".cm-line": {
 						padding: "0 4px",
 					},
+					".cm-widgetBuffer": {
+						display: "none",
+					},
 				}),
-				EditorState.transactionFilter.of((tr) => {
-					return tr.newDoc.lines > 1 ? [] : [tr]
-				}),
+				bidiHighlight,
+				singleLine,
 			]
 
 			view1 = new EditorView({
