@@ -1,12 +1,9 @@
+import { EditorSelection, EditorState } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
-import { Selection } from "@/renderer/dom/Selection"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
-
-type Reactive = {
-	prompt: [string, string]
-}
 
 const TAG = "dialog-prompt"
 
@@ -43,9 +40,7 @@ export const V = vue.defineComponent({
 	setup(props) {
 		const pr = vue.useTemplateRef<HTMLElement>(PR)
 
-		const reactive = vue.reactive<Reactive>({
-			prompt: [props.text, props.text],
-		})
+		let view: EditorView | null = null
 
 		const keydown = (key: KeyboardEvent) => {
 			if (key.isComposing) {
@@ -53,30 +48,64 @@ export const V = vue.defineComponent({
 			}
 
 			if (key.key == "Enter") {
-				props.close({ text: reactive.prompt[0] })
+				props.close({
+					text: view?.state.doc.toString() ?? props.text,
+				})
 			}
 			else if (key.key == "Escape") {
 				props.cancel()
 			}
 		}
 
-		const input = (input: InputEvent) => {
-			reactive.prompt[0] = (<HTMLDivElement> input.target).innerText
-		}
-
 		vue.onMounted(() => {
+			const extensions = [
+				EditorView.theme({
+					"&.cm-editor": {
+						border: "1px solid rgba(80, 80, 80, 1)",
+					},
+					"&.cm-focused": {
+						outline: "none",
+						border: "1px solid var(--focus)",
+					},
+					".cm-scroller": {
+						fontFamily: "var(--font-family)",
+						overflow: "hidden",
+					},
+					".cm-content": {
+						caretColor: "#fff",
+						padding: "2px 0",
+					},
+					".cm-line": {
+						padding: "0 4px",
+					},
+				}),
+				EditorState.transactionFilter.of((tr) => {
+					return tr.newDoc.lines > 1 ? [] : [tr]
+				}),
+			]
+
+			view = new EditorView({
+				parent: pr.value!,
+				state: EditorState.create({
+					doc: props.text,
+					selection: EditorSelection.create([
+						EditorSelection.range(props.start ?? 0, props.end ?? 0),
+					]),
+					extensions: extensions,
+				}),
+			})
+
 			setTimeout(() => {
-				pr.value!.focus()
-				if (props.start != null && props.end != null) {
-					Selection.text(<Text> pr.value!.childNodes[0]!, props.start, props.end)
-				}
+				view?.focus()
 			}, FOCUS_DELAY)
 		})
 
+		vue.onUnmounted(() => {
+			view?.destroy()
+		})
+
 		return {
-			reactive,
 			keydown,
-			input,
 		}
 	},
 
@@ -90,9 +119,7 @@ export const V = vue.defineComponent({
 			vue.h("div", {
 				ref: PR,
 				class: { "modal-prompt": true },
-				contenteditable: "plaintext-only",
-				onInput: this.input,
-			}, this.reactive.prompt[1]),
+			}, undefined),
 		])
 	},
 })
