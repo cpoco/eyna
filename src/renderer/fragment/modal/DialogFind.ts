@@ -108,7 +108,7 @@ export const V = vue.defineComponent({
 			}, FOCUS_DELAY)
 		})
 
-		vue.onUnmounted(() => {
+		vue.onBeforeUnmount(() => {
 			view1?.destroy()
 			view2?.destroy()
 		})
