@@ -3,8 +3,8 @@ import { EditorView } from "@codemirror/view"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
-import { bidiHighlight, singleLine } from "@/renderer/cm/bidi"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
+import { bidiHighlight, singleLine } from "@/renderer/util/codemirror"
 
 const TAG = "dialog-prompt"
 
@@ -62,7 +62,7 @@ export const V = vue.defineComponent({
 			const extensions = [
 				EditorView.theme({
 					"&.cm-editor": {
-						border: "1px solid rgba(80, 80, 80, 1)",
+						border: "1px solid var(--border)",
 					},
 					"&.cm-focused": {
 						outline: "none",
@@ -73,7 +73,7 @@ export const V = vue.defineComponent({
 						overflow: "hidden",
 					},
 					".cm-content": {
-						caretColor: "#fff",
+						caretColor: "var(--foreground)",
 						padding: "2px 0",
 					},
 					".cm-line": {
