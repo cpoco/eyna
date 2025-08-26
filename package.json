@@ -10,7 +10,7 @@
 	"devDependencies": {
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.19",
+		"@vue/runtime-dom": "3.5.20",
 		"codemirror": "6.0.2",
 		"electron": "37.3.1",
 		"electron-builder": "25.1.8",
