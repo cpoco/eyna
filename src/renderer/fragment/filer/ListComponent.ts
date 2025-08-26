@@ -90,32 +90,32 @@ export const V = vue.defineComponent({
 
 		const _mounted = () => {
 			let d: DOMRect = el.value!.getBoundingClientRect()
-			root.send<Bridge.List.Dom.Send>({
-				ch: "filer-dom",
-				id: props.i,
-				data: {
+			root.send(
+				Bridge.List.Dom.CH,
+				props.i,
+				{
 					event: "mounted",
 					x: d.x,
 					y: d.y,
 					w: d.width,
 					h: d.height,
 				},
-			})
+			)
 		}
 
 		const _resized = () => {
 			let d: DOMRect = el.value!.getBoundingClientRect()
-			root.send<Bridge.List.Dom.Send>({
-				ch: "filer-dom",
-				id: props.i,
-				data: {
+			root.send(
+				Bridge.List.Dom.CH,
+				props.i,
+				{
 					event: "resized",
 					x: d.x,
 					y: d.y,
 					w: d.width,
 					h: d.height,
 				},
-			})
+			)
 		}
 
 		vue.onMounted(() => {

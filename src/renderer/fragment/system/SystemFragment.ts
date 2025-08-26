@@ -14,20 +14,20 @@ export const V = vue.defineComponent({
 		const sf = vue.useTemplateRef<HTMLElement>(SF)
 
 		root
-			.on(Bridge.System.Active.CH, (_i: number, data: Bridge.System.Active.Data) => {
+			.on(Bridge.System.Active.CH, (_i, data) => {
 				sys.reactive.app.active = data
 			})
-			.on(Bridge.System.Version.CH, (_i: number, data: Bridge.System.Version.Data) => {
+			.on(Bridge.System.Version.CH, (_i, data) => {
 				sys.reactive.overlay.version = data
 			})
 
 		const _mounted = () => {
 			let r: DOMRect = sf.value!.getBoundingClientRect()
 			root
-				.invoke<Bridge.System.Dom.Send, Bridge.System.Dom.Result>({
-					ch: "system-dom",
-					id: -1,
-					data: {
+				.invoke(
+					Bridge.System.Dom.CH,
+					-1,
+					{
 						event: "mounted",
 						root: {
 							x: r.x,
@@ -36,8 +36,8 @@ export const V = vue.defineComponent({
 							h: r.height,
 						},
 					},
-				})
-				.then((data: Bridge.System.Dom.Result) => {
+				)
+				.then((data) => {
 					root.log("ipc.invoke.result", data)
 					sys.reactive.app = data.app
 					sys.reactive.overlay = data.overlay

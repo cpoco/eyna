@@ -15,26 +15,18 @@ export class ViewerFragment extends AbstractFragment {
 
 	open(option: Bridge.Viewer.Open.Data) {
 		Command.manager.whenType = Command.When.Viewer
-		root.send<Bridge.Viewer.Open.Send>({
-			ch: Bridge.Viewer.Open.CH,
-			id: -1,
-			data: option,
-		})
+		root.send(Bridge.Viewer.Open.CH, -1, option)
 		this.type = option.type
 	}
 
 	close() {
-		root.send<Bridge.Viewer.Close.Send>({
-			ch: Bridge.Viewer.Close.CH,
-			id: -1,
-			data: null,
-		})
+		root.send(Bridge.Viewer.Close.CH, -1, null)
 		this.type = null
 	}
 
 	private ipc() {
 		root
-			.on(Bridge.Viewer.Event.CH, (_i: number, data: Bridge.Viewer.Event.Data) => {
+			.on(Bridge.Viewer.Event.CH, (_i, data) => {
 				if (data == "opened") {
 					Command.manager.whenType = Command.When.Viewer
 				}
@@ -68,72 +60,40 @@ export class ViewerFragment extends AbstractFragment {
 			})
 			.on("viewer.diffprev", () => {
 				if (this.type == Bridge.Viewer.Type.Diff) {
-					root.send<Bridge.Viewer.Diff.Send>({
-						ch: Bridge.Viewer.Diff.CH,
-						id: -1,
-						data: "prev",
-					})
+					root.send(Bridge.Viewer.Diff.CH, -1, "prev")
 				}
 				return Promise.resolve()
 			})
 			.on("viewer.diffnext", () => {
 				if (this.type == Bridge.Viewer.Type.Diff) {
-					root.send<Bridge.Viewer.Diff.Send>({
-						ch: Bridge.Viewer.Diff.CH,
-						id: -1,
-						data: "next",
-					})
+					root.send(Bridge.Viewer.Diff.CH, -1, "next")
 				}
 				return Promise.resolve()
 			})
 			.on("viewer.mediatoggle", () => {
 				if (this.type == Bridge.Viewer.Type.Audio) {
-					root.send<Bridge.Viewer.Audio.Send>({
-						ch: Bridge.Viewer.Audio.CH,
-						id: -1,
-						data: "toggle",
-					})
+					root.send(Bridge.Viewer.Audio.CH, -1, "toggle")
 				}
 				else if (this.type == Bridge.Viewer.Type.Video) {
-					root.send<Bridge.Viewer.Video.Send>({
-						ch: Bridge.Viewer.Video.CH,
-						id: -1,
-						data: "toggle",
-					})
+					root.send(Bridge.Viewer.Video.CH, -1, "toggle")
 				}
 				return Promise.resolve()
 			})
 			.on("viewer.mediaff", () => {
 				if (this.type == Bridge.Viewer.Type.Audio) {
-					root.send<Bridge.Viewer.Audio.Send>({
-						ch: Bridge.Viewer.Audio.CH,
-						id: -1,
-						data: "ff",
-					})
+					root.send(Bridge.Viewer.Audio.CH, -1, "ff")
 				}
 				else if (this.type == Bridge.Viewer.Type.Video) {
-					root.send<Bridge.Viewer.Video.Send>({
-						ch: Bridge.Viewer.Video.CH,
-						id: -1,
-						data: "ff",
-					})
+					root.send(Bridge.Viewer.Video.CH, -1, "ff")
 				}
 				return Promise.resolve()
 			})
 			.on("viewer.mediarw", () => {
 				if (this.type == Bridge.Viewer.Type.Audio) {
-					root.send<Bridge.Viewer.Audio.Send>({
-						ch: Bridge.Viewer.Audio.CH,
-						id: -1,
-						data: "rw",
-					})
+					root.send(Bridge.Viewer.Audio.CH, -1, "rw")
 				}
 				else if (this.type == Bridge.Viewer.Type.Video) {
-					root.send<Bridge.Viewer.Video.Send>({
-						ch: Bridge.Viewer.Video.CH,
-						id: -1,
-						data: "rw",
-					})
+					root.send(Bridge.Viewer.Video.CH, -1, "rw")
 				}
 				return Promise.resolve()
 			})

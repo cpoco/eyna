@@ -17,7 +17,7 @@ export class SystemFragment extends AbstractFragment {
 
 	private ipc() {
 		root
-			.handle(Bridge.System.Dom.CH, (_i: number, _data: Bridge.System.Dom.Data): Bridge.System.Dom.Result => {
+			.handle(Bridge.System.Dom.CH, (_i, _data) => {
 				return {
 					app: {
 						ready: true,
@@ -53,11 +53,7 @@ export class SystemFragment extends AbstractFragment {
 			})
 			.on("system.version", () => {
 				this.overlay.version = !this.overlay.version
-				root.send<Bridge.System.Version.Send>({
-					ch: Bridge.System.Version.CH,
-					id: -1,
-					data: this.overlay.version,
-				})
+				root.send(Bridge.System.Version.CH, -1, this.overlay.version)
 				return Promise.resolve()
 			})
 			.on("system.devtool", () => {

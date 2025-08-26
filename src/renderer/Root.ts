@@ -13,9 +13,26 @@ import * as ViewerFragment from "@/renderer/fragment/viewer/ViewerFragment"
 declare global {
 	interface Window {
 		ipc: {
-			on: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => void
-			send: (channel: string, ...args: any[]) => void
-			invoke: <T>(channel: string, ...args: any[]) => Promise<T>
+			on<T extends keyof Bridge.BrowserToRenderer>(
+				channel: T,
+				listener: (
+					event: Electron.IpcRendererEvent,
+					i: Bridge.BrowserToRenderer[T][0],
+					data: Bridge.BrowserToRenderer[T][1],
+				) => void,
+			): void
+
+			send<T extends keyof Bridge.RendererToBrowser>(
+				channel: T,
+				i: Bridge.RendererToBrowser[T][0],
+				data: Bridge.RendererToBrowser[T][1],
+			): void
+
+			invoke: <T extends keyof Bridge.Invokel>(
+				channel: T,
+				i: Bridge.Invokel[T][0],
+				data: Bridge.Invokel[T][1],
+			) => Promise<Bridge.Invokel[T][2]>
 		}
 	}
 }
@@ -57,22 +74,43 @@ class Root {
 		})
 	}
 
-	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
-		window.ipc.on(ch, (_event: Electron.IpcRendererEvent, ...args: [T, U]) => {
-			this.log("ipc.on", ch, args[0], args[1])
-			listener(args[0], args[1])
-		})
+	on<T extends keyof Bridge.BrowserToRenderer>(
+		ch: T,
+		listener: (
+			i: Bridge.BrowserToRenderer[T][0],
+			data: Bridge.BrowserToRenderer[T][1],
+		) => void,
+	): Root {
+		window.ipc.on<T>(
+			ch,
+			(
+				_event: Electron.IpcRendererEvent,
+				i: Bridge.BrowserToRenderer[T][0],
+				data: Bridge.BrowserToRenderer[T][1],
+			) => {
+				this.log("ipc.on", ch, i, data)
+				listener(i, data)
+			},
+		)
 		return this
 	}
 
-	send<T extends Bridge.Base.Send>(send: T) {
-		this.log("ipc.send", send.ch, send.id, send.data)
-		window.ipc.send(send.ch, send.id, send.data)
+	send<T extends keyof Bridge.RendererToBrowser>(
+		ch: T,
+		i: Bridge.RendererToBrowser[T][0],
+		data: Bridge.RendererToBrowser[T][1],
+	) {
+		this.log("ipc.send", ch, i, data)
+		window.ipc.send<T>(ch, i, data)
 	}
 
-	invoke<T extends Bridge.Base.Send, U>(send: T): Promise<U> {
-		this.log("ipc.invoke", send.ch, send.id, send.data)
-		return window.ipc.invoke<U>(send.ch, send.id, send.data)
+	invoke<T extends keyof Bridge.Invokel>(
+		channel: T,
+		i: Bridge.Invokel[T][0],
+		data: Bridge.Invokel[T][1],
+	): Promise<Bridge.Invokel[T][2]> {
+		this.log("ipc.invoke", channel, i, data)
+		return window.ipc.invoke<T>(channel, i, data)
 	}
 
 	log(label: string, ...agrs: any[]) {

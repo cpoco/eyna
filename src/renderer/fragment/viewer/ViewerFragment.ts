@@ -38,12 +38,8 @@ export const V = vue.defineComponent({
 
 		vue.onMounted(() => {
 			root
-				.on(Bridge.Viewer.Open.CH, (_: number, data: Bridge.Viewer.Open.Data) => {
-					root.send<Bridge.Viewer.Event.Send>({
-						ch: "viewer-event",
-						id: -1,
-						data: "opened",
-					})
+				.on(Bridge.Viewer.Open.CH, (_, data) => {
+					root.send(Bridge.Viewer.Event.CH, -1, "opened")
 					if (data.type != null) {
 						reactive.type = data.type
 						reactive.mime = data.mime
@@ -51,24 +47,20 @@ export const V = vue.defineComponent({
 						reactive.size = data.size
 					}
 				})
-				.on(Bridge.Viewer.Close.CH, (_: number, _data: Bridge.Viewer.Close.Data) => {
-					root.send<Bridge.Viewer.Event.Send>({
-						ch: "viewer-event",
-						id: -1,
-						data: "closed",
-					})
+				.on(Bridge.Viewer.Close.CH, (_, _data) => {
+					root.send(Bridge.Viewer.Event.CH, -1, "closed")
 					reactive.type = null
 					reactive.mime = []
 					reactive.path = []
 					reactive.size = []
 				})
-				.on(Bridge.Viewer.Diff.CH, (_: number, data: Bridge.Viewer.Diff.Data) => {
+				.on(Bridge.Viewer.Diff.CH, (_, data) => {
 					diff.value?.[data]()
 				})
-				.on(Bridge.Viewer.Audio.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
+				.on(Bridge.Viewer.Audio.CH, (_, data) => {
 					audio.value?.[data]()
 				})
-				.on(Bridge.Viewer.Video.CH, (_: number, data: Bridge.Viewer.Audio.Data) => {
+				.on(Bridge.Viewer.Video.CH, (_, data) => {
 					video.value?.[data]()
 				})
 		})
