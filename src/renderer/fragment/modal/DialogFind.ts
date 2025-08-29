@@ -1,16 +1,15 @@
+import { EditorState } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
 import { FOCUS_DELAY } from "@/renderer/fragment/modal/Dialog"
-
-type Reactive = {
-	rg: [string, string]
-	dp: [string, string]
-}
+import { bidiHighlight, singleLine } from "@/renderer/util/codemirror"
 
 const TAG = "dialog-find"
 
 const RG = "rg"
+const DP = "dp"
 
 export const V = vue.defineComponent({
 	props: {
@@ -38,11 +37,10 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const rg = vue.useTemplateRef<HTMLElement>(RG)
+		const dp = vue.useTemplateRef<HTMLElement>(DP)
 
-		const reactive = vue.reactive<Reactive>({
-			rg: [props.rg, props.rg],
-			dp: [props.dp, props.dp],
-		})
+		let view1: EditorView | null = null
+		let view2: EditorView | null = null
 
 		const keydown = (key: KeyboardEvent) => {
 			if (key.isComposing) {
@@ -50,32 +48,73 @@ export const V = vue.defineComponent({
 			}
 
 			if (key.key == "Enter") {
-				props.close({ rg: reactive.rg[0], dp: reactive.dp[0] })
+				props.close({
+					rg: view1?.state.doc.toString() ?? props.rg,
+					dp: view2?.state.doc.toString() ?? props.dp,
+				})
 			}
 			else if (key.key == "Escape") {
 				props.cancel()
 			}
 		}
 
-		const input1 = (input: InputEvent) => {
-			reactive.rg[0] = (<HTMLDivElement> input.target).innerText
-		}
-
-		const input2 = (input: InputEvent) => {
-			reactive.dp[0] = (<HTMLDivElement> input.target).innerText
-		}
-
 		vue.onMounted(() => {
+			const extensions = [
+				EditorView.theme({
+					"&.cm-editor": {
+						border: "1px solid var(--border)",
+					},
+					"&.cm-focused": {
+						outline: "none",
+						border: "1px solid var(--focus)",
+					},
+					".cm-scroller": {
+						fontFamily: "var(--font-family)",
+						overflow: "hidden",
+					},
+					".cm-content": {
+						caretColor: "var(--foreground)",
+						padding: "2px 0",
+					},
+					".cm-line": {
+						padding: "0 4px",
+					},
+					".cm-widgetBuffer": {
+						display: "none",
+					},
+				}),
+				bidiHighlight,
+				singleLine,
+			]
+
+			view1 = new EditorView({
+				parent: rg.value!,
+				state: EditorState.create({
+					doc: props.rg,
+					extensions: extensions,
+				}),
+			})
+
+			view2 = new EditorView({
+				parent: dp.value!,
+				state: EditorState.create({
+					doc: props.dp,
+					extensions: extensions,
+				}),
+			})
+
 			setTimeout(() => {
-				rg.value!.focus()
+				view1?.focus()
 			}, FOCUS_DELAY)
 		})
 
+		vue.onBeforeUnmount(() => {
+			view1?.destroy()
+			view2?.destroy()
+		})
+
 		return {
-			reactive,
 			keydown,
-			input1,
-			input2,
 		}
 	},
 
@@ -89,14 +128,11 @@ export const V = vue.defineComponent({
 			vue.h("div", {
 				ref: RG,
 				class: { "modal-prompt": true },
-				contenteditable: "plaintext-only",
-				onInput: this.input1,
-			}, this.reactive.rg[1]),
+			}, undefined),
 			vue.h("div", {
+				ref: DP,
 				class: { "modal-prompt": true },
-				contenteditable: "plaintext-only",
-				onInput: this.input2,
-			}, this.reactive.dp[1]),
+			}, undefined),
 		])
 	},
 })

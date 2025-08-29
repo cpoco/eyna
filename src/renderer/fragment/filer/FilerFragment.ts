@@ -22,25 +22,25 @@ export const V = vue.defineComponent({
 		})
 
 		root
-			.on(Bridge.List.Change.CH, (i: number, data: Bridge.List.Change.Data) => {
+			.on(Bridge.List.Change.CH, (i, data) => {
 				filer.updateChange(i, data)
 			})
-			.on(Bridge.List.Scan.CH, (i: number, data: Bridge.List.Scan.Data) => {
+			.on(Bridge.List.Scan.CH, (i, data) => {
 				filer.updateScan(i, data)
 			})
-			.on(Bridge.List.Active.CH, (i: number, data: Bridge.List.Active.Data) => {
+			.on(Bridge.List.Active.CH, (i, data) => {
 				filer.updateActive(i, data)
 			})
-			.on(Bridge.List.Cursor.CH, (i: number, data: Bridge.List.Cursor.Data) => {
+			.on(Bridge.List.Cursor.CH, (i, data) => {
 				filer.updateCursor(i, data)
 			})
-			.on(Bridge.List.Attribute.CH, (i: number, data: Bridge.List.Attribute.Data) => {
+			.on(Bridge.List.Attribute.CH, (i, data) => {
 				filer.updateAttribute(i, data)
 			})
-			.on(Bridge.List.Mark.CH, (i: number, data: Bridge.List.Mark.Data) => {
+			.on(Bridge.List.Mark.CH, (i, data) => {
 				filer.updateMark(i, data)
 			})
-			.on(Bridge.List.Watch.CH, (i: number, data: Bridge.List.Watch.Data) => {
+			.on(Bridge.List.Watch.CH, (i, data) => {
 				filer.updateWatch(i, data)
 			})
 

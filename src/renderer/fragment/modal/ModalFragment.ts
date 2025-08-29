@@ -50,12 +50,8 @@ export const V = vue.defineComponent({
 
 		vue.onMounted(() => {
 			root
-				.on(Bridge.Modal.Open.CH, (_: number, data: Bridge.Modal.Open.Data) => {
-					root.send<Bridge.Modal.Event.Send>({
-						ch: "modal-event",
-						id: -1,
-						data: { event: "opened" },
-					})
+				.on(Bridge.Modal.Open.CH, (_i, data) => {
+					root.send(Bridge.Modal.Event.CH, -1, { event: "opened" })
 					if (data.type == "alert") {
 						reactive.type = data.type
 						reactive.alert.title = data.title
@@ -75,26 +71,18 @@ export const V = vue.defineComponent({
 						reactive.find.dp = data.dp
 					}
 				})
-				.on(Bridge.Modal.Cancel.CH, (_: number, _data: Bridge.Modal.Cancel.Data) => {
+				.on(Bridge.Modal.Cancel.CH, (_i, _data) => {
 					cancel()
 				})
 		})
 
 		const close = (result: Bridge.Modal.Event.ResultClose) => {
-			root.send<Bridge.Modal.Event.Send>({
-				ch: "modal-event",
-				id: -1,
-				data: { event: "closed", result: result },
-			})
+			root.send(Bridge.Modal.Event.CH, -1, { event: "closed", result: result })
 			reactive.type = null
 		}
 
 		const cancel = () => {
-			root.send<Bridge.Modal.Event.Send>({
-				ch: "modal-event",
-				id: -1,
-				data: { event: "canceled", result: null },
-			})
+			root.send(Bridge.Modal.Event.CH, -1, { event: "canceled", result: null })
 			reactive.type = null
 		}
 

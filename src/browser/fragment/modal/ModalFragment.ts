@@ -17,27 +17,19 @@ export class ModalFragment extends AbstractFragment {
 
 	open(option: Bridge.Modal.Open.Data): Promise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> {
 		Command.manager.whenType = Command.When.Modal
-		root.send<Bridge.Modal.Open.Send>({
-			ch: Bridge.Modal.Open.CH,
-			id: -1,
-			data: option,
-		})
+		root.send(Bridge.Modal.Open.CH, -1, option)
 
 		this.deferred = new Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
 		return this.deferred.promise
 	}
 
 	cancel() {
-		root.send<Bridge.Modal.Cancel.Send>({
-			ch: Bridge.Modal.Cancel.CH,
-			id: -1,
-			data: null,
-		})
+		root.send(Bridge.Modal.Cancel.CH, -1, null)
 	}
 
 	private ipc() {
 		root
-			.on(Bridge.Modal.Event.CH, (_i: number, data: Bridge.Modal.Event.Data) => {
+			.on(Bridge.Modal.Event.CH, (_i, data) => {
 				if (data.event == "opened") {
 					Command.manager.whenType = Command.When.Modal
 				}

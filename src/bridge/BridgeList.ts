@@ -49,11 +49,6 @@ export namespace List {
 	// renderer -> browser
 	export namespace Dom {
 		export const CH = "filer-dom"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
 			event: "mounted" | "resized"
 			x: number
@@ -66,11 +61,6 @@ export namespace List {
 	// renderer -> browser
 	export namespace Drag {
 		export const CH = "filer-drag"
-		export type Send = {
-			ch: typeof CH
-			id: -1
-			data: Data
-		}
 		export type Data = {
 			full: string
 		}
@@ -79,33 +69,18 @@ export namespace List {
 	// browser -> renderer
 	export namespace Change {
 		export const CH = "filer-change"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = List.Data
 	}
 
 	// browser -> renderer
 	export namespace Scan {
 		export const CH = "filer-scan"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = List.Data
 	}
 
 	// browser -> renderer
 	export namespace Active {
 		export const CH = "filer-status"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
 			status: Status
 		}
@@ -114,11 +89,6 @@ export namespace List {
 	// browser -> renderer
 	export namespace Cursor {
 		export const CH = "filer-cursor"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
 			cursor: number
 			drawCount: number
@@ -133,43 +103,22 @@ export namespace List {
 	// browser -> renderer
 	export namespace Attribute {
 		export const CH = "filer-attr"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
-			_slice: Slice
-		}
-		export type Slice = {
-			[index: number]: Native.Attributes
+			_slice: Record<number, Native.Attributes>
 		}
 	}
 
 	// browser -> renderer
 	export namespace Mark {
 		export const CH = "filer-mark"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
-			_slice: Slice
-		}
-		export type Slice = {
-			[index: number]: boolean
+			_slice: Record<number, boolean>
 		}
 	}
 
 	// browser -> renderer
 	export namespace Watch {
 		export const CH = "filer-watch"
-		export type Send = {
-			ch: typeof CH
-			id: number
-			data: Data
-		}
 		export type Data = {
 			watch: number
 		}

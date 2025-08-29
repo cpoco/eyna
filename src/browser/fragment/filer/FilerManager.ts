@@ -54,13 +54,7 @@ export class FilerManager {
 			}
 			else {
 				this.data.watch = 1
-				root.send<Bridge.List.Watch.Send>({
-					ch: Bridge.List.Watch.CH,
-					id: this.id,
-					data: {
-						watch: this.data.watch,
-					},
-				})
+				root.send(Bridge.List.Watch.CH, this.id, { watch: this.data.watch })
 			}
 		}
 	}
@@ -189,10 +183,10 @@ export class FilerManager {
 			})
 		}
 
-		root.send<Bridge.List.Change.Send>({
-			ch: Bridge.List.Change.CH,
-			id: this.id,
-			data: {
+		root.send(
+			Bridge.List.Change.CH,
+			this.id,
+			{
 				create: this.data.create,
 				elapse: this.data.elapse,
 				status: this.data.status,
@@ -212,7 +206,7 @@ export class FilerManager {
 				watch: 0,
 				error: 0,
 			},
-		})
+		)
 
 		return new Promise(async (resolve, _reject) => {
 			if (this.dir.pwd != wd || forceMarkClear) {
@@ -247,10 +241,10 @@ export class FilerManager {
 	}
 
 	sendScan() {
-		root.send<Bridge.List.Scan.Send>({
-			ch: Bridge.List.Scan.CH,
-			id: this.id,
-			data: {
+		root.send(
+			Bridge.List.Scan.CH,
+			this.id,
+			{
 				create: this.data.create,
 				elapse: this.data.elapse,
 				status: this.data.status,
@@ -270,24 +264,18 @@ export class FilerManager {
 				watch: this.data.watch,
 				error: this.data.error,
 			},
-		})
+		)
 	}
 
 	sendActive() {
-		root.send<Bridge.List.Active.Send>({
-			ch: Bridge.List.Active.CH,
-			id: this.id,
-			data: {
-				status: this.data.status,
-			},
-		})
+		root.send(Bridge.List.Active.CH, this.id, { status: this.data.status })
 	}
 
 	sendCursor() {
-		root.send<Bridge.List.Cursor.Send>({
-			ch: Bridge.List.Cursor.CH,
-			id: this.id,
-			data: {
+		root.send(
+			Bridge.List.Cursor.CH,
+			this.id,
+			{
 				cursor: this.data.cursor,
 				drawCount: Math.min(this.sc.drawCount(), this.data.length),
 				drawIndex: this.sc.drawIndex(0),
@@ -296,7 +284,7 @@ export class FilerManager {
 				knobPosition: this.sc.knobPosition,
 				knobSize: this.sc.knobSize,
 			},
-		})
+		)
 	}
 
 	sendAttrAll() {
@@ -306,15 +294,15 @@ export class FilerManager {
 	}
 
 	sendAttr(start: number = 0, end: number = this.data.length) {
-		root.send<Bridge.List.Attribute.Send>({
-			ch: Bridge.List.Attribute.CH,
-			id: this.id,
-			data: {
+		root.send(
+			Bridge.List.Attribute.CH,
+			this.id,
+			{
 				_slice: Util.dict<Native.Attributes>(start, end, (i) => {
 					return this.data.ls[i]
 				}),
 			},
-		})
+		)
 	}
 
 	sendMarkAll() {
@@ -324,14 +312,14 @@ export class FilerManager {
 	}
 
 	sendMark(start: number = 0, end: number = this.data.length) {
-		root.send<Bridge.List.Mark.Send>({
-			ch: Bridge.List.Mark.CH,
-			id: this.id,
-			data: {
+		root.send(
+			Bridge.List.Mark.CH,
+			this.id,
+			{
 				_slice: Util.dict<boolean>(start, end, (i) => {
 					return this.data.mk[i]
 				}),
 			},
-		})
+		)
 	}
 }

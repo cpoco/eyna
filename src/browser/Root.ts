@@ -88,11 +88,11 @@ class Root {
 		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
 			this.active = true
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
+			this.send(Bridge.System.Active.CH, -1, this.active)
 		})
 		this.browser.on("blur", () => {
 			this.active = false
-			this.send<Bridge.System.Active.Send>({ ch: "system-active", id: -1, data: this.active })
+			this.send(Bridge.System.Active.CH, -1, this.active)
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			Storage.manager.data.window = this.browser.getNormalBounds()
@@ -189,27 +189,47 @@ class Root {
 		})
 	}
 
-	on<T, U>(ch: string, listener: (i: T, data: U) => void): Root {
-		electron.ipcMain.on(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
-			console.log("\u001b[32m[ipc.on]\u001b[0m", ch, args[0], args[1])
-			listener(args[0], args[1])
+	on<T extends keyof Bridge.RendererToBrowser>(
+		ch: T,
+		listener: (
+			i: Bridge.RendererToBrowser[T][0],
+			data: Bridge.RendererToBrowser[T][1],
+		) => void,
+	): Root {
+		electron.ipcMain.on(ch, (
+			_event: electron.IpcMainInvokeEvent,
+			i: Bridge.RendererToBrowser[T][0],
+			data: Bridge.RendererToBrowser[T][1],
+		) => {
+			console.log("\u001b[32m[ipc.on]\u001b[0m", ch, i, data)
+			listener(i, data)
 		})
 		return this
 	}
 
-	handle<T, U, V>(ch: string, listener: (i: T, data: U) => V): Root {
-		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, ...args: [T, U]) => {
-			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, args[0], args[1])
-			let ret = listener(args[0], args[1])
+	handle<T extends keyof Bridge.Invokel>(
+		ch: T,
+		listener: (
+			i: Bridge.Invokel[T][0],
+			data: Bridge.Invokel[T][1],
+		) => Bridge.Invokel[T][2],
+	): Root {
+		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, i, data) => {
+			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, i, data)
+			let ret = listener(i, data)
 			console.log("\u001b[32m[ipc.handle.result]\u001b[0m", ret)
 			return ret
 		})
 		return this
 	}
 
-	send<T extends Bridge.Base.Send>(send: T) {
-		console.log("\u001b[32m[ipc.send]\u001b[0m", send.ch, send.id /*, send.data*/)
-		this.browser.webContents.send(send.ch, send.id, send.data)
+	send<T extends keyof Bridge.BrowserToRenderer>(
+		ch: T,
+		i: Bridge.BrowserToRenderer[T][0],
+		data: Bridge.BrowserToRenderer[T][1],
+	) {
+		console.log("\u001b[32m[ipc.send]\u001b[0m", ch, i /*, data*/)
+		this.browser.webContents.send(ch, i, data)
 	}
 
 	find(option: Bridge.Modal.Open.DataFind): Promise<Bridge.Modal.Event.ResultFind | null> {

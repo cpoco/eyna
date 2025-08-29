@@ -8,14 +8,14 @@ export async function Package(arch) {
 	return electron_builder.build({
 		projectDir: __top,
 		config: {
-			// https://www.electron.build/generated/platformspecificbuildoptions
+			// https://www.electron.build/configuration
 			artifactName: "${productName}-${version}-${os}-${arch}.${ext}",
 			files: {
 				from: __build,
 			},
 			asar: false,
 			electronLanguages: "en-US",
-			// https://www.electron.build/configuration/win
+			// https://www.electron.build/win
 			win: {
 				target: {
 					target: "7z",
@@ -23,7 +23,7 @@ export async function Package(arch) {
 				},
 				icon: path.join(__top, "src", "app", "asset", "icon.ico"),
 			},
-			// https://www.electron.build/configuration/mac
+			// https://www.electron.build/mac
 			mac: {
 				target: {
 					target: "7z",

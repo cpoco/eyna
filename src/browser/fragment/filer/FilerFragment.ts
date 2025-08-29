@@ -83,7 +83,7 @@ export class FilerFragment extends AbstractFragment {
 
 	private ipc() {
 		root
-			.on(Bridge.List.Dom.CH, (i: number, data: Bridge.List.Dom.Data) => {
+			.on(Bridge.List.Dom.CH, (i, data) => {
 				if (data.event == "mounted") {
 					this.core[i]?.mounted(data.h, Style.Dynamic.lineHeight)
 				}
@@ -91,7 +91,7 @@ export class FilerFragment extends AbstractFragment {
 					this.core[i]?.resized(data.h)
 				}
 			})
-			.on(Bridge.List.Drag.CH, (_i: number, data: Bridge.List.Drag.Data) => {
+			.on(Bridge.List.Drag.CH, (_i, data) => {
 				root.drag(data.full)
 			})
 	}
