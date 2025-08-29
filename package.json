@@ -12,7 +12,7 @@
 		"@eyna/util": "workspace:*",
 		"@vue/runtime-dom": "3.5.20",
 		"codemirror": "6.0.2",
-		"electron": "37.3.1",
+		"electron": "37.4.0",
 		"electron-builder": "25.1.8",
 		"esbuild": "0.25.9",
 		"monaco-editor": "0.50.0",
