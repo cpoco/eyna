@@ -10,9 +10,9 @@
 	"devDependencies": {
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.21",
+		"@vue/runtime-dom": "3.5.22",
 		"codemirror": "6.0.2",
-		"electron": "38.1.2",
+		"electron": "38.2.0",
 		"electron-builder": "25.1.8",
 		"esbuild": "0.25.10",
 		"monaco-editor": "0.50.0",
