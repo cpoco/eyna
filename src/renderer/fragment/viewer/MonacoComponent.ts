@@ -1,5 +1,10 @@
 /// <reference types="monaco-editor/monaco.d.ts" />
 
+// @types/requirejs
+declare const require: {
+	(modules: string[], ready: Function): void
+}
+
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
@@ -29,7 +34,7 @@ export const V = vue.defineComponent({
 		let model: monaco.editor.ITextModel | null = null
 		let editor: monaco.editor.IStandaloneCodeEditor | null = null
 
-		vue.onMounted(() => {
+		const ready = () => {
 			head.value = `${props.size.toLocaleString()} byte`
 			model = monaco.editor.createModel(
 				"",
@@ -78,6 +83,10 @@ export const V = vue.defineComponent({
 					editor?.focus()
 					model?.setValue(text)
 				})
+		}
+
+		vue.onMounted(() => {
+			require(["vs/editor/editor.main"], ready)
 		})
 
 		vue.onBeforeUnmount(() => {

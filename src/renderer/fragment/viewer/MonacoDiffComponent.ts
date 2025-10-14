@@ -1,5 +1,10 @@
 /// <reference types="monaco-editor/monaco.d.ts" />
 
+// @types/requirejs
+declare const require: {
+	(modules: string[], ready: Function): void
+}
+
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
@@ -38,7 +43,7 @@ export const V = vue.defineComponent({
 		let modified: monaco.editor.ITextModel | null = null
 		let editor: monaco.editor.IStandaloneDiffEditor | null = null
 
-		vue.onMounted(() => {
+		const ready = () => {
 			head.value = `${props.original_size.toLocaleString()} byte`
 				+ ` | ${props.modified_size.toLocaleString()} byte`
 			original = monaco.editor.createModel(
@@ -109,6 +114,10 @@ export const V = vue.defineComponent({
 					original?.setValue(text[0])
 					modified?.setValue(text[1])
 				})
+		}
+
+		vue.onMounted(() => {
+			require(["vs/editor/editor.main"], ready)
 		})
 
 		vue.onBeforeUnmount(() => {

@@ -57,8 +57,16 @@ export async function Check() {
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()
-	await fs.mkdir(outdir, { recursive: true })
-	await fs.cp(path.join(__top, "node_modules/monaco-editor/min/vs"), path.join(outdir, "vs"), { recursive: true })
+	await fs.cp(
+		path.join(__top, "node_modules/monaco-editor/min/vs"),
+		path.join(outdir, "vs"),
+		{ recursive: true },
+	)
+	await fs.cp(
+		path.join(__top, "node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf"),
+		path.join(outdir, "vs/base/browser/ui/codicons/codicon/codicon.ttf"),
+		{ recursive: true },
+	)
 
 	let common = {
 		// define: {
