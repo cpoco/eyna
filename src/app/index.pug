@@ -2,11 +2,12 @@
 - var _script  = "script-src 'self';"
 - var _style   = "style-src 'self' 'unsafe-inline';"
 - var _img     = "img-src 'self' data: eyna:;"
-- var _font    = "font-src 'self';"
+- var _font    = "font-src 'self' data:;"
 - var _connect = "connect-src 'self' eyna:;"
 - var _media   = "media-src 'self';"
 - var _frame   = "frame-src file:;"
 - var _object  = "object-src file:;"
+- var _worker  = "worker-src blob:;"
 
 doctype
 html
@@ -14,10 +15,9 @@ html
 		meta(charset="utf-8")
 		meta(
 			http-equiv="Content-Security-Policy",
-			content=_default + _script + _style + _img + _font + _connect + _media + _frame + _object
+			content=_default + _script + _style + _img + _font + _connect + _media + _frame + _object + _worker
 		)
 		link(rel="stylesheet", href="style.css")
 		script(async, type="module", src="renderer.mjs")
 		script(defer, src="vs/loader.js")
-		script(defer, src="vs/editor/editor.main.js")
 	body
