@@ -50,9 +50,9 @@ static void compare_async(uv_work_t* req)
 	constexpr size_t KB = 1024;
 	constexpr size_t MB = 1024 * KB;
 	size_t size =
-		f1.size <=   1 * MB ?  4 * KB :
-		f1.size <=  10 * MB ? 16 * KB :
-		f1.size <= 100 * MB ? 64 * KB : 256 * KB;
+		static_cast<size_t>(f1.size) <=   1 * MB ?  4 * KB :
+		static_cast<size_t>(f1.size) <=  10 * MB ? 16 * KB :
+		static_cast<size_t>(f1.size) <= 100 * MB ? 64 * KB : 256 * KB;
 
 	std::vector<char> buffer1(size);
 	std::vector<char> buffer2(size);

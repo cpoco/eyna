@@ -23,7 +23,7 @@ void cleanup(void* arg)
 	#endif
 }
 
-void init(v8::Local<v8::Object> exports)
+void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* context)
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
