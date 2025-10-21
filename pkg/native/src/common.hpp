@@ -53,29 +53,23 @@
 #define ERROR_INVALID_PATH     V("relative or traversal paths are not allowed")
 #define ERROR_FAILED           V("failed")
 
-/*
-#include <stdio.h>
-void _println(const _string_t& str)
-{
-	#if _OS_WIN_
-		_putws(str.c_str());
-	#elif _OS_MAC_
-		puts(str.c_str());
-	#endif
-}
-*/
-
 _string_t to_string(const v8::Local<v8::String>& str)
 {
 	#if _OS_WIN_
 		size_t size = str->Length();
+		if (size == 0) {
+			return _string_t();
+		}
 		_string_t buff(size, '\0');
-		str->WriteV2(ISOLATE, 0, size, (uint16_t*)&buff[0]);
+		str->WriteV2(ISOLATE, 0, buff.size(), (uint16_t*)&buff[0]);
 		return buff;
 	#elif _OS_MAC_
 		size_t size = str->Utf8LengthV2(ISOLATE);
+		if (size == 0) {
+			return _string_t();
+		}
 		_string_t buff(size, '\0');
-		str->WriteUtf8V2(ISOLATE, &buff[0], size);
+		str->WriteUtf8V2(ISOLATE, &buff[0], buff.size());
 		return buff;
 	#endif
 }
