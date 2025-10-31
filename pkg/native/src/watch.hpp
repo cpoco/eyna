@@ -124,7 +124,7 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	watch_map.add(id, abst, v8::Local<v8::Function>::Cast(info[2]));
+	watch_map.add(id, abst, info[2].As<v8::Function>());
 
 	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }
