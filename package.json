@@ -26,7 +26,6 @@
 		"dompurify": "3.3"
 	},
 	"scripts": {
-		"q": "node scripts/ql.mjs",
 		"b": "node scripts/build.mjs",
 		"p": "node scripts/package.mjs",
 		"s": "electron ./build"
