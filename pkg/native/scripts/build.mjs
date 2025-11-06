@@ -6,11 +6,8 @@ const __top = path.join(import.meta.dirname, "..")
 const __cache = path.join(__top, "cache")
 
 export async function BuildNode(version, arch) {
-	if (!version) {
-		version = process.versions.node
-	}
-	if (!arch) {
-		arch = process.arch
+	if (!version || !arch) {
+		throw new Error("version and arch are required")
 	}
 
 	const cmd = [
@@ -30,11 +27,8 @@ export async function BuildNode(version, arch) {
 }
 
 export async function BuildElectron(version, arch) {
-	if (!version) {
-		throw new Error("version is required")
-	}
-	if (!arch) {
-		arch = process.arch
+	if (!version || !arch) {
+		throw new Error("version and arch are required")
 	}
 
 	const cmd = [

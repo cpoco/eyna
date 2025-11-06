@@ -28,9 +28,9 @@ jobs:
       - run: |
           npm ci --omit=optional
       - run: |
-          npm run b -- ${{ matrix.arch }}
+          npm run b
       - run: |
-          npm run p -- ${{ matrix.arch }}
+          npm run p
       - uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.sha }}

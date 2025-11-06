@@ -1,6 +1,5 @@
 import * as pk from "./_package.mjs"
 
-const arch = process.argv?.[2] ?? process.arch
-console.log(`package (${arch})\n`)
+console.log(`package (${process.arch})\n`)
 
-pk.Package(arch)
+pk.Package()

@@ -11,11 +11,11 @@ const outdir = path.join(__build, "bin")
 
 const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 
-export async function Build(arch) {
+export async function Build() {
 	let _time = perf_hooks.performance.now()
 	await fs.mkdir(outdir, { recursive: true })
 
-	const outfile = await BuildElectron(electron.version, arch)
+	const outfile = await BuildElectron(electron.version, process.arch)
 
 	await fs.cp(outfile, path.join(outdir, "native.node"))
 

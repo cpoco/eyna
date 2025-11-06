@@ -4,7 +4,7 @@ import path from "node:path"
 const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
-export async function Package(arch) {
+export async function Package() {
 	return electron_builder.build({
 		projectDir: __top,
 		config: {
@@ -19,7 +19,7 @@ export async function Package(arch) {
 			win: {
 				target: {
 					target: "7z",
-					arch: arch,
+					arch: process.arch,
 				},
 				icon: path.join(__top, "src", "app", "asset", "icon.ico"),
 			},
@@ -27,7 +27,7 @@ export async function Package(arch) {
 			mac: {
 				target: {
 					target: "7z",
-					arch: arch,
+					arch: process.arch,
 				},
 				icon: path.join(__top, "src", "app", "asset", "icon.icns"),
 				identity: null,
