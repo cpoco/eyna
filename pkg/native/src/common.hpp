@@ -33,6 +33,11 @@
 #define CONTEXT v8::Isolate::GetCurrent()->GetCurrentContext()
 
 #if _OS_WIN_
+	static_assert(sizeof(wchar_t)  == sizeof(uint16_t) , "wchar_t and uint16_t must have same size");
+	static_assert(alignof(wchar_t) == alignof(uint16_t), "wchar_t and uint16_t must have same alignment");
+#endif
+
+#if _OS_WIN_
 	#define V(s)                        L ## s
 	typedef wchar_t                     _char_t;
 	typedef std::basic_string<_char_t>  _string_t;
@@ -48,27 +53,23 @@
 #define ERROR_INVALID_PATH     V("relative or traversal paths are not allowed")
 #define ERROR_FAILED           V("failed")
 
-/*
-#include <stdio.h>
-void _println(const _string_t& str)
-{
-	#if _OS_WIN_
-		_putws(str.c_str());
-	#elif _OS_MAC_
-		puts(str.c_str());
-	#endif
-}
-*/
-
 _string_t to_string(const v8::Local<v8::String>& str)
 {
 	#if _OS_WIN_
-		_string_t buff(str->Length(), '\0');
-		str->Write(ISOLATE, (uint16_t*)&buff[0], 0, -1, v8::String::NO_NULL_TERMINATION);
+		size_t size = str->Length();
+		if (size == 0) {
+			return _string_t();
+		}
+		_string_t buff(size, '\0');
+		str->WriteV2(ISOLATE, 0, buff.size(), (uint16_t*)&buff[0]);
 		return buff;
 	#elif _OS_MAC_
-		_string_t buff(str->Utf8Length(ISOLATE), '\0');
-		str->WriteUtf8(ISOLATE, &buff[0], -1, nullptr, v8::String::NO_NULL_TERMINATION);
+		size_t size = str->Utf8LengthV2(ISOLATE);
+		if (size == 0) {
+			return _string_t();
+		}
+		_string_t buff(size, '\0');
+		str->WriteUtf8V2(ISOLATE, &buff[0], buff.size());
 		return buff;
 	#endif
 }

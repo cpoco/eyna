@@ -118,13 +118,13 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
 
-	std::filesystem::path abst = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
+	std::filesystem::path abst = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(abst) || is_traversal(abst)) {
 		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
-	watch_map.add(id, abst, v8::Local<v8::Function>::Cast(info[2]));
+	watch_map.add(id, abst, info[2].As<v8::Function>());
 
 	info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, true));
 }

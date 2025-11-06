@@ -50,9 +50,9 @@ static void compare_async(uv_work_t* req)
 	constexpr size_t KB = 1024;
 	constexpr size_t MB = 1024 * KB;
 	size_t size =
-		f1.size <=   1 * MB ?  4 * KB :
-		f1.size <=  10 * MB ? 16 * KB :
-		f1.size <= 100 * MB ? 64 * KB : 256 * KB;
+		static_cast<size_t>(f1.size) <=   1 * MB ?  4 * KB :
+		static_cast<size_t>(f1.size) <=  10 * MB ? 16 * KB :
+		static_cast<size_t>(f1.size) <= 100 * MB ? 64 * KB : 256 * KB;
 
 	std::vector<char> buffer1(size);
 	std::vector<char> buffer2(size);
@@ -112,14 +112,14 @@ void compare(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst1 = generic_path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
+	work->abst1 = generic_path(to_string(info[0].As<v8::String>()));
 	if (is_relative(work->abst1) || is_traversal(work->abst1)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
 
-	work->abst2 = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
+	work->abst2 = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(work->abst2) || is_traversal(work->abst2)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;

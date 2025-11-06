@@ -121,14 +121,14 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->src = generic_path(to_string(info[0]->ToString(CONTEXT).ToLocalChecked()));
+	work->src = generic_path(to_string(info[0].As<v8::String>()));
 	if (is_relative(work->src) || is_traversal(work->src)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
 
-	work->dst = generic_path(to_string(info[1]->ToString(CONTEXT).ToLocalChecked()));
+	work->dst = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(work->dst) || is_traversal(work->dst)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;

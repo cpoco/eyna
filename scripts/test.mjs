@@ -60,7 +60,22 @@ for (const f of ff) {
 	await fs.mkdir(emoji)
 	await fs.mkdir(path.join(emoji, "⭐"))
 	await fs.mkdir(path.join(emoji, "🌈"))
+	await fs.mkdir(path.join(emoji, "🏳️"))
 	await fs.mkdir(path.join(emoji, "🧪"))
+}
+
+{
+	const emoji = path.join(wd, "EMOJI-ZWJ")
+	await fs.mkdir(emoji)
+	await fs.mkdir(path.join(emoji, "🍋‍🟩"))
+	await fs.mkdir(path.join(emoji, "🏳️‍🌈"))
+	await fs.mkdir(path.join(emoji, "👁️‍🗨️"))
+	await fs.mkdir(path.join(emoji, "🐦‍🔥"))
+	await fs.mkdir(path.join(emoji, "😮‍💨"))
+	await fs.mkdir(path.join(emoji, "😵‍💫"))
+	await fs.mkdir(path.join(emoji, "😶‍🌫️"))
+	await fs.mkdir(path.join(emoji, "🙂‍↔️"))
+	await fs.mkdir(path.join(emoji, "🙂‍↕️"))
 }
 
 {

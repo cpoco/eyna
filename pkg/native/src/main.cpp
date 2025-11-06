@@ -23,12 +23,18 @@ void cleanup(void* arg)
 	#endif
 }
 
-void init(v8::Local<v8::Object> exports)
+void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* context)
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
 	#if _OS_WIN_ && !defined(USING_ELECTRON_CONFIG_GYPI)
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	#endif
+
+	#if _OS_WIN_
+		setlocale(LC_CTYPE, ".UTF-8");
+	#elif _OS_MAC_
+		setlocale(LC_CTYPE, "C.UTF-8");
 	#endif
 
 	NODE_SET_METHOD(exports, "compare", compare);

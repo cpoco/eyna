@@ -4,8 +4,7 @@ import * as native from "./_native.mjs"
 import * as pug from "./_pug.mjs"
 import * as stylus from "./_stylus.mjs"
 
-const arch = process.argv?.[2] ?? process.arch
-console.log(`build (${arch})\n`)
+console.log(`build (${process.arch})\n`)
 
 app.Node()
 app.Conf()
@@ -13,6 +12,6 @@ app.Check()
 app.Build()
 extension.Check()
 extension.Build()
-native.Build(arch)
+native.Build()
 pug.Build()
 stylus.Build()
