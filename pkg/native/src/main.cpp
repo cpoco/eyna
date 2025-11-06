@@ -31,6 +31,12 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
+	#if _OS_WIN_
+		setlocale(LC_CTYPE, ".UTF-8");
+	#elif _OS_MAC_
+		setlocale(LC_CTYPE, "C.UTF-8");
+	#endif
+
 	NODE_SET_METHOD(exports, "compare", compare);
 	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
