@@ -72,7 +72,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 			}
 		);
 	}
-	catch (std::filesystem::filesystem_error& e) {
+	catch (...) {
 		work->e++;
 	}
 }

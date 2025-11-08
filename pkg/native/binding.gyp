@@ -13,14 +13,10 @@
 				["OS=='win'", {
 					"msvs_settings": {
 						"VCCLCompilerTool": {
-							"ExceptionHandling": "2", # /EHa
 							"AdditionalOptions": [
+								"/EHa",
 								"/std:c++20",
-							],
-							"DisableSpecificWarnings": [
-								"4819",
-								"4101",
-								"4996",
+								"/utf-8",
 							],
 						},
 					},
@@ -46,14 +42,6 @@
 						],
 					},
 				}],
-				# linux
-				# ["OS=='linux'", {
-				# 	"cflags_cc": [
-				# 		"-std=c++17",
-				# 		"-fexceptions",
-				# 		"-Wno-unused-result",
-				# 	] 
-				# }],
 			],
 		}
 	]
