@@ -49,7 +49,7 @@ export class FilerFragment extends AbstractFragment {
 		this.ipc()
 		this.commandExtension()
 		this.commandList()
-		this.commandListImage()
+		this.commandListMedia()
 	}
 
 	exit(): string[] {
@@ -480,9 +480,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 	}
 
-	private commandListImage() {
+	private commandListMedia() {
 		this
-			.on2("list.imageup", (active, _target) => {
+			.on2("list.mediaup", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -494,7 +494,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i
@@ -504,7 +504,7 @@ export class FilerFragment extends AbstractFragment {
 				}
 				return Promise.resolve()
 			})
-			.on2("list.imagedown", (active, _target) => {
+			.on2("list.mediadown", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -517,7 +517,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i

@@ -33,6 +33,18 @@ export const V = vue.defineComponent({
 			})
 		})
 
+		vue.watch(
+			() => {
+				return props.path
+			},
+			(v) => {
+				vue.nextTick(() => {
+					src.value!.src = url.fileUrl(v)
+					aud.value!.load()
+				})
+			},
+		)
+
 		vue.onBeforeUnmount(() => {
 			src.value!.src = ""
 			aud.value!.load()
