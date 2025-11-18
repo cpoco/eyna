@@ -1,7 +1,8 @@
+import { type Configuration } from "app-builder-lib"
 import electron_builder from "electron-builder"
 import path from "node:path"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
 export async function Package() {
@@ -32,6 +33,6 @@ export async function Package() {
 				icon: path.join(__top, "src", "app", "asset", "icon.icns"),
 				identity: null,
 			},
-		},
+		} as Configuration,
 	})
 }
