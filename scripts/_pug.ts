@@ -1,8 +1,10 @@
+/// <reference types="./types.d.ts" />
+
 import fs from "node:fs/promises"
 import path from "node:path"
 import * as pug from "pug"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "app")
