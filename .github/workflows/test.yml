@@ -27,7 +27,7 @@ jobs:
       - run: |
           npm ci --omit=optional
       - run: |
-          node pkg/native/scripts/build_node.mjs
+          npx tsx pkg/native/scripts/build_node.ts
       - run: |
-          node scripts/test.mjs
-          node pkg/native/test/test.mjs
+          npx tsx scripts/test.ts
+          npx tsx pkg/native/test/test.ts

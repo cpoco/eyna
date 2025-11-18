@@ -2,10 +2,10 @@ import child_process from "node:child_process"
 import path from "node:path"
 import util from "node:util"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __cache = path.join(__top, "cache")
 
-export async function BuildNode(version, arch) {
+export async function BuildNode(version: string, arch: string) {
 	if (!version || !arch) {
 		throw new Error("version and arch are required")
 	}
@@ -26,7 +26,7 @@ export async function BuildNode(version, arch) {
 	return path.join(__top, "build", "Release", "native.node")
 }
 
-export async function BuildElectron(version, arch) {
+export async function BuildElectron(version: string, arch: string) {
 	if (!version || !arch) {
 		throw new Error("version and arch are required")
 	}

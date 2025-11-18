@@ -18,6 +18,7 @@
 		"monaco-editor": "0.54.0",
 		"pug": "3.0.3",
 		"stylus": "0.64.0",
+		"tsx": "4.20.6",
 		"typescript": "5.9.3"
 	},
 	"overrides": {
@@ -26,8 +27,8 @@
 		"dompurify": "3.3"
 	},
 	"scripts": {
-		"b": "node scripts/build.mjs",
-		"p": "node scripts/package.mjs",
+		"b": "tsx scripts/build.ts",
+		"p": "tsx scripts/package.ts",
 		"s": "electron ./build"
 	}
 }

@@ -1,10 +1,10 @@
-import { BuildElectron } from "@eyna/native/scripts/build.mjs"
+import { BuildElectron } from "@eyna/native/scripts/build.ts"
 import fs from "node:fs/promises"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "bin")
