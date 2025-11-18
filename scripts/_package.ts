@@ -1,5 +1,5 @@
 import { type Configuration } from "app-builder-lib"
-import electron_builder from "electron-builder"
+import * as electron_builder from "electron-builder"
 import path from "node:path"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
