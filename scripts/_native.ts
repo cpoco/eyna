@@ -16,7 +16,7 @@ export async function Build() {
 	let _time = perf_hooks.performance.now()
 
 	const outfile = cmake("electron", electron.version)
-	
+
 	await fs.cp(outfile, path.join(outdir, "native.node"))
 
 	console.log(`native ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)

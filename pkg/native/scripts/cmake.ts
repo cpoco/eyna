@@ -1,4 +1,4 @@
-import child_process from "node:child_process"
+import child_process, { type IOType } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
@@ -8,7 +8,7 @@ const __build = path.join(__top, "build")
 fs.rmSync(__build, { recursive: true, force: true })
 fs.mkdirSync(__build, { recursive: true })
 
-export function cmake(name: "node" | "electron", version: string): string {
+export function cmake(name: "node" | "electron", version: string, stdout: IOType = "ignore"): string {
 	child_process.spawnSync(
 		"cmake",
 		[
@@ -27,7 +27,7 @@ export function cmake(name: "node" | "electron", version: string): string {
 			"..",
 		],
 		{
-			stdio: "inherit",
+			stdio: ["ignore", stdout, "inherit"],
 			cwd: __build,
 		},
 	)
@@ -47,7 +47,7 @@ export function cmake(name: "node" | "electron", version: string): string {
 			"--verbose",
 		],
 		{
-			stdio: "inherit",
+			stdio: ["ignore", stdout, "inherit"],
 			cwd: __build,
 		},
 	)
@@ -67,7 +67,7 @@ export function cmake(name: "node" | "electron", version: string): string {
 			"--verbose",
 		],
 		{
-			stdio: "inherit",
+			stdio: ["ignore", stdout, "inherit"],
 			cwd: __build,
 		},
 	)
