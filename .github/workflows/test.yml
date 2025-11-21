@@ -27,7 +27,7 @@ jobs:
       - run: |
           npm ci --omit=optional
       - run: |
-          npx tsx pkg/native/scripts/build_node2.ts
+          npx tsx pkg/native/scripts/cmake_node.ts
       - run: |
           npx tsx scripts/test.ts
           npx tsx pkg/native/test/test.ts
