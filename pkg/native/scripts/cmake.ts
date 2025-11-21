@@ -1,0 +1,74 @@
+import child_process from "node:child_process"
+import fs from "node:fs"
+import path from "node:path"
+
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __build = path.join(__top, "build")
+
+fs.rmSync(__build, { recursive: true, force: true })
+fs.mkdirSync(__build, { recursive: true })
+
+export function cmake(name: "node" | "electron", version: string) {
+	child_process.spawnSync(
+		"cmake",
+		[
+			"--fresh",
+
+			`-DNODE_RUNTIME_NAME=${name}`,
+			`-DNODE_RUNTIME_VERSION=${version}`,
+
+			...(process.platform == "darwin"
+				? [
+					"-G",
+					"Ninja Multi-Config",
+				]
+				: []),
+
+			"..",
+		],
+		{
+			stdio: "inherit",
+			cwd: __build,
+		},
+	)
+
+	child_process.spawnSync(
+		"cmake",
+		[
+			"--build",
+			".",
+
+			"--config",
+			"Release",
+
+			"--target",
+			"clean",
+
+			"--verbose",
+		],
+		{
+			stdio: "inherit",
+			cwd: __build,
+		},
+	)
+
+	child_process.spawnSync(
+		"cmake",
+		[
+			"--build",
+			".",
+
+			"--config",
+			"Release",
+
+			"--target",
+			"native",
+
+			"--verbose",
+		],
+		{
+			stdio: "inherit",
+			cwd: __build,
+		},
+	)
+}

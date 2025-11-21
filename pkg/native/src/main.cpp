@@ -18,7 +18,7 @@
 
 void cleanup(void* arg)
 {
-	#if _OS_WIN_ && !defined(USING_ELECTRON_CONFIG_GYPI)
+	#if _OS_WIN_ && !defined(ELECTRON_BUILD)
 		CoUninitialize();
 	#endif
 }
@@ -27,7 +27,7 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
-	#if _OS_WIN_ && !defined(USING_ELECTRON_CONFIG_GYPI)
+	#if _OS_WIN_ && !defined(ELECTRON_BUILD)
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
@@ -57,3 +57,19 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 }
 
 NODE_MODULE(native, init)
+
+// delay load hook
+#if _OS_WIN_
+#include <delayimp.h>
+#include <windows.h>
+static FARPROC WINAPI delay_load_hook(unsigned dliNotify, PDelayLoadInfo pdli) {
+	if (dliNotify != dliNotePreLoadLibrary) {
+		return NULL;
+	}
+	if (_stricmp(pdli->szDll, "node.exe") != 0) {
+		return NULL;
+	}
+	return (FARPROC)GetModuleHandle(NULL);
+}
+decltype(__pfnDliNotifyHook2) __pfnDliNotifyHook2 = delay_load_hook;
+#endif // _OS_WIN_
