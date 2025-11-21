@@ -8,7 +8,7 @@ const __build = path.join(__top, "build")
 fs.rmSync(__build, { recursive: true, force: true })
 fs.mkdirSync(__build, { recursive: true })
 
-export function cmake(name: "node" | "electron", version: string) {
+export function cmake(name: "node" | "electron", version: string): string {
 	child_process.spawnSync(
 		"cmake",
 		[
@@ -71,4 +71,6 @@ export function cmake(name: "node" | "electron", version: string) {
 			cwd: __build,
 		},
 	)
+
+	return path.join(__top, "bin", "native.node")
 }
