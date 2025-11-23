@@ -1,7 +1,6 @@
 {
-	"name": "@eyna/native",
+	"name": "@eyna/lib",
 	"private": true,
-	"types": "types/index.d.ts",
 	"devDependencies": {
 		"tsx": "4.20.6"
 	}

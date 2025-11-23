@@ -14,6 +14,7 @@ export function cmake(name: "node" | "electron", version: string, stdout: IOType
 		[
 			"--fresh",
 
+			`-DVCPKG_TRIPLET=${process.platform}-${process.arch}`,
 			`-DNODE_RUNTIME_NAME=${name}`,
 			`-DNODE_RUNTIME_VERSION=${version}`,
 
