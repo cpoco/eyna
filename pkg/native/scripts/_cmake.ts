@@ -5,10 +5,10 @@ import path from "node:path"
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
-fs.rmSync(__build, { recursive: true, force: true })
-fs.mkdirSync(__build, { recursive: true })
+export function configure(name: "node" | "electron", version: string, stdout: IOType = "ignore"): void {
+	fs.rmSync(__build, { recursive: true, force: true })
+	fs.mkdirSync(__build, { recursive: true })
 
-export function cmake(name: "node" | "electron", version: string, stdout: IOType = "ignore"): string {
 	child_process.spawnSync(
 		"cmake",
 		[
@@ -32,27 +32,9 @@ export function cmake(name: "node" | "electron", version: string, stdout: IOType
 			cwd: __build,
 		},
 	)
+}
 
-	child_process.spawnSync(
-		"cmake",
-		[
-			"--build",
-			".",
-
-			"--config",
-			"Release",
-
-			"--target",
-			"clean",
-
-			"--verbose",
-		],
-		{
-			stdio: ["ignore", stdout, "inherit"],
-			cwd: __build,
-		},
-	)
-
+export function build(stdout: IOType = "ignore"): string {
 	child_process.spawnSync(
 		"cmake",
 		[

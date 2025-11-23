@@ -12,14 +12,21 @@ const runtimeBase: Record<string, string> = {
 	electron: "https://artifacts.electronjs.org/headers/dist",
 }
 
-export async function headers(runtime: "node" | "electron", version: string) {
+export async function headers(runtime: "node" | "electron", version: string, fresh: boolean = false): Promise<void> {
 	if (!(runtime in runtimeBase)) {
 		throw new Error("unsupported runtime")
 	}
 
 	const outDir = path.join(__cache, `${runtime}-${version}`)
-	fs.rmSync(outDir, { recursive: true, force: true })
-	fs.mkdirSync(outDir, { recursive: true })
+
+	if (fresh) {
+		await fs.promises.rm(outDir, { recursive: true, force: true })
+	}
+	else if (fs.existsSync(outDir)) {
+		return
+	}
+
+	await fs.promises.mkdir(outDir, { recursive: true })
 
 	const tarUrl = `${runtimeBase[runtime]}/v${version}/node-v${version}-headers.tar.gz`
 
@@ -56,7 +63,7 @@ export async function headers(runtime: "node" | "electron", version: string) {
 	const libUrl = `${runtimeBase[runtime]}/v${version}/${winArch}/node.lib`
 	const libOut = path.join(outDir, winArch, "node.lib")
 
-	fs.mkdirSync(path.dirname(libOut), { recursive: true })
+	await fs.promises.mkdir(path.dirname(libOut), { recursive: true })
 
 	try {
 		console.log("http", "GET", libUrl)

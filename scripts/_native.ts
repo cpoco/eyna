@@ -3,7 +3,7 @@ import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
-import { cmake } from "@eyna/native/scripts/_cmake.ts"
+import { configure, build } from "@eyna/native/scripts/_cmake.ts"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
@@ -15,7 +15,8 @@ const electron = module.createRequire(import.meta.url)(path.join(__top, "node_mo
 export async function Build() {
 	let _time = perf_hooks.performance.now()
 
-	const outfile = cmake("electron", electron.version)
+	configure("electron", electron.version)
+	const outfile = build()
 
 	await fs.cp(outfile, path.join(outdir, "native.node"))
 

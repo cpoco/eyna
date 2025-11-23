@@ -1,3 +1,4 @@
-import { cmake } from "./_cmake.ts"
+import { configure, build } from "./_cmake.ts"
 
-cmake("node", process.versions.node)
+configure("node", process.versions.node)
+build()
