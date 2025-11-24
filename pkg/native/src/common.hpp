@@ -168,5 +168,7 @@ bool compare_path(int depth, const std::filesystem::path& a, const std::filesyst
 }
 
 #include "common_attribute.hpp"
+#include "common_entry.hpp"
+#include "common_iterator.hpp"
 
 #endif // include guard
