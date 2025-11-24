@@ -5,7 +5,7 @@
 
 struct compare_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -108,7 +108,7 @@ void compare(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	compare_work* work = new compare_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -135,7 +135,7 @@ void compare(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->equal = false;
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, compare_async, compare_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, compare_async, compare_complete);
 }
 
 #endif // include guard

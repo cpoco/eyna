@@ -5,7 +5,7 @@
 
 struct get_icon_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -118,7 +118,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_icon_work* work = new get_icon_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -133,7 +133,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->size = 0;
 
-	uv_queue_work(uv_default_loop(), &work->request, get_icon_async, get_icon_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_icon_async, get_icon_complete);
 }
 
 #endif // include guard

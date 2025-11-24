@@ -5,7 +5,7 @@
 
 struct move_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -117,7 +117,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	move_work* work = new move_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -137,7 +137,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, move_async, move_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, move_async, move_complete);
 }
 
 #endif // include guard

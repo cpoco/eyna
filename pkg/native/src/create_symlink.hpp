@@ -5,7 +5,7 @@
 
 struct create_symlink_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -82,7 +82,7 @@ void create_symlink(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	create_symlink_work* work = new create_symlink_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -102,7 +102,7 @@ void create_symlink(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, create_symlink_async, create_symlink_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, create_symlink_async, create_symlink_complete);
 }
 
 #endif // include guard

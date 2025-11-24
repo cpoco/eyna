@@ -5,7 +5,7 @@
 
 struct move_to_trash_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -88,7 +88,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	move_to_trash_work* work = new move_to_trash_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -101,7 +101,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, move_to_trash_async, move_to_trash_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, move_to_trash_async, move_to_trash_complete);
 }
 
 #endif // include guard

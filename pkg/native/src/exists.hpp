@@ -5,7 +5,7 @@
 
 struct exists_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -55,7 +55,7 @@ void exists(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	exists_work* work = new exists_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -69,7 +69,7 @@ void exists(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->exists = false;
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, exists_async, exists_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, exists_async, exists_complete);
 }
 
 #endif // include guard

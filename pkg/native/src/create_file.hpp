@@ -5,7 +5,7 @@
 
 struct create_file_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -63,7 +63,7 @@ void create_file(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	create_file_work* work = new create_file_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -76,7 +76,7 @@ void create_file(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, create_file_async, create_file_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, create_file_async, create_file_complete);
 }
 
 #endif // include guard

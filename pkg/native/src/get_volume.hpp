@@ -11,7 +11,7 @@ struct _volume
 
 struct get_volume_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
 	v8::Persistent<v8::Promise::Resolver> promise;
 
@@ -87,13 +87,13 @@ void get_volume(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_volume_work* work = new get_volume_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
 	work->volumes.clear();
 
-	uv_queue_work(uv_default_loop(), &work->request, get_volume_async, get_volume_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_volume_async, get_volume_complete);
 }
 
 #endif // include guard
