@@ -13,7 +13,7 @@ class _watch_map
 		uv_fs_event_t* event;
 		int32_t id;
 		std::filesystem::path path; // generic_path
-		v8::Persistent<v8::Function> callback;
+		v8::Global<v8::Function> callback;
 	};
 
 	std::map<int32_t, _data*> map;
@@ -96,7 +96,6 @@ public:
 	{
 		_data* data = static_cast<_data*>(_event->data);
 
-		data->callback.Reset();
 		delete data->event;
 		delete data;
 	}
