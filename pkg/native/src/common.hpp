@@ -14,9 +14,9 @@
 #include <map>
 #include <regex>
 #include <string>
-//#include <thread>
-//#include <mutex>
-//#include <queue>
+#include <thread>
+#include <mutex>
+#include <queue>
 
 #include <node.h>
 #include <node_buffer.h>

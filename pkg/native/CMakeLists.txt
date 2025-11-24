@@ -30,6 +30,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/include/node
+  ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/include
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
