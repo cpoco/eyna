@@ -7,7 +7,7 @@ struct get_directory_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
@@ -113,7 +113,6 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
-	work->promise.Reset();
 
 	delete work;
 }

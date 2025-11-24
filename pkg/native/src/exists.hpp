@@ -7,7 +7,7 @@ struct exists_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	bool exists;
@@ -32,11 +32,9 @@ static void exists_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
 	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Boolean::New(ISOLATE, work->exists));
-		work->promise.Reset();
 	}
 
 	delete work;

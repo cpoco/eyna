@@ -13,7 +13,7 @@ struct get_volume_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::vector<_volume> volumes;
 };
@@ -69,7 +69,6 @@ static void get_volume_complete(uv_work_t* req, int status)
 	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, array);
-	work->promise.Reset();
 
 	delete work;
 }

@@ -7,7 +7,7 @@ struct get_icon_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	_string_t abst; // generic_path
 	char* data;
@@ -99,7 +99,6 @@ static void get_icon_complete(uv_work_t* req, int status)
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
-	work->promise.Reset();
 
 	delete[] work->data;
 	delete work;

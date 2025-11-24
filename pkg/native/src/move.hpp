@@ -7,7 +7,7 @@ struct move_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path src; // generic_path
 	std::filesystem::path dst; // generic_path
@@ -94,11 +94,9 @@ static void move_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
 	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
-		work->promise.Reset();
 	}
 
 	delete work;

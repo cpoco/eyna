@@ -7,7 +7,7 @@ struct compare_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst1; // generic_path
 	std::filesystem::path abst2; // generic_path
@@ -85,11 +85,9 @@ static void compare_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
 	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Boolean::New(ISOLATE, work->equal));
-		work->promise.Reset();
 	}
 
 	delete work;

@@ -7,7 +7,7 @@ struct get_path_attribute_work
 {
 	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	std::vector<_attribute> v;
@@ -85,7 +85,6 @@ static void get_path_attribute_complete(uv_work_t* req, int status)
 	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, array);
-	work->promise.Reset();
 
 	delete work;
 }
