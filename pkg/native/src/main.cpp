@@ -18,7 +18,7 @@
 
 void cleanup(void* arg)
 {
-	#if _OS_WIN_ && !defined(ELECTRON_BUILD)
+	#if OS_WIN64 && !defined(ELECTRON_BUILD)
 		CoUninitialize();
 	#endif
 }
@@ -27,13 +27,13 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
 
-	#if _OS_WIN_ && !defined(ELECTRON_BUILD)
+	#if OS_WIN64 && !defined(ELECTRON_BUILD)
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	#endif
 
-	#if _OS_WIN_
+	#if OS_WIN64
 		setlocale(LC_CTYPE, ".UTF-8");
-	#elif _OS_MAC_
+	#elif OS_MAC64
 		setlocale(LC_CTYPE, "C.UTF-8");
 	#endif
 
@@ -59,7 +59,7 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 NODE_MODULE(native, init)
 
 // delay load hook
-#if _OS_WIN_
+#if OS_WIN64
 #include <delayimp.h>
 #include <windows.h>
 static FARPROC WINAPI delay_load_hook(unsigned dliNotify, PDelayLoadInfo pdli) {
@@ -72,4 +72,4 @@ static FARPROC WINAPI delay_load_hook(unsigned dliNotify, PDelayLoadInfo pdli) {
 	return (FARPROC)GetModuleHandle(NULL);
 }
 decltype(__pfnDliNotifyHook2) __pfnDliNotifyHook2 = delay_load_hook;
-#endif // _OS_WIN_
+#endif // OS_WIN64

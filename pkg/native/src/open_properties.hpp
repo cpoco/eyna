@@ -18,11 +18,11 @@ void open_properties(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		SHObjectProperties(NULL, SHOP_FILEPATH, abst.make_preferred().c_str(), NULL);
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSPasteboard* pboard = [NSPasteboard pasteboardWithUniqueName];
 		[pboard declareTypes:@[NSPasteboardTypeString] owner:nil];

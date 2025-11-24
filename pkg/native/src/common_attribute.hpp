@@ -1,7 +1,7 @@
 #ifndef NATIVE_COMMON_ATTRIBUTE
 #define NATIVE_COMMON_ATTRIBUTE
 
-#if _OS_WIN_
+#if OS_WIN64
 	typedef struct _REPARSE_DATA_BUFFER {
 		ULONG  ReparseTag;
 		USHORT ReparseDataLength;
@@ -72,7 +72,7 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
 
@@ -187,7 +187,7 @@ void attribute(_attribute& attribute)
 			}
 		}
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		struct stat st;
 

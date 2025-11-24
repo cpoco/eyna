@@ -76,9 +76,9 @@ public:
 		}
 
 		std::basic_string<char8_t> filename((char8_t*)_filename);
-		#if _OS_WIN_
+		#if OS_WIN64
 		int depth = std::count(filename.cbegin(), filename.cend(), u8'\\');
-		#elif _OS_MAC_
+		#elif OS_MAC64
 		int depth = std::count(filename.cbegin(), filename.cend(), u8'/');
 		#endif
 

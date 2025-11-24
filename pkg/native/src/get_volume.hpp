@@ -22,7 +22,7 @@ static void get_volume_async(uv_work_t *req)
 {
 	get_volume_work* work = static_cast<get_volume_work*>(req->data);
 
-	#if _OS_WIN_
+	#if OS_WIN64
 		DWORD bit = GetLogicalDrives();
 		for (int i = 0; i< 26; i++) {
 			if (bit & (1 << i)) {
@@ -33,7 +33,7 @@ static void get_volume_async(uv_work_t *req)
 				v.full = std::filesystem::path(v.name);
 			}
 		}
-	#elif _OS_MAC_
+	#elif OS_MAC64
 		NSArray* array = [[NSFileManager defaultManager] mountedVolumeURLsIncludingResourceValuesForKeys:nil options:NSVolumeEnumerationSkipHiddenVolumes];
 
 		for (NSURL* url in array) {

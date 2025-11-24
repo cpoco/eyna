@@ -43,7 +43,7 @@ static void copy_async(uv_work_t* req)
 	}
 	*/
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		_string_t src(work->src.c_str());
 		_string_t dst(work->dst.parent_path().c_str());
@@ -71,7 +71,7 @@ static void copy_async(uv_work_t* req)
 
 		fo->Release();
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSError* error = nil;
 		BOOL ret = [[NSFileManager defaultManager]

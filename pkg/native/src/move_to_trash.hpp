@@ -22,7 +22,7 @@ static void move_to_trash_async(uv_work_t* req)
 		return;
 	}
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
@@ -43,7 +43,7 @@ static void move_to_trash_async(uv_work_t* req)
 
 		fo->Release();
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 

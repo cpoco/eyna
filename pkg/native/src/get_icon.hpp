@@ -18,7 +18,7 @@ static void get_icon_async(uv_work_t* req)
 {
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
@@ -74,7 +74,7 @@ static void get_icon_async(uv_work_t* req)
 
 		DestroyIcon(file.hIcon);
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSImage* src = [[NSWorkspace sharedWorkspace] iconForFile:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 		NSImage* dst = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
