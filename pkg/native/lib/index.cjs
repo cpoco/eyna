@@ -1,5 +1,7 @@
 const native = require("../bin/native.node")
 
+const { Readable } = require("node:stream")
+
 module.exports = {
 	compare: (abstract_file1, abstract_file2) => {
 		return native.compare(abstract_file1, abstract_file2)
@@ -19,11 +21,17 @@ module.exports = {
 	exists: (abstract) => {
 		return native.exists(abstract)
 	},
+	getArchive: (abstract, base, depth = 0) => {
+		return native.getArchive(abstract, base, depth)
+	},
 	getAttribute: (abstract, base = "") => {
 		return native.getAttribute(abstract, base)
 	},
 	getDirectory: (abstract, base = "", mode = false, depth = 0, regexp = null) => {
 		return native.getDirectory(abstract, base, mode, depth, regexp)
+	},
+	getEntry: (abstract, path) => {
+		return native.getEntry(Readable, abstract, path)
 	},
 	getIcon: (abstract) => {
 		return native.getIcon(abstract)
