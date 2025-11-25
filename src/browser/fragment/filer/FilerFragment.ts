@@ -348,7 +348,10 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.File
 					) {
-						if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+						if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
+							// WIP
+						}
+						else if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Image,
 								mime: [],
