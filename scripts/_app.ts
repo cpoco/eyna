@@ -14,7 +14,6 @@ const base = __top
 
 export async function Node() {
 	const json = module.createRequire(import.meta.url)(path.join(__top, "package.json"))
-	await fs.mkdir(__build, { recursive: true })
 	return fs.writeFile(
 		path.join(__build, "package.json"),
 		JSON.stringify({
@@ -26,7 +25,6 @@ export async function Node() {
 }
 
 export async function Conf() {
-	await fs.mkdir(__build, { recursive: true })
 	return fs.cp(path.join(__top, "config"), path.join(__build, "config"), { recursive: true })
 }
 

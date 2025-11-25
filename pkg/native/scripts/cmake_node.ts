@@ -1,4 +1,13 @@
 import { build, configure } from "./_cmake.ts"
 
-configure("node", process.versions.node)
-build()
+Promise.resolve()
+	.then(() => {
+		return configure("node", process.versions.node, "inherit")
+	})
+	.then(() => {
+		return build("inherit")
+	})
+	.catch((err) => {
+		console.error(err)
+		process.exit(1)
+	})

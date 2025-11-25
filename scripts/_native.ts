@@ -15,10 +15,20 @@ const electron = module.createRequire(import.meta.url)(path.join(__top, "node_mo
 export async function Build() {
 	let _time = perf_hooks.performance.now()
 
-	configure("electron", electron.version)
-	const outfile = build()
-
-	await fs.cp(outfile, path.join(outdir, "native.node"))
+	Promise.resolve()
+		.then(() => {
+			return configure("electron", electron.version)
+		})
+		.then(() => {
+			return build()
+		})
+		.then((outfile: string) => {
+			return fs.cp(outfile, path.join(outdir, path.basename(outfile)))
+		})
+		.catch((err) => {
+			console.error(err)
+			process.exit(1)
+		})
 
 	console.log(`native ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
 }

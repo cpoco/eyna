@@ -12,6 +12,5 @@ const file = path.join(__top, "src/app/index.pug")
 const out = path.join(outdir, "index.html")
 
 export async function Build() {
-	await fs.mkdir(outdir, { recursive: true })
 	return fs.writeFile(out, pug.renderFile(file))
 }

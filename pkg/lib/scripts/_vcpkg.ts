@@ -9,7 +9,7 @@ export async function install(stdout: IOType = "ignore") {
 	await fs.promises.mkdir(__cache, { recursive: true })
 
 	return new Promise<void>((resolve, reject) => {
-		const proc = child_process.spawn(
+		child_process.spawn(
 			"vcpkg",
 			[
 				"install",
@@ -28,18 +28,19 @@ export async function install(stdout: IOType = "ignore") {
 				},
 			},
 		)
-
-		proc.on("close", (code) => {
-			if (code === 0) {
-				resolve()
-			}
-			else {
-				reject(new Error(`exit code ${code}`))
-			}
-		})
-
-		proc.on("error", (err) => {
-			reject(err)
-		})
+			.on("close", (code, signal) => {
+				if (code === 0) {
+					resolve()
+				}
+				else if (signal) {
+					reject(new Error(`signal ${signal}`))
+				}
+				else {
+					reject(new Error(`exit code ${code}`))
+				}
+			})
+			.on("error", (err) => {
+				reject(err)
+			})
 	})
 }

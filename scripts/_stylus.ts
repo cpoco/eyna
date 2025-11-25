@@ -31,7 +31,6 @@ async function render(str: string): Promise<string> {
 }
 
 export async function Build() {
-	await fs.mkdir(outdir, { recursive: true })
 	return fs.readFile(file)
 		.then((buff) => {
 			return render(buff.toString())

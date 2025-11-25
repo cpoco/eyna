@@ -41,7 +41,6 @@ export async function Check() {
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()
-	await fs.mkdir(outdir, { recursive: true })
 	return esbuild.build({
 		entryPoints: [
 			path.join(base, "src/fs.copy.ts"),
