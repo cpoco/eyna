@@ -1,7 +1,6 @@
 import child_process from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
-// import os from "node:os"
 
 import electron from "electron"
 
@@ -16,12 +15,12 @@ async function start(): Promise<void> {
 
 	process
 		.on("SIGINT", () => {
-			if (proc && !proc?.killed) {
+			if (proc && !proc.killed) {
 				proc.kill("SIGINT")
 			}
 		})
 		.on("SIGTERM", () => {
-			if (proc && !proc?.killed) {
+			if (proc && !proc.killed) {
 				proc.kill("SIGTERM")
 			}
 		})
@@ -39,7 +38,7 @@ async function start(): Promise<void> {
 			},
 		)
 			.on("close", (code, signal) => {
-				if (code === 0) {
+				if (code === 0 || signal === "SIGINT" || signal === "SIGTERM") {
 					resolve()
 				}
 				else if (signal) {
@@ -58,25 +57,6 @@ async function start(): Promise<void> {
 Promise.resolve()
 	.then(() => {
 		return start()
-	})
-	.then(() => {
-		/*
-		if (process.platform === "win32") {
-			const dir = path.join(os.homedir(), "AppData", "Roaming", "Electron")
-			if (fs.existsSync(dir)) {
-				fs.rmSync(dir, { recursive: true, force: true })
-				console.log(`removed: ${dir}`)
-			}
-		}
-		else if (process.platform === "darwin") {
-			const dir = path.join(os.homedir(), "Library", "Application Support", "Electron")
-			if (fs.existsSync(dir)) {
-				fs.rmSync(dir, { recursive: true, force: true })
-				console.log(`removed: ${dir}`)
-			}
-		}
-		*/
-		return Promise.resolve()
 	})
 	.catch((err) => {
 		console.error(err)
