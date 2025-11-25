@@ -33,6 +33,6 @@
 		"postinstall": "tsx scripts/postinstall.ts",
 		"b": "tsx scripts/build.ts",
 		"p": "tsx scripts/package.ts",
-		"s": "electron ./build"
+		"s": "tsx scripts/start.ts"
 	}
 }
