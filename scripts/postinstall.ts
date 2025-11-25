@@ -23,6 +23,7 @@ Promise.resolve()
 	})
 	.then(() => {
 		console.log(`\x1b[34mpostinstall complete\x1b[0m`)
+		return Promise.resolve()
 	})
 	.catch((err) => {
 		console.error(err)

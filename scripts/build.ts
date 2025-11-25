@@ -24,15 +24,17 @@ Promise.resolve()
 		])
 	})
 	.then(() => {
-		app.Node()
-		app.Conf()
-		app.Check()
-		app.Build()
-		extension.Check()
-		extension.Build()
-		native.Build()
-		pug.Build()
-		stylus.Build()
+		return Promise.all([
+			app.Node(),
+			app.Conf(),
+			app.Check(),
+			app.Build(),
+			extension.Check(),
+			extension.Build(),
+			native.Build(),
+			pug.Build(),
+			stylus.Build(),
+		])
 	})
 	.catch((err) => {
 		console.error(err)

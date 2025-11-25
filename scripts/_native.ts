@@ -25,10 +25,12 @@ export async function Build() {
 		.then((outfile: string) => {
 			return fs.cp(outfile, path.join(outdir, path.basename(outfile)))
 		})
+		.then(() => {
+			console.log(`native ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
+			return Promise.resolve()
+		})
 		.catch((err) => {
 			console.error(err)
 			process.exit(1)
 		})
-
-	console.log(`native ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
 }
