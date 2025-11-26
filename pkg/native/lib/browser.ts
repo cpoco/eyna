@@ -32,6 +32,10 @@ export function getArchive(abstract: string, base: string, depth: number = 0): P
 	return native.getArchive(abstract, base, depth)
 }
 
+export function getArchiveEntry(abstract: string, path: string): NodeJS.ReadableStream {
+	return native.getArchiveEntry(Readable, abstract, path)
+}
+
 export function getAttribute(abstract: string, base: string = ""): Promise<Type.Attributes> {
 	return native.getAttribute(abstract, base)
 }
@@ -44,10 +48,6 @@ export function getDirectory(
 	regexp: RegExp | null = null,
 ): Promise<Type.Directory> {
 	return native.getDirectory(abstract, base, mode, depth, regexp)
-}
-
-export function getEntry(abstract: string, path: string): NodeJS.ReadableStream {
-	return native.getEntry(Readable, abstract, path)
 }
 
 export function getIcon(abstract: string): Promise<Buffer> {

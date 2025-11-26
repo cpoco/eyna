@@ -1,9 +1,9 @@
-#ifndef NATIVE_GET_ENTRY
-#define NATIVE_GET_ENTRY
+#ifndef NATIVE_GET_ARCHIVE_ENTRY
+#define NATIVE_GET_ARCHIVE_ENTRY
 
 #include "common.hpp"
 
-struct get_entry_async
+struct get_archive_entry_async
 {
 	uv_async_t handle;
 
@@ -19,18 +19,18 @@ struct get_entry_async
 };
 
 // uv_close_cb
-void get_entry_close(uv_handle_t* handle)
+void get_archive_entry_close(uv_handle_t* handle)
 {
-	get_entry_async* async = static_cast<get_entry_async*>(handle->data);
+	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
 	delete async;
 }
 
 // uv_async_cb
-void get_entry_callback(uv_async_t* handle)
+void get_archive_entry_callback(uv_async_t* handle)
 {
 	v8::HandleScope _(ISOLATE);
 
-	get_entry_async* async = static_cast<get_entry_async*>(handle->data);
+	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
 
 	v8::Local<v8::Object> stream = async->reader.Get(ISOLATE);
 	v8::Local<v8::Function> push = async->push.Get(ISOLATE);
@@ -58,13 +58,13 @@ void get_entry_callback(uv_async_t* handle)
 		v8::Local<v8::Value> argv[1] = {v8::Null(ISOLATE)};
 		push->Call(CONTEXT, stream, 1, argv);
 
-		uv_close((uv_handle_t*)&async->handle, get_entry_close);
+		uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
 	}
 }
 
-void get_entry_worker(uv_async_t* handle)
+void get_archive_entry_worker(uv_async_t* handle)
 {
-	get_entry_async* async = static_cast<get_entry_async*>(handle->data);
+	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
 
 	archive_iterator(
 		async->abst,
@@ -108,7 +108,7 @@ void get_entry_worker(uv_async_t* handle)
 	uv_async_send(&async->handle);
 }
 
-void get_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
+void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	v8::HandleScope _(ISOLATE);
 
@@ -117,7 +117,7 @@ void get_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	get_entry_async* async = new get_entry_async();
+	get_archive_entry_async* async = new get_archive_entry_async();
 	async->handle.data = async;
 
 	async->abst = generic_path(to_string(info[1].As<v8::String>()));
@@ -152,9 +152,9 @@ void get_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
 
-	uv_async_init(uv_default_loop(), &async->handle, get_entry_callback);
+	uv_async_init(uv_default_loop(), &async->handle, get_archive_entry_callback);
 
-	std::thread(get_entry_worker, &async->handle).detach();
+	std::thread(get_archive_entry_worker, &async->handle).detach();
 
 	info.GetReturnValue().Set(reader);
 }

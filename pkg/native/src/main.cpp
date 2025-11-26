@@ -6,9 +6,9 @@
 #include "create_symlink.hpp"
 #include "exists.hpp"
 #include "get_archive.hpp"
+#include "get_archive_entry.hpp"
 #include "get_attribute.hpp"
 #include "get_directory.hpp"
-#include "get_entry.hpp"
 #include "get_icon.hpp"
 #include "get_path_attribute.hpp"
 #include "get_volume.hpp"
@@ -46,9 +46,9 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 	NODE_SET_METHOD(exports, "createSymlink", create_symlink);
 	NODE_SET_METHOD(exports, "exists", exists);
 	NODE_SET_METHOD(exports, "getArchive", get_archive);
+	NODE_SET_METHOD(exports, "getArchiveEntry", get_archive_entry);
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
 	NODE_SET_METHOD(exports, "getDirectory", get_directory);
-	NODE_SET_METHOD(exports, "getEntry", get_entry);
 	NODE_SET_METHOD(exports, "getIcon", get_icon);
 	NODE_SET_METHOD(exports, "getPathAttribute", get_path_attribute);
 	NODE_SET_METHOD(exports, "getVolume", get_volume);

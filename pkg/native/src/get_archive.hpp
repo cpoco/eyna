@@ -58,7 +58,7 @@ static void get_archive_complete(uv_work_t* req, int status)
 
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
-		v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
+	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
 	for (_entry& ent : work->v) {
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
