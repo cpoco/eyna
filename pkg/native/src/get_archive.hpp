@@ -14,7 +14,7 @@ struct get_archive_work
 	int min_depth;
 	int max_depth;
 
-	std::deque<_entry> v;
+	std::vector<_entry> v;
 	int64_t s; // size
 	int32_t d; // directory count
 	int32_t f; // file count
