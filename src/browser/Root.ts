@@ -292,7 +292,7 @@ class Root {
 					},
 					find: (full: string, base: string): Promise<Native.Directory> => {
 						sbox.log("filer.find", { full })
-						return Native.getDirectory(full, base, true, 1024, null)
+						return Native.getDirectory(full, base, Native.Sort.ShallowFirst, 1024, null)
 					},
 				},
 				dialog: {

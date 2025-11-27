@@ -1,4 +1,8 @@
 declare namespace Type {
+	enum Sort {
+		DepthFirst = 0,
+		ShallowFirst = 1,
+	}
 	enum EntryFileType {
 		None = 0,
 		Directory = 1,

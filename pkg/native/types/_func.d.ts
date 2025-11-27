@@ -14,7 +14,7 @@ declare namespace Native {
 	function getDirectory(
 		abstract: string,
 		base?: string,
-		mode?: boolean,
+		sort?: Type.Sort,
 		depth?: number,
 		regexp?: RegExp | null,
 	): Promise<Type.Directory>

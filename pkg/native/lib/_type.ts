@@ -1,3 +1,8 @@
+export enum Sort {
+	DepthFirst = 0,
+	ShallowFirst = 1,
+}
+
 export enum AttributeFileType {
 	HomeUser = -2,
 	Drive = -1,

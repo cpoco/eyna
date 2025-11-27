@@ -13,8 +13,8 @@ type Item = {
 export class DirDiff {
 	static diff(wd1: string, wd2: string, depth: number, cb: (diff: Diff) => void) {
 		Promise.all([
-			Native.getDirectory(wd1, wd1, false, depth),
-			Native.getDirectory(wd2, wd2, false, depth),
+			Native.getDirectory(wd1, wd1, Native.Sort.DepthFirst, depth),
+			Native.getDirectory(wd2, wd2, Native.Sort.DepthFirst, depth),
 		]).then((all) => {
 			const diff: Diff = {
 				base: [wd1, wd2],

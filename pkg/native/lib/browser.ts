@@ -43,11 +43,11 @@ export function getAttribute(abstract: string, base: string = ""): Promise<Type.
 export function getDirectory(
 	abstract: string,
 	base: string = "",
-	mode: boolean = false,
+	sort: Type.Sort = Type.Sort.DepthFirst,
 	depth: number = 0,
 	regexp: RegExp | null = null,
 ): Promise<Type.Directory> {
-	return native.getDirectory(abstract, base, mode, depth, regexp)
+	return native.getDirectory(abstract, base, sort, depth, regexp)
 }
 
 export function getIcon(abstract: string): Promise<Buffer> {
