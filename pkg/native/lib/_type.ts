@@ -3,6 +3,33 @@ export enum Sort {
 	ShallowFirst = 1,
 }
 
+export enum EntryFileType {
+	None = 0,
+	Directory = 1,
+	Link = 2,
+	File = 3,
+}
+
+export type Archive = {
+	full: string
+	base: string
+	list: Entry[]
+	s: bigint
+	d: number
+	f: number
+	e: number
+}
+
+export type Entry = {
+	file_type: EntryFileType
+	depth: number
+	full: string
+	link: string | null
+	size: bigint
+	time: number
+	nsec: number
+}
+
 export enum AttributeFileType {
 	HomeUser = -2,
 	Drive = -1,
