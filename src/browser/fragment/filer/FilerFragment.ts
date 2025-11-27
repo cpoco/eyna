@@ -224,7 +224,15 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null, false)) {
+					if (
+						await active.sendChange(
+							active.pwd,
+							Number(find.dp),
+							find.rg == "" ? null : new RegExp(find.rg),
+							null,
+							false,
+						)
+					) {
 						active.scroll()
 						active.sendScan()
 						active.sendAttrAll()
