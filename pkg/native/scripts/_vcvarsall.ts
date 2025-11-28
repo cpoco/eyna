@@ -8,7 +8,7 @@ const enterprise = path.join(msvc, "Enterprise", "VC", "Auxiliary", "Build", "vc
 const professional = path.join(msvc, "Professional", "VC", "Auxiliary", "Build", "vcvarsall.bat")
 const community = path.join(msvc, "Community", "VC", "Auxiliary", "Build", "vcvarsall.bat")
 
-const names = ["Path", "INCLUDE", "LIB", "LIBPATH"]
+const names = ["Path", "PATH", "INCLUDE", "LIB", "LIBPATH"]
 
 export async function setVsCmdEnv(): Promise<void> {
 	if (process.platform !== "win32" || process.env.VSCMD_VER) {
@@ -21,7 +21,6 @@ export async function setVsCmdEnv(): Promise<void> {
 		}
 
 		return new Promise<void>((resolve, reject) => {
-		console.log(`"${bat}" x64`)
 			child_process.exec(`"${bat}" x64 && set`, { shell: "cmd" }, (error, stdout, stderr) => {
 				if (error) {
 					console.error(stderr)
@@ -29,12 +28,19 @@ export async function setVsCmdEnv(): Promise<void> {
 					return
 				}
 
+				console.log("before Path", (process.env.Path ?? "").split(path.delimiter).length)
+				console.log("before PATH", (process.env.PATH ?? "").split(path.delimiter).length)
+
 				for (const line of stdout.split(/\r?\n/u)) {
 					const match = line.match(/^([^=]+)=(.*)$/u)
 					if (match && match.length == 3 && names.includes(match[1])) {
 						process.env[match[1]] = match[2]
 					}
 				}
+
+				console.log(`"${bat}" x64`)
+				console.log("after Path", (process.env.Path ?? "").split(path.delimiter).length)
+				console.log("after PATH", (process.env.PATH ?? "").split(path.delimiter).length)
 
 				resolve()
 			})
