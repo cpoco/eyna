@@ -1,19 +1,15 @@
-import child_process, { type IOType, SpawnOptions } from "node:child_process"
+import child_process, { type IOType } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
+export { setVsCmdEnv } from "./_vcvarsall.ts"
+
 export async function configure(name: "node" | "electron", version: string, stdout: IOType = "ignore"): Promise<void> {
 	fs.rmSync(__build, { recursive: true, force: true })
 	fs.mkdirSync(__build, { recursive: true })
-
-	const separator = process.platform === "win32" ? ";" : ":"
-	console.log("   PATH", (process.env.PATH ?? "").trim().split(separator))
-	console.log("INCLUDE", (process.env.INCLUDE ?? "").trim().split(separator))
-	console.log("    LIB", (process.env.LIB ?? "").trim().split(separator))
-	console.log("LIBPATH", (process.env.LIBPATH ?? "").trim().split(separator))
 
 	return new Promise<void>((resolve, reject) => {
 		child_process.spawn(
@@ -25,12 +21,8 @@ export async function configure(name: "node" | "electron", version: string, stdo
 				`-DNODE_RUNTIME_NAME=${name}`,
 				`-DNODE_RUNTIME_VERSION=${version}`,
 
-				...(process.platform == "darwin"
-					? [
-						"-G",
-						"Ninja Multi-Config",
-					]
-					: []),
+				"-G",
+				"Ninja Multi-Config",
 
 				"..",
 			],

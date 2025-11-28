@@ -3,7 +3,7 @@ import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
-import { build, configure } from "@eyna/native/scripts/_cmake.ts"
+import { build, configure, setVsCmdEnv } from "@eyna/native/scripts/_cmake.ts"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
@@ -16,6 +16,9 @@ export async function Build() {
 	let _time = perf_hooks.performance.now()
 
 	Promise.resolve()
+		.then(() => {
+			return setVsCmdEnv()
+		})
 		.then(() => {
 			return configure("electron", electron.version)
 		})

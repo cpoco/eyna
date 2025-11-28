@@ -9,37 +9,35 @@ const community = path.join(msvc, "Community", "VC", "Auxiliary", "Build", "vcva
 
 const names = ["PATH", "INCLUDE", "LIB", "LIBPATH"]
 
-export async function vcvarsall(): Promise<Record<string, string>> {
+export async function setVsCmdEnv(): Promise<void> {
+	if (process.platform !== "win32" || process.env.VSCMD_VER) {
+		return Promise.resolve()
+	}
+
 	for (const bat of [enterprise, professional, community]) {
 		if (!fs.existsSync(bat)) {
 			continue
 		}
 
-		return new Promise<Record<string, string>>((resolve, reject) => {
-
+		return new Promise<void>((resolve, reject) => {
 			child_process.exec(`"${bat}" x64 && set`, { shell: "cmd" }, (error, stdout, stderr) => {
 				if (error) {
+					console.error(stderr)
 					reject(error)
 					return
 				}
 
-				const env: Record<string, string> = {}
-
-				for (const line of stdout.split("\n")) {
-					const pair = line.split("=")
-					if (pair.length == 2 && names.includes(pair[0])) {
-						env[pair[0]] = pair[1].trim()
+				for (const line of stdout.split(/\r?\n/u)) {
+					const match = line.match(/^([^=]+)=(.*)$/u)
+					if (match && match.length == 3 && names.includes(match[1])) {
+						process.env[match[1]] = match[2]
 					}
 				}
 
-				resolve(env)
+				resolve()
 			})
 		})
 	}
 
 	throw new Error("no found vcvarsall.bat")
 }
-
-vcvarsall().then((env) => {
-	console.log(env)
-})

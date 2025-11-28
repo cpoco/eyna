@@ -1,6 +1,9 @@
-import { build, configure } from "./_cmake.ts"
+import { build, configure, setVsCmdEnv } from "./_cmake.ts"
 
 Promise.resolve()
+	.then(() => {
+		return setVsCmdEnv()
+	})
 	.then(() => {
 		return configure("node", process.versions.node, "inherit")
 	})
