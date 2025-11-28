@@ -51,12 +51,10 @@ enum LINK_TYPE {
 struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
-
 	std::filesystem::path full; // generic_path
 
 	LINK_TYPE link_type = LINK_TYPE::LINK_TYPE_NONE;
-
-	std::filesystem::path link; // generic_path
+	std::filesystem::path link; // raw data
 
 	int64_t size = 0;
 	int64_t time = 0;
