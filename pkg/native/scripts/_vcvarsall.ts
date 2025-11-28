@@ -34,6 +34,11 @@ export async function setVsCmdEnv(): Promise<void> {
 					}
 				}
 
+				console.log("   PATH", (process.env.PATH ?? "").split(path.delimiter))
+				console.log("INCLUDE", (process.env.INCLUDE ?? "").split(path.delimiter))
+				console.log("    LIB", (process.env.LIB ?? "").split(path.delimiter))
+				console.log("LIBPATH", (process.env.LIBPATH ?? "").split(path.delimiter))
+
 				resolve()
 			})
 		})
