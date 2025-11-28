@@ -22,6 +22,8 @@ export async function setVsCmdEnv(): Promise<void> {
 			continue
 		}
 
+		console.log(bat)
+
 		return new Promise<void>((resolve, reject) => {
 			child_process.exec(`"${bat}" x64 && set`, { shell: "cmd" }, (error, stdout, stderr) => {
 				if (error) {
@@ -35,15 +37,7 @@ export async function setVsCmdEnv(): Promise<void> {
 					if (match && match.length == 3 && names.includes(match[1])) {
 						process.env[match[1]] = match[2]
 					}
-					if (match && match.length == 3) {
-						console.log("ENV", match[1], match[2].split(path.delimiter))
-					}
 				}
-
-				console.log("   PATH", (process.env.PATH ?? "").split(path.delimiter))
-				console.log("INCLUDE", (process.env.INCLUDE ?? "").split(path.delimiter))
-				console.log("    LIB", (process.env.LIB ?? "").split(path.delimiter))
-				console.log("LIBPATH", (process.env.LIBPATH ?? "").split(path.delimiter))
 
 				resolve()
 			})
