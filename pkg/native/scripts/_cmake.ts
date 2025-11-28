@@ -9,6 +9,12 @@ export async function configure(name: "node" | "electron", version: string, stdo
 	fs.rmSync(__build, { recursive: true, force: true })
 	fs.mkdirSync(__build, { recursive: true })
 
+	const separator = process.platform === "win32" ? ";" : ":"
+	console.log("   PATH", (process.env.PATH ?? "").trim().split(separator))
+	console.log("INCLUDE", (process.env.INCLUDE ?? "").trim().split(separator))
+	console.log("    LIB", (process.env.LIB ?? "").trim().split(separator))
+	console.log("LIBPATH", (process.env.LIBPATH ?? "").trim().split(separator))
+
 	return new Promise<void>((resolve, reject) => {
 		child_process.spawn(
 			"cmake",
