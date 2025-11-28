@@ -7,7 +7,7 @@ const __build = path.join(__top, "build")
 
 export { setVsCmdEnv } from "./_vcvarsall.ts"
 
-export async function configure(name: "node" | "electron", version: string, stdout: IOType = "ignore"): Promise<void> {
+export async function configure(name: "node" | "electron", version: string, stdout: IOType = "inherit"): Promise<void> {
 	fs.rmSync(__build, { recursive: true, force: true })
 	fs.mkdirSync(__build, { recursive: true })
 
@@ -48,7 +48,7 @@ export async function configure(name: "node" | "electron", version: string, stdo
 	})
 }
 
-export async function build(stdout: IOType = "ignore"): Promise<string> {
+export async function build(stdout: IOType = "inherit"): Promise<string> {
 	return new Promise<void>((resolve, reject) => {
 		child_process.spawn(
 			"cmake",
