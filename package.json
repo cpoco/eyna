@@ -15,7 +15,7 @@
 		"@vue/runtime-dom": "3.5.25",
 		"codemirror": "6.0.2",
 		"electron": "39.2.4",
-		"electron-builder": "25.1.8",
+		"electron-builder": "26.3.1",
 		"esbuild": "0.27.0",
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.3",
@@ -25,9 +25,9 @@
 		"typescript": "5.9.3"
 	},
 	"overrides": {
+		"dompurify": "3",
 		"glob": "13",
-		"node-gyp": "12",
-		"dompurify": "3.3"
+		"rimraf": "6"
 	},
 	"scripts": {
 		"postinstall": "tsx scripts/postinstall.ts",
