@@ -8,7 +8,7 @@ const enterprise = path.join(msvc, "Enterprise", "VC", "Auxiliary", "Build", "vc
 const professional = path.join(msvc, "Professional", "VC", "Auxiliary", "Build", "vcvarsall.bat")
 const community = path.join(msvc, "Community", "VC", "Auxiliary", "Build", "vcvarsall.bat")
 
-const names = ["Path", "PATH", "INCLUDE", "LIB", "LIBPATH"]
+const names = ["PATH", "INCLUDE", "LIB", "LIBPATH"]
 
 export async function setVsCmdEnv(): Promise<void> {
 	if (process.platform !== "win32" || process.env.VSCMD_VER) {
