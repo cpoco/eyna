@@ -10,6 +10,11 @@ export enum EntryFileType {
 	File = 3,
 }
 
+export enum EntryLinkType {
+	None = 0,
+	Symbolic = 1,
+}
+
 export type Archive = {
 	full: string
 	base: string
@@ -22,9 +27,18 @@ export type Archive = {
 
 export type Entry = {
 	file_type: EntryFileType
-	depth: number
 	full: string
+
+	base: string
+	rltv: string
+
+	name: string
+	stem: string
+	exte: string
+
+	link_type: EntryLinkType
 	link: string | null
+
 	size: bigint
 	time: number
 	nsec: number

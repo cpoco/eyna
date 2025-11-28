@@ -64,14 +64,27 @@ static void get_archive_complete(uv_work_t* req, int status)
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 
 		obj->Set(CONTEXT, to_string(V("file_type")), v8::Number::New(ISOLATE, (double)ent.file_type));
-		obj->Set(CONTEXT, to_string(V("depth")),     v8::Number::New(ISOLATE, (double)ent.depth));
 		obj->Set(CONTEXT, to_string(V("full")),      to_string(ent.full));
 
-		if (ent.file_type == FILE_TYPE::FILE_TYPE_LINK) {
-			obj->Set(CONTEXT, to_string(V("link")),  to_string(ent.link));
+		ent.full = generic_path(ent.full); // without trailing slash
+
+		obj->Set(CONTEXT, to_string(V("base")), to_string(work->base));
+		obj->Set(CONTEXT, to_string(V("rltv")),
+			work->base.empty()
+				? to_string(ent.full)
+				: to_string(generic_path(ent.full.lexically_relative(work->base)))
+		);
+
+		obj->Set(CONTEXT, to_string(V("name")), to_string(ent.full.filename()));
+		obj->Set(CONTEXT, to_string(V("stem")), to_string(ent.full.stem()));
+		obj->Set(CONTEXT, to_string(V("exte")), to_string(ent.full.extension()));
+
+		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, ent.link_type));
+		if (ent.link_type == LINK_TYPE::LINK_TYPE_NONE) {
+			obj->Set(CONTEXT, to_string(V("link")), v8::Null(ISOLATE));
 		}
 		else {
-			obj->Set(CONTEXT, to_string(V("link")),  v8::Null(ISOLATE));
+			obj->Set(CONTEXT, to_string(V("link")), to_string(ent.link));
 		}
 
 		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, ent.size));

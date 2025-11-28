@@ -9,6 +9,10 @@ declare namespace Type {
 		Link = 2,
 		File = 3,
 	}
+	enum EntryLinkType {
+		None = 0,
+		Symbolic = 1,
+	}
 	type Archive = {
 		full: string
 		base: string
@@ -20,8 +24,13 @@ declare namespace Type {
 	}
 	type Entry = {
 		file_type: EntryFileType
-		depth: number
 		full: string
+		base: string
+		rltv: string
+		name: string
+		stem: string
+		exte: string
+		link_type: EntryLinkType
 		link: string | null
 		size: bigint
 		time: number
