@@ -17,18 +17,18 @@
 		transform: translateX(100%) scaleX(0.5)
 
 :root
-	--font-family: Consolas, Menlo, monospace
 	--foreground: _foreground
 	--background: _background
 	--border: _border
 	--focus: _focus
 
 	--static-navbar-height: _set_script
+	--dynamic-font-family: _set_script
 	--dynamic-font-size: _set_script
 	--dynamic-line-height: _set_script
 
 *
-	font-family: var(--font-family)
+	font-family: var(--dynamic-font-family)
 	font-size: var(--dynamic-font-size)
 	box-sizing: border-box
 	margin: 0

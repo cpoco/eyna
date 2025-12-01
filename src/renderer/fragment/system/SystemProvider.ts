@@ -11,6 +11,7 @@ type Reactive = {
 		version: boolean
 	}
 	style: {
+		fontFamily: string
 		fontSize: number
 		lineHeight: number
 	}
@@ -27,11 +28,20 @@ function _create() {
 			version: false,
 		},
 		style: {
+			fontFamily: "",
 			fontSize: 0,
 			lineHeight: 0,
 		},
 	})
 
+	vue.watch(
+		() => {
+			return reactive.style.fontFamily
+		},
+		(v) => {
+			document.documentElement.style.setProperty(Conf.STYLE_FONT_FAMILY, v)
+		},
+	)
 	vue.watch(
 		() => {
 			return reactive.style.fontSize

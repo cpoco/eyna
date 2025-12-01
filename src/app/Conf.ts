@@ -3,6 +3,9 @@ export const LIST_COUNT = 3 // 2 〜 any
 export const NAVBAR_HEIGHT = 32
 export const STYLE_NAVBAR_HEIGHT = "--static-navbar-height"
 
+export const FONT_FAMILY = "Consolas, Menlo, monospace"
+export const STYLE_FONT_FAMILY = "--dynamic-font-family"
+
 export const FONT_SIZE = 14
 export const STYLE_FONT_SIZE = "--dynamic-font-size"
 
