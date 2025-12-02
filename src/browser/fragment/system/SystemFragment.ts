@@ -1,5 +1,6 @@
+import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
-import { Style } from "@/browser/core/Style"
+import { AppConfig } from "@/browser/conf/AppConfig"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
@@ -24,7 +25,11 @@ export class SystemFragment extends AbstractFragment {
 						active: root.isActive(),
 					},
 					overlay: this.overlay,
-					style: Style.Dynamic,
+					style: {
+						fontFamily: AppConfig.data.cssFontFamily ?? Conf.FONT_FAMILY,
+						fontSize: AppConfig.data.cssFontSize ?? Conf.FONT_SIZE,
+						lineHeight: AppConfig.data.cssLineHeight ?? Conf.LINE_HEIGHT,
+					},
 				}
 			})
 	}

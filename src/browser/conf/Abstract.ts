@@ -29,7 +29,7 @@ export abstract class Abstract<T> {
 	save() {
 		try {
 			console.log(`\u001b[34m[write]\u001b[0m`, `"${this.path}"`)
-			fs.writeFileSync(this.path, JSON.stringify(this.data))
+			fs.writeFileSync(this.path, JSON.stringify(this.data, null, "\t"), "utf8")
 		}
 		catch (err) {
 			console.error(err)

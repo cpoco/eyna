@@ -66,9 +66,6 @@ class Root {
 	}
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
-		AppConfig.load(Path.data("app.json"))
-		KeyConfig.load(Path.app("config", "key.json"))
-
 		let op: Electron.BrowserWindowConstructorOptions = {
 			frame: false,
 			titleBarStyle: "hidden",
