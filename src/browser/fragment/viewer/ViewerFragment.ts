@@ -1,5 +1,5 @@
 import * as Bridge from "@/bridge/Bridge"
-import { Command } from "@/browser/core/Command"
+import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
@@ -14,7 +14,7 @@ export class ViewerFragment extends AbstractFragment {
 	}
 
 	open(option: Bridge.Viewer.Open.Data) {
-		Command.manager.whenType = Command.When.Viewer
+		KeyConfig.whenType = Command.When.Viewer
 		root.send(Bridge.Viewer.Open.CH, -1, option)
 		this.type = option.type
 	}
@@ -28,10 +28,10 @@ export class ViewerFragment extends AbstractFragment {
 		root
 			.on(Bridge.Viewer.Event.CH, (_i, data) => {
 				if (data == "opened") {
-					Command.manager.whenType = Command.When.Viewer
+					KeyConfig.whenType = Command.When.Viewer
 				}
 				else if (data == "closed") {
-					Command.manager.whenType = Command.When.Filer
+					KeyConfig.whenType = Command.When.Filer
 				}
 			})
 	}

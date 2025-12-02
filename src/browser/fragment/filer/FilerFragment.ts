@@ -5,9 +5,9 @@ import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
+import { AppConfig } from "@/browser/conf/AppConfig"
 import { Dir } from "@/browser/core/Dir"
 import { Path } from "@/browser/core/Path"
-import { Storage } from "@/browser/core/Storage"
 import { Style } from "@/browser/core/Style"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerManager } from "@/browser/fragment/filer/FilerManager"
@@ -33,7 +33,7 @@ export class FilerFragment extends AbstractFragment {
 		this.core = Util.array(0, Conf.LIST_COUNT, (i) => {
 			return new FilerManager(
 				i,
-				(Storage.manager.data.wd ?? [])[i] ?? null,
+				(AppConfig.data.wd ?? [])[i] ?? null,
 				this.index.active == i
 					? Bridge.Status.Active
 					: this.index.target == i
