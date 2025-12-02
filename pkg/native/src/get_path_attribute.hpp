@@ -5,9 +5,9 @@
 
 struct get_path_attribute_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	std::vector<_attribute> v;
@@ -85,7 +85,6 @@ static void get_path_attribute_complete(uv_work_t* req, int status)
 	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, array);
-	work->promise.Reset();
 
 	delete work;
 }
@@ -103,7 +102,7 @@ void get_path_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_path_attribute_work* work = new get_path_attribute_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -116,7 +115,7 @@ void get_path_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->v.clear();
 
-	uv_queue_work(uv_default_loop(), &work->request, get_path_attribute_async, get_path_attribute_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_path_attribute_async, get_path_attribute_complete);
 }
 
 #endif // include guard

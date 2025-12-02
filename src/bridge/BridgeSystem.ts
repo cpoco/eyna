@@ -32,6 +32,7 @@ export namespace System {
 				version: boolean
 			}
 			style: {
+				fontFamily: string
 				fontSize: number
 				lineHeight: number
 			}

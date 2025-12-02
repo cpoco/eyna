@@ -94,7 +94,7 @@ export class Dir {
 			this.dp = dp
 			this.rg = rg
 			let st = await Native.getAttribute(this.wd)
-			Native.getDirectory(this.wd, "", false, this.dp, this.rg).then(async (dir: Native.Directory) => {
+			Native.getDirectory(this.wd, "", Native.Sort.DepthFirst, this.dp, this.rg).then(async (dir: Native.Directory) => {
 				_log(`"${dir.full}"`, "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 					s: dir.s,
 					d: dir.d,

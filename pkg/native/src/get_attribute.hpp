@@ -5,9 +5,9 @@
 
 struct get_attribute_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
@@ -49,7 +49,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 
 		obj->Set(CONTEXT, to_string(V("name")), to_string(a.full.filename()));
 		obj->Set(CONTEXT, to_string(V("stem")), to_string(a.full.stem()));
-		obj->Set(CONTEXT, to_string(V("exte")),  to_string(a.full.extension()));
+		obj->Set(CONTEXT, to_string(V("exte")), to_string(a.full.extension()));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, a.link_type));
 		if (a.link_type == LINK_TYPE::LINK_TYPE_NONE) {
@@ -64,15 +64,14 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("nsec")), v8::Number::New(ISOLATE, (double)a.nsec));
 
 		obj->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, a.readonly));
-		obj->Set(CONTEXT, to_string(V("hidden")), v8::Boolean::New(ISOLATE, a.hidden));
-		obj->Set(CONTEXT, to_string(V("system")), v8::Boolean::New(ISOLATE, a.system));
-		obj->Set(CONTEXT, to_string(V("cloud")), v8::Boolean::New(ISOLATE, a.cloud));
+		obj->Set(CONTEXT, to_string(V("hidden")),   v8::Boolean::New(ISOLATE, a.hidden));
+		obj->Set(CONTEXT, to_string(V("system")),   v8::Boolean::New(ISOLATE, a.system));
+		obj->Set(CONTEXT, to_string(V("cloud")),    v8::Boolean::New(ISOLATE, a.cloud));
 
 		array->Set(CONTEXT, array->Length(), obj);
 	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, array);
-	work->promise.Reset();
 
 	delete work;
 }
@@ -90,7 +89,7 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_attribute_work* work = new get_attribute_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -110,7 +109,7 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->v.clear();
 
-	uv_queue_work(uv_default_loop(), &work->request, get_attribute_async, get_attribute_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_attribute_async, get_attribute_complete);
 }
 
 #endif // include guard

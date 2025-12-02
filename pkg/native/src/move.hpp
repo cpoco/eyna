@@ -5,9 +5,9 @@
 
 struct move_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path src; // generic_path
 	std::filesystem::path dst; // generic_path
@@ -43,7 +43,7 @@ static void move_async(uv_work_t* req)
 	}
 	*/
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		_string_t src(work->src.c_str());
 		_string_t dst(work->dst.parent_path().c_str());
@@ -71,7 +71,7 @@ static void move_async(uv_work_t* req)
 
 		fo->Release();
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSError* error = nil;
 		BOOL ret = [[NSFileManager defaultManager]
@@ -94,11 +94,9 @@ static void move_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
 	}
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
-		work->promise.Reset();
 	}
 
 	delete work;
@@ -117,7 +115,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	move_work* work = new move_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -137,7 +135,7 @@ void move(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, move_async, move_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, move_async, move_complete);
 }
 
 #endif // include guard

@@ -5,9 +5,9 @@
 
 struct get_icon_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	_string_t abst; // generic_path
 	char* data;
@@ -18,7 +18,7 @@ static void get_icon_async(uv_work_t* req)
 {
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
@@ -74,7 +74,7 @@ static void get_icon_async(uv_work_t* req)
 
 		DestroyIcon(file.hIcon);
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSImage* src = [[NSWorkspace sharedWorkspace] iconForFile:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 		NSImage* dst = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
@@ -99,7 +99,6 @@ static void get_icon_complete(uv_work_t* req, int status)
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
-	work->promise.Reset();
 
 	delete[] work->data;
 	delete work;
@@ -118,7 +117,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_icon_work* work = new get_icon_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -133,7 +132,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->size = 0;
 
-	uv_queue_work(uv_default_loop(), &work->request, get_icon_async, get_icon_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_icon_async, get_icon_complete);
 }
 
 #endif // include guard

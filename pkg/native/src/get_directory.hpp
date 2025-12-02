@@ -5,13 +5,13 @@
 
 struct get_directory_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
-	bool md; // last parent directory
+	int32_t st; 
 	int32_t dp;
 	_string_t pt;
 	std::vector<_attribute> v;
@@ -51,7 +51,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				attr.full = path;
 				attribute(attr);
 
-				if (work->md == false && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+				if (work->st == SORT_DEPTH_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
 					work->v.push_back(attr);
 				}
 
@@ -66,13 +66,13 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 					work->f++;
 				}
 
-				if (work->md == true && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+				if (work->st == SORT_SHALLOW_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
 					work->v.push_back(attr);
 				}
 			}
 		);
 	}
-	catch (std::filesystem::filesystem_error& e) {
+	catch (...) {
 		work->e++;
 	}
 }
@@ -113,7 +113,6 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
-	work->promise.Reset();
 
 	delete work;
 }
@@ -128,7 +127,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	if (info.Length() != 5
 			|| !info[0]->IsString()
 			|| !info[1]->IsString()
-			|| !info[2]->IsBoolean()
+			|| !info[2]->IsNumber()
 			|| !info[3]->IsNumber()
 			|| !(info[4]->IsNull() || info[4]->IsRegExp()))
 	{
@@ -137,7 +136,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_directory_work* work = new get_directory_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -155,7 +154,12 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	work->md = info[2]->BooleanValue(ISOLATE);
+	work->st = info[2]->Int32Value(CONTEXT).ToChecked();
+	if (work->st != SORT_DEPTH_FIRST && work->st != SORT_SHALLOW_FIRST) {
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
+		delete work;
+		return;
+	}
 
 	work->dp = info[3]->Int32Value(CONTEXT).ToChecked();
 
@@ -173,7 +177,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->f = 0;
 	work->e = 0;
 
-	uv_queue_work(uv_default_loop(), &work->request, get_directory_async, get_directory_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_directory_async, get_directory_complete);
 }
 
 #endif // include guard

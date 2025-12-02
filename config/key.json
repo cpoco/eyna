@@ -43,12 +43,13 @@
 
 		{ "when": "modal",  "key": "esc",               "cmd": "modal.cancel" },
 
-		{ "when": "viewer", "key": "up",                "cmd": "viewer.imageprev" },
-		{ "when": "viewer", "key": "down",              "cmd": "viewer.imagenext" },
-
 		{ "when": "viewer", "key": ["alt", "up"],       "cmd": "viewer.diffprev" },
 		{ "when": "viewer", "key": ["alt", "down"],     "cmd": "viewer.diffnext" },
 
+		{ "when": "viewer", "key": "up",                "cmd": "viewer.mediaprev" },
+		{ "when": "viewer", "key": "pageup",            "cmd": "viewer.mediaprev" },
+		{ "when": "viewer", "key": "down",              "cmd": "viewer.medianext" },
+		{ "when": "viewer", "key": "pagedown",          "cmd": "viewer.medianext" },
 		{ "when": "viewer", "key": "space",             "cmd": "viewer.mediatoggle" },
 		{ "when": "viewer", "key": "left",              "cmd": "viewer.mediarw" },
 		{ "when": "viewer", "key": "right",             "cmd": "viewer.mediaff" },

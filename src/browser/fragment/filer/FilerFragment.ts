@@ -5,10 +5,9 @@ import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
+import { AppConfig } from "@/browser/conf/AppConfig"
 import { Dir } from "@/browser/core/Dir"
 import { Path } from "@/browser/core/Path"
-import { Storage } from "@/browser/core/Storage"
-import { Style } from "@/browser/core/Style"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerManager } from "@/browser/fragment/filer/FilerManager"
 import root from "@/browser/Root"
@@ -33,7 +32,7 @@ export class FilerFragment extends AbstractFragment {
 		this.core = Util.array(0, Conf.LIST_COUNT, (i) => {
 			return new FilerManager(
 				i,
-				(Storage.manager.data.wd ?? [])[i] ?? null,
+				(AppConfig.data.wd ?? [])[i] ?? null,
 				this.index.active == i
 					? Bridge.Status.Active
 					: this.index.target == i
@@ -49,7 +48,7 @@ export class FilerFragment extends AbstractFragment {
 		this.ipc()
 		this.commandExtension()
 		this.commandList()
-		this.commandListImage()
+		this.commandListMedia()
 	}
 
 	exit(): string[] {
@@ -85,7 +84,7 @@ export class FilerFragment extends AbstractFragment {
 		root
 			.on(Bridge.List.Dom.CH, (i, data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.h, Style.Dynamic.lineHeight)
+					this.core[i]?.mounted(data.h, AppConfig.data.cssLineHeight ?? Conf.LINE_HEIGHT)
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.h)
@@ -224,7 +223,15 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					if (await active.sendChange(active.pwd, Number(find.dp), new RegExp(find.rg), null, false)) {
+					if (
+						await active.sendChange(
+							active.pwd,
+							Number(find.dp),
+							find.rg == "" ? null : new RegExp(find.rg),
+							null,
+							false,
+						)
+					) {
 						active.scroll()
 						active.sendScan()
 						active.sendAttrAll()
@@ -348,7 +355,10 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.File
 					) {
-						if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+						if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
+							// WIP
+						}
+						else if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 							root.viewer({
 								type: Bridge.Viewer.Type.Image,
 								mime: [],
@@ -480,9 +490,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 	}
 
-	private commandListImage() {
+	private commandListMedia() {
 		this
-			.on2("list.imageup", (active, _target) => {
+			.on2("list.mediaup", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -494,7 +504,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i
@@ -504,7 +514,7 @@ export class FilerFragment extends AbstractFragment {
 				}
 				return Promise.resolve()
 			})
-			.on2("list.imagedown", (active, _target) => {
+			.on2("list.mediadown", (active, _target) => {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
@@ -517,7 +527,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type != Native.AttributeFileType.File) {
 						continue
 					}
-					if (!Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
 						continue
 					}
 					active.data.cursor = i

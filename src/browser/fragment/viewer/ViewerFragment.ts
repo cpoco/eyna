@@ -1,5 +1,5 @@
 import * as Bridge from "@/bridge/Bridge"
-import { Command } from "@/browser/core/Command"
+import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
@@ -14,7 +14,7 @@ export class ViewerFragment extends AbstractFragment {
 	}
 
 	open(option: Bridge.Viewer.Open.Data) {
-		Command.manager.whenType = Command.When.Viewer
+		KeyConfig.whenType = Command.When.Viewer
 		root.send(Bridge.Viewer.Open.CH, -1, option)
 		this.type = option.type
 	}
@@ -28,36 +28,16 @@ export class ViewerFragment extends AbstractFragment {
 		root
 			.on(Bridge.Viewer.Event.CH, (_i, data) => {
 				if (data == "opened") {
-					Command.manager.whenType = Command.When.Viewer
+					KeyConfig.whenType = Command.When.Viewer
 				}
 				else if (data == "closed") {
-					Command.manager.whenType = Command.When.Filer
+					KeyConfig.whenType = Command.When.Filer
 				}
 			})
 	}
 
 	private command() {
 		this
-			.on("viewer.imageprev", () => {
-				if (this.type != Bridge.Viewer.Type.Image) {
-					return Promise.resolve()
-				}
-				return root.command({
-					when: Command.When.Filer,
-					cmd: ["list.imageup", "list.select"],
-					prm: [],
-				})
-			})
-			.on("viewer.imagenext", () => {
-				if (this.type != Bridge.Viewer.Type.Image) {
-					return Promise.resolve()
-				}
-				return root.command({
-					when: Command.When.Filer,
-					cmd: ["list.imagedown", "list.select"],
-					prm: [],
-				})
-			})
 			.on("viewer.diffprev", () => {
 				if (this.type == Bridge.Viewer.Type.Diff) {
 					root.send(Bridge.Viewer.Diff.CH, -1, "prev")
@@ -67,6 +47,34 @@ export class ViewerFragment extends AbstractFragment {
 			.on("viewer.diffnext", () => {
 				if (this.type == Bridge.Viewer.Type.Diff) {
 					root.send(Bridge.Viewer.Diff.CH, -1, "next")
+				}
+				return Promise.resolve()
+			})
+			.on("viewer.mediaprev", () => {
+				if (
+					this.type == Bridge.Viewer.Type.Image
+					|| this.type == Bridge.Viewer.Type.Audio
+					|| this.type == Bridge.Viewer.Type.Video
+				) {
+					return root.command({
+						when: Command.When.Filer,
+						cmd: ["list.mediaup", "list.select"],
+						prm: [],
+					})
+				}
+				return Promise.resolve()
+			})
+			.on("viewer.medianext", () => {
+				if (
+					this.type == Bridge.Viewer.Type.Image
+					|| this.type == Bridge.Viewer.Type.Audio
+					|| this.type == Bridge.Viewer.Type.Video
+				) {
+					return root.command({
+						when: Command.When.Filer,
+						cmd: ["list.mediadown", "list.select"],
+						prm: [],
+					})
 				}
 				return Promise.resolve()
 			})

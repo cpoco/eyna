@@ -5,9 +5,9 @@
 
 struct move_to_trash_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	_string_t abst; // generic_path
 	bool error;
@@ -22,7 +22,7 @@ static void move_to_trash_async(uv_work_t* req)
 		return;
 	}
 
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
@@ -43,7 +43,7 @@ static void move_to_trash_async(uv_work_t* req)
 
 		fo->Release();
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		NSURL* url = [NSURL fileURLWithPath:[NSString stringWithCString:work->abst.c_str() encoding:NSUTF8StringEncoding]];
 
@@ -65,11 +65,9 @@ static void move_to_trash_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
     }
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
-		work->promise.Reset();
 	}
 
 	delete work;
@@ -88,7 +86,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	move_to_trash_work* work = new move_to_trash_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -101,7 +99,7 @@ void move_to_trash(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, move_to_trash_async, move_to_trash_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, move_to_trash_async, move_to_trash_complete);
 }
 
 #endif // include guard

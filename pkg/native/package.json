@@ -3,11 +3,6 @@
 	"private": true,
 	"types": "types/index.d.ts",
 	"devDependencies": {
-		"node-gyp": "11.5.0"
-	},
-	"scripts": {
-		"install": "node scripts/install.mjs",
-		"ide:win": "node-gyp configure -- -f msvs",
-		"ide:mac": "node-gyp configure -- -f xcode"
+		"tsx": "4.21.0"
 	}
 }

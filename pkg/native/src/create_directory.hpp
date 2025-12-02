@@ -5,9 +5,9 @@
 
 struct create_directory_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::filesystem::path abst; // generic_path
 	bool error;
@@ -33,11 +33,9 @@ static void create_directory_complete(uv_work_t* req, int status)
 
 	if (work->error) {
 		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-		work->promise.Reset();
     }
 	else {
 		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Undefined(ISOLATE));
-		work->promise.Reset();
 	}
 
 	delete work;
@@ -56,7 +54,7 @@ void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	create_directory_work* work = new create_directory_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
@@ -69,7 +67,7 @@ void create_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->error = false;
 
-	uv_queue_work(uv_default_loop(), &work->request, create_directory_async, create_directory_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, create_directory_async, create_directory_complete);
 }
 
 #endif // include guard

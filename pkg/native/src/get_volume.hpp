@@ -11,9 +11,9 @@ struct _volume
 
 struct get_volume_work
 {
-	uv_work_t request;
+	uv_work_t handle;
 
-	v8::Persistent<v8::Promise::Resolver> promise;
+	v8::Global<v8::Promise::Resolver> promise;
 
 	std::vector<_volume> volumes;
 };
@@ -22,7 +22,7 @@ static void get_volume_async(uv_work_t *req)
 {
 	get_volume_work* work = static_cast<get_volume_work*>(req->data);
 
-	#if _OS_WIN_
+	#if OS_WIN64
 		DWORD bit = GetLogicalDrives();
 		for (int i = 0; i< 26; i++) {
 			if (bit & (1 << i)) {
@@ -33,7 +33,7 @@ static void get_volume_async(uv_work_t *req)
 				v.full = std::filesystem::path(v.name);
 			}
 		}
-	#elif _OS_MAC_
+	#elif OS_MAC64
 		NSArray* array = [[NSFileManager defaultManager] mountedVolumeURLsIncludingResourceValuesForKeys:nil options:NSVolumeEnumerationSkipHiddenVolumes];
 
 		for (NSURL* url in array) {
@@ -69,7 +69,6 @@ static void get_volume_complete(uv_work_t* req, int status)
 	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, array);
-	work->promise.Reset();
 
 	delete work;
 }
@@ -87,13 +86,13 @@ void get_volume(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	get_volume_work* work = new get_volume_work();
-	work->request.data = work;
+	work->handle.data = work;
 
 	work->promise.Reset(ISOLATE, promise);
 
 	work->volumes.clear();
 
-	uv_queue_work(uv_default_loop(), &work->request, get_volume_async, get_volume_complete);
+	uv_queue_work(uv_default_loop(), &work->handle, get_volume_async, get_volume_complete);
 }
 
 #endif // include guard

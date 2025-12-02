@@ -1,10 +1,10 @@
 import esbuild from "esbuild"
 import fs from "node:fs/promises"
-import path from "node:path"
+import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 import ts from "typescript"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "extension")
@@ -13,7 +13,7 @@ const base = path.join(__top, "extension")
 
 export async function Check() {
 	let _time = perf_hooks.performance.now()
-	return new Promise((resolve, _) => {
+	return new Promise<void>((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
 		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
 		const program = ts.createProgram(fileNames, options)
@@ -22,6 +22,9 @@ export async function Check() {
 			...program.getSyntacticDiagnostics(),
 		]
 		for (const d of diagnostics) {
+			if (!d.file || !d.start) {
+				continue
+			}
 			console.log(
 				d.file.fileName,
 				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
@@ -38,7 +41,6 @@ export async function Check() {
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()
-	await fs.mkdir(outdir, { recursive: true })
 	return esbuild.build({
 		entryPoints: [
 			path.join(base, "src/fs.copy.ts"),

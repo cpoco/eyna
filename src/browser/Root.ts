@@ -7,9 +7,9 @@ import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
-import { Command } from "@/browser/core/Command"
+import { AppConfig } from "@/browser/conf/AppConfig"
+import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
 import { Path } from "@/browser/core/Path"
-import { Storage } from "@/browser/core/Storage"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
@@ -83,7 +83,7 @@ class Root {
 			},
 			backgroundColor: Conf.COLOR_BACKGROUND,
 		}
-		Util.merge(op, Storage.manager.data.window)
+		Util.merge(op, AppConfig.data.window)
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
@@ -95,13 +95,13 @@ class Root {
 			this.send(Bridge.System.Active.CH, -1, this.active)
 		})
 		this.browser.on("close", (_event: electron.Event) => {
-			Storage.manager.data.window = this.browser.getNormalBounds()
-			Storage.manager.data.wd = this.fragment[Index.Filer].exit()
-			Storage.manager.save()
+			AppConfig.data.window = this.browser.getNormalBounds()
+			AppConfig.data.wd = this.fragment[Index.Filer].exit()
+			AppConfig.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
 			if (input.type == "keyDown") {
-				await this.command(Command.manager.get(input))
+				await this.command(KeyConfig.get(input))
 			}
 		})
 
@@ -116,12 +116,12 @@ class Root {
 		this.quit()
 	}
 
-	async command(conf: Command.Config | null): Promise<void> {
-		if (conf == null) {
+	async command(kb: Command.KeyBind | null): Promise<void> {
+		if (kb == null) {
 			return
 		}
 		let f: AbstractFragment | null = null
-		switch (conf.when) {
+		switch (kb.when) {
 			case Command.When.Always:
 				f = this.fragment[Index.System]
 				break
@@ -137,9 +137,9 @@ class Root {
 			default:
 				return
 		}
-		for (const c of conf.cmd) {
+		for (const c of kb.cmd) {
 			try {
-				await f.emit(c, ...conf.prm)
+				await f.emit(c, ...kb.prm)
 			}
 			catch (err) {
 				console.error("\u001b[33m[cmd]\u001b[0m", c, err)
@@ -169,7 +169,7 @@ class Root {
 	}
 
 	reload() {
-		Command.manager.reload()
+		KeyConfig.reload()
 		this.browser.reload()
 	}
 
@@ -292,7 +292,7 @@ class Root {
 					},
 					find: (full: string, base: string): Promise<Native.Directory> => {
 						sbox.log("filer.find", { full })
-						return Native.getDirectory(full, base, true, 1024, null)
+						return Native.getDirectory(full, base, Native.Sort.ShallowFirst, 1024, null)
 					},
 				},
 				dialog: {

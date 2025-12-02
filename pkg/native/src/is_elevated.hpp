@@ -14,7 +14,7 @@ void is_elevated(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	bool elevated = false;
 
-	#if _OS_WIN_
+	#if OS_WIN64
 		HANDLE handle = NULL;
 		TOKEN_ELEVATION elevation;
 		DWORD cb;
@@ -26,7 +26,7 @@ void is_elevated(const v8::FunctionCallbackInfo<v8::Value>& info)
 				CloseHandle(handle);
 			}
 		}
-	#elif _OS_MAC_
+	#elif OS_MAC64
 		elevated = geteuid() == 0;
 	#endif
 

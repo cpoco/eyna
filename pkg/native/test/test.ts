@@ -1,4 +1,4 @@
-import native from "@eyna/native/lib/index.mjs"
+import * as native from "@eyna/native/lib/browser.ts"
 
 import assert from "node:assert"
 import fs from "node:fs/promises"

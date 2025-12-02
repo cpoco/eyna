@@ -1,0 +1,51 @@
+import child_process from "node:child_process"
+import fs from "node:fs"
+import path from "node:path"
+
+const msvc = path.join("C:", "Program Files", "Microsoft Visual Studio", "2022")
+
+const enterprise = path.join(msvc, "Enterprise", "VC", "Auxiliary", "Build", "vcvarsall.bat")
+const professional = path.join(msvc, "Professional", "VC", "Auxiliary", "Build", "vcvarsall.bat")
+const community = path.join(msvc, "Community", "VC", "Auxiliary", "Build", "vcvarsall.bat")
+
+const names = ["PATH", "INCLUDE", "LIB", "LIBPATH"]
+
+export async function setVsCmdEnv(): Promise<void> {
+	if (process.platform !== "win32" || process.env.VSCMD_VER) {
+		return Promise.resolve()
+	}
+
+	for (const bat of [enterprise, professional, community]) {
+		if (!fs.existsSync(bat)) {
+			continue
+		}
+
+		return new Promise<void>((resolve, reject) => {
+			child_process.exec(`"${bat}" x64 && set`, { shell: "cmd" }, (error, stdout, stderr) => {
+				if (error) {
+					console.error(stderr)
+					reject(error)
+					return
+				}
+
+				// console.log(bat)
+				// console.log("before PATH", (process.env.PATH ?? "").split(path.delimiter).length)
+
+				for (const line of stdout.split(/\r?\n/u)) {
+					const match = line.match(/^([^=]+)=(.*)$/u)
+					if (match && match.length == 3) {
+						if (names.includes(match[1].toUpperCase())) {
+							process.env[match[1].toUpperCase()] = match[2]
+						}
+					}
+				}
+
+				// console.log("after  PATH", (process.env.PATH ?? "").split(path.delimiter).length)
+
+				resolve()
+			})
+		})
+	}
+
+	throw new Error("no found vcvarsall.bat")
+}

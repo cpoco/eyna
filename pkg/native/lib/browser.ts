@@ -1,6 +1,9 @@
 export * from "./_type"
 
+import { Readable } from "node:stream"
+
 import * as native from "../bin/native.node"
+import * as Type from "./_type"
 
 export function compare(abstract_file1: string, abstract_file2: string): Promise<boolean> {
 	return native.compare(abstract_file1, abstract_file2)
@@ -26,6 +29,14 @@ export function exists(abstract: string): Promise<boolean> {
 	return native.exists(abstract)
 }
 
+export function getArchive(abstract: string, base: string, depth: number = 0): Promise<Type.Archive> {
+	return native.getArchive(abstract, base, depth)
+}
+
+export function getArchiveEntry(abstract: string, path: string): NodeJS.ReadableStream {
+	return native.getArchiveEntry(Readable, abstract, path)
+}
+
 export function getAttribute(abstract: string, base: string = ""): Promise<Type.Attributes> {
 	return native.getAttribute(abstract, base)
 }
@@ -33,11 +44,11 @@ export function getAttribute(abstract: string, base: string = ""): Promise<Type.
 export function getDirectory(
 	abstract: string,
 	base: string = "",
-	mode: boolean = false,
+	sort: Type.Sort = Type.Sort.DepthFirst,
 	depth: number = 0,
 	regexp: RegExp | null = null,
 ): Promise<Type.Directory> {
-	return native.getDirectory(abstract, base, mode, depth, regexp)
+	return native.getDirectory(abstract, base, sort, depth, regexp)
 }
 
 export function getIcon(abstract: string): Promise<Buffer> {

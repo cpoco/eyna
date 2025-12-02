@@ -1,0 +1,36 @@
+# https://github.com/libarchive/libarchive/blob/master/CMakeLists.txt
+
+set(BUILD_SHARED_LIBS       OFF         CACHE BOOL   "")
+
+set(ENABLE_MBEDTLS          OFF         CACHE BOOL   "")
+set(ENABLE_NETTLE           OFF         CACHE BOOL   "")
+set(ENABLE_OPENSSL          OFF         CACHE BOOL   "")
+set(ENABLE_LIBB2            OFF         CACHE BOOL   "")
+set(ENABLE_LZ4              OFF         CACHE BOOL   "")
+set(ENABLE_LZO              OFF         CACHE BOOL   "")
+set(ENABLE_LZMA             ON          CACHE BOOL   "")
+set(ENABLE_ZSTD             OFF         CACHE BOOL   "")
+set(ENABLE_ZLIB             ON          CACHE BOOL   "")
+set(ENABLE_BZip2            OFF         CACHE BOOL   "")
+set(ENABLE_LIBXML2          OFF         CACHE BOOL   "")
+set(ENABLE_EXPAT            OFF         CACHE BOOL   "")
+set(ENABLE_WIN32_XMLLITE    OFF         CACHE BOOL   "")
+set(ENABLE_PCREPOSIX        OFF         CACHE BOOL   "")
+set(ENABLE_PCRE2POSIX       OFF         CACHE BOOL   "")
+set(ENABLE_LIBGCC           OFF         CACHE BOOL   "")
+set(ENABLE_CNG              OFF         CACHE BOOL   "")
+set(ENABLE_TAR              OFF         CACHE BOOL   "")
+set(ENABLE_CPIO             OFF         CACHE BOOL   "")
+set(ENABLE_CAT              OFF         CACHE BOOL   "")
+set(ENABLE_UNZIP            OFF         CACHE BOOL   "")
+set(ENABLE_XATTR            OFF         CACHE BOOL   "")
+set(ENABLE_ACL              OFF         CACHE BOOL   "")
+set(ENABLE_ICONV            ON          CACHE BOOL   "")
+
+set(ENABLE_TEST             OFF         CACHE BOOL   "")
+set(ENABLE_COVERAGE         OFF         CACHE BOOL   "")
+set(ENABLE_INSTALL          ON          CACHE BOOL   "")
+
+set(POSIX_REGEX_LIB         "LIBREGEX"  CACHE STRING "")
+
+set(HAVE_LIBCHARSET         ON          CACHE BOOL   "") # archive_libiconv_version()

@@ -5,7 +5,7 @@ import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 import ts from "typescript"
 
-const __top = path.join(import.meta.dirname, "..")
+const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "app")
@@ -14,7 +14,6 @@ const base = __top
 
 export async function Node() {
 	const json = module.createRequire(import.meta.url)(path.join(__top, "package.json"))
-	await fs.mkdir(__build, { recursive: true })
 	return fs.writeFile(
 		path.join(__build, "package.json"),
 		JSON.stringify({
@@ -26,13 +25,12 @@ export async function Node() {
 }
 
 export async function Conf() {
-	await fs.mkdir(__build, { recursive: true })
 	return fs.cp(path.join(__top, "config"), path.join(__build, "config"), { recursive: true })
 }
 
 export async function Check() {
 	let _time = perf_hooks.performance.now()
-	return new Promise((resolve, _) => {
+	return new Promise<void>((resolve, _) => {
 		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
 		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
 		const program = ts.createProgram(fileNames, options)
@@ -41,6 +39,9 @@ export async function Check() {
 			...program.getSyntacticDiagnostics(),
 		]
 		for (const d of diagnostics) {
+			if (!d.file || !d.start) {
+				continue
+			}
 			console.log(
 				d.file.fileName,
 				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
@@ -68,7 +69,7 @@ export async function Build() {
 		{ recursive: true },
 	)
 
-	let common = {
+	let common: esbuild.BuildOptions = {
 		// define: {
 		// 	"process.env.NODE_ENV": JSON.stringify("production"),
 		// 	"process.env.NODE_ENV": JSON.stringify("development"),

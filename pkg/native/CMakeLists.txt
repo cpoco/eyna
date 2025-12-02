@@ -1,0 +1,135 @@
+cmake_minimum_required(VERSION 3.31)
+
+project(native)
+
+if(NOT DEFINED VCPKG_TRIPLET)
+  message(FATAL_ERROR "VCPKG_TRIPLET is required.")
+endif()
+if(NOT DEFINED NODE_RUNTIME_NAME)
+  message(FATAL_ERROR "NODE_RUNTIME_NAME is required.")
+endif()
+if(NOT DEFINED NODE_RUNTIME_VERSION)
+  message(FATAL_ERROR "NODE_RUNTIME_VERSION is required.")
+endif()
+
+message(STATUS "----------------------------------------")
+message(STATUS "VCPKG_TRIPLET:        ${VCPKG_TRIPLET}")
+message(STATUS "NODE_RUNTIME_NAME:    ${NODE_RUNTIME_NAME}")
+message(STATUS "NODE_RUNTIME_VERSION: ${NODE_RUNTIME_VERSION}")
+message(STATUS "----------------------------------------")
+
+add_library(${PROJECT_NAME} MODULE
+  ${CMAKE_SOURCE_DIR}/src/main.cpp
+)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  PREFIX ""
+  SUFFIX ".node"
+  LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin"
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+  ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/include/node
+  ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/include
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  USING_UV_SHARED=1
+  USING_V8_SHARED=1
+  V8_DEPRECATION_WARNINGS=1
+  BUILDING_NODE_EXTENSION
+)
+
+if(NODE_RUNTIME_NAME STREQUAL "electron")
+  target_compile_definitions(${PROJECT_NAME} PRIVATE
+    ELECTRON_BUILD=1
+    V8_COMPRESS_POINTERS
+    V8_COMPRESS_POINTERS_IN_SHARED_CAGE
+    V8_31BIT_SMIS_ON_64BIT_ARCH
+    V8_ENABLE_SANDBOX
+    V8_EXTERNAL_CODE_SPACE
+  )
+endif()
+
+if(WIN32)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE
+    LIBARCHIVE_STATIC
+  )
+
+  target_compile_options(${PROJECT_NAME} PRIVATE
+    /std:c++20
+    /utf-8
+    /Zc:__cplusplus
+
+    /EHa
+    /MT
+
+    /O2
+    /GL
+  )
+
+  target_link_options(${PROJECT_NAME} PRIVATE
+    /DELAYLOAD:node.exe
+    /ignore:4199
+
+    /LTCG
+  )
+
+  target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/win-x64/node.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/archive.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/charset.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zlib.lib
+  )
+  target_link_libraries(${PROJECT_NAME} PRIVATE
+    kernel32.lib
+    user32.lib
+    gdi32.lib
+    advapi32.lib
+    shell32.lib
+    ole32.lib
+    delayimp.lib
+  )
+endif()
+
+if(APPLE)
+  target_compile_options(${PROJECT_NAME} PRIVATE
+    -mmacosx-version-min=11.0
+    -ObjC++
+
+    -std=c++20
+    -stdlib=libc++
+
+    -fno-strict-aliasing
+    -fexceptions
+
+    -O3
+    -flto
+
+    -Wall
+    -Wextra
+    -Wno-unused-parameter
+    -Wno-unused-result
+  )
+
+  target_link_options(${PROJECT_NAME} PRIVATE
+    -stdlib=libc++
+
+    -bundle
+    -undefined dynamic_lookup
+
+    -flto
+  )
+
+  target_link_libraries(${PROJECT_NAME} PRIVATE
+    "-framework Foundation"
+    "-framework AppKit"
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libarchive.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libcharset.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libiconv.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/liblzma.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libz.a
+  )
+endif()

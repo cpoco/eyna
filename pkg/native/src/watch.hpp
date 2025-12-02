@@ -13,7 +13,7 @@ class _watch_map
 		uv_fs_event_t* event;
 		int32_t id;
 		std::filesystem::path path; // generic_path
-		v8::Persistent<v8::Function> callback;
+		v8::Global<v8::Function> callback;
 	};
 
 	std::map<int32_t, _data*> map;
@@ -76,9 +76,9 @@ public:
 		}
 
 		std::basic_string<char8_t> filename((char8_t*)_filename);
-		#if _OS_WIN_
+		#if OS_WIN64
 		int depth = std::count(filename.cbegin(), filename.cend(), u8'\\');
-		#elif _OS_MAC_
+		#elif OS_MAC64
 		int depth = std::count(filename.cbegin(), filename.cend(), u8'/');
 		#endif
 
@@ -96,7 +96,6 @@ public:
 	{
 		_data* data = static_cast<_data*>(_event->data);
 
-		data->callback.Reset();
 		delete data->event;
 		delete data;
 	}

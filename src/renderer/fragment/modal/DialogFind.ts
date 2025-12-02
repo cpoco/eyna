@@ -69,7 +69,7 @@ export const V = vue.defineComponent({
 						border: "1px solid var(--focus)",
 					},
 					".cm-scroller": {
-						fontFamily: "var(--font-family)",
+						fontFamily: "var(--dynamic-font-family)",
 						overflow: "hidden",
 					},
 					".cm-content": {

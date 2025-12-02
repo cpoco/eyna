@@ -1,7 +1,7 @@
 #ifndef NATIVE_COMMON_ATTRIBUTE
 #define NATIVE_COMMON_ATTRIBUTE
 
-#if _OS_WIN_
+#if OS_WIN64
 	typedef struct _REPARSE_DATA_BUFFER {
 		ULONG  ReparseTag;
 		USHORT ReparseDataLength;
@@ -29,6 +29,9 @@
 	} REPARSE_DATA_BUFFER, *PREPARSE_DATA_BUFFER;
 #endif
 
+constexpr int32_t SORT_DEPTH_FIRST = 0;
+constexpr int32_t SORT_SHALLOW_FIRST = 1;
+
 enum FILE_TYPE {
 	FILE_TYPE_NONE = 0,
 	FILE_TYPE_DIRECTORY = 1,
@@ -48,12 +51,10 @@ enum LINK_TYPE {
 struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
-
 	std::filesystem::path full; // generic_path
 
 	LINK_TYPE link_type = LINK_TYPE::LINK_TYPE_NONE;
-
-	std::filesystem::path link; // generic_path
+	std::filesystem::path link; // raw data
 
 	int64_t size = 0;
 	int64_t time = 0;
@@ -72,7 +73,7 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
-	#if _OS_WIN_
+	#if OS_WIN64
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
 
@@ -187,7 +188,7 @@ void attribute(_attribute& attribute)
 			}
 		}
 
-	#elif _OS_MAC_
+	#elif OS_MAC64
 
 		struct stat st;
 
