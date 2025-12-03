@@ -34,13 +34,6 @@ class Key extends Abstract<FileFormat> {
 	private when: Command.When = Command.When.Filer
 	private codeBind: Command.CodeBind = {}
 
-	constructor() {
-		super({
-			ver: "",
-			key: [],
-		})
-	}
-
 	set whenType(when: Command.When) {
 		switch (when) {
 			case Command.When.Always:
@@ -53,6 +46,7 @@ class Key extends Abstract<FileFormat> {
 	}
 
 	postLoad() {
+		this.codeBind = {}
 		for (const k of this.data.key) {
 			try {
 				const code: number = acceleratorToCode(k.key)

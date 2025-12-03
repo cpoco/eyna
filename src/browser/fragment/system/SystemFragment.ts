@@ -1,6 +1,5 @@
-import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
-import { AppConfig } from "@/browser/conf/AppConfig"
+import { SysConfig } from "@/browser/conf/SysConfig"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
@@ -26,9 +25,9 @@ export class SystemFragment extends AbstractFragment {
 					},
 					overlay: this.overlay,
 					style: {
-						fontFamily: AppConfig.data.cssFontFamily ?? Conf.FONT_FAMILY,
-						fontSize: AppConfig.data.cssFontSize ?? Conf.FONT_SIZE,
-						lineHeight: AppConfig.data.cssLineHeight ?? Conf.LINE_HEIGHT,
+						fontFamily: SysConfig.data.styleFontFamily,
+						fontSize: SysConfig.data.styleFontSize,
+						lineHeight: SysConfig.data.styleLineHeight,
 					},
 				}
 			})

@@ -6,6 +6,7 @@ import * as Util from "@eyna/util"
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import { AppConfig } from "@/browser/conf/AppConfig"
+import { SysConfig } from "@/browser/conf/SysConfig"
 import { Dir } from "@/browser/core/Dir"
 import { Path } from "@/browser/core/Path"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
@@ -84,7 +85,7 @@ export class FilerFragment extends AbstractFragment {
 		root
 			.on(Bridge.List.Dom.CH, (i, data) => {
 				if (data.event == "mounted") {
-					this.core[i]?.mounted(data.h, AppConfig.data.cssLineHeight ?? Conf.LINE_HEIGHT)
+					this.core[i]?.mounted(data.h, SysConfig.data.styleLineHeight)
 				}
 				else if (data.event == "resized") {
 					this.core[i]?.resized(data.h)

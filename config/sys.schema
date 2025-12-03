@@ -1,0 +1,33 @@
+{
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"ver",
+		"styleFontFamily",
+		"styleFontSize",
+		"styleLineHeight"
+	],
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"ver": {
+			"type": "string",
+			"enum": [
+				"0.1"
+			]
+		},
+		"styleFontFamily": {
+			"type": "string",
+			"minLength": 1
+		},
+		"styleFontSize": {
+			"type": "number",
+			"minimum": 1
+		},
+		"styleLineHeight": {
+			"type": "number",
+			"minimum": 1
+		}
+	}
+}
