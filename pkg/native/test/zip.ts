@@ -1,0 +1,53 @@
+import * as native from "@eyna/native/lib/browser.ts"
+
+import assert from "node:assert"
+import path from "node:path/posix"
+
+const main = async () => {
+	const zip = path.join(import.meta.dirname ?? __dirname, "test.zip")
+	const arc = await native.getArchive(zip, "", 10)
+
+	console.log(arc)
+
+	assert(arc.s == 35n)
+	assert(arc.d == 1)
+	assert(arc.f == 4)
+	assert(arc.e == 0)
+
+	assert(arc.list.length == 5)
+
+	assert(arc.list[0].file_type == 3)
+	assert(arc.list[0].full == "🍋")
+	assert(arc.list[0].size == 4n)
+	assert(arc.list[0].time == 1735689600 && arc.list[0].nsec == 0)
+
+	assert(arc.list[1].file_type == 3)
+	assert(arc.list[1].full == "🍋‍🟩")
+	assert(arc.list[1].size == 11n)
+	assert(arc.list[1].time == 1735689600 && arc.list[1].nsec == 0)
+
+	assert(arc.list[2].file_type == 3)
+	assert(arc.list[2].full == "file.txt")
+	assert(arc.list[2].size == 8n)
+	assert(arc.list[2].time == 1735689600 && arc.list[2].nsec == 0)
+
+	assert(arc.list[3].file_type == 1)
+	assert(arc.list[3].full == "dir/")
+	assert(arc.list[3].size == 0n)
+	assert(arc.list[3].time == 1735689600 && arc.list[3].nsec == 0)
+
+	assert(arc.list[4].file_type == 3)
+	assert(arc.list[4].full == "dir/file.txt")
+	assert(arc.list[4].size == 12n)
+	assert(arc.list[4].time == 1735689600 && arc.list[4].nsec == 0)
+}
+
+try {
+	main().then(() => {
+		console.log("")
+		console.log("done")
+	})
+}
+catch (err) {
+	console.error(err)
+}

@@ -36,3 +36,4 @@ jobs:
       - run: |
           npx tsx scripts/test.ts
           npx tsx pkg/native/test/test.ts
+          npx tsx pkg/native/test/zip.ts
