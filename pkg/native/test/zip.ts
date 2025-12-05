@@ -4,17 +4,17 @@ import assert from "node:assert"
 import path from "node:path/posix"
 
 const main = async () => {
-	const zip = path.join(import.meta.dirname ?? __dirname, "test.zip")
+	const zip = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.zip")
 	const arc = await native.getArchive(zip, "", 10)
 
 	console.log(arc)
 
 	assert(arc.s == 35n)
-	assert(arc.d == 1)
+	assert(arc.d == 2)
 	assert(arc.f == 4)
 	assert(arc.e == 0)
 
-	assert(arc.list.length == 5)
+	assert(arc.list.length == 6)
 
 	assert(arc.list[0].file_type == 3)
 	assert(arc.list[0].full == "🍋")
@@ -40,6 +40,11 @@ const main = async () => {
 	assert(arc.list[4].full == "dir/file.txt")
 	assert(arc.list[4].size == 12n)
 	assert(arc.list[4].time == 1735689600 && arc.list[4].nsec == 0)
+
+	assert(arc.list[5].file_type == 1)
+	assert(arc.list[5].full == "dir/dir/dir/dir/dir/")
+	assert(arc.list[5].size == 0n)
+	assert(arc.list[5].time == 1735689600 && arc.list[5].nsec == 0)
 }
 
 try {
