@@ -26,6 +26,8 @@ static void get_archive_async(uv_work_t* req)
 {
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
+	printf("min:%d, max:%d\n", work->min_depth, work->max_depth);
+
 	archive_iterator(
 		work->abst,
 		[&work](struct archive* a, struct archive_entry* entry) -> int
@@ -33,6 +35,22 @@ static void get_archive_async(uv_work_t* req)
 			_entry ent = {};
 			populate_entry(ent, entry);
 
+			if (compare_path(work->min_depth, work->base, ent.full)) {
+				for (int i = work->min_depth; i <= work->max_depth; i++) {
+					std::filesystem::path p = range_path(ent.full, work->min_depth, i);
+					if (p.empty()) {
+						continue;
+					}
+					if (ent.depth == i) {
+						printf("* %d\t%d\t%s\n", ent.depth, ent.file_type, ent.full.string().c_str());
+						// TODO: found entry
+					}
+					else {
+						printf("- %d\t%d\t%s\n", i, FILE_TYPE::FILE_TYPE_DIRECTORY, p.string().c_str());
+						// TODO: not found directory
+					}
+				}
+			}
 			if (work->min_depth <= ent.depth && ent.depth <= work->max_depth && compare_path(work->min_depth, work->base, ent.full)) {
 				if (ent.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
 					work->d++;
