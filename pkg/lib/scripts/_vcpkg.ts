@@ -15,7 +15,7 @@ export async function install(stdout: IOType = "ignore") {
 				"install",
 				"--triplet",
 				`${process.platform}-${process.arch}`,
-				"--debug",
+				// "--debug",
 			],
 			{
 				stdio: ["ignore", stdout, "inherit"],
