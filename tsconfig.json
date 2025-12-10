@@ -9,10 +9,9 @@
 		"module": "Preserve",
 		"moduleResolution": "Bundler",
 
-		"baseUrl": "./",
 		"paths": {
 			"@/*": [
-				"src/*",
+				"./src/*",
 			],
 		},
 

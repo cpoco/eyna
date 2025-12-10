@@ -9,8 +9,11 @@
 		"module": "Preserve",
 		"moduleResolution": "Bundler",
 
-		"baseUrl": "./",
-		"paths": {},
+		"paths": {
+			"@/*": [
+				"./src/*",
+			],
+		},
 
 		// Type Checking
 		"alwaysStrict": true,
