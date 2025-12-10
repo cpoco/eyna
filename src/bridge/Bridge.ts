@@ -18,7 +18,6 @@ export interface BrowserToRenderer {
 	[List.Active.CH]: [number, List.Active.Data]
 	[List.Cursor.CH]: [number, List.Cursor.Data]
 	[List.Attribute.CH]: [number, List.Attribute.Data]
-	[List.Change.CH]: [number, List.Change.Data]
 	[List.Mark.CH]: [number, List.Mark.Data]
 	[List.Watch.CH]: [number, List.Watch.Data]
 	[Modal.Open.CH]: [-1, Modal.Open.Data]
