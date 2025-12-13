@@ -1,6 +1,6 @@
 class generic {
-	private _root: string = ""
-	private _path: string[] = []
+	private readonly _root: string = ""
+	private readonly _path: string[] = []
 
 	constructor(path: string) {
 		const m = path.match(/^([a-z]:\/|\/)/i)
@@ -34,38 +34,64 @@ class generic {
 	}
 }
 
-enum LocationType {
-	Home = "home",
-	Filesystem = "filesystem",
-	Archive = "archive",
-}
-
-export type Location = {
-	type: LocationType
-	path: string
-	entry: string
-	anchor?: string
-}
-
 export namespace Location {
-	export function parse(urn: string): Location {
-		const block = urn.split("\0")
+	export enum Type {
+		Home = "home",
+		Filesystem = "filesystem",
+		Archive = "archive",
+	}
+
+	export type Data = {
+		readonly frn: string
+		readonly type: Type.Home
+		readonly anchor?: string
+	} | {
+		readonly frn: string
+		readonly type: Type.Filesystem
+		readonly path: string
+		readonly anchor?: string
+	} | {
+		readonly frn: string
+		readonly type: Type.Archive
+		readonly path: string
+		readonly entry: string
+		readonly anchor?: string
+	}
+
+	export const Default: Data = {
+		frn: Type.Home,
+		type: Type.Home,
+	}
+
+	export function home(): string {
+		return Type.Home
+	}
+
+	export function fs(path: string): string {
+		return [Type.Filesystem, path].join("\0")
+	}
+
+	export function parse(frn: string | null): Data {
+		if (frn == null) {
+			return Default
+		}
+		const block = frn.split("\0")
 		switch (block.at(0)) {
-			case LocationType.Home:
+			case Type.Home:
 				return {
-					type: LocationType.Home,
-					path: "",
-					entry: "",
+					frn: frn,
+					type: Type.Home,
 				}
-			case LocationType.Filesystem:
+			case Type.Filesystem:
 				return {
-					type: LocationType.Filesystem,
+					frn: frn,
+					type: Type.Filesystem,
 					path: new generic(block.at(1) ?? "").full,
-					entry: "",
 				}
-			case LocationType.Archive:
+			case Type.Archive:
 				return {
-					type: LocationType.Archive,
+					frn: frn,
+					type: Type.Archive,
 					path: new generic(block.at(1) ?? "").full,
 					entry: new generic(block.at(2) ?? "").full,
 				}
@@ -73,41 +99,42 @@ export namespace Location {
 		throw new Error("invalid URN")
 	}
 
-	export function updir(location: Location): Location {
-		switch (location.type) {
-			case LocationType.Home:
-				return location	
+	export function updir(frn: string | null): Data {
+		const data = parse(frn)
+		switch (data.type) {
+			case Type.Home:
+				return data
 
-			case LocationType.Filesystem: {
-				const path = new generic(location.path)
+			case Type.Filesystem: {
+				const path = new generic(data.path)
 				return path.top
 					? {
-						type: LocationType.Home,
-						path: "",
-						entry: "",
+						frn: Type.Home,
+						type: Type.Home,
 						anchor: path.root,
 					}
 					: {
-						type: LocationType.Filesystem,
+						frn: [Type.Filesystem, path.dirname].join("\0"),
+						type: Type.Filesystem,
 						path: path.dirname,
-						entry: "",
-						anchor: path.basename
+						anchor: path.basename,
 					}
 			}
 
-			case LocationType.Archive: {
-				const path = new generic(location.path)
-				const entry = new generic(location.entry)
+			case Type.Archive: {
+				const path = new generic(data.path)
+				const entry = new generic(data.entry)
 				return entry.top
 					? {
-						type: LocationType.Filesystem,
+						frn: [Type.Filesystem, data.path].join("\0"),
+						type: Type.Filesystem,
 						path: path.dirname,
-						entry: "",
-						anchor: path.basename
+						anchor: path.basename,
 					}
 					: {
-						type: LocationType.Archive,
-						path: location.path,
+						frn: [Type.Archive, data.path, entry.dirname].join("\0"),
+						type: Type.Archive,
+						path: data.path,
 						entry: entry.dirname,
 						anchor: entry.basename,
 					}

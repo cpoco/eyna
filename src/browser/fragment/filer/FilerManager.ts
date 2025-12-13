@@ -3,6 +3,7 @@ import * as timers from "node:timers/promises"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
+import { Location } from "@/browser/core/Location"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
 import * as Native from "@eyna/native/lib/browser"
@@ -14,7 +15,7 @@ export class FilerManager {
 	private readonly dir: Dir = new Dir()
 	private readonly sc: Scroll = new Scroll()
 	private readonly mk: Set<string> = new Set()
-	private readonly history: Map<string, string | null> = new Map()
+	// private readonly history: Map<string, string | null> = new Map()
 
 	private watch_run: boolean = false
 	private readonly watch_queue: string[] = []
@@ -24,16 +25,16 @@ export class FilerManager {
 		return Math.max(1, Math.floor(this.sc.screenSize / this.sc.contentsSize) - 1)
 	}
 
-	get pwd(): string {
-		return this.dir.pwd
+	get current(): string {
+		return this.dir.current
 	}
 
-	get isHome(): boolean {
-		return this.dir.isHome
+	get readonly(): boolean {
+		return this.dir.readonly
 	}
 
-	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.None) {
-		this.dir.cd(wd)
+	constructor(public readonly id: number, frn: string | null, status: Bridge.Status = Bridge.Status.None) {
+		this.dir.change(frn)
 		this.mk.clear()
 		this.data.status = status
 	}
@@ -45,7 +46,7 @@ export class FilerManager {
 				await timers.setTimeout(100)
 				continue
 			}
-			if (this.data.wd != this.watch_queue.shift()) {
+			if (this.data.cur != this.watch_queue.shift()) {
 				continue
 			}
 
@@ -120,7 +121,7 @@ export class FilerManager {
 
 	update(forceMarkClear: boolean): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.pwd, 0, null, this.data.cursor, forceMarkClear)) {
+			if (await this.sendChange(this.current, 0, null, this.data.cursor, forceMarkClear)) {
 				this.scroll()
 				this.sendScan()
 				this.sendAttrAll()
@@ -150,20 +151,24 @@ export class FilerManager {
 	}
 
 	sendChange(
-		wd: string,
+		lc: string,
 		dp: number,
 		rg: RegExp | null,
-		cursor: number | string | null,
+		_cursor: number | string | null,
 		forceMarkClear: boolean,
 	): Promise<boolean> {
-		const history = Dir.findRltv(this.data.ls, this.data.cursor)
-		if (history) {
-			this.history.set(this.data.wd, history)
-		}
+		const next = Location.parse(lc)
 
-		if (wd == Dir.HOME) {
-			cursor = this.history.get(Dir.HOME) ?? null
-		}
+		// WIP
+		// const history = Dir.findRltv(this.data.ls, this.data.cursor)
+		// if (history) {
+		// 	this.history.set(this.data.wd, history)
+		// }
+
+		// WIP
+		// if (next.type == Location.Type.Home) {
+		// 	cursor = this.history.get(Dir.HOME) ?? null
+		// }
 
 		let create = perf_hooks.performance.now()
 
@@ -172,13 +177,13 @@ export class FilerManager {
 		this.data.search = true
 
 		Native.unwatch(this.id)
-		if (wd != Dir.HOME) {
-			Native.watch(this.id, wd, (_id, depth, _abstract) => {
+		if (next.type == Location.Type.Filesystem) {
+			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
 				if (create != this.data.create || dp < depth) {
 					return
 				}
-				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != wd) {
-					this.watch_queue.push(wd)
+				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != next.frn) {
+					this.watch_queue.push(next.frn)
 				}
 			})
 		}
@@ -193,7 +198,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: 0,
 				length: 0,
-				wd: wd,
+				cur: next.frn,
 				st: [],
 				ls: [],
 				mk: [],
@@ -209,11 +214,11 @@ export class FilerManager {
 		)
 
 		return new Promise(async (resolve, _reject) => {
-			if (this.dir.pwd != wd || forceMarkClear) {
+			if (this.dir.current != lc || forceMarkClear) {
 				this.mk.clear()
 			}
-			this.dir.cd(wd)
-			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
+			this.dir.change(lc)
+			await this.dir.list(dp, rg, async (lc, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)
 					return
@@ -221,11 +226,13 @@ export class FilerManager {
 
 				this.data.elapse = perf_hooks.performance.now() - this.data.create
 				this.data.search = false
-				this.data.cursor = Util.isNumber(cursor)
-					? Math.max(0, Math.min(cursor, ls.length - 1))
-					: Dir.findIndex(ls, cursor ?? this.history.get(wd) ?? null)
+				this.data.cursor = 0
+				// WIP
+				// this.data.cursor = Util.isNumber(cursor)
+				// 	? Math.max(0, Math.min(cursor, ls.length - 1))
+				// 	: Dir.findIndex(ls, cursor ?? this.history.get(lc) ?? null)
 				this.data.length = ls.length
-				this.data.wd = wd
+				this.data.cur = lc
 				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, (i) => {
@@ -251,7 +258,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: this.data.cursor,
 				length: this.data.length,
-				wd: this.data.wd,
+				cur: this.data.cur,
 				st: this.data.st,
 				ls: [],
 				mk: [],

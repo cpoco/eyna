@@ -10,7 +10,7 @@ export namespace List {
 		search: boolean
 		cursor: number
 		length: number
-		wd: string
+		cur: string
 		st: Native.Attributes
 		ls: Native.Attributes[]
 		mk: boolean[]
@@ -31,7 +31,7 @@ export namespace List {
 			search: false,
 			cursor: 0,
 			length: 0,
-			wd: "",
+			cur: "",
 			st: [],
 			ls: [],
 			mk: [],
