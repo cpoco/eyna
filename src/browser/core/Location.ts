@@ -37,38 +37,36 @@ class generic {
 export namespace Location {
 	export enum Type {
 		Home = "home",
-		Filesystem = "filesystem",
-		Archive = "archive",
+		File = "file",
+		Arch = "arch",
 	}
 
-	export type Data = {
+	type HomeData = {
 		readonly frn: string
 		readonly type: Type.Home
 		readonly anchor?: string
-	} | {
+	}
+
+	type FileData = {
 		readonly frn: string
-		readonly type: Type.Filesystem
+		readonly type: Type.File
 		readonly path: string
 		readonly anchor?: string
-	} | {
+	}
+
+	type ArchData = {
 		readonly frn: string
-		readonly type: Type.Archive
+		readonly type: Type.Arch
 		readonly path: string
 		readonly entry: string
 		readonly anchor?: string
 	}
 
-	export const Default: Data = {
+	export type Data = HomeData | FileData | ArchData
+
+	export const Default: HomeData = {
 		frn: Type.Home,
 		type: Type.Home,
-	}
-
-	export function home(): string {
-		return Type.Home
-	}
-
-	export function fs(path: string): string {
-		return [Type.Filesystem, path].join("\0")
 	}
 
 	export function parse(frn: string | null): Data {
@@ -82,16 +80,16 @@ export namespace Location {
 					frn: frn,
 					type: Type.Home,
 				}
-			case Type.Filesystem:
+			case Type.File:
 				return {
 					frn: frn,
-					type: Type.Filesystem,
+					type: Type.File,
 					path: new generic(block.at(1) ?? "").full,
 				}
-			case Type.Archive:
+			case Type.Arch:
 				return {
 					frn: frn,
-					type: Type.Archive,
+					type: Type.Arch,
 					path: new generic(block.at(1) ?? "").full,
 					entry: new generic(block.at(2) ?? "").full,
 				}
@@ -105,7 +103,7 @@ export namespace Location {
 			case Type.Home:
 				return data
 
-			case Type.Filesystem: {
+			case Type.File: {
 				const path = new generic(data.path)
 				return path.top
 					? {
@@ -114,31 +112,55 @@ export namespace Location {
 						anchor: path.root,
 					}
 					: {
-						frn: [Type.Filesystem, path.dirname].join("\0"),
-						type: Type.Filesystem,
+						frn: [Type.File, path.dirname].join("\0"),
+						type: Type.File,
 						path: path.dirname,
 						anchor: path.basename,
 					}
 			}
 
-			case Type.Archive: {
+			case Type.Arch: {
 				const path = new generic(data.path)
 				const entry = new generic(data.entry)
 				return entry.top
 					? {
-						frn: [Type.Filesystem, data.path].join("\0"),
-						type: Type.Filesystem,
+						frn: [Type.File, data.path].join("\0"),
+						type: Type.File,
 						path: path.dirname,
 						anchor: path.basename,
 					}
 					: {
-						frn: [Type.Archive, data.path, entry.dirname].join("\0"),
-						type: Type.Archive,
+						frn: [Type.Arch, data.path, entry.dirname].join("\0"),
+						type: Type.Arch,
 						path: data.path,
 						entry: entry.dirname,
 						anchor: entry.basename,
 					}
 			}
 		}
+	}
+
+	export function isHome(data: Data): data is HomeData {
+		return data.type === Type.Home
+	}
+
+	export function isFile(data: Data): data is FileData {
+		return data.type === Type.File
+	}
+
+	export function isArch(data: Data): data is ArchData {
+		return data.type === Type.Arch
+	}
+
+	export function toHome(): string {
+		return Type.Home
+	}
+
+	export function toFile(path: string): string {
+		return [Type.File, path].join("\0")
+	}
+
+	export function toArch(path: string, entry: string): string {
+		return [Type.Arch, path, entry].join("\0")
 	}
 }

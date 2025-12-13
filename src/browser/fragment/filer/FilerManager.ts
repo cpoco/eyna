@@ -25,12 +25,8 @@ export class FilerManager {
 		return Math.max(1, Math.floor(this.sc.screenSize / this.sc.contentsSize) - 1)
 	}
 
-	get current(): string {
-		return this.dir.current
-	}
-
-	get readonly(): boolean {
-		return this.dir.readonly
+	get location(): Location.Data {
+		return this.dir.location
 	}
 
 	constructor(public readonly id: number, frn: string | null, status: Bridge.Status = Bridge.Status.None) {
@@ -121,7 +117,7 @@ export class FilerManager {
 
 	update(forceMarkClear: boolean): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.current, 0, null, this.data.cursor, forceMarkClear)) {
+			if (await this.sendChange(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
 				this.scroll()
 				this.sendScan()
 				this.sendAttrAll()
@@ -151,13 +147,13 @@ export class FilerManager {
 	}
 
 	sendChange(
-		lc: string,
+		frn: string,
 		dp: number,
 		rg: RegExp | null,
 		_cursor: number | string | null,
 		forceMarkClear: boolean,
 	): Promise<boolean> {
-		const next = Location.parse(lc)
+		const next = Location.parse(frn)
 
 		// WIP
 		// const history = Dir.findRltv(this.data.ls, this.data.cursor)
@@ -177,7 +173,7 @@ export class FilerManager {
 		this.data.search = true
 
 		Native.unwatch(this.id)
-		if (next.type == Location.Type.Filesystem) {
+		if (next.type == Location.Type.File) {
 			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
 				if (create != this.data.create || dp < depth) {
 					return
@@ -214,10 +210,10 @@ export class FilerManager {
 		)
 
 		return new Promise(async (resolve, _reject) => {
-			if (this.dir.current != lc || forceMarkClear) {
+			if (this.dir.location.frn != frn || forceMarkClear) {
 				this.mk.clear()
 			}
-			this.dir.change(lc)
+			this.dir.change(frn)
 			await this.dir.list(dp, rg, async (lc, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)

@@ -13,12 +13,8 @@ export class Dir {
 	private dp: number = 0
 	private rg: RegExp | null = null
 
-	get current(): string {
-		return this.lc.frn
-	}
-
-	get readonly(): boolean {
-		return this.lc.type != Location.Type.Filesystem
+	get location(): Location.Data {
+		return this.lc
 	}
 
 	static findRltv(ls: Native.Attributes[], i: number): string | null {
@@ -48,7 +44,7 @@ export class Dir {
 		rg: RegExp | null,
 		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
 	) {
-		_log(this.current.split("\0"), { dp: dp, rg: rg })
+		_log(this.location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
 		if (this.lc.type == Location.Type.Home) {
@@ -57,7 +53,7 @@ export class Dir {
 			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
-					const frn = Location.home()
+					const frn = Location.toHome()
 					_log(frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					let ls: Native.Attributes[] = []
 					for (const v of vol) {
@@ -65,16 +61,16 @@ export class Dir {
 					}
 					ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
 					cb(frn, st, ls, 0)
-				}
+				},
 			)
 		}
-		else {
+		else if (this.lc.type == Location.Type.File) {
 			this.dp = dp
 			this.rg = rg
 			let st = await Native.getAttribute(this.lc.path)
 			Native.getDirectory(this.lc.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
 				async (dir: Native.Directory) => {
-					const frn = Location.fs(dir.full)
+					const frn = Location.toFile(dir.full)
 					_log(frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 						s: dir.s,
 						d: dir.d,
