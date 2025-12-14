@@ -42,7 +42,7 @@ export class FilerManager {
 				await timers.setTimeout(100)
 				continue
 			}
-			if (this.data.cur != this.watch_queue.shift()) {
+			if (this.data.frn != this.watch_queue.shift()) {
 				continue
 			}
 
@@ -149,7 +149,7 @@ export class FilerManager {
 	private updateHistory() {
 		const rltv = this.data.ls[this.data.cursor]?.[0]?.rltv ?? null
 		if (rltv) {
-			this.history.set(this.data.cur, rltv)
+			this.history.set(this.data.frn, rltv)
 		}
 	}
 
@@ -207,7 +207,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: 0,
 				length: 0,
-				cur: next.frn,
+				frn: next.frn,
 				st: [],
 				ls: [],
 				mk: [],
@@ -237,7 +237,7 @@ export class FilerManager {
 				this.data.search = false
 				this.data.cursor = this.resolveCursor(frn, ls, cursor)
 				this.data.length = ls.length
-				this.data.cur = frn
+				this.data.frn = frn
 				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, (i) => {
@@ -263,7 +263,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: this.data.cursor,
 				length: this.data.length,
-				cur: this.data.cur,
+				frn: this.data.frn,
 				st: this.data.st,
 				ls: [],
 				mk: [],

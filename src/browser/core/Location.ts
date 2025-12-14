@@ -96,7 +96,7 @@ export namespace Location {
 					entry: new generic(block.at(2) ?? "").full,
 				}
 		}
-		throw new Error("invalid URN")
+		return Default
 	}
 
 	export function updir(frn: FRN | null): Data {

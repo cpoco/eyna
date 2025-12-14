@@ -222,8 +222,9 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0 || !Location.isFile(active.location)) {
 					return Promise.resolve()
 				}
+				const path = active.location.path
 				return new Promise(async (resolve, _reject) => {
-					let find = await root.find({ type: "find", title: active.location.frn, rg: "^.+$", dp: "0" })
+					let find = await root.find({ type: "find", title: path, rg: "^.+$", dp: "0" })
 					if (find == null) {
 						resolve()
 						return
