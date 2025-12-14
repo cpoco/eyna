@@ -1,5 +1,5 @@
 export function DateTime(sec: number): { date: string; time: string } {
-	if (sec == 0) {
+	if (sec === 0) {
 		return {
 			date: "----/--/--",
 			time: "--:--:--",
