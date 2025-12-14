@@ -29,7 +29,7 @@ export class Dir {
 		_log(this.location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
-		if (this.lc.type == Location.Type.Home) {
+		if (Location.isHome(this.lc)) {
 			this.dp = 0
 			this.rg = null
 			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
@@ -46,7 +46,7 @@ export class Dir {
 				},
 			)
 		}
-		else if (this.lc.type == Location.Type.File) {
+		else if (Location.isFile(this.lc)) {
 			this.dp = dp
 			this.rg = rg
 			let st = await Native.getAttribute(this.lc.path)

@@ -35,27 +35,29 @@ class generic {
 }
 
 export namespace Location {
-	export enum Type {
+	export type FRN = string
+
+	enum Type {
 		Home = "home",
 		File = "file",
 		Arch = "arch",
 	}
 
 	type HomeData = {
-		readonly frn: string
+		readonly frn: FRN
 		readonly type: Type.Home
 		readonly anchor?: string
 	}
 
 	type FileData = {
-		readonly frn: string
+		readonly frn: FRN
 		readonly type: Type.File
 		readonly path: string
 		readonly anchor?: string
 	}
 
 	type ArchData = {
-		readonly frn: string
+		readonly frn: FRN
 		readonly type: Type.Arch
 		readonly path: string
 		readonly entry: string
@@ -69,7 +71,7 @@ export namespace Location {
 		type: Type.Home,
 	}
 
-	export function parse(frn: string | null): Data {
+	export function parse(frn: FRN | null): Data {
 		if (frn == null) {
 			return Default
 		}
@@ -97,7 +99,7 @@ export namespace Location {
 		throw new Error("invalid URN")
 	}
 
-	export function updir(frn: string | null): Data {
+	export function updir(frn: FRN | null): Data {
 		const data = parse(frn)
 		switch (data.type) {
 			case Type.Home:
@@ -152,15 +154,15 @@ export namespace Location {
 		return data.type === Type.Arch
 	}
 
-	export function toHome(): string {
+	export function toHome(): FRN {
 		return Type.Home
 	}
 
-	export function toFile(path: string): string {
+	export function toFile(path: string): FRN {
 		return [Type.File, path].join("\0")
 	}
 
-	export function toArch(path: string, entry: string): string {
+	export function toArch(path: string, entry: string): FRN {
 		return [Type.Arch, path, entry].join("\0")
 	}
 }

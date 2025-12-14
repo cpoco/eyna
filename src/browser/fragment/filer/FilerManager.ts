@@ -186,7 +186,7 @@ export class FilerManager {
 		this.data.search = true
 
 		Native.unwatch(this.id)
-		if (next.type == Location.Type.File) {
+		if (Location.isFile(next)) {
 			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
 				if (create != this.data.create || dp < depth) {
 					return
