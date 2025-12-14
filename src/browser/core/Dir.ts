@@ -17,24 +17,6 @@ export class Dir {
 		return this.lc
 	}
 
-	static findRltv(ls: Native.Attributes[], i: number): string | null {
-		return ls[i]?.[0]?.rltv ?? null
-	}
-
-	static findIndex(ls: Native.Attributes[], rltv: string | null): number {
-		if (rltv == null) {
-			return 0
-		}
-
-		for (const [i, attr] of ls.entries()) {
-			if (attr[0]?.rltv == rltv) {
-				return i
-			}
-		}
-
-		return 0
-	}
-
 	change(frn: string | null) {
 		this.lc = Location.parse(frn)
 	}

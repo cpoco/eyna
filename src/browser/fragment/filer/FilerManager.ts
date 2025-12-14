@@ -15,7 +15,7 @@ export class FilerManager {
 	private readonly dir: Dir = new Dir()
 	private readonly sc: Scroll = new Scroll()
 	private readonly mk: Set<string> = new Set()
-	// private readonly history: Map<string, string | null> = new Map()
+	private readonly history: Map<string, string> = new Map()
 
 	private watch_run: boolean = false
 	private readonly watch_queue: string[] = []
@@ -146,27 +146,40 @@ export class FilerManager {
 		this.sc.update()
 	}
 
+	private updateHistory() {
+		const rltv = this.data.ls[this.data.cursor]?.[0]?.rltv ?? null
+		if (rltv) {
+			this.history.set(this.data.cur, rltv)
+		}
+	}
+
+	private resolveCursor(frn: string, ls: Native.Attributes[], cursor: number | string | null): number {
+		if (Util.isNumber(cursor)) {
+			return Math.max(0, Math.min(cursor, Math.max(0, ls.length - 1)))
+		}
+
+		const rltv = cursor ?? this.history.get(frn) ?? null
+		for (const [i, attr] of ls.entries()) {
+			if (attr[0]?.rltv == rltv) {
+				return i
+			}
+		}
+
+		return 0
+	}
+
 	sendChange(
 		frn: string,
 		dp: number,
 		rg: RegExp | null,
-		_cursor: number | string | null,
+		cursor: number | string | null,
 		forceMarkClear: boolean,
 	): Promise<boolean> {
+		this.updateHistory()
+
 		const next = Location.parse(frn)
 
-		// WIP
-		// const history = Dir.findRltv(this.data.ls, this.data.cursor)
-		// if (history) {
-		// 	this.history.set(this.data.wd, history)
-		// }
-
-		// WIP
-		// if (next.type == Location.Type.Home) {
-		// 	cursor = this.history.get(Dir.HOME) ?? null
-		// }
-
-		let create = perf_hooks.performance.now()
+		const create = perf_hooks.performance.now()
 
 		this.data.create = create
 		this.data.elapse = 0
@@ -214,7 +227,7 @@ export class FilerManager {
 				this.mk.clear()
 			}
 			this.dir.change(frn)
-			await this.dir.list(dp, rg, async (lc, st, ls, e) => {
+			await this.dir.list(dp, rg, async (frn, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)
 					return
@@ -222,13 +235,9 @@ export class FilerManager {
 
 				this.data.elapse = perf_hooks.performance.now() - this.data.create
 				this.data.search = false
-				this.data.cursor = 0
-				// WIP
-				// this.data.cursor = Util.isNumber(cursor)
-				// 	? Math.max(0, Math.min(cursor, ls.length - 1))
-				// 	: Dir.findIndex(ls, cursor ?? this.history.get(lc) ?? null)
+				this.data.cursor = this.resolveCursor(frn, ls, cursor)
 				this.data.length = ls.length
-				this.data.cur = lc
+				this.data.cur = frn
 				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, (i) => {
