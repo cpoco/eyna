@@ -178,13 +178,34 @@ export class FilerManager {
 			: this.data.ls[this.data.cursor]?.[0]?.full ?? null
 
 		if (selected !== null) {
-			root.send(Bridge.List.Title.CH, this.id, { title: selected, err: false })
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: selected,
+					err: false,
+				},
+			)
 		}
 		else if (Location.isHome(this.location)) {
-			root.send(Bridge.List.Title.CH, this.id, { title: this.location.type, err: false })
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: this.location.type,
+					err: false,
+				},
+			)
 		}
 		else if (Location.isFile(this.location)) {
-			root.send(Bridge.List.Title.CH, this.id, { title: this.location.path, err: false })
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: this.location.path,
+					err: this.data.st[0]?.file_type === Native.AttributeFileType.None,
+				},
+			)
 		}
 	}
 
