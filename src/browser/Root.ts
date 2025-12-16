@@ -9,6 +9,7 @@ import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
 import { AppConfig } from "@/browser/conf/AppConfig"
 import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
+import { SysConfig } from "@/browser/conf/SysConfig"
 import { Path } from "@/browser/core/Path"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
@@ -169,6 +170,7 @@ class Root {
 	}
 
 	reload() {
+		SysConfig.reload()
 		KeyConfig.reload()
 		this.browser.reload()
 	}

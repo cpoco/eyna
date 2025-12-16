@@ -10,7 +10,7 @@ export namespace List {
 		search: boolean
 		cursor: number
 		length: number
-		wd: string
+		frn: string
 		st: Native.Attributes
 		ls: Native.Attributes[]
 		mk: boolean[]
@@ -31,7 +31,7 @@ export namespace List {
 			search: false,
 			cursor: 0,
 			length: 0,
-			wd: "",
+			frn: "",
 			st: [],
 			ls: [],
 			mk: [],
@@ -63,6 +63,15 @@ export namespace List {
 		export const CH = "filer-drag"
 		export type Data = {
 			full: string
+		}
+	}
+
+	// browser -> renderer
+	export namespace Title {
+		export const CH = "filer-title"
+		export type Data = {
+			title: string
+			err: boolean
 		}
 	}
 

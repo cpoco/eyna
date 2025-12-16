@@ -1,4 +1,3 @@
-import * as Native from "@eyna/native/lib/renderer"
 import * as vue from "@vue/runtime-dom"
 
 import * as Unicode from "@/renderer/dom/Unicode"
@@ -16,11 +15,8 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		const title = this.title.attr[0]?.full ?? this.title.wd
-		const err = this.title.attr[0]?.file_type == Native.AttributeFileType.None
-
 		return vue.h(TAG, { class: { "navbar-fragment": true } }, [
-			vue.h("div", { class: { "navbar-title": true } }, Unicode.highlight(title, err)),
+			vue.h("div", { class: { "navbar-title": true } }, Unicode.highlight(this.title.wd, this.title.err)),
 		])
 	},
 })

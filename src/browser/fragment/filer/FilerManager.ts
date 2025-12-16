@@ -3,6 +3,7 @@ import * as timers from "node:timers/promises"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
+import { Location } from "@/browser/core/Location"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
 import * as Native from "@eyna/native/lib/browser"
@@ -14,7 +15,7 @@ export class FilerManager {
 	private readonly dir: Dir = new Dir()
 	private readonly sc: Scroll = new Scroll()
 	private readonly mk: Set<string> = new Set()
-	private readonly history: Map<string, string | null> = new Map()
+	private readonly history: Map<string, string> = new Map()
 
 	private watch_run: boolean = false
 	private readonly watch_queue: string[] = []
@@ -24,16 +25,12 @@ export class FilerManager {
 		return Math.max(1, Math.floor(this.sc.screenSize / this.sc.contentsSize) - 1)
 	}
 
-	get pwd(): string {
-		return this.dir.pwd
+	get location(): Location.Data {
+		return this.dir.location
 	}
 
-	get isHome(): boolean {
-		return this.dir.isHome
-	}
-
-	constructor(public readonly id: number, wd: string | null, status: Bridge.Status = Bridge.Status.None) {
-		this.dir.cd(wd)
+	constructor(public readonly id: number, frn: string | null, status: Bridge.Status = Bridge.Status.None) {
+		this.dir.change(frn)
 		this.mk.clear()
 		this.data.status = status
 	}
@@ -45,7 +42,7 @@ export class FilerManager {
 				await timers.setTimeout(100)
 				continue
 			}
-			if (this.data.wd != this.watch_queue.shift()) {
+			if (this.data.frn != this.watch_queue.shift()) {
 				continue
 			}
 
@@ -120,7 +117,7 @@ export class FilerManager {
 
 	update(forceMarkClear: boolean): Promise<void> {
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.pwd, 0, null, this.data.cursor, forceMarkClear)) {
+			if (await this.sendChange(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
 				this.scroll()
 				this.sendScan()
 				this.sendAttrAll()
@@ -149,40 +146,99 @@ export class FilerManager {
 		this.sc.update()
 	}
 
+	private updateHistory() {
+		const rltv = this.data.ls[this.data.cursor]?.[0]?.rltv ?? null
+		if (rltv) {
+			this.history.set(this.data.frn, rltv)
+		}
+	}
+
+	private resolveCursor(frn: string, ls: Native.Attributes[], cursor: number | string | null): number {
+		if (Util.isNumber(cursor)) {
+			return Math.max(0, Math.min(cursor, Math.max(0, ls.length - 1)))
+		}
+
+		const rltv = cursor ?? this.history.get(frn) ?? null
+		for (const [i, attr] of ls.entries()) {
+			if (attr[0]?.rltv == rltv) {
+				return i
+			}
+		}
+
+		return 0
+	}
+
+	private sendTitle(forceLocation: boolean = false) {
+		if (this.data.status !== Bridge.Status.Active) {
+			return
+		}
+
+		const selected = forceLocation
+			? null
+			: this.data.ls[this.data.cursor]?.[0]?.full ?? null
+
+		if (selected !== null) {
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: selected,
+					err: false,
+				},
+			)
+		}
+		else if (Location.isHome(this.location)) {
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: this.location.type,
+					err: false,
+				},
+			)
+		}
+		else if (Location.isFile(this.location)) {
+			root.send(
+				Bridge.List.Title.CH,
+				this.id,
+				{
+					title: this.location.path,
+					err: this.data.st[0]?.file_type === Native.AttributeFileType.None,
+				},
+			)
+		}
+	}
+
 	sendChange(
-		wd: string,
+		frn: string,
 		dp: number,
 		rg: RegExp | null,
 		cursor: number | string | null,
 		forceMarkClear: boolean,
 	): Promise<boolean> {
-		const history = Dir.findRltv(this.data.ls, this.data.cursor)
-		if (history) {
-			this.history.set(this.data.wd, history)
-		}
+		this.updateHistory()
 
-		if (wd == Dir.HOME) {
-			cursor = this.history.get(Dir.HOME) ?? null
-		}
+		const next = Location.parse(frn)
 
-		let create = perf_hooks.performance.now()
+		const create = perf_hooks.performance.now()
 
 		this.data.create = create
 		this.data.elapse = 0
 		this.data.search = true
 
 		Native.unwatch(this.id)
-		if (wd != Dir.HOME) {
-			Native.watch(this.id, wd, (_id, depth, _abstract) => {
+		if (Location.isFile(next)) {
+			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
 				if (create != this.data.create || dp < depth) {
 					return
 				}
-				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != wd) {
-					this.watch_queue.push(wd)
+				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != next.frn) {
+					this.watch_queue.push(next.frn)
 				}
 			})
 		}
 
+		this.sendTitle(true)
 		root.send(
 			Bridge.List.Change.CH,
 			this.id,
@@ -193,7 +249,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: 0,
 				length: 0,
-				wd: wd,
+				frn: next.frn,
 				st: [],
 				ls: [],
 				mk: [],
@@ -209,11 +265,11 @@ export class FilerManager {
 		)
 
 		return new Promise(async (resolve, _reject) => {
-			if (this.dir.pwd != wd || forceMarkClear) {
+			if (this.dir.location.frn != frn || forceMarkClear) {
 				this.mk.clear()
 			}
-			this.dir.cd(wd)
-			await this.dir.list(dp, rg, async (wd, st, ls, e) => {
+			this.dir.change(frn)
+			await this.dir.list(dp, rg, async (frn, st, ls, e) => {
 				if (create != this.data.create) {
 					resolve(false)
 					return
@@ -221,11 +277,9 @@ export class FilerManager {
 
 				this.data.elapse = perf_hooks.performance.now() - this.data.create
 				this.data.search = false
-				this.data.cursor = Util.isNumber(cursor)
-					? Math.max(0, Math.min(cursor, ls.length - 1))
-					: Dir.findIndex(ls, cursor ?? this.history.get(wd) ?? null)
+				this.data.cursor = this.resolveCursor(frn, ls, cursor)
 				this.data.length = ls.length
-				this.data.wd = wd
+				this.data.frn = frn
 				this.data.st = st
 				this.data.ls = ls
 				this.data.mk = Util.array(0, ls.length, (i) => {
@@ -241,6 +295,7 @@ export class FilerManager {
 	}
 
 	sendScan() {
+		this.sendTitle()
 		root.send(
 			Bridge.List.Scan.CH,
 			this.id,
@@ -251,7 +306,7 @@ export class FilerManager {
 				search: this.data.search,
 				cursor: this.data.cursor,
 				length: this.data.length,
-				wd: this.data.wd,
+				frn: this.data.frn,
 				st: this.data.st,
 				ls: [],
 				mk: [],
@@ -268,10 +323,12 @@ export class FilerManager {
 	}
 
 	sendActive() {
+		this.sendTitle()
 		root.send(Bridge.List.Active.CH, this.id, { status: this.data.status })
 	}
 
 	sendCursor() {
+		this.sendTitle()
 		root.send(
 			Bridge.List.Cursor.CH,
 			this.id,

@@ -143,6 +143,47 @@ std::filesystem::path generic_path(const std::filesystem::path& path, const bool
 	return std::filesystem::path(p.parent_path().generic_string<_char_t>());
 }
 
+/*
+range_path("",           0, 0) // 
+range_path("a/b/c/d/e",  0, 0) // a
+range_path("a/b/c/d/e",  0, 1) // a/b
+range_path("a/b/c/d/e",  1, 3) // b/c/d
+range_path("a/b/c/d/e",  2, 4) // c/d/e
+range_path("a/b/c/d/e",  4, 4) // e
+range_path("a/b/c/d/e/", 4, 4) // e
+range_path("a/b/c/d/e",  4, 5) // 
+range_path("a/b/c/d/e/", 4, 5) // 
+range_path("a/b/c/d/e",  5, 5) // 
+range_path("a/b/c/d/e/", 5, 5) // 
+*/
+
+std::filesystem::path range_path(const std::filesystem::path& path, const int min, const int max)
+{
+	int depth = path.has_filename()
+		? std::ranges::distance(path)
+		: std::ranges::distance(path) - 1;
+
+	if (depth <= 0 || depth <= max || max < min || min < 0) {
+		return std::filesystem::path();
+	}
+
+	std::filesystem::path p;
+	std::filesystem::path::iterator it = path.begin();
+	const std::filesystem::path::const_iterator end = path.end();
+
+	for (int i = 0; i <= max; i++) {
+		if (it == end) {
+			break;
+		}
+		if (min <= i) {
+			p /= *it;
+		}
+		++it;
+	}
+
+	return std::filesystem::path(p.generic_string<_char_t>());
+}
+
 bool compare_path(int depth, const std::filesystem::path& a, const std::filesystem::path& b)
 {
 	if (depth <= 0) {

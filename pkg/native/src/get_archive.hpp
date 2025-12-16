@@ -14,7 +14,7 @@ struct get_archive_work
 	int min_depth;
 	int max_depth;
 
-	std::vector<_entry> v;
+	std::map<std::filesystem::path, _entry> m;
 	int64_t s; // size
 	int32_t d; // directory count
 	int32_t f; // file count
@@ -26,6 +26,8 @@ static void get_archive_async(uv_work_t* req)
 {
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
+	printf("min:%d, max:%d\n", work->min_depth, work->max_depth);
+
 	archive_iterator(
 		work->abst,
 		[&work](struct archive* a, struct archive_entry* entry) -> int
@@ -33,15 +35,37 @@ static void get_archive_async(uv_work_t* req)
 			_entry ent = {};
 			populate_entry(ent, entry);
 
-			if (work->min_depth <= ent.depth && ent.depth <= work->max_depth && compare_path(work->min_depth, work->base, ent.full)) {
-				if (ent.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
-					work->d++;
+			if (compare_path(work->min_depth, work->base, ent.full)) {
+				for (int i = work->min_depth; i <= work->max_depth; i++) {
+					std::filesystem::path p = range_path(ent.full, 0, i); // without trailing slash
+					if (p.empty()) {
+						continue;
+					}
+					if (ent.depth == i) {
+						// found entry
+						auto [_, add] = work->m.insert_or_assign(std::move(p), ent);
+						if (add) {
+							if (ent.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
+								work->d++;
+							}
+							else if (ent.file_type == FILE_TYPE::FILE_TYPE_FILE || ent.file_type == FILE_TYPE::FILE_TYPE_LINK) {
+								work->f++;
+								work->s += ent.size;
+							}
+						}
+					}
+					else {
+						// not found directory
+						auto [_, add] = work->m.try_emplace(std::move(p), _entry{
+							.file_type = FILE_TYPE::FILE_TYPE_DIRECTORY,
+							.full      = p,
+							.depth     = i,
+						});
+						if (add) {
+							work->d++;
+						}
+					}
 				}
-				else if (ent.file_type == FILE_TYPE::FILE_TYPE_FILE || ent.file_type == FILE_TYPE::FILE_TYPE_LINK) {
-					work->s += ent.size;
-					work->f++;
-				}
-				work->v.push_back(ent);
 			}
 
 			archive_read_data_skip(a);
@@ -60,7 +84,7 @@ static void get_archive_complete(uv_work_t* req, int status)
 
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
-	for (_entry& ent : work->v) {
+	for (auto& [_, ent] : work->m) {
 		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 
 		obj->Set(CONTEXT, to_string(V("file_type")), v8::Number::New(ISOLATE, (double)ent.file_type));
@@ -144,8 +168,9 @@ void get_archive(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->min_depth = std::ranges::distance(work->base);
 	work->max_depth = work->min_depth + info[2]->Int32Value(CONTEXT).ToChecked();
 
-	work->v.clear();
+	work->m.clear();
 
+	work->s = 0;
 	work->d = 0;
 	work->f = 0;
 	work->e = 0;

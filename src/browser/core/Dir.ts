@@ -1,123 +1,82 @@
-import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
 import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
+import { Location } from "@/browser/core/Location"
 import { Path } from "@/browser/core/Path"
 
 export class Dir {
 	static readonly HOME: string = "home"
 
-	private wd: string = Dir.HOME
+	private lc: Location.Data = Location.Default
 	private dp: number = 0
 	private rg: RegExp | null = null
 
-	get pwd(): string {
-		return this.wd
+	get location(): Location.Data {
+		return this.lc
 	}
 
-	get isHome(): boolean {
-		return this.wd == Dir.HOME
-	}
-
-	static dirname(wd: string): string {
-		if (wd == Dir.HOME || Dir.isRoot(wd)) {
-			return Dir.HOME
-		}
-		else {
-			return path.dirname(wd)
-		}
-	}
-
-	static basename(wd: string): string {
-		return this.isRoot(wd) ? wd : path.parse(wd).base
-	}
-
-	static findRltv(ls: Native.Attributes[], i: number): string | null {
-		return ls[i]?.[0]?.rltv ?? null
-	}
-
-	static findIndex(ls: Native.Attributes[], rltv: string | null): number {
-		if (rltv == null) {
-			return 0
-		}
-
-		for (const [i, attr] of ls.entries()) {
-			if (attr[0]?.rltv == rltv) {
-				return i
-			}
-		}
-
-		return 0
-	}
-
-	private static isRoot(wd: string): boolean {
-		return path.isAbsolute(wd) && path.parse(wd).root == wd
-	}
-
-	cd(wd: string | null) {
-		if (wd == Dir.HOME || wd == null) {
-			this.wd = Dir.HOME
-		}
-		else {
-			wd = path.posix.normalize(wd)
-			if (path.isAbsolute(wd)) {
-				this.wd = wd
-			}
-		}
+	change(frn: string | null) {
+		this.lc = Location.parse(frn)
 	}
 
 	async list(
 		dp: number,
 		rg: RegExp | null,
-		cb: (wd: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
+		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
 	) {
-		_log(`"${this.wd}"`, { dp: dp, rg: rg })
+		_log(this.location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
-		if (this.wd == Dir.HOME) {
+		if (Location.isHome(this.lc)) {
 			this.dp = 0
 			this.rg = null
 			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
-			Native.getVolume().then((vol: Native.Volume[]) => {
-				_log(`"${this.wd}"`, "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-				let ls: Native.Attributes[] = []
-				for (const v of vol) {
-					ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
-				}
-				ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
-				cb(this.wd, st, ls, 0)
-			})
+			Native.getVolume().then(
+				(vol: Native.Volume[]) => {
+					const frn = Location.toHome()
+					_log(frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					let ls: Native.Attributes[] = []
+					for (const v of vol) {
+						ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
+					}
+					ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
+					cb(frn, st, ls, 0)
+				},
+			)
 		}
-		else {
+		else if (Location.isFile(this.lc)) {
 			this.dp = dp
 			this.rg = rg
-			let st = await Native.getAttribute(this.wd)
-			Native.getDirectory(this.wd, "", Native.Sort.DepthFirst, this.dp, this.rg).then(async (dir: Native.Directory) => {
-				_log(`"${dir.full}"`, "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
-					s: dir.s,
-					d: dir.d,
-					f: dir.f,
-					e: dir.e,
-					len: dir.list.length,
-				})
-				_time = perf_hooks.performance.now()
+			let st = await Native.getAttribute(this.lc.path)
+			Native.getDirectory(this.lc.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
+				async (dir: Native.Directory) => {
+					const frn = Location.toFile(dir.full)
+					_log(frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+						s: dir.s,
+						d: dir.d,
+						f: dir.f,
+						e: dir.e,
+						len: dir.list.length,
+					})
+					_time = perf_hooks.performance.now()
 
-				let ls: Native.Attributes[] = []
-				for (const attr of dir.list) {
-					ls.push(await Native.getAttribute(attr.rltv, dir.full))
-				}
+					let ls: Native.Attributes[] = []
+					for (const attr of dir.list) {
+						ls.push(await Native.getAttribute(attr.rltv, dir.full))
+					}
 
-				_log(`"${dir.full}"`, "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-				_time = perf_hooks.performance.now()
+					_log(frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_time = perf_hooks.performance.now()
 
-				_sort(ls)
+					_sort(ls)
 
-				_log(`"${dir.full}"`, "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-				cb(dir.full, st, ls, dir.e)
-			})
+					cb(frn, st, ls, dir.e)
+				},
+			)
 		}
 	}
 }

@@ -13,12 +13,12 @@ export { Status }
 export interface BrowserToRenderer {
 	[System.Active.CH]: [-1, System.Active.Data]
 	[System.Version.CH]: [-1, System.Version.Data]
+	[List.Title.CH]: [number, List.Title.Data]
 	[List.Change.CH]: [number, List.Change.Data]
 	[List.Scan.CH]: [number, List.Scan.Data]
 	[List.Active.CH]: [number, List.Active.Data]
 	[List.Cursor.CH]: [number, List.Cursor.Data]
 	[List.Attribute.CH]: [number, List.Attribute.Data]
-	[List.Change.CH]: [number, List.Change.Data]
 	[List.Mark.CH]: [number, List.Mark.Data]
 	[List.Watch.CH]: [number, List.Watch.Data]
 	[Modal.Open.CH]: [-1, Modal.Open.Data]

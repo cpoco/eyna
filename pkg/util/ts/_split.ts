@@ -6,7 +6,7 @@ export function split(strings: string[], splitter: string): string[] {
 		let l = ary.length
 		for (const s of ary) {
 			i++
-			if (s != "") {
+			if (s !== "") {
 				ret.push(s)
 			}
 			if (i < l) {
