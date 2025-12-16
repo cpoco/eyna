@@ -67,6 +67,15 @@ export namespace List {
 	}
 
 	// browser -> renderer
+	export namespace Title {
+		export const CH = "filer-title"
+		export type Data = {
+			title: string
+			err: boolean
+		}
+	}
+
+	// browser -> renderer
 	export namespace Change {
 		export const CH = "filer-change"
 		export type Data = List.Data

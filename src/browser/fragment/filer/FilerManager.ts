@@ -168,6 +168,26 @@ export class FilerManager {
 		return 0
 	}
 
+	private sendTitle(forceLocation: boolean = false) {
+		if (this.data.status !== Bridge.Status.Active) {
+			return
+		}
+
+		const selected = forceLocation
+			? null
+			: this.data.ls[this.data.cursor]?.[0]?.full ?? null
+
+		if (selected !== null) {
+			root.send(Bridge.List.Title.CH, this.id, { title: selected, err: false })
+		}
+		else if (Location.isHome(this.location)) {
+			root.send(Bridge.List.Title.CH, this.id, { title: this.location.type, err: false })
+		}
+		else if (Location.isFile(this.location)) {
+			root.send(Bridge.List.Title.CH, this.id, { title: this.location.path, err: false })
+		}
+	}
+
 	sendChange(
 		frn: string,
 		dp: number,
@@ -197,6 +217,7 @@ export class FilerManager {
 			})
 		}
 
+		this.sendTitle(true)
 		root.send(
 			Bridge.List.Change.CH,
 			this.id,
@@ -253,6 +274,7 @@ export class FilerManager {
 	}
 
 	sendScan() {
+		this.sendTitle()
 		root.send(
 			Bridge.List.Scan.CH,
 			this.id,
@@ -280,10 +302,12 @@ export class FilerManager {
 	}
 
 	sendActive() {
+		this.sendTitle()
 		root.send(Bridge.List.Active.CH, this.id, { status: this.data.status })
 	}
 
 	sendCursor() {
+		this.sendTitle()
 		root.send(
 			Bridge.List.Cursor.CH,
 			this.id,

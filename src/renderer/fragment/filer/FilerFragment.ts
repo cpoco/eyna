@@ -22,6 +22,9 @@ export const V = vue.defineComponent({
 		})
 
 		root
+			.on(Bridge.List.Title.CH, (_, data) => {
+				filer.updateTitle(data)
+			})
 			.on(Bridge.List.Change.CH, (i, data) => {
 				filer.updateChange(i, data)
 			})

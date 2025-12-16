@@ -8,7 +8,7 @@ import * as ListComponent from "@/renderer/fragment/filer/ListComponent"
 
 type Title = {
 	wd: string
-	attr: Native.Attributes
+	err: boolean
 }
 
 type List = {
@@ -36,7 +36,7 @@ function _create(count: number) {
 	const reactive = vue.reactive<Reactive>({
 		title: {
 			wd: "",
-			attr: [],
+			err: false,
 		},
 		list: Util.array<List>(0, count, (i) => {
 			return {
@@ -47,6 +47,11 @@ function _create(count: number) {
 			}
 		}),
 	})
+
+	const updateTitle = (data: Bridge.List.Title.Data) => {
+		reactive.title.wd = data.title
+		reactive.title.err = data.err
+	}
 
 	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
 		_data[i]! = vue.markRaw(data)
@@ -160,15 +165,11 @@ function _create(count: number) {
 				}
 			},
 		)
-
-		if (d.status == Bridge.Status.Active) {
-			reactive.title.wd = Util.last(d.frn.split("\0")) ?? ""
-			reactive.title.attr = vue.markRaw(d.ls?.[d.cursor] ?? d.st)
-		}
 	}
 
 	return {
 		reactive,
+		updateTitle,
 		updateChange,
 		updateScan,
 		updateActive,
