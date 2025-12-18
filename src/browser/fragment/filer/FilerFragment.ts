@@ -362,7 +362,12 @@ export class FilerFragment extends AbstractFragment {
 						trgt.file_type == Native.AttributeFileType.File
 					) {
 						if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
-							// WIP
+							if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
+								active.scroll()
+								active.sendScan()
+								active.sendAttrAll()
+							}
+							resolve()
 						}
 						else if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
 							root.viewer({
