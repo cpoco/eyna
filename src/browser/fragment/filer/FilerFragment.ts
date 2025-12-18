@@ -318,6 +318,9 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
+				if (Location.isArch(active.location)) {
+					return Promise.resolve() // WIP
+				}
 				return new Promise(async (resolve, reject) => {
 					let attr = Util.first(active.data.ls[active.data.cursor])
 					let trgt = Util.last(active.data.ls[active.data.cursor])

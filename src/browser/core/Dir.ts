@@ -26,34 +26,34 @@ export class Dir {
 		rg: RegExp | null,
 		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
 	) {
-		_log(this.location.frn.split("\0"), { dp: dp, rg: rg })
+		const location = this.lc
+
+		_log(location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
-		if (Location.isHome(this.lc)) {
+		if (Location.isHome(location)) {
 			this.dp = 0
 			this.rg = null
 			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
-					const frn = Location.toHome()
-					_log(frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					let ls: Native.Attributes[] = []
 					for (const v of vol) {
 						ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
 					}
 					ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
-					cb(frn, st, ls, 0)
+					cb(location.frn, st, ls, 0)
 				},
 			)
 		}
-		else if (Location.isFile(this.lc)) {
+		else if (Location.isFile(location)) {
 			this.dp = dp
 			this.rg = rg
-			let st = await Native.getAttribute(this.lc.path)
-			Native.getDirectory(this.lc.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
+			let st = await Native.getAttribute(location.path)
+			Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
 				async (dir: Native.Directory) => {
-					const frn = Location.toFile(dir.full)
-					_log(frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+					_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 						s: dir.s,
 						d: dir.d,
 						f: dir.f,
@@ -62,20 +62,70 @@ export class Dir {
 					})
 					_time = perf_hooks.performance.now()
 
-					let ls: Native.Attributes[] = []
+					const ls: Native.Attributes[] = []
 					for (const attr of dir.list) {
 						ls.push(await Native.getAttribute(attr.rltv, dir.full))
 					}
 
-					_log(frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					_time = perf_hooks.performance.now()
 
 					_sort(ls)
 
-					_log(frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(frn, st, ls, dir.e)
+					cb(location.frn, st, ls, dir.e)
 				},
+			)
+		}
+		else if (Location.isArch(location)) {
+			this.dp = 0xff // WIP
+			this.rg = null // WIP
+			let st = await Native.getAttribute(location.path)
+			Native.getArchive(location.path, location.entry, this.dp).then(
+				async (arc: Native.Archive) => {
+					_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+						s: arc.s,
+						d: arc.d,
+						f: arc.f,
+						e: arc.e,
+						len: arc.list.length,
+					})
+					_time = perf_hooks.performance.now()
+
+					const ls: Native.Attributes[] = []
+					for (const attr of arc.list) {
+						ls.push([{
+							file_type: attr.file_type as unknown as Native.AttributeFileType,
+							full: arc.full,
+							base: arc.base,
+							rltv: attr.rltv,
+							name: attr.name,
+							stem: attr.stem,
+							exte: attr.exte,
+							link_type: attr.link_type as unknown as Native.AttributeLinkType,
+							link: attr.link,
+							size: attr.size,
+							time: attr.time,
+							nsec: attr.nsec,
+							readonly: false,
+							hidden: false,
+							system: false,
+							cloud: false,
+						}])
+					}
+
+					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_time = perf_hooks.performance.now()
+
+					ls.sort((a, b) => {
+						return _name(a, b)
+					})
+
+					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+
+					cb(location.frn, st, ls, arc.e)
+				}
 			)
 		}
 	}
