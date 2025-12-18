@@ -126,7 +126,7 @@ export namespace Location {
 				const entry = new generic(data.entry)
 				return entry.top
 					? {
-						frn: [Type.File, data.path].join("\0"),
+						frn: [Type.File, path.dirname].join("\0"),
 						type: Type.File,
 						path: path.dirname,
 						anchor: path.basename,
