@@ -26,8 +26,6 @@ static void get_archive_async(uv_work_t* req)
 {
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
-	printf("min:%d, max:%d\n", work->min_depth, work->max_depth);
-
 	archive_iterator(
 		work->abst,
 		[&work](struct archive* a, struct archive_entry* entry) -> int
