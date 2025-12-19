@@ -318,12 +318,9 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length == 0) {
 					return Promise.resolve()
 				}
-				if (Location.isArch(active.location)) {
-					return Promise.resolve() // WIP
-				}
 				return new Promise(async (resolve, reject) => {
-					let attr = Util.first(active.data.ls[active.data.cursor])
-					let trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr == null || trgt == null) {
 						resolve()
 						return
@@ -339,10 +336,19 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type == Native.AttributeFileType.Link
 							&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
-							active.scroll()
-							active.sendScan()
-							active.sendAttrAll()
+						if (Location.isHome(active.location) || Location.isFile(active.location)) {
+							if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
+								active.scroll()
+								active.sendScan()
+								active.sendAttrAll()
+							}
+						}
+						else if (Location.isArch(active.location)) {
+							if (await active.sendChange(Location.toArch(active.location.path, attr.full), 0, null, null, false)) {
+								active.scroll()
+								active.sendScan()
+								active.sendAttrAll()
+							}
 						}
 						resolve()
 					}
@@ -351,10 +357,12 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type == Native.AttributeFileType.File
 						&& trgt.file_type == Native.AttributeFileType.Directory
 					) {
-						if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
-							active.scroll()
-							active.sendScan()
-							active.sendAttrAll()
+						if (Location.isFile(active.location)) {
+							if (await active.sendChange(Location.toFile(trgt.full), 0, null, null, false)) {
+								active.scroll()
+								active.sendScan()
+								active.sendAttrAll()
+							}
 						}
 						resolve()
 					}
@@ -364,57 +372,59 @@ export class FilerFragment extends AbstractFragment {
 					else if (
 						trgt.file_type == Native.AttributeFileType.File
 					) {
-						if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
-							if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
-								active.scroll()
-								active.sendScan()
-								active.sendAttrAll()
+						if (Location.isFile(active.location)) {
+							if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
+								if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
+									active.scroll()
+									active.sendScan()
+									active.sendAttrAll()
+								}
+								resolve()
 							}
-							resolve()
-						}
-						else if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
-							root.viewer({
-								type: Bridge.Viewer.Type.Image,
-								mime: [],
-								path: [trgt.full],
-								size: [trgt.size],
-							})
-						}
-						else if (Conf.VIEWER_AUDIO_EXTE.test(trgt.exte)) {
-							root.viewer({
-								type: Bridge.Viewer.Type.Audio,
-								mime: [],
-								path: [trgt.full],
-								size: [trgt.size],
-							})
-						}
-						else if (Conf.VIEWER_VIDEO_EXTE.test(trgt.exte)) {
-							root.viewer({
-								type: Bridge.Viewer.Type.Video,
-								mime: [],
-								path: [trgt.full],
-								size: [trgt.size],
-							})
-						}
-						else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
-							root.viewer({
-								type: Bridge.Viewer.Type.Embed,
-								mime: ["application/pdf"],
-								path: [trgt.full],
-								size: [trgt.size],
-							})
-						}
-						else {
-							if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
-								reject("file too large")
-								return
+							else if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Image,
+									mime: [],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
 							}
-							root.viewer({
-								type: Bridge.Viewer.Type.Text,
-								mime: [],
-								path: [trgt.full],
-								size: [trgt.size],
-							})
+							else if (Conf.VIEWER_AUDIO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Audio,
+									mime: [],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_VIDEO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Video,
+									mime: [],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Embed,
+									mime: ["application/pdf"],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else {
+								if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+									reject("file too large")
+									return
+								}
+								root.viewer({
+									type: Bridge.Viewer.Type.Text,
+									mime: [],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
 						}
 						resolve()
 					}
