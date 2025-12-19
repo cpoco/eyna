@@ -373,8 +373,9 @@ export class FilerFragment extends AbstractFragment {
 						trgt.file_type == Native.AttributeFileType.File
 					) {
 						if (Location.isFile(active.location)) {
-							if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
-								if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
+							// WIP shortcut,bookmark,symbolic,junction
+							if (Conf.ARCHIVE_EXTE.test(attr.exte)) {
+								if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
 									active.scroll()
 									active.sendScan()
 									active.sendAttrAll()
