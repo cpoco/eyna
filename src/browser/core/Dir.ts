@@ -79,8 +79,8 @@ export class Dir {
 			)
 		}
 		else if (Location.isArch(location)) {
-			this.dp = 0xff // WIP
-			this.rg = null // WIP
+			this.dp = 0
+			this.rg = null
 			let st = await Native.getAttribute(location.path)
 			Native.getArchive(location.path, location.entry, this.dp).then(
 				async (arc: Native.Archive) => {
@@ -97,8 +97,8 @@ export class Dir {
 					for (const attr of arc.list) {
 						ls.push([{
 							file_type: attr.file_type as unknown as Native.AttributeFileType,
-							full: arc.full,
-							base: arc.base,
+							full: attr.full,
+							base: attr.base,
 							rltv: attr.rltv,
 							name: attr.name,
 							stem: attr.stem,
@@ -125,7 +125,7 @@ export class Dir {
 					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
 					cb(location.frn, st, ls, arc.e)
-				}
+				},
 			)
 		}
 	}
