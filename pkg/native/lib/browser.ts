@@ -55,6 +55,10 @@ export function getIcon(abstract: string): Promise<Buffer> {
 	return native.getIcon(abstract)
 }
 
+export function getIconType(extension: string): Promise<Buffer> {
+	return native.getIconType(extension)
+}
+
 export function getPathAttribute(abstract: string): Promise<Type.Attributes> {
 	return native.getPathAttribute(abstract)
 }

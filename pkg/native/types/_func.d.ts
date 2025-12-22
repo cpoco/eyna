@@ -20,6 +20,7 @@ declare namespace Native {
 	): Promise<Type.Directory>
 	function getEntry(stream: typeof Readable, abstract: string, path: string): NodeJS.ReadableStream
 	function getIcon(abstract: string): Promise<Buffer>
+	function getIconType(extension: string): Promise<Buffer>
 	function getPathAttribute(abstract: string): Promise<Type.Attributes>
 	function getVolume(): Promise<Type.Volume[]>
 	function isElevated(): boolean
