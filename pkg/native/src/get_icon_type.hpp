@@ -22,7 +22,7 @@ static void get_icon_type_async(uv_work_t* req)
 
 		SHFILEINFOW file = {};
 		if (work->exte.empty()) {
-			if (SHGetFileInfoW(L"folder", FILE_ATTRIBUTE_DIRECTORY, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
+			if (SHGetFileInfoW(L"file", FILE_ATTRIBUTE_NORMAL, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
 				return;
 			}
 		}
@@ -83,7 +83,7 @@ static void get_icon_type_async(uv_work_t* req)
 	#elif OS_MAC64
 
 		NSImage* src = work->exte.empty()
-			? [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)]
+			? [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)]
 			: [[NSWorkspace sharedWorkspace] iconForFileType:[NSString stringWithCString:work->exte.c_str() encoding:NSUTF8StringEncoding]];
 		NSImage* dst = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
 		[dst lockFocus];
