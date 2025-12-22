@@ -52,7 +52,6 @@ struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
 	std::filesystem::path full; // generic_path
-	std::filesystem::path real; // generic_path
 
 	LINK_TYPE link_type = LINK_TYPE::LINK_TYPE_NONE;
 	std::filesystem::path link; // raw data
@@ -74,12 +73,6 @@ struct _attribute
 
 void attribute(_attribute& attribute)
 {
-	std::error_code ec;
-	std::filesystem::path real = std::filesystem::canonical(attribute.full, ec);
-	if (!ec) {
-		attribute.real = generic_path(real);
-	}
-
 	#if OS_WIN64
 
 		WIN32_FILE_ATTRIBUTE_DATA info = {};
@@ -298,13 +291,17 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
 			attribute(generic_path(attr.link, true), vector);
+			return;
 		}
-		else if (attr.link.is_relative() && attr.real.is_absolute()) {
-			attribute(generic_path(attr.real / attr.link, true), vector);
+		if (attr.link.is_relative()) {
+			std::error_code ec;
+			std::filesystem::path parent = std::filesystem::canonical(attr.full.parent_path(), ec);
+			if (!ec) {
+				attribute(generic_path(parent / attr.link, true), vector);
+				return;
+			}
 		}
-		else {
-			vector.push_back({});
-		}
+		vector.push_back({});
 	}
 }
 
