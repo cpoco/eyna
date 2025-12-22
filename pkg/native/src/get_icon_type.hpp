@@ -21,8 +21,13 @@ static void get_icon_type_async(uv_work_t* req)
 	#if OS_WIN64
 
 		SHFILEINFOW file = {};
-		if (work->exte.empty()) {
+		if (work->exte.size() == 0) {
 			if (SHGetFileInfoW(L"file", FILE_ATTRIBUTE_NORMAL, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
+				return;
+			}
+		}
+		else if (work->exte.size() == 1 && work->exte[0] == V('/')) {
+			if (SHGetFileInfoW(L"folder", FILE_ATTRIBUTE_DIRECTORY, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
 				return;
 			}
 		}
@@ -82,9 +87,16 @@ static void get_icon_type_async(uv_work_t* req)
 
 	#elif OS_MAC64
 
-		NSImage* src = work->exte.empty()
-			? [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)]
-			: [[NSWorkspace sharedWorkspace] iconForFileType:[NSString stringWithCString:work->exte.c_str() encoding:NSUTF8StringEncoding]];
+		NSImage* src = nil;
+		if (work->exte.size() == 0) {
+			src = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericDocumentIcon)];
+		}
+		else if (work->exte.size() == 1 && work->exte[0] == V('/')) {
+			src = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
+		}
+		else {
+			src = [[NSWorkspace sharedWorkspace] iconForFileType:[NSString stringWithCString:work->exte.c_str() encoding:NSUTF8StringEncoding]];
+		}
 		NSImage* dst = [[NSImage alloc] initWithSize:NSMakeSize(32, 32)];
 		[dst lockFocus];
 		[src drawInRect:NSMakeRect(0, 0, dst.size.width, dst.size.height) fromRect:NSMakeRect(0, 0, src.size.width, src.size.height) operation:NSCompositingOperationCopy fraction:1.0];
