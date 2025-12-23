@@ -67,6 +67,7 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("hidden")),   v8::Boolean::New(ISOLATE, a.hidden));
 		obj->Set(CONTEXT, to_string(V("system")),   v8::Boolean::New(ISOLATE, a.system));
 		obj->Set(CONTEXT, to_string(V("cloud")),    v8::Boolean::New(ISOLATE, a.cloud));
+		obj->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, false));
 
 		array->Set(CONTEXT, array->Length(), obj);
 	}

@@ -3,40 +3,7 @@ declare namespace Type {
 		DepthFirst = 0,
 		ShallowFirst = 1,
 	}
-	enum EntryFileType {
-		None = 0,
-		Directory = 1,
-		Link = 2,
-		File = 3,
-	}
-	enum EntryLinkType {
-		None = 0,
-		Symbolic = 1,
-	}
-	type Archive = {
-		full: string
-		base: string
-		list: Entry[]
-		s: bigint
-		d: number
-		f: number
-		e: number
-	}
-	type Entry = {
-		file_type: EntryFileType
-		full: string
-		base: string
-		rltv: string
-		name: string
-		stem: string
-		exte: string
-		link_type: EntryLinkType
-		link: string | null
-		size: bigint
-		time: number
-		nsec: number
-	}
-	enum AttributeFileType {
+	enum FileType {
 		HomeUser = -2,
 		Drive = -1,
 		None = 0,
@@ -45,23 +12,32 @@ declare namespace Type {
 		File = 3,
 		Special = 10,
 	}
-	enum AttributeLinkType {
+	enum LinkType {
 		None = 0,
 		Symbolic = 1,
 		Junction = 2,
 		Shortcut = 3,
 		Bookmark = 4,
 	}
+	type Archive = {
+		full: string
+		base: string
+		list: Attribute[]
+		s: bigint
+		d: number
+		f: number
+		e: number
+	}
 	type Attributes = Attribute[]
 	type Attribute = {
-		file_type: AttributeFileType
+		file_type: FileType
 		full: string
 		base: string
 		rltv: string
 		name: string
 		stem: string
 		exte: string
-		link_type: AttributeLinkType
+		link_type: LinkType
 		link: string | null
 		size: bigint
 		time: number
@@ -70,6 +46,7 @@ declare namespace Type {
 		hidden: boolean
 		system: boolean
 		cloud: boolean
+		entry: boolean
 	}
 	type Volume = {
 		full: string
@@ -85,7 +62,7 @@ declare namespace Type {
 		e: number
 	}
 	type Item = {
-		type: AttributeFileType
+		type: FileType
 		rltv: string
 	}
 	type WatchCallback = (id: number, depth: number, abstract: string) => void
