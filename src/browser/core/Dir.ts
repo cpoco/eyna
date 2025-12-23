@@ -130,11 +130,6 @@ function _attr(file_type: Native.FileType, full: string, name: string): Native.A
 		size: 0n,
 		time: 0,
 		nsec: 0,
-		readonly: false,
-		hidden: false,
-		system: false,
-		cloud: false,
-		entry: false,
 	}
 }
 

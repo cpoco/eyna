@@ -42,11 +42,13 @@ declare namespace Type {
 		size: bigint
 		time: number
 		nsec: number
-		readonly: boolean
-		hidden: boolean
-		system: boolean
-		cloud: boolean
-		entry: boolean
+		x?: {
+			readonly?: boolean
+			hidden?: boolean
+			system?: boolean
+			cloud?: boolean
+			entry?: boolean
+		}
 	}
 	type Volume = {
 		full: string

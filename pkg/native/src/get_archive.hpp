@@ -113,11 +113,10 @@ static void get_archive_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("time")), v8::Number::New(ISOLATE, (double)ent.time));
 		obj->Set(CONTEXT, to_string(V("nsec")), v8::Number::New(ISOLATE, (double)ent.nsec));
 
-		obj->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
-		obj->Set(CONTEXT, to_string(V("hidden")),   v8::Boolean::New(ISOLATE, false));
-		obj->Set(CONTEXT, to_string(V("system")),   v8::Boolean::New(ISOLATE, false));
-		obj->Set(CONTEXT, to_string(V("cloud")),    v8::Boolean::New(ISOLATE, false));
-		obj->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, true));
+		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
+		x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
+		x->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, true));
+		obj->Set(CONTEXT, to_string(V("x")), x);
 
 		array->Set(CONTEXT, index++, obj);
 	}

@@ -119,7 +119,7 @@ const attr = vue.defineComponent({
 			if (is_empty.value) {
 				return `eyna://icon-type/`
 			}
-			else if (props.attr[0]?.entry === false) {
+			else if (props.attr[0]?.x?.entry !== true) {
 				return `eyna://icon-path/${encodeURIComponent(props.attr[0]?.full ?? "")}`
 			}
 			else if (props.attr[0]?.file_type === Native.FileType.Directory) {
@@ -291,10 +291,10 @@ const attr = vue.defineComponent({
 							),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.attr[0]?.cloud } }, this.exte),
-				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.cloud } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.attr[0]?.x?.cloud } }, this.exte),
+				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.x?.cloud } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.x?.cloud } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.x?.cloud } }, this.date?.time),
 			],
 		)
 	},

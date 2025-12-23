@@ -51,11 +51,13 @@ export type Attribute = {
 	time: number
 	nsec: number
 
-	readonly: boolean
-	hidden: boolean
-	system: boolean
-	cloud: boolean
-	entry: boolean
+	x?: {
+		readonly?: boolean
+		hidden?: boolean
+		system?: boolean
+		cloud?: boolean
+		entry?: boolean
+	}
 }
 
 export type Volume = {
