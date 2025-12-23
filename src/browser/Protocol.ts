@@ -22,13 +22,13 @@ export class Protocol {
 		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
 			const url = new URL(req.url)
 
-			if (url.host == "icon-path" || url.host == "icon-type") {
+			if (url.host === "icon-path" || url.host === "icon-type") {
 				return IconWorker.push(url)
 			}
-			else if (url.host == "metrics") {
+			else if (url.host === "metrics") {
 				return metrics()
 			}
-			else if (url.host == "versions") {
+			else if (url.host === "versions") {
 				return versions()
 			}
 			return new Response(null, { status: 500 })
@@ -47,7 +47,7 @@ class IconWorker {
 	private static queue: Task[] = []
 
 	private static verify(ary: string[]): ary is [string, string] {
-		return ary.length == 2
+		return ary.length === 2
 	}
 
 	static async push(url: URL): Promise<Response> {
@@ -56,7 +56,7 @@ class IconWorker {
 		if (!this.verify(path)) {
 			return new Response(null, { status: 400 })
 		}
-		if (url.host != "icon-path" && url.host != "icon-type") {
+		if (url.host !== "icon-path" && url.host !== "icon-type") {
 			return new Response(null, { status: 400 })
 		}
 
@@ -72,7 +72,7 @@ class IconWorker {
 
 	static async run(): Promise<void> {
 		while (true) {
-			if (this.queue.length == 0) {
+			if (this.queue.length === 0) {
 				await timers.setTimeout(10)
 				continue
 			}
@@ -80,7 +80,7 @@ class IconWorker {
 			const first = this.queue.shift()!
 
 			try {
-				if (first.type == "icon-path") {
+				if (first.type === "icon-path") {
 					const icon = await Native.getIcon(first.data)
 					first.deferred.resolve?.(
 						new Response(
@@ -94,7 +94,7 @@ class IconWorker {
 						),
 					)
 				}
-				else if (first.type == "icon-type") {
+				else if (first.type === "icon-type") {
 					const icon = await Native.getIconType(first.data)
 					first.deferred.resolve?.(
 						new Response(

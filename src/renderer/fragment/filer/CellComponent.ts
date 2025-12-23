@@ -35,7 +35,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const is_empty = vue.computed((): boolean => {
-			return props.cell.attr.length == 0
+			return props.cell.attr.length === 0
 		})
 
 		return {
@@ -112,49 +112,51 @@ const attr = vue.defineComponent({
 			if (is_empty.value) {
 				return false
 			}
-			return props.attr[0]?.link_type != Native.LinkType.None
+			return props.attr[0]?.link_type !== Native.LinkType.None
 		})
 
 		const icon_url = vue.computed((): string => {
 			if (is_empty.value) {
 				return `eyna://icon-type/`
 			}
-			if (props.attr[0]?.entry === false) {
+			else if (props.attr[0]?.entry === false) {
 				return `eyna://icon-path/${encodeURIComponent(props.attr[0]?.full ?? "")}`
 			}
-			if (props.attr[0]?.file_type === Native.FileType.Directory) {
+			else if (props.attr[0]?.file_type === Native.FileType.Directory) {
 				return `eyna://icon-type/${encodeURIComponent("/")}`
 			}
-			return `eyna://icon-type/${encodeURIComponent(props.attr[0]?.exte.replace(/^\./, "") ?? "")}`
+			else {
+				return `eyna://icon-type/${encodeURIComponent(props.attr[0]?.exte.replace(/^\./, "") ?? "")}`
+			}
 		})
 
 		const name_class = vue.computed((): string => {
 			const f = props.attr[0]?.file_type
-			if (f == Native.FileType.File) {
+			if (f === Native.FileType.File) {
 				const l = props.attr[0]?.link_type
-				if (l == Native.LinkType.Shortcut) {
+				if (l === Native.LinkType.Shortcut) {
 					return "c-shortcut"
 				}
-				else if (l == Native.LinkType.Bookmark) {
+				else if (l === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
 				else {
 					return "c-file"
 				}
 			}
-			else if (f == Native.FileType.Link) {
+			else if (f === Native.FileType.Link) {
 				return "c-link"
 			}
-			else if (f == Native.FileType.Directory) {
+			else if (f === Native.FileType.Directory) {
 				return "c-directory"
 			}
-			else if (f == Native.FileType.Drive) {
+			else if (f === Native.FileType.Drive) {
 				return "c-drive"
 			}
-			else if (f == Native.FileType.HomeUser) {
+			else if (f === Native.FileType.HomeUser) {
 				return "c-homeuser"
 			}
-			else if (f == Native.FileType.Special) {
+			else if (f === Native.FileType.Special) {
 				return "c-special"
 			}
 			else {
@@ -164,31 +166,31 @@ const attr = vue.defineComponent({
 
 		const trgt_class = vue.computed((): string => {
 			const f = props.attr[1]?.file_type
-			if (f == Native.FileType.File) {
+			if (f === Native.FileType.File) {
 				const l = props.attr[1]?.link_type
-				if (l == Native.LinkType.Shortcut) {
+				if (l === Native.LinkType.Shortcut) {
 					return "c-shortcut"
 				}
-				else if (l == Native.LinkType.Bookmark) {
+				else if (l === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
 				else {
 					return "c-file"
 				}
 			}
-			else if (f == Native.FileType.Link) {
+			else if (f === Native.FileType.Link) {
 				const last = Util.last(props.attr)
-				if (last == null || last.file_type == Native.FileType.None) {
+				if (last === null || last.file_type === Native.FileType.None) {
 					return "c-warn"
 				}
 				else {
 					return "c-link"
 				}
 			}
-			else if (f == Native.FileType.Directory) {
+			else if (f === Native.FileType.Directory) {
 				return "c-directory"
 			}
-			else if (f == Native.FileType.Special) {
+			else if (f === Native.FileType.Special) {
 				return "c-special"
 			}
 			else {
@@ -199,8 +201,8 @@ const attr = vue.defineComponent({
 		const exte = vue.computed((): string | undefined => {
 			if (
 				is_empty.value
-				|| props.attr[0]?.file_type != Native.FileType.File
-				|| props.attr[0]?.link_type != Native.LinkType.None
+				|| props.attr[0]?.file_type !== Native.FileType.File
+				|| props.attr[0]?.link_type !== Native.LinkType.None
 			) {
 				return undefined
 			}
@@ -210,7 +212,7 @@ const attr = vue.defineComponent({
 		const size = vue.computed((): string | undefined => {
 			if (
 				is_empty.value
-				|| props.attr[0]?.file_type != Native.FileType.File
+				|| props.attr[0]?.file_type !== Native.FileType.File
 			) {
 				return undefined
 			}
@@ -220,8 +222,8 @@ const attr = vue.defineComponent({
 		const date = vue.computed((): { date: string; time: string } | undefined => {
 			if (
 				is_empty.value
-				|| props.attr[0]?.file_type == Native.FileType.Drive
-				|| props.attr[0]?.file_type == Native.FileType.HomeUser
+				|| props.attr[0]?.file_type === Native.FileType.Drive
+				|| props.attr[0]?.file_type === Native.FileType.HomeUser
 			) {
 				return undefined
 			}

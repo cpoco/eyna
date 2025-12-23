@@ -14,7 +14,7 @@ class generic {
 	}
 
 	get top(): boolean {
-		return this._path.length == 0
+		return this._path.length === 0
 	}
 
 	get full(): string {
@@ -72,7 +72,7 @@ export namespace Location {
 	}
 
 	export function parse(frn: FRN | null): Data {
-		if (frn == null) {
+		if (frn === null) {
 			return Default
 		}
 		const block = frn.split("\0")

@@ -112,7 +112,7 @@ function _create(count: number) {
 	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
 		_data[i]!.watch = data.watch
 
-		reactive.list[i]!.list.info.sync = _data[i]!.watch == 0
+		reactive.list[i]!.list.info.sync = _data[i]!.watch === 0
 	}
 
 	const _update = (i: number) => {
@@ -122,20 +122,20 @@ function _create(count: number) {
 		r.list.wd = d.frn
 		r.list.st = d.st
 		r.list.search = d.search
-		r.list.info.show = !d.search && d.frn != "home"
-		r.list.info.sync = d.watch == 0
+		r.list.info.show = !d.search && d.frn !== "home"
+		r.list.info.sync = d.watch === 0
 		r.list.info.mark = Util.count(d.mk, (mk) => mk)
 		r.list.info.total = d.length
 		r.list.info.error = d.error
 		r.list.info.elapse = d.elapse
 		r.list.stat.status = d.status
-		r.list.stat.active = d.status == Bridge.Status.Active
-		r.list.stat.target = d.status == Bridge.Status.Target
+		r.list.stat.active = d.status === Bridge.Status.Active
+		r.list.stat.target = d.status === Bridge.Status.Target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
 
 		const size = d.ls.reduce((max, attr) => {
-			if (attr[0]?.file_type == Native.FileType.File) {
+			if (attr[0]?.file_type === Native.FileType.File) {
 				return Math.max(max, attr[0]?.size.toLocaleString().length ?? 0)
 			}
 			return max
@@ -149,7 +149,7 @@ function _create(count: number) {
 				const k = d.drawIndex + j
 				const t = d.drawPosition + j * d.drawSize
 				const s = d.mk?.[k] ?? false
-				const c = d.status == Bridge.Status.Active && d.cursor == k
+				const c = d.status === Bridge.Status.Active && d.cursor === k
 				return {
 					style: {
 						top: `${t}px`,

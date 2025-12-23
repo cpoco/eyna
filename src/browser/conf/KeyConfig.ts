@@ -50,7 +50,7 @@ class Key extends Abstract<FileFormat> {
 		for (const k of this.data.key) {
 			try {
 				const code: number = acceleratorToCode(k.key)
-				if (code == 0) {
+				if (code === 0) {
 					continue
 				}
 				const wb: Command.WhenBind = {

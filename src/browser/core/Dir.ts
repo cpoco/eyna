@@ -101,9 +101,7 @@ export class Dir {
 					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					_time = perf_hooks.performance.now()
 
-					ls.sort((a, b) => {
-						return _name(a, b)
-					})
+					_sort(ls)
 
 					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
@@ -145,12 +143,12 @@ const GROUP_DIRECTORIES_FIRST = 1024
 function _sort(ls: Native.Attributes[]) {
 	ls.sort((a, b) => {
 		let type = _type(a, b)
-		if (type == GROUP_DIRECTORIES_FIRST) {
+		if (type === GROUP_DIRECTORIES_FIRST) {
 			return _name(a, b)
 		}
-		if (type == 0) {
+		if (type === 0) {
 			let ext = _ext(a, b)
-			if (ext == 0) {
+			if (ext === 0) {
 				return _name(a, b)
 			}
 			return ext
@@ -163,13 +161,13 @@ function _type(a: Native.Attributes, b: Native.Attributes): number {
 	let aa = Util.last(a)?.file_type ?? Native.FileType.None
 	let bb = Util.last(b)?.file_type ?? Native.FileType.None
 
-	if (aa == Native.FileType.None) {
+	if (aa === Native.FileType.None) {
 		aa = Native.FileType.File
 	}
-	if (bb == Native.FileType.None) {
+	if (bb === Native.FileType.None) {
 		bb = Native.FileType.File
 	}
-	if (aa == Native.FileType.Directory && bb == Native.FileType.Directory) {
+	if (aa === Native.FileType.Directory && bb === Native.FileType.Directory) {
 		return GROUP_DIRECTORIES_FIRST
 	}
 
@@ -186,7 +184,7 @@ function _name(a: Native.Attributes, b: Native.Attributes): number {
 	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
 	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
 	let lc = aa.localeCompare(bb, undefined, { numeric: true })
-	return lc == 0
+	return lc === 0
 		? aa.length - bb.length
 		: lc
 }

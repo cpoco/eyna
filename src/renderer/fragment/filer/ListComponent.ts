@@ -132,7 +132,7 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		const err = this.list.st[0]?.file_type == Native.FileType.None
+		const err = this.list.st[0]?.file_type === Native.FileType.None
 
 		return vue.h(TAG, { class: { "filer-list": true } }, [
 			vue.h(

@@ -26,7 +26,7 @@ export class DirDiff {
 				const data1 = all[0].list[diff.cnt[0]]!
 				const data2 = all[1].list[diff.cnt[1]]!
 
-				if (data1.rltv == data2.rltv) {
+				if (data1.rltv === data2.rltv) {
 					diff.list.push({
 						type: [data1.type, data2.type],
 						rltv: data1.rltv,

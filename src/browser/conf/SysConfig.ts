@@ -9,7 +9,7 @@ type FileFormat = {
 
 class Sys extends Abstract<FileFormat> {
 	postLoad() {
-		if (!Util.isString(this.data.styleFontFamily) || this.data.styleFontFamily.length == 0) {
+		if (!Util.isString(this.data.styleFontFamily) || this.data.styleFontFamily.length === 0) {
 			throw new Error("styleFontFamily must be non-empty string")
 		}
 		if (!Util.isNumber(this.data.styleFontSize) || this.data.styleFontSize <= 0) {
