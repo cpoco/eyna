@@ -203,7 +203,7 @@ export class FilerManager {
 				this.id,
 				{
 					title: this.location.path,
-					err: this.data.st[0]?.file_type === Native.AttributeFileType.None,
+					err: this.data.st[0]?.file_type === Native.FileType.None,
 				},
 			)
 		}

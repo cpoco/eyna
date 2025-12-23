@@ -34,15 +34,15 @@ export class Dir {
 		if (Location.isHome(location)) {
 			this.dp = 0
 			this.rg = null
-			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
+			let st = [_attr(Native.FileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
 					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					let ls: Native.Attributes[] = []
 					for (const v of vol) {
-						ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
+						ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
 					}
-					ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
+					ls.push([_attr(Native.FileType.HomeUser, Path.home(), "user")])
 					cb(location.frn, st, ls, 0)
 				},
 			)
@@ -95,24 +95,7 @@ export class Dir {
 
 					const ls: Native.Attributes[] = []
 					for (const attr of arc.list) {
-						ls.push([{
-							file_type: attr.file_type as unknown as Native.AttributeFileType,
-							full: attr.full,
-							base: attr.base,
-							rltv: attr.rltv,
-							name: attr.name,
-							stem: attr.stem,
-							exte: attr.exte,
-							link_type: attr.link_type as unknown as Native.AttributeLinkType,
-							link: attr.link,
-							size: attr.size,
-							time: attr.time,
-							nsec: attr.nsec,
-							readonly: false,
-							hidden: false,
-							system: false,
-							cloud: false,
-						}])
+						ls.push([attr])
 					}
 
 					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
@@ -135,7 +118,7 @@ function _log(...args: any) {
 	console.log(`\u001b[36m[dir]\u001b[0m`, ...args)
 }
 
-function _attr(file_type: Native.AttributeFileType, full: string, name: string): Native.Attribute {
+function _attr(file_type: Native.FileType, full: string, name: string): Native.Attribute {
 	return {
 		file_type: file_type,
 		full: full,
@@ -144,7 +127,7 @@ function _attr(file_type: Native.AttributeFileType, full: string, name: string):
 		name: name,
 		stem: "",
 		exte: "",
-		link_type: Native.AttributeLinkType.None,
+		link_type: Native.LinkType.None,
 		link: "",
 		size: 0n,
 		time: 0,
@@ -153,6 +136,7 @@ function _attr(file_type: Native.AttributeFileType, full: string, name: string):
 		hidden: false,
 		system: false,
 		cloud: false,
+		entry: false,
 	}
 }
 
@@ -176,16 +160,16 @@ function _sort(ls: Native.Attributes[]) {
 }
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.None
-	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.None
+	let aa = Util.last(a)?.file_type ?? Native.FileType.None
+	let bb = Util.last(b)?.file_type ?? Native.FileType.None
 
-	if (aa == Native.AttributeFileType.None) {
-		aa = Native.AttributeFileType.File
+	if (aa == Native.FileType.None) {
+		aa = Native.FileType.File
 	}
-	if (bb == Native.AttributeFileType.None) {
-		bb = Native.AttributeFileType.File
+	if (bb == Native.FileType.None) {
+		bb = Native.FileType.File
 	}
-	if (aa == Native.AttributeFileType.Directory && bb == Native.AttributeFileType.Directory) {
+	if (aa == Native.FileType.Directory && bb == Native.FileType.Directory) {
 		return GROUP_DIRECTORIES_FIRST
 	}
 

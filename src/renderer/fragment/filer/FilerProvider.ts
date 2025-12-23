@@ -135,7 +135,7 @@ function _create(count: number) {
 		r.list.knob.size = d.knobSize
 
 		const size = d.ls.reduce((max, attr) => {
-			if (attr[0]?.file_type == Native.AttributeFileType.File) {
+			if (attr[0]?.file_type == Native.FileType.File) {
 				return Math.max(max, attr[0]?.size.toLocaleString().length ?? 0)
 			}
 			return max

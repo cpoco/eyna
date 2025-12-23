@@ -268,8 +268,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					if (
 						lattr == null || ltrgt == null || rattr == null || rtrgt == null
-						|| ltrgt.file_type != Native.AttributeFileType.File
-						|| rtrgt.file_type != Native.AttributeFileType.File
+						|| ltrgt.file_type != Native.FileType.File
+						|| rtrgt.file_type != Native.FileType.File
 						|| ltrgt.full == rtrgt.full
 					) {
 						resolve()
@@ -299,7 +299,7 @@ export class FilerFragment extends AbstractFragment {
 						resolve()
 						return
 					}
-					if (trgt.file_type == Native.AttributeFileType.File) {
+					if (trgt.file_type == Native.FileType.File) {
 						if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
 							reject("file too large")
 							return
@@ -330,11 +330,11 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.Drive
-						|| attr.file_type == Native.AttributeFileType.HomeUser
-						|| attr.file_type == Native.AttributeFileType.Directory
-						|| attr.file_type == Native.AttributeFileType.Link
-							&& trgt.file_type == Native.AttributeFileType.Directory
+						attr.file_type == Native.FileType.Drive
+						|| attr.file_type == Native.FileType.HomeUser
+						|| attr.file_type == Native.FileType.Directory
+						|| attr.file_type == Native.FileType.Link
+							&& trgt.file_type == Native.FileType.Directory
 					) {
 						if (Location.isHome(active.location) || Location.isFile(active.location)) {
 							if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
@@ -354,8 +354,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.File
-						&& trgt.file_type == Native.AttributeFileType.Directory
+						attr.file_type == Native.FileType.File
+						&& trgt.file_type == Native.FileType.Directory
 					) {
 						if (Location.isFile(active.location)) {
 							if (await active.sendChange(Location.toFile(trgt.full), 0, null, null, false)) {
@@ -370,7 +370,7 @@ export class FilerFragment extends AbstractFragment {
 					// file(shortcut or bookmark) -> file
 					// link(symbolic or junction) -> file
 					else if (
-						trgt.file_type == Native.AttributeFileType.File
+						trgt.file_type == Native.FileType.File
 					) {
 						if (Location.isFile(active.location)) {
 							// WIP shortcut,bookmark,symbolic,junction
@@ -465,11 +465,11 @@ export class FilerFragment extends AbstractFragment {
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
-						attr.file_type == Native.AttributeFileType.Drive
-						|| attr.file_type == Native.AttributeFileType.HomeUser
-						|| attr.file_type == Native.AttributeFileType.Directory
-						|| attr.file_type == Native.AttributeFileType.Link
-							&& trgt.file_type == Native.AttributeFileType.Directory
+						attr.file_type == Native.FileType.Drive
+						|| attr.file_type == Native.FileType.HomeUser
+						|| attr.file_type == Native.FileType.Directory
+						|| attr.file_type == Native.FileType.Link
+							&& trgt.file_type == Native.FileType.Directory
 					) {
 						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
 							target.scroll()
@@ -480,8 +480,8 @@ export class FilerFragment extends AbstractFragment {
 					}
 					// file(shortcut or bookmark) -> directory
 					else if (
-						attr.file_type == Native.AttributeFileType.File
-						&& trgt.file_type == Native.AttributeFileType.Directory
+						attr.file_type == Native.FileType.File
+						&& trgt.file_type == Native.FileType.Directory
 					) {
 						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
 							target.scroll()
@@ -527,7 +527,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.File) {
+					if (trgt.file_type != Native.FileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
@@ -550,7 +550,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt == null) {
 						continue
 					}
-					if (trgt.file_type != Native.AttributeFileType.File) {
+					if (trgt.file_type != Native.FileType.File) {
 						continue
 					}
 					if (!Conf.VIEWER_MEDIA_EXTE.test(trgt.exte)) {
