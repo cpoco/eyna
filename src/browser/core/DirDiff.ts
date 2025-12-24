@@ -6,7 +6,7 @@ type Diff = {
 	cnt: [number, number]
 }
 type Item = {
-	type: [Native.AttributeFileType, Native.AttributeFileType]
+	type: [Native.FileType, Native.FileType]
 	rltv: string
 }
 
@@ -26,7 +26,7 @@ export class DirDiff {
 				const data1 = all[0].list[diff.cnt[0]]!
 				const data2 = all[1].list[diff.cnt[1]]!
 
-				if (data1.rltv == data2.rltv) {
+				if (data1.rltv === data2.rltv) {
 					diff.list.push({
 						type: [data1.type, data2.type],
 						rltv: data1.rltv,
@@ -36,14 +36,14 @@ export class DirDiff {
 				}
 				else if (data1.rltv < data2.rltv) {
 					diff.list.push({
-						type: [data1.type, Native.AttributeFileType.None],
+						type: [data1.type, Native.FileType.None],
 						rltv: data1.rltv,
 					})
 					diff.cnt[0]++
 				}
 				else {
 					diff.list.push({
-						type: [Native.AttributeFileType.None, data2.type],
+						type: [Native.FileType.None, data2.type],
 						rltv: data2.rltv,
 					})
 					diff.cnt[1]++
@@ -53,7 +53,7 @@ export class DirDiff {
 			while (diff.cnt[0] < all[0].list.length) {
 				const data1 = all[0].list[diff.cnt[0]]!
 				diff.list.push({
-					type: [data1.type, Native.AttributeFileType.None],
+					type: [data1.type, Native.FileType.None],
 					rltv: data1.rltv,
 				})
 				diff.cnt[0]++
@@ -62,7 +62,7 @@ export class DirDiff {
 			while (diff.cnt[1] < all[1].list.length) {
 				const data2 = all[1].list[diff.cnt[1]]!
 				diff.list.push({
-					type: [Native.AttributeFileType.None, data2.type],
+					type: [Native.FileType.None, data2.type],
 					rltv: data2.rltv,
 				})
 				diff.cnt[1]++

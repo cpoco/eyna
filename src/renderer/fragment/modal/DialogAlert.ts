@@ -35,10 +35,10 @@ export const V = vue.defineComponent({
 				return
 			}
 
-			if (key.key == "Enter") {
+			if (key.key === "Enter") {
 				props.close({ text: "" })
 			}
-			else if (key.key == "Escape") {
+			else if (key.key === "Escape") {
 				props.cancel()
 			}
 		}

@@ -101,7 +101,7 @@ class Root {
 			AppConfig.save()
 		})
 		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
-			if (input.type == "keyDown") {
+			if (input.type === "keyDown") {
 				await this.command(KeyConfig.get(input))
 			}
 		})
@@ -118,7 +118,7 @@ class Root {
 	}
 
 	async command(kb: Command.KeyBind | null): Promise<void> {
-		if (kb == null) {
+		if (kb === null) {
 			return
 		}
 		let f: AbstractFragment | null = null

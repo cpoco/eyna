@@ -48,12 +48,12 @@ export const V = vue.defineComponent({
 				return
 			}
 
-			if (key.key == "Enter") {
+			if (key.key === "Enter") {
 				props.close({
 					text: view?.state.doc.toString() ?? props.text,
 				})
 			}
-			else if (key.key == "Escape") {
+			else if (key.key === "Escape") {
 				props.cancel()
 			}
 		}

@@ -40,7 +40,7 @@ export const V = vue.defineComponent({
 			root
 				.on(Bridge.Viewer.Open.CH, (_, data) => {
 					root.send(Bridge.Viewer.Event.CH, -1, "opened")
-					if (data.type != null) {
+					if (data.type !== null) {
 						reactive.type = data.type
 						reactive.mime = data.mime
 						reactive.path = data.path
@@ -71,7 +71,7 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		if (this.reactive.type == Bridge.Viewer.Type.Text) {
+		if (this.reactive.type === Bridge.Viewer.Type.Text) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -83,7 +83,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == Bridge.Viewer.Type.Diff) {
+		else if (this.reactive.type === Bridge.Viewer.Type.Diff) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -98,7 +98,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		if (this.reactive.type == Bridge.Viewer.Type.Hex) {
+		if (this.reactive.type === Bridge.Viewer.Type.Hex) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -110,7 +110,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == Bridge.Viewer.Type.Image) {
+		else if (this.reactive.type === Bridge.Viewer.Type.Image) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -122,7 +122,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == Bridge.Viewer.Type.Audio) {
+		else if (this.reactive.type === Bridge.Viewer.Type.Audio) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -135,7 +135,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == Bridge.Viewer.Type.Video) {
+		else if (this.reactive.type === Bridge.Viewer.Type.Video) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,
@@ -148,7 +148,7 @@ export const V = vue.defineComponent({
 				}, undefined),
 			])
 		}
-		else if (this.reactive.type == Bridge.Viewer.Type.Embed) {
+		else if (this.reactive.type === Bridge.Viewer.Type.Embed) {
 			return vue.h(TAG, {
 				class: {
 					"viewer-fragment": true,

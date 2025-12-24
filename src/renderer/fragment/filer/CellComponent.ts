@@ -17,12 +17,10 @@ export type Cell = {
 		select: boolean
 		cursor: boolean
 	}
-	pad: Pad
+	pad: {
+		size: number
+	}
 	attr: Native.Attributes
-}
-
-type Pad = {
-	size: number
 }
 
 export const V = vue.defineComponent({
@@ -35,7 +33,7 @@ export const V = vue.defineComponent({
 
 	setup(props) {
 		const is_empty = vue.computed((): boolean => {
-			return props.cell.attr.length == 0
+			return props.cell.attr.length === 0
 		})
 
 		return {
@@ -95,7 +93,7 @@ const attr = vue.defineComponent({
 	props: {
 		pad: {
 			required: true,
-			type: Object as vue.PropType<Pad>,
+			type: Object as vue.PropType<{ size: number }>,
 		},
 		attr: {
 			required: true,
@@ -104,44 +102,61 @@ const attr = vue.defineComponent({
 	},
 
 	setup(props) {
-		const is_empty = vue.computed((): boolean => {
-			return props.attr.length == 0
-		})
+		const attr = vue.computed(
+			(): { one: Native.Attribute | null; two: Native.Attribute | null; end: Native.Attribute | null } => {
+				return {
+					one: props.attr[0] ?? null,
+					two: props.attr[1] ?? null,
+					end: Util.last(props.attr),
+				}
+			},
+		)
 
 		const is_link = vue.computed((): boolean => {
-			if (props.attr.length == 0) {
-				return false
+			return attr.value.one?.link_type !== Native.LinkType.None
+		})
+
+		const is_cloud = vue.computed((): boolean => {
+			return attr.value.one?.x?.cloud === true
+		})
+
+		const icon_url = vue.computed((): string => {
+			if (attr.value.one?.x?.entry !== true) {
+				return `eyna://icon-path/${encodeURIComponent(attr.value.one?.full ?? "")}`
 			}
-			return props.attr[0]?.link_type != Native.AttributeLinkType.None
+			else if (attr.value.one?.file_type === Native.FileType.Directory) {
+				return `eyna://icon-type/${encodeURIComponent("/")}`
+			}
+			else {
+				return `eyna://icon-type/${encodeURIComponent(attr.value.one?.exte.replace(/^\./, "") ?? "")}`
+			}
 		})
 
 		const name_class = vue.computed((): string => {
-			const f = props.attr[0]?.file_type
-			if (f == Native.AttributeFileType.File) {
-				const l = props.attr[0]?.link_type
-				if (l == Native.AttributeLinkType.Shortcut) {
+			if (attr.value.one?.file_type === Native.FileType.File) {
+				if (attr.value.one?.link_type === Native.LinkType.Shortcut) {
 					return "c-shortcut"
 				}
-				else if (l == Native.AttributeLinkType.Bookmark) {
+				else if (attr.value.one?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
 				else {
 					return "c-file"
 				}
 			}
-			else if (f == Native.AttributeFileType.Link) {
+			else if (attr.value.one?.file_type === Native.FileType.Link) {
 				return "c-link"
 			}
-			else if (f == Native.AttributeFileType.Directory) {
+			else if (attr.value.one?.file_type === Native.FileType.Directory) {
 				return "c-directory"
 			}
-			else if (f == Native.AttributeFileType.Drive) {
+			else if (attr.value.one?.file_type === Native.FileType.Drive) {
 				return "c-drive"
 			}
-			else if (f == Native.AttributeFileType.HomeUser) {
+			else if (attr.value.one?.file_type === Native.FileType.HomeUser) {
 				return "c-homeuser"
 			}
-			else if (f == Native.AttributeFileType.Special) {
+			else if (attr.value.one?.file_type === Native.FileType.Special) {
 				return "c-special"
 			}
 			else {
@@ -150,33 +165,33 @@ const attr = vue.defineComponent({
 		})
 
 		const trgt_class = vue.computed((): string => {
-			const f = props.attr[1]?.file_type
-			if (f == Native.AttributeFileType.File) {
-				const l = props.attr[1]?.link_type
-				if (l == Native.AttributeLinkType.Shortcut) {
+			if (attr.value.two?.file_type === Native.FileType.File) {
+				if (attr.value.two?.link_type === Native.LinkType.Shortcut) {
 					return "c-shortcut"
 				}
-				else if (l == Native.AttributeLinkType.Bookmark) {
+				else if (attr.value.two?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
 				else {
 					return "c-file"
 				}
 			}
-			else if (f == Native.AttributeFileType.Link) {
-				const last = Util.last(props.attr)
-				if (last == null || last.file_type == Native.AttributeFileType.None) {
+			else if (attr.value.two?.file_type === Native.FileType.Link) {
+				if (attr.value.end === null || attr.value.end.file_type === Native.FileType.None) {
 					return "c-warn"
 				}
 				else {
 					return "c-link"
 				}
 			}
-			else if (f == Native.AttributeFileType.Directory) {
+			else if (attr.value.two?.file_type === Native.FileType.Directory) {
 				return "c-directory"
 			}
-			else if (f == Native.AttributeFileType.Special) {
+			else if (attr.value.two?.file_type === Native.FileType.Special) {
 				return "c-special"
+			}
+			else if (attr.value.one?.x?.entry) {
+				return "c-maybe"
 			}
 			else {
 				return "c-miss"
@@ -184,44 +199,38 @@ const attr = vue.defineComponent({
 		})
 
 		const exte = vue.computed((): string | undefined => {
-			if (
-				is_empty.value
-				|| props.attr[0]?.file_type != Native.AttributeFileType.File
-				|| props.attr[0]?.link_type != Native.AttributeLinkType.None
-			) {
+			if (attr.value.one?.file_type !== Native.FileType.File || attr.value.one?.link_type !== Native.LinkType.None) {
 				return undefined
 			}
-			return props.attr[0]?.exte.replace(/^\./, "")
+			return attr.value.one?.exte.replace(/^\./, "")
 		})
 
 		const size = vue.computed((): string | undefined => {
-			if (
-				is_empty.value
-				|| props.attr[0]?.file_type != Native.AttributeFileType.File
-			) {
+			if (attr.value.one?.file_type !== Native.FileType.File) {
 				return undefined
 			}
-			return props.attr[0]?.size.toLocaleString().padStart(props.pad.size, " ")
+			return attr.value.one?.size.toLocaleString().padStart(props.pad.size, " ")
 		})
 
 		const date = vue.computed((): { date: string; time: string } | undefined => {
 			if (
-				is_empty.value
-				|| props.attr[0]?.file_type == Native.AttributeFileType.Drive
-				|| props.attr[0]?.file_type == Native.AttributeFileType.HomeUser
+				attr.value.one?.file_type === Native.FileType.Drive || attr.value.one?.file_type === Native.FileType.HomeUser
 			) {
 				return undefined
 			}
-			return Util.DateTime(props.attr[0]?.time ?? 0)
+			return Util.DateTime(attr.value.one?.time ?? 0)
 		})
 
 		const dragstart = (event: DragEvent) => {
 			event.preventDefault()
-			root.send(Bridge.List.Drag.CH, -1, { full: props.attr[0]?.full ?? "" })
+			root.send(Bridge.List.Drag.CH, -1, { full: attr.value.one?.full ?? "" })
 		}
 
 		return {
+			attr,
 			is_link,
+			is_cloud,
+			icon_url,
 			name_class,
 			trgt_class,
 			exte,
@@ -242,7 +251,7 @@ const attr = vue.defineComponent({
 					[
 						vue.h("img", {
 							class: { "filer-cell-attr-icon-img": true },
-							src: `eyna://icon/${encodeURIComponent(this.attr[0]?.full ?? "")}`,
+							src: this.icon_url,
 						}),
 					],
 				),
@@ -254,7 +263,7 @@ const attr = vue.defineComponent({
 							vue.h(
 								"span",
 								{ class: { "filer-cell-attr-name-file": true, [this.name_class]: true } },
-								Unicode.highlight(this.attr[0]?.rltv),
+								Unicode.highlight(this.attr.one?.rltv),
 							),
 							vue.h(
 								"span",
@@ -264,21 +273,21 @@ const attr = vue.defineComponent({
 							vue.h(
 								"span",
 								{ class: { "filer-cell-attr-name-trgt": true, [this.trgt_class]: true } },
-								Unicode.highlight(this.attr[0]?.link),
+								Unicode.highlight(this.attr.one?.link),
 							),
 						]
 						: [
 							vue.h(
 								"span",
 								{ class: { "filer-cell-attr-name-file": true, [this.name_class]: true } },
-								Unicode.highlight(this.attr[0]?.rltv),
+								Unicode.highlight(this.attr.one?.rltv),
 							),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.attr[0]?.cloud } }, this.exte),
-				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.attr[0]?.cloud } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.attr[0]?.cloud } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.is_cloud } }, this.exte),
+				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.is_cloud } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.is_cloud } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.is_cloud } }, this.date?.time),
 			],
 		)
 	},

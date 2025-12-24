@@ -136,12 +136,19 @@ else {
 	{
 		const link = path.join(wd, "LINK")
 		await fs.mkdir(link)
+		for (const f of ff) {
+			await fs.symlink("../" + f, path.join(link, f))
+		}
+
 		await fs.symlink(link, path.join(link, "la_self_0"))
 		await fs.symlink(link + "/", path.join(link, "la_self_1"))
 		await fs.symlink(link + "/.", path.join(link, "la_self_2"))
 		await fs.symlink(".", path.join(link, "lr_self_0"))
 		await fs.symlink("./", path.join(link, "lr_self_1"))
 		await fs.symlink("./.", path.join(link, "lr_self_2"))
+		await fs.symlink("../LINK", path.join(link, "lr_self_3"))
+		await fs.symlink("../LINK/", path.join(link, "lr_self_4"))
+		await fs.symlink("../LINK/.", path.join(link, "lr_self_5"))
 
 		await fs.symlink(link + "/..", path.join(link, "la_parent_0"))
 		await fs.symlink(link + "/../", path.join(link, "la_parent_1"))

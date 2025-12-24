@@ -1,17 +1,6 @@
 _scroll_width = 6px
 
 :root
-	--ellipsis: _gray
-	--operator: _blue
-	--file: _white
-	--link: _sky_l
-	--directory: _sky
-	--shortcut: _teal
-	--bookmark: _teal
-	--special: _magenta
-	--warn: _orange
-	--miss: _red
-
 	--stat-active: rgba(0, 127, 212, 1)
 	--stat-target: rgba(0, 127, 212, 0.5)
 	--stat-none: rgba(255, 255, 255, 0.1)
@@ -22,27 +11,29 @@ _scroll_width = 6px
 	--scroll-knob: rgba(255, 255, 255, 0.2)
 
 .c-operator
-	color: var(--operator)
+	color: _blue
 .c-drive
-	color: var(--file)
+	color: _white
 .c-homeuser
-	color: var(--file)
+	color: _white
 .c-file
-	color: var(--file)
+	color: _white
 .c-link
-	color: var(--link)
+	color: _sky_l
 .c-directory
-	color: var(--directory)
+	color: _sky
 .c-shortcut
-	color: var(--shortcut)
+	color: _teal
 .c-bookmark
-	color: var(--bookmark)
+	color: _teal
 .c-special
-	color: var(--special)
+	color: _magenta
+.c-maybe
+	color: _gray
 .c-warn
-	color: var(--warn)
+	color: _orange
 .c-miss
-	color: var(--miss)
+	color: _red
 
 .c-trv
 	color: _blue
@@ -186,7 +177,7 @@ _scroll_width = 6px
 
 			&-name
 				overflow: hidden
-				color: var(--ellipsis)
+				color: _gray
 				text-overflow: ellipsis
 				flex: 1
 

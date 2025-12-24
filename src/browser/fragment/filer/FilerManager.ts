@@ -38,11 +38,11 @@ export class FilerManager {
 	async run(): Promise<void> {
 		this.watch_run = true
 		while (this.watch_run) {
-			if (this.watch_queue.length == 0) {
+			if (this.watch_queue.length === 0) {
 				await timers.setTimeout(100)
 				continue
 			}
-			if (this.data.frn != this.watch_queue.shift()) {
+			if (this.data.frn !== this.watch_queue.shift()) {
 				continue
 			}
 
@@ -70,7 +70,7 @@ export class FilerManager {
 	}
 
 	resized(h: number) {
-		if (this.sc.screenSize != h) {
+		if (this.sc.screenSize !== h) {
 			this.sc.screenSize = h
 			this.scroll()
 			this.sendCursor()
@@ -160,7 +160,7 @@ export class FilerManager {
 
 		const rltv = cursor ?? this.history.get(frn) ?? null
 		for (const [i, attr] of ls.entries()) {
-			if (attr[0]?.rltv == rltv) {
+			if (attr[0]?.rltv === rltv) {
 				return i
 			}
 		}
@@ -203,7 +203,7 @@ export class FilerManager {
 				this.id,
 				{
 					title: this.location.path,
-					err: this.data.st[0]?.file_type === Native.AttributeFileType.None,
+					err: this.data.st[0]?.file_type === Native.FileType.None,
 				},
 			)
 		}
@@ -229,10 +229,10 @@ export class FilerManager {
 		Native.unwatch(this.id)
 		if (Location.isFile(next)) {
 			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
-				if (create != this.data.create || dp < depth) {
+				if (create !== this.data.create || dp < depth) {
 					return
 				}
-				if (this.watch_queue.length == 0 || this.watch_queue[this.watch_queue.length - 1] != next.frn) {
+				if (this.watch_queue.length === 0 || this.watch_queue[this.watch_queue.length - 1] !== next.frn) {
 					this.watch_queue.push(next.frn)
 				}
 			})
@@ -265,12 +265,12 @@ export class FilerManager {
 		)
 
 		return new Promise(async (resolve, _reject) => {
-			if (this.dir.location.frn != frn || forceMarkClear) {
+			if (this.dir.location.frn !== frn || forceMarkClear) {
 				this.mk.clear()
 			}
 			this.dir.change(frn)
 			await this.dir.list(dp, rg, async (frn, st, ls, e) => {
-				if (create != this.data.create) {
+				if (create !== this.data.create) {
 					resolve(false)
 					return
 				}

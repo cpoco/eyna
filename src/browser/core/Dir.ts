@@ -26,34 +26,34 @@ export class Dir {
 		rg: RegExp | null,
 		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
 	) {
-		_log(this.location.frn.split("\0"), { dp: dp, rg: rg })
+		const location = this.lc
+
+		_log(location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
-		if (Location.isHome(this.lc)) {
+		if (Location.isHome(location)) {
 			this.dp = 0
 			this.rg = null
-			let st = [_attr(Native.AttributeFileType.HomeUser, Dir.HOME, Dir.HOME)]
+			let st = [_attr(Native.FileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
-					const frn = Location.toHome()
-					_log(frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					let ls: Native.Attributes[] = []
 					for (const v of vol) {
-						ls.push([_attr(Native.AttributeFileType.Drive, v.full, v.name)])
+						ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
 					}
-					ls.push([_attr(Native.AttributeFileType.HomeUser, Path.home(), "user")])
-					cb(frn, st, ls, 0)
+					ls.push([_attr(Native.FileType.HomeUser, Path.home(), "user")])
+					cb(location.frn, st, ls, 0)
 				},
 			)
 		}
-		else if (Location.isFile(this.lc)) {
+		else if (Location.isFile(location)) {
 			this.dp = dp
 			this.rg = rg
-			let st = await Native.getAttribute(this.lc.path)
-			Native.getDirectory(this.lc.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
+			let st = await Native.getAttribute(location.path)
+			Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
 				async (dir: Native.Directory) => {
-					const frn = Location.toFile(dir.full)
-					_log(frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+					_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 						s: dir.s,
 						d: dir.d,
 						f: dir.f,
@@ -62,19 +62,50 @@ export class Dir {
 					})
 					_time = perf_hooks.performance.now()
 
-					let ls: Native.Attributes[] = []
+					const ls: Native.Attributes[] = []
 					for (const attr of dir.list) {
 						ls.push(await Native.getAttribute(attr.rltv, dir.full))
 					}
 
-					_log(frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 					_time = perf_hooks.performance.now()
 
 					_sort(ls)
 
-					_log(frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(frn, st, ls, dir.e)
+					cb(location.frn, st, ls, dir.e)
+				},
+			)
+		}
+		else if (Location.isArch(location)) {
+			this.dp = 0
+			this.rg = null
+			let st = await Native.getAttribute(location.path)
+			Native.getArchive(location.path, location.entry, this.dp).then(
+				async (arc: Native.Archive) => {
+					_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+						s: arc.s,
+						d: arc.d,
+						f: arc.f,
+						e: arc.e,
+						len: arc.list.length,
+					})
+					_time = perf_hooks.performance.now()
+
+					const ls: Native.Attributes[] = []
+					for (const attr of arc.list) {
+						ls.push([attr])
+					}
+
+					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+					_time = perf_hooks.performance.now()
+
+					_sort(ls)
+
+					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+
+					cb(location.frn, st, ls, arc.e)
 				},
 			)
 		}
@@ -85,7 +116,7 @@ function _log(...args: any) {
 	console.log(`\u001b[36m[dir]\u001b[0m`, ...args)
 }
 
-function _attr(file_type: Native.AttributeFileType, full: string, name: string): Native.Attribute {
+function _attr(file_type: Native.FileType, full: string, name: string): Native.Attribute {
 	return {
 		file_type: file_type,
 		full: full,
@@ -94,15 +125,11 @@ function _attr(file_type: Native.AttributeFileType, full: string, name: string):
 		name: name,
 		stem: "",
 		exte: "",
-		link_type: Native.AttributeLinkType.None,
+		link_type: Native.LinkType.None,
 		link: "",
 		size: 0n,
 		time: 0,
 		nsec: 0,
-		readonly: false,
-		hidden: false,
-		system: false,
-		cloud: false,
 	}
 }
 
@@ -111,12 +138,12 @@ const GROUP_DIRECTORIES_FIRST = 1024
 function _sort(ls: Native.Attributes[]) {
 	ls.sort((a, b) => {
 		let type = _type(a, b)
-		if (type == GROUP_DIRECTORIES_FIRST) {
+		if (type === GROUP_DIRECTORIES_FIRST) {
 			return _name(a, b)
 		}
-		if (type == 0) {
+		if (type === 0) {
 			let ext = _ext(a, b)
-			if (ext == 0) {
+			if (ext === 0) {
 				return _name(a, b)
 			}
 			return ext
@@ -126,16 +153,16 @@ function _sort(ls: Native.Attributes[]) {
 }
 
 function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = Util.last(a)?.file_type ?? Native.AttributeFileType.None
-	let bb = Util.last(b)?.file_type ?? Native.AttributeFileType.None
+	let aa = Util.last(a)?.file_type ?? Native.FileType.None
+	let bb = Util.last(b)?.file_type ?? Native.FileType.None
 
-	if (aa == Native.AttributeFileType.None) {
-		aa = Native.AttributeFileType.File
+	if (aa === Native.FileType.None) {
+		aa = Native.FileType.File
 	}
-	if (bb == Native.AttributeFileType.None) {
-		bb = Native.AttributeFileType.File
+	if (bb === Native.FileType.None) {
+		bb = Native.FileType.File
 	}
-	if (aa == Native.AttributeFileType.Directory && bb == Native.AttributeFileType.Directory) {
+	if (aa === Native.FileType.Directory && bb === Native.FileType.Directory) {
 		return GROUP_DIRECTORIES_FIRST
 	}
 
@@ -152,7 +179,7 @@ function _name(a: Native.Attributes, b: Native.Attributes): number {
 	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
 	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
 	let lc = aa.localeCompare(bb, undefined, { numeric: true })
-	return lc == 0
+	return lc === 0
 		? aa.length - bb.length
 		: lc
 }

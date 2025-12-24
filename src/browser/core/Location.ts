@@ -14,7 +14,7 @@ class generic {
 	}
 
 	get top(): boolean {
-		return this._path.length == 0
+		return this._path.length === 0
 	}
 
 	get full(): string {
@@ -72,7 +72,7 @@ export namespace Location {
 	}
 
 	export function parse(frn: FRN | null): Data {
-		if (frn == null) {
+		if (frn === null) {
 			return Default
 		}
 		const block = frn.split("\0")
@@ -126,7 +126,7 @@ export namespace Location {
 				const entry = new generic(data.entry)
 				return entry.top
 					? {
-						frn: [Type.File, data.path].join("\0"),
+						frn: [Type.File, path.dirname].join("\0"),
 						type: Type.File,
 						path: path.dirname,
 						anchor: path.basename,

@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -21,9 +21,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
-          key: ${{ runner.os }}-${{ matrix.arch }}-cache
+          key: ${{ runner.os }}-${{ matrix.arch }}-cache-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-cache-
           path: |
             cache
       - run: |
@@ -32,5 +34,11 @@ jobs:
           npx tsx pkg/native/scripts/cmake_node.ts
       - run: |
           npx tsx scripts/test.ts
-          npx tsx pkg/native/test/test.ts
-          npx tsx pkg/native/test/zip.ts
+          npx tsx pkg/native/test/test_compare.ts
+          npx tsx pkg/native/test/test_get.ts
+          npx tsx pkg/native/test/test_icon.ts
+          npx tsx pkg/native/test/test_link.ts
+          npx tsx pkg/native/test/test_operation.ts
+          npx tsx pkg/native/test/test_os.ts
+          npx tsx pkg/native/test/test_zip.ts
+          npx tsx pkg/native/test/test_watch.ts

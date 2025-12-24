@@ -26,8 +26,6 @@ static void get_archive_async(uv_work_t* req)
 {
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
-	printf("min:%d, max:%d\n", work->min_depth, work->max_depth);
-
 	archive_iterator(
 		work->abst,
 		[&work](struct archive* a, struct archive_entry* entry) -> int
@@ -114,6 +112,11 @@ static void get_archive_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, ent.size));
 		obj->Set(CONTEXT, to_string(V("time")), v8::Number::New(ISOLATE, (double)ent.time));
 		obj->Set(CONTEXT, to_string(V("nsec")), v8::Number::New(ISOLATE, (double)ent.nsec));
+
+		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
+		x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
+		x->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, true));
+		obj->Set(CONTEXT, to_string(V("x")), x);
 
 		array->Set(CONTEXT, index++, obj);
 	}

@@ -30,10 +30,10 @@ export class ModalFragment extends AbstractFragment {
 	private ipc() {
 		root
 			.on(Bridge.Modal.Event.CH, (_i, data) => {
-				if (data.event == "opened") {
+				if (data.event === "opened") {
 					KeyConfig.whenType = Command.When.Modal
 				}
-				else if (data.event == "closed" || data.event == "canceled") {
+				else if (data.event === "closed" || data.event === "canceled") {
 					KeyConfig.whenType = Command.When.Filer
 					this.deferred?.resolve?.(data.result)
 					this.deferred = null

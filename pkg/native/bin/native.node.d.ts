@@ -19,6 +19,7 @@ export function getDirectory(
 	regexp: RegExp | null,
 ): Promise<Type.Directory>
 export function getIcon(abstract: string): Promise<Buffer>
+export function getIconType(extension: string): Promise<Buffer>
 export function getPathAttribute(abstract: string): Promise<Type.Attributes>
 export function getVolume(): Promise<Type.Volume[]>
 export function isElevated(): boolean

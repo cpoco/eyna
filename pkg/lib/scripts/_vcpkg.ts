@@ -3,10 +3,12 @@ import fs from "node:fs"
 import path from "node:path"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
-const __cache = path.join(__top, "..", "..", "cache", "vcpkg")
+const __cache_vcpkg_archives = path.join(__top, "..", "..", "cache", "vcpkg", "archives")
+const __cache_vcpkg_downloads = path.join(__top, "..", "..", "cache", "vcpkg", "downloads")
 
 export async function install(stdout: IOType = "ignore") {
-	await fs.promises.mkdir(__cache, { recursive: true })
+	await fs.promises.mkdir(__cache_vcpkg_archives, { recursive: true })
+	await fs.promises.mkdir(__cache_vcpkg_downloads, { recursive: true })
 
 	return new Promise<void>((resolve, reject) => {
 		child_process.spawn(
@@ -22,7 +24,8 @@ export async function install(stdout: IOType = "ignore") {
 				cwd: path.join(__top),
 				env: {
 					...process.env,
-					VCPKG_DEFAULT_BINARY_CACHE: __cache,
+					VCPKG_DOWNLOADS: __cache_vcpkg_downloads,
+					VCPKG_DEFAULT_BINARY_CACHE: __cache_vcpkg_archives,
 					VCPKG_OVERLAY_PORTS: path.join(__top, "ports"),
 					VCPKG_OVERLAY_TRIPLETS: path.join(__top, "triplets"),
 				},

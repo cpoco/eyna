@@ -52,19 +52,19 @@ export const V = vue.defineComponent({
 			root
 				.on(Bridge.Modal.Open.CH, (_i, data) => {
 					root.send(Bridge.Modal.Event.CH, -1, { event: "opened" })
-					if (data.type == "alert") {
+					if (data.type === "alert") {
 						reactive.type = data.type
 						reactive.alert.title = data.title
 						reactive.alert.text = data.text
 					}
-					else if (data.type == "prompt") {
+					else if (data.type === "prompt") {
 						reactive.type = data.type
 						reactive.prompt.title = data.title
 						reactive.prompt.text = data.text
 						reactive.prompt.start = data.start ?? null
 						reactive.prompt.end = data.end ?? null
 					}
-					else if (data.type == "find") {
+					else if (data.type === "find") {
 						reactive.type = data.type
 						reactive.find.title = data.title
 						reactive.find.rg = data.rg
@@ -94,7 +94,7 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		if (this.reactive.type == "alert") {
+		if (this.reactive.type === "alert") {
 			return vue.h(
 				TAG,
 				{ class: { "modal-fragment": true } },
@@ -106,7 +106,7 @@ export const V = vue.defineComponent({
 				}),
 			)
 		}
-		else if (this.reactive.type == "prompt") {
+		else if (this.reactive.type === "prompt") {
 			return vue.h(
 				TAG,
 				{ class: { "modal-fragment": true } },
@@ -120,7 +120,7 @@ export const V = vue.defineComponent({
 				}),
 			)
 		}
-		else if (this.reactive.type == "find") {
+		else if (this.reactive.type === "find") {
 			return vue.h(
 				TAG,
 				{ class: { "modal-fragment": true } },

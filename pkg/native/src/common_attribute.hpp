@@ -291,13 +291,17 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 	if (attr.link_type != LINK_TYPE::LINK_TYPE_NONE) {
 		if (attr.link.is_absolute()) {
 			attribute(generic_path(attr.link, true), vector);
+			return;
 		}
-		else if (attr.link.is_relative()) {
-			attribute(generic_path(attr.full.parent_path() / attr.link, true), vector);
+		if (attr.link.is_relative()) {
+			std::error_code ec;
+			std::filesystem::path parent = std::filesystem::canonical(attr.full.parent_path(), ec);
+			if (!ec) {
+				attribute(generic_path(parent / attr.link, true), vector);
+				return;
+			}
 		}
-		else {
-			vector.push_back({});
-		}
+		vector.push_back({});
 	}
 }
 
