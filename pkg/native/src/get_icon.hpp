@@ -89,6 +89,8 @@ static void get_icon_async(uv_work_t* req)
 
 		memcpy(work->data, [png bytes], png.length);
 
+		[dst release];
+
 	#endif
 }
 
