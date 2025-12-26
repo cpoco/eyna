@@ -170,7 +170,7 @@ export namespace Location {
 		const file_path = path
 			.replace(/%/g, "%25")
 			.replace(/#/g, "%23")
-			.replace(/\?/g, "%3F") 
+			.replace(/\?/g, "%3F")
 		return `file://${file_path}?${new Date().getTime()}`
 		// return `eyna://blob/${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
 	}
