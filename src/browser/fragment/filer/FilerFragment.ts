@@ -282,6 +282,7 @@ export class FilerFragment extends AbstractFragment {
 					root.viewer({
 						type: Bridge.Viewer.Type.Diff,
 						mime: [],
+						href: [Location.toFileUrl(ltrgt.full), Location.toFileUrl(rtrgt.full)],
 						path: [ltrgt.full, rtrgt.full],
 						size: [ltrgt.size, rtrgt.size],
 					})
@@ -307,6 +308,7 @@ export class FilerFragment extends AbstractFragment {
 						root.viewer({
 							type: Bridge.Viewer.Type.Hex,
 							mime: [],
+							href: [Location.toFileUrl(trgt.full)],
 							path: [trgt.full],
 							size: [trgt.size],
 						})
@@ -373,7 +375,6 @@ export class FilerFragment extends AbstractFragment {
 						trgt.file_type === Native.FileType.File
 					) {
 						if (Location.isFile(active.location)) {
-							// WIP shortcut,bookmark,symbolic,junction
 							if (Conf.ARCHIVE_EXTE.test(attr.exte)) {
 								if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
 									active.scroll()
@@ -386,6 +387,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Image,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -394,6 +396,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Audio,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -402,6 +405,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Video,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -410,6 +414,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Embed,
 									mime: ["application/pdf"],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -422,10 +427,14 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Text,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
 							}
+						}
+						else if (Location.isArch(active.location)) {
+							// WIP
 						}
 						resolve()
 					}

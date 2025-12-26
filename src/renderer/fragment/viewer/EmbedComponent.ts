@@ -1,12 +1,14 @@
 import * as vue from "@vue/runtime-dom"
 
-import * as url from "@/renderer/util/url"
-
 const EMBED = "embed"
 
 export const V = vue.defineComponent({
 	props: {
 		mime: {
+			required: true,
+			type: String,
+		},
+		href: {
 			required: true,
 			type: String,
 		},
@@ -32,7 +34,7 @@ export const V = vue.defineComponent({
 			}
 			vue.nextTick(() => {
 				embed.value!.type = props.mime
-				embed.value!.src = url.fileUrl(props.path) + "#toolbar=0&view=Fit"
+				embed.value!.src = props.href + "#toolbar=0&view=Fit"
 			})
 		})
 

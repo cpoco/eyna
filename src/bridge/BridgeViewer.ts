@@ -22,42 +22,49 @@ export namespace Viewer {
 		export type DataText = {
 			type: Type.Text
 			mime: []
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
 		export type DataDiff = {
 			type: Type.Diff
 			mime: []
+			href: [string, string]
 			path: [string, string]
 			size: [bigint, bigint]
 		}
 		export type DataHex = {
 			type: Type.Hex
 			mime: []
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
 		export type DataImage = {
 			type: Type.Image
 			mime: []
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
 		export type DataAudio = {
 			type: Type.Audio
 			mime: []
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
 		export type DataVideo = {
 			type: Type.Video
 			mime: []
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
 		export type DataEmbed = {
 			type: Type.Embed
 			mime: [string]
+			href: [string]
 			path: [string]
 			size: [bigint]
 		}
