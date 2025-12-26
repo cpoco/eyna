@@ -22,62 +22,62 @@ export enum LinkType {
 }
 
 export type Archive = {
-	full: string
-	base: string
-	list: Attribute[]
-	s: bigint
-	d: number
-	f: number
-	e: number
+	readonly full: string
+	readonly base: string
+	readonly list: Attribute[]
+	readonly s: bigint
+	readonly d: number
+	readonly f: number
+	readonly e: number
 }
 
 export type Attributes = Attribute[]
 
 export type Attribute = {
-	file_type: FileType
-	full: string
+	readonly file_type: FileType
+	readonly full: string
 
-	base: string
-	rltv: string
+	readonly base: string
+	readonly rltv: string
 
-	name: string
-	stem: string
-	exte: string
+	readonly name: string
+	readonly stem: string
+	readonly exte: string
 
-	link_type: LinkType
-	link: string | null
+	readonly link_type: LinkType
+	readonly link: string | null
 
-	size: bigint
-	time: number
-	nsec: number
+	readonly size: bigint
+	readonly time: number
+	readonly nsec: number
 
-	x?: {
-		readonly?: boolean
-		hidden?: boolean
-		system?: boolean
-		cloud?: boolean
-		entry?: boolean
+	readonly x?: {
+		readonly readonly?: boolean
+		readonly hidden?: boolean
+		readonly system?: boolean
+		readonly cloud?: boolean
+		readonly entry?: boolean
 	}
 }
 
 export type Volume = {
-	full: string
-	name: string
+	readonly full: string
+	readonly name: string
 }
 
 export type Directory = {
-	full: string
-	base: string
-	list: Item[]
-	s: bigint
-	d: number
-	f: number
-	e: number
+	readonly full: string
+	readonly base: string
+	readonly list: Item[]
+	readonly s: bigint
+	readonly d: number
+	readonly f: number
+	readonly e: number
 }
 
 export type Item = {
-	type: FileType
-	rltv: string
+	readonly type: FileType
+	readonly rltv: string
 }
 
 export type WatchCallback = (id: number, depth: number, abstract: string) => void
