@@ -434,7 +434,55 @@ export class FilerFragment extends AbstractFragment {
 							}
 						}
 						else if (Location.isArch(active.location)) {
-							// WIP
+							if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Image,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_AUDIO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Audio,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_VIDEO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Video,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Embed,
+									mime: ["application/pdf"],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else {
+								if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+									reject("file too large")
+									return
+								}
+								root.viewer({
+									type: Bridge.Viewer.Type.Text,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
 						}
 						resolve()
 					}

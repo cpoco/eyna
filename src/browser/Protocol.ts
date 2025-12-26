@@ -25,6 +25,9 @@ export class Protocol {
 			if (url.host === "icon-path" || url.host === "icon-type") {
 				return IconWorker.push(url)
 			}
+			else if (url.host === "blob") {
+				return blob(url)
+			}
 			else if (url.host === "metrics") {
 				return metrics()
 			}
@@ -46,14 +49,10 @@ type Task = {
 class IconWorker {
 	private static queue: Task[] = []
 
-	private static verify(ary: string[]): ary is [string, string] {
-		return ary.length === 2
-	}
-
 	static async push(url: URL): Promise<Response> {
 		const path = url.pathname.split("/")
 
-		if (!this.verify(path)) {
+		if (!isTuple2(path)) {
 			return new Response(null, { status: 400 })
 		}
 		if (url.host !== "icon-path" && url.host !== "icon-type") {
@@ -116,6 +115,28 @@ class IconWorker {
 	}
 }
 
+const blob = (url: URL): Response => {
+	const path = url.pathname.split("/")
+
+	if (!isTuple4(path)) {
+		return new Response(null, { status: 400 })
+	}
+	if (path[1] !== "arch") {
+		return new Response(null, { status: 400 })
+	}
+
+	const reader = Native.getArchiveEntry(
+		decodeURIComponent(path[2]),
+		decodeURIComponent(path[3]),
+	)
+	return new Response(reader as unknown as BodyInit, {
+		headers: {
+			"content-type": "application/octet-stream",
+			"cache-control": "no-store",
+		},
+	})
+}
+
 const metrics = (): Response => {
 	return new Response(
 		JSON.stringify({ metrics: electron.app.getAppMetrics() }),
@@ -149,4 +170,12 @@ const versions = (): Response => {
 			},
 		},
 	)
+}
+
+const isTuple2 = <T>(ary: T[]): ary is [T, T] => {
+	return ary.length === 2
+}
+
+const isTuple4 = <T>(ary: T[]): ary is [T, T, T, T] => {
+	return ary.length === 4
 }
