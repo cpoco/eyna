@@ -249,6 +249,9 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0 || target.data.search || target.data.ls.length === 0) {
 					return Promise.resolve()
 				}
+				if (!Location.isFile(active.location) || Location.isFile(target.location)) {
+					return Promise.resolve()
+				}
 				return new Promise(async (resolve, reject) => {
 					let lattr: Native.Attribute | null = null
 					let ltrgt: Native.Attribute | null = null
@@ -291,6 +294,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.hex", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
+					return Promise.resolve()
+				}
+				if (!Location.isFile(active.location)) {
 					return Promise.resolve()
 				}
 				return new Promise(async (resolve, reject) => {
