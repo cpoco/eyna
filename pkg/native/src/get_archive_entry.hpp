@@ -6,9 +6,13 @@
 struct get_archive_entry_async
 {
 	uv_async_t handle;
+	uv_work_t work;
 
-	v8::Global<v8::Object> reader;
-	v8::Global<v8::Function> push;
+	v8::Global<v8::Promise::Resolver> promise;
+
+	int64_t size;
+	v8::Global<v8::Object> reader; // readable
+	v8::Global<v8::Function> push; // readable.push
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path path; // generic_path
@@ -62,7 +66,7 @@ void get_archive_entry_callback(uv_async_t* handle)
 	}
 }
 
-void get_archive_entry_worker(uv_async_t* handle)
+void get_archive_entry_thread(uv_async_t* handle)
 {
 	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
 
@@ -108,9 +112,53 @@ void get_archive_entry_worker(uv_async_t* handle)
 	uv_async_send(&async->handle);
 }
 
+// uv_work_cb
+static void get_archive_entry_worker(uv_work_t* req)
+{
+	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(req->data);
+
+	archive_iterator(
+		async->abst,
+		[&async](struct archive* a, struct archive_entry* entry) -> int
+		{
+			_entry ent = {};
+			populate_entry(ent, entry);
+
+			if (ent.full != async->path || ent.file_type != FILE_TYPE::FILE_TYPE_FILE) {
+				archive_read_data_skip(a);
+				return IT_CB_NEXT;
+			}
+
+			async->size = ent.size;
+
+			return IT_CB_STOP;
+		}
+	);
+
+	std::thread(get_archive_entry_thread, &async->handle).detach();
+}
+
+// uv_after_work_cb
+static void get_archive_entry_complete(uv_work_t* req, int status)
+{
+	v8::HandleScope _(ISOLATE);
+
+	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(req->data);
+
+	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
+	
+	obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, async->size));
+	obj->Set(CONTEXT, to_string(V("reader")), async->reader.Get(ISOLATE));
+
+	async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
+}
+
 void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	v8::HandleScope _(ISOLATE);
+
+	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
+	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 3 || !info[0]->IsObject() || !info[1]->IsString() || !info[2]->IsString()) {
 		ISOLATE->ThrowException(to_string(ERROR_INVALID_ARGUMENT));
@@ -119,6 +167,9 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	get_archive_entry_async* async = new get_archive_entry_async();
 	async->handle.data = async;
+	async->work.data = async;
+
+	async->promise.Reset(ISOLATE, promise);
 
 	async->abst = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(async->abst) || is_traversal(async->abst)) {
@@ -149,14 +200,12 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::Local<v8::Object> reader = readable->CallAsConstructor(CONTEXT, argc, argv).ToLocalChecked().As<v8::Object>();
 	v8::Local<v8::Function> push = reader->Get(CONTEXT, c_string("push")).ToLocalChecked().As<v8::Function>();
 
+	async->size = 0;
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
 
 	uv_async_init(uv_default_loop(), &async->handle, get_archive_entry_callback);
-
-	std::thread(get_archive_entry_worker, &async->handle).detach();
-
-	info.GetReturnValue().Set(reader);
+	uv_queue_work(uv_default_loop(), &async->work, get_archive_entry_worker, get_archive_entry_complete);
 }
 
 #endif // include guard

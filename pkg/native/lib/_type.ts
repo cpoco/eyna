@@ -31,6 +31,11 @@ export type Archive = {
 	readonly e: number
 }
 
+export type ArchiveReader = {
+	readonly size: bigint
+	readonly reader: NodeJS.ReadableStream
+}
+
 export type Attributes = Attribute[]
 
 export type Attribute = {

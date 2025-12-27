@@ -28,6 +28,10 @@ declare namespace Type {
 		readonly f: number
 		readonly e: number
 	}
+	type ArchiveReader = {
+		readonly size: bigint
+		readonly reader: NodeJS.ReadableStream
+	}
 	type Attributes = Attribute[]
 	type Attribute = {
 		readonly file_type: FileType
