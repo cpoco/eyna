@@ -115,7 +115,7 @@ class IconWorker {
 	}
 }
 
-const blob = (url: URL): Response => {
+const blob = async (url: URL): Promise<Response> => {
 	const path = url.pathname.split("/")
 
 	if (!isTuple4(path)) {
@@ -125,13 +125,14 @@ const blob = (url: URL): Response => {
 		return new Response(null, { status: 400 })
 	}
 
-	const reader = Native.getArchiveEntry(
+	const { size, reader } = await Native.getArchiveEntry(
 		decodeURIComponent(path[2]),
 		decodeURIComponent(path[3]),
 	)
 	return new Response(reader as unknown as BodyInit, {
 		headers: {
 			"content-type": "application/octet-stream",
+			"content-length": size.toString(),
 			"cache-control": "no-store",
 		},
 	})
