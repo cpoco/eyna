@@ -4,13 +4,19 @@ import * as timers from "node:timers/promises"
 import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
-const schema = "eyna"
+const SCHEMA = "eyna"
+
+const ICON_PATH = `${SCHEMA}://icon-path/`
+const ICON_TYPE = `${SCHEMA}://icon-type/`
+const BLOB = `${SCHEMA}://blob/`
+const METRICS = `${SCHEMA}://metrics/`
+const VERSIONS = `${SCHEMA}://versions/`
 
 export class Protocol {
 	static register() {
 		electron.protocol.registerSchemesAsPrivileged([
 			{
-				scheme: schema,
+				scheme: SCHEMA,
 				privileges: {
 					supportFetchAPI: true,
 				},
@@ -19,19 +25,17 @@ export class Protocol {
 	}
 
 	static handle() {
-		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
-			const url = new URL(req.url)
-
-			if (url.host === "icon-path" || url.host === "icon-type") {
-				return IconWorker.push(url)
+		electron.protocol.handle(SCHEMA, async (req: Request): Promise<Response> => {
+			if (req.url.startsWith(ICON_PATH) || req.url.startsWith(ICON_TYPE)) {
+				return IconWorker.push(req)
 			}
-			else if (url.host === "blob") {
-				return blob(url)
+			else if (req.url.startsWith(BLOB)) {
+				return blob(req)
 			}
-			else if (url.host === "metrics") {
+			else if (req.url.startsWith(METRICS)) {
 				return metrics()
 			}
-			else if (url.host === "versions") {
+			else if (req.url.startsWith(VERSIONS)) {
 				return versions()
 			}
 			return new Response(null, { status: 500 })
@@ -49,10 +53,11 @@ type Task = {
 class IconWorker {
 	private static queue: Task[] = []
 
-	static async push(url: URL): Promise<Response> {
-		const path = url.pathname.split("/")
+	static async push(req: Request): Promise<Response> {
+		const url = new URL(req.url)
+		const parts = url.pathname.split("/")
 
-		if (!isTuple2(path)) {
+		if (!isTuple2(parts)) {
 			return new Response(null, { status: 400 })
 		}
 		if (url.host !== "icon-path" && url.host !== "icon-type") {
@@ -62,7 +67,7 @@ class IconWorker {
 		const deferred = new Util.DeferredPromise<Response>()
 		this.queue.push({
 			type: url.host,
-			data: decodeURIComponent(path[1]),
+			data: decodeURIComponent(parts[1]),
 			deferred: deferred,
 		})
 
@@ -115,19 +120,20 @@ class IconWorker {
 	}
 }
 
-const blob = async (url: URL): Promise<Response> => {
-	const path = url.pathname.split("/")
+const blob = async (req: Request): Promise<Response> => {
+	const url = new URL(req.url)
+	const parts = url.pathname.split("/")
 
-	if (!isTuple4(path)) {
+	if (!isTuple4(parts)) {
 		return new Response(null, { status: 400 })
 	}
-	if (path[1] !== "arch") {
+	if (parts[1] !== "arch") {
 		return new Response(null, { status: 400 })
 	}
 
 	const { size, reader } = await Native.getArchiveEntry(
-		decodeURIComponent(path[2]),
-		decodeURIComponent(path[3]),
+		decodeURIComponent(parts[2]),
+		decodeURIComponent(parts[3]),
 	)
 	return new Response(reader as unknown as BodyInit, {
 		headers: {
