@@ -10,7 +10,12 @@ declare namespace Native {
 	function createSymlink(abstract_link: string, abstract_trgt: string): Promise<void>
 	function exists(abstract: string): Promise<boolean>
 	function getArchive(abstract: string, base: string, depth: number): Promise<Type.Archive>
-	function getArchiveEntry(stream: typeof Readable, abstract: string, path: string): Promise<Type.ArchiveReader>
+	function getArchiveEntry(
+		stream: typeof Readable,
+		abstract: string,
+		path: string,
+		seek: bigint,
+	): Promise<Type.ArchiveReader>
 	function getAttribute(abstract: string, base?: string): Promise<Type.Attributes>
 	function getDirectory(
 		abstract: string,

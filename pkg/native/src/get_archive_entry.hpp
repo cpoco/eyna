@@ -16,6 +16,7 @@ struct get_archive_entry_async
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path path; // generic_path
+	int64_t seek;
 
 	std::mutex mtx;
 	std::deque<std::vector<uint8_t>> queue;
@@ -82,6 +83,8 @@ void get_archive_entry_thread(uv_async_t* handle)
 				return IT_CB_NEXT;
 			}
 
+			size_t seek = static_cast<size_t>(async->seek);
+
 			const void* buff;
 			size_t size;
 			la_int64_t offset;
@@ -96,7 +99,14 @@ void get_archive_entry_thread(uv_async_t* handle)
 					break;
 				}
 
-				std::vector<uint8_t> block((uint8_t*)buff, (uint8_t*)buff + size);
+				if (size <= seek) {
+					seek -= size;
+					continue;
+				}
+
+				std::vector<uint8_t> block((uint8_t*)buff + seek, (uint8_t*)buff + size);
+				seek = 0;
+
 				{
 					std::lock_guard<std::mutex> lock(async->mtx);
 					async->queue.push_back(std::move(block));
@@ -160,7 +170,12 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
 
-	if (info.Length() != 3 || !info[0]->IsObject() || !info[1]->IsString() || !info[2]->IsString()) {
+	if (info.Length() != 4
+		|| !info[0]->IsObject()
+		|| !info[1]->IsString()
+		|| !info[2]->IsString()
+		|| !info[3]->IsBigInt())
+	{
 		ISOLATE->ThrowException(to_string(ERROR_INVALID_ARGUMENT));
 		return;
 	}
@@ -183,6 +198,8 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 		delete async;
 		return;
 	}
+
+	async->seek = info[3].As<v8::BigInt>()->Int64Value();
 
 	v8::Local<v8::Object> readable = info[0].As<v8::Object>();
 
