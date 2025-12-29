@@ -124,6 +124,8 @@ const blob = async (req: Request): Promise<Response> => {
 	const url = new URL(req.url)
 	const parts = url.pathname.split("/")
 
+	const range = req.headers.get("range")?.match(/bytes=(\d+)-(\d+)?/) ?? null
+
 	if (!isTuple4(parts)) {
 		return new Response(null, { status: 400 })
 	}
@@ -135,13 +137,28 @@ const blob = async (req: Request): Promise<Response> => {
 		decodeURIComponent(parts[2]),
 		decodeURIComponent(parts[3]),
 	)
-	return new Response(reader as unknown as BodyInit, {
-		headers: {
-			"content-type": "application/octet-stream",
-			"content-length": size.toString(),
-			"cache-control": "no-store",
-		},
-	})
+
+	if (range === null) {
+		return new Response(reader as unknown as BodyInit, {
+			headers: {
+				"content-type": "application/octet-stream",
+				"content-length": size.toString(),
+				"cache-control": "no-store",
+			},
+		})
+	}
+	else {
+		// WIP
+		const s: bigint = BigInt(range[1] ?? 0n)
+		const e: bigint = BigInt(range[2] ?? size - 1n)
+		return new Response(reader as unknown as BodyInit, {
+			headers: {
+				"content-type": "application/octet-stream",
+				"content-range": `bytes ${s}-${e}/${size}`,
+				"cache-control": "no-store",
+			},
+		})
+	}
 }
 
 const metrics = (): Response => {
