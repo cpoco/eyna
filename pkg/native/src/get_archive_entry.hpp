@@ -200,6 +200,10 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::Local<v8::Object> reader = readable->CallAsConstructor(CONTEXT, argc, argv).ToLocalChecked().As<v8::Object>();
 	v8::Local<v8::Function> push = reader->Get(CONTEXT, c_string("push")).ToLocalChecked().As<v8::Function>();
 
+	// reader.pause()
+	v8::Local<v8::Function> pause = reader->Get(CONTEXT, c_string("pause")).ToLocalChecked().As<v8::Function>();
+	pause->Call(CONTEXT, reader, 0, nullptr);
+
 	async->size = 0;
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
