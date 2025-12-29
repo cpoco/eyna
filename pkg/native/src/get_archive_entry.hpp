@@ -20,7 +20,9 @@ struct get_archive_entry_async
 
 	std::mutex mtx;
 	std::deque<std::vector<uint8_t>> queue;
-	bool done = false;
+	
+	int64_t prog;
+	bool done;
 };
 
 // uv_close_cb
@@ -56,9 +58,11 @@ void get_archive_entry_callback(uv_async_t* handle)
 		// push(chunk)
 		v8::Local<v8::Value> argv[1] = {chunk};
 		push->Call(CONTEXT, stream, 1, argv);
+
+		async->prog += (int64_t)(block.size());
 	}
 
-	if (async->done) {
+	if (async->done && async->size <= async->prog) {
 		// push(null)
 		v8::Local<v8::Value> argv[1] = {v8::Null(ISOLATE)};
 		push->Call(CONTEXT, stream, 1, argv);
@@ -224,6 +228,9 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	async->size = 0;
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
+
+	async->prog = async->seek;
+	async->done = false;
 
 	uv_async_init(uv_default_loop(), &async->handle, get_archive_entry_callback);
 	uv_queue_work(uv_default_loop(), &async->work, get_archive_entry_worker, get_archive_entry_complete);
