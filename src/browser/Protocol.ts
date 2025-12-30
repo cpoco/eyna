@@ -1,4 +1,5 @@
 import * as electron from "electron"
+import * as fs from "node:fs"
 import * as timers from "node:timers/promises"
 
 import * as Native from "@eyna/native/lib/browser"
@@ -8,7 +9,8 @@ const SCHEMA = "eyna"
 
 const ICON_PATH = `${SCHEMA}://icon-path/`
 const ICON_TYPE = `${SCHEMA}://icon-type/`
-const BLOB = `${SCHEMA}://blob/`
+const BLOB_FILE = `${SCHEMA}://blob-file/`
+const BLOB_ARCH = `${SCHEMA}://blob-arch/`
 const METRICS = `${SCHEMA}://metrics/`
 const VERSIONS = `${SCHEMA}://versions/`
 
@@ -18,6 +20,8 @@ export class Protocol {
 			{
 				scheme: SCHEMA,
 				privileges: {
+					standard: true,
+					secure: true,
 					supportFetchAPI: true,
 				},
 			},
@@ -29,8 +33,11 @@ export class Protocol {
 			if (req.url.startsWith(ICON_PATH) || req.url.startsWith(ICON_TYPE)) {
 				return IconWorker.push(req)
 			}
-			else if (req.url.startsWith(BLOB)) {
-				return blob(req)
+			else if (req.url.startsWith(BLOB_FILE)) {
+				return blobFile(req)
+			}
+			else if (req.url.startsWith(BLOB_ARCH)) {
+				return blobArch(req)
 			}
 			else if (req.url.startsWith(METRICS)) {
 				return metrics()
@@ -120,45 +127,60 @@ class IconWorker {
 	}
 }
 
-const blob = async (req: Request): Promise<Response> => {
+const blobFile = async (req: Request): Promise<Response> => {
 	const url = new URL(req.url)
 	const parts = url.pathname.split("/")
-
 	const range = req.headers.get("range")?.match(/bytes=(\d+)-(\d+)?/) ?? null
 
-	if (!isTuple4(parts)) {
+	if (!isTuple2(parts)) {
 		return new Response(null, { status: 400 })
 	}
-	if (parts[1] !== "arch") {
+
+	const path = decodeURIComponent(parts[1])
+	const start = range ? BigInt(range[1] ?? 0) : 0n
+
+	const size = (await Native.getAttribute(path))[0]?.size ?? 0n
+	const reader = fs.createReadStream(path, { start: Number(start) })
+
+	return new Response(reader as unknown as BodyInit, {
+		status: 206,
+		headers: {
+			"content-type": "application/octet-stream",
+			"content-length": `${size - start}`,
+			"content-range": `bytes ${start}-${size - 1n}/${size}`,
+			"cache-control": "no-store",
+		},
+	})
+}
+
+const blobArch = async (req: Request): Promise<Response> => {
+	const url = new URL(req.url)
+	const parts = url.pathname.split("/")
+	const range = req.headers.get("range")?.match(/bytes=(\d+)-(\d+)?/) ?? null
+
+	if (!isTuple3(parts)) {
 		return new Response(null, { status: 400 })
 	}
+
+	const path = decodeURIComponent(parts[1])
+	const entry = decodeURIComponent(parts[2])
+	const start = range ? BigInt(range[1] ?? 0) : 0n
 
 	const { size, reader } = await Native.getArchiveEntry(
-		decodeURIComponent(parts[2]),
-		decodeURIComponent(parts[3]),
+		path,
+		entry,
+		start,
 	)
 
-	if (range === null) {
-		return new Response(reader as unknown as BodyInit, {
-			headers: {
-				"content-type": "application/octet-stream",
-				"content-length": size.toString(),
-				"cache-control": "no-store",
-			},
-		})
-	}
-	else {
-		// WIP
-		const s: bigint = BigInt(range[1] ?? 0n)
-		const e: bigint = BigInt(range[2] ?? size - 1n)
-		return new Response(reader as unknown as BodyInit, {
-			headers: {
-				"content-type": "application/octet-stream",
-				"content-range": `bytes ${s}-${e}/${size}`,
-				"cache-control": "no-store",
-			},
-		})
-	}
+	return new Response(reader as unknown as BodyInit, {
+		status: 206,
+		headers: {
+			"content-type": "application/octet-stream",
+			"content-length": `${size - start}`,
+			"content-range": `bytes ${start}-${size - 1n}/${size}`,
+			"cache-control": "no-store",
+		},
+	})
 }
 
 const metrics = (): Response => {
@@ -200,6 +222,6 @@ const isTuple2 = <T>(ary: T[]): ary is [T, T] => {
 	return ary.length === 2
 }
 
-const isTuple4 = <T>(ary: T[]): ary is [T, T, T, T] => {
-	return ary.length === 4
+const isTuple3 = <T>(ary: T[]): ary is [T, T, T] => {
+	return ary.length === 3
 }

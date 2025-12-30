@@ -167,15 +167,10 @@ export namespace Location {
 	}
 
 	export function toFileUrl(path: string): string {
-		const file_path = path
-			.replace(/%/g, "%25")
-			.replace(/#/g, "%23")
-			.replace(/\?/g, "%3F")
-		return `file://${file_path}?${new Date().getTime()}`
-		// return `eyna://blob/${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
+		return `eyna://blob-${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
 	}
 
 	export function toArchUrl(path: string, entry: string): string {
-		return `eyna://blob/${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${new Date().getTime()}`
+		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${new Date().getTime()}`
 	}
 }

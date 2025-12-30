@@ -41,7 +41,7 @@ export const V = vue.defineComponent({
 
 		vue.watch(
 			() => {
-				return props.path
+				return props.href
 			},
 			(v) => {
 				vue.nextTick(() => {
