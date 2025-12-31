@@ -139,7 +139,7 @@ const blobFile = async (req: Request): Promise<Response> => {
 	const path = decodeURIComponent(parts[1])
 	const start = range ? BigInt(range[1] ?? 0) : 0n
 
-	const size = (await Native.getAttribute(path))[0]?.size ?? 0n
+	const size = Util.last(await Native.getAttribute(path))?.size ?? 0n
 	const reader = fs.createReadStream(path, { start: Number(start) })
 
 	return new Response(reader as unknown as BodyInit, {
