@@ -30,7 +30,7 @@
 	&-prog
 		width: 100%
 		height: 100%
-		background-color: rgba(255, 255, 255, 0.5)
+		background-color: _white_a50
 		animation: indeterminate 1s infinite linear
 		transform-origin: left center
 
@@ -42,12 +42,7 @@
 		grid-template-rows: minmax(8px, 1fr) auto minmax(8px, 1fr)
 		grid-template-columns: minmax(8px, 1fr) auto minmax(8px, 1fr)
 
-		background-color: var(--background)
-		background-image:
-			linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
-			linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%)
-		background-position: 0 0, 8px 8px
-		background-size: 16px 16px
+		background-checkerboard()
 
 	&-img
 		grid-area: 2 / 2
@@ -58,16 +53,16 @@
 	&-line-l
 		grid-area: 1 / 1 / -1 / 2
 		overflow hidden
-		border-right: 1px solid rgba(128, 128, 128, 0.5)
+		border-right: 1px solid _gray_a50
 	&-line-r
 		grid-area: 1 / -2 / -1 / -1
 		overflow hidden
-		border-left: 1px solid rgba(128, 128, 128, 0.5)
+		border-left: 1px solid _gray_a50
 	&-line-t
 		grid-area: 1 / 1 / 2 / -1
 		overflow hidden
-		border-bottom: 1px solid rgba(128, 128, 128, 0.5)
+		border-bottom: 1px solid _gray_a50
 	&-line-b
 		grid-area: -2 / 1 / -1 / -1
 		overflow hidden
-		border-top: 1px solid rgba(128, 128, 128, 0.5)
+		border-top: 1px solid _gray_a50
