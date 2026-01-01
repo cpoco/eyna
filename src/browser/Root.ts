@@ -143,6 +143,9 @@ class Root {
 				await f.emit(c, ...kb.prm)
 			}
 			catch (err) {
+				if (err === "stop chain") {
+					break
+				}
 				console.error("\u001b[33m[cmd]\u001b[0m", c, err)
 				break
 			}
