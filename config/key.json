@@ -13,6 +13,7 @@
 		{ "when": "filer",  "key": "pagedown",          "cmd": "list.pagedown" },
 
 		{ "when": "filer",  "key": "u",                 "cmd": "list.update"              },
+		{ "when": "filer",  "key": ["shift", "space"],  "cmd": ["list.mark", "list.up"]   },
 		{ "when": "filer",  "key": "space",             "cmd": ["list.mark", "list.down"] },
 		{ "when": "filer",  "key": "home",              "cmd": "list.markall"             },
 		{ "when": "filer",  "key": "end",               "cmd": "list.markclear"           },
