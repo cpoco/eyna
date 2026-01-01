@@ -29,6 +29,13 @@ export class Protocol {
 	}
 
 	static handle() {
+		process.on("uncaughtException", (err: Error) => {
+			if (err.name === "TypeError" && err.message.includes("ReadableStream is already closed")) {
+				console.error(`\u001b[33m[error]\u001b[0m`, err.message)
+				return
+			}
+			throw err
+		})
 		electron.protocol.handle(SCHEMA, async (req: Request): Promise<Response> => {
 			if (req.url.startsWith(ICON_PATH) || req.url.startsWith(ICON_TYPE)) {
 				return IconWorker.push(req)
