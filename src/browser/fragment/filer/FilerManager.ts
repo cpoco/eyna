@@ -128,11 +128,11 @@ export class FilerManager {
 	}
 
 	scroll() {
-		let contPos = this.sc.contentsSize * this.data.cursor
-		let drawPos = contPos - this.sc.contentsPosition
-		let margin = Math.min(this.sc.contentsSize, (this.sc.screenSize - this.sc.contentsSize) / 2) // スクロール時に選択位置が端でない限りマージンを設ける
-		let min = margin
-		let max = this.sc.screenSize - this.sc.contentsSize - margin
+		const contPos = this.sc.contentsSize * this.data.cursor
+		const drawPos = contPos - this.sc.contentsPosition
+		const margin = Math.min(this.sc.contentsSize, (this.sc.screenSize - this.sc.contentsSize) / 2) // スクロール時に選択位置が端でない限りマージンを設ける
+		const min = margin
+		const max = this.sc.screenSize - this.sc.contentsSize - margin
 
 		// 移動後の選択位置がスクロール外になる場合はスクロールして位置調整
 		if (drawPos < min) {

@@ -81,7 +81,7 @@ function toArray(s: string | string[] | undefined): string[] {
 }
 
 function inputToCode(i: electron.Input): number {
-	let ret = 0
+	let ret: number = 0
 
 	if (i.shift) {
 		ret |= EventFlags.EF_SHIFT_DOWN << 12

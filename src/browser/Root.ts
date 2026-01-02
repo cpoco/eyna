@@ -67,7 +67,7 @@ class Root {
 	}
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
-		let op: Electron.BrowserWindowConstructorOptions = {
+		const op: Electron.BrowserWindowConstructorOptions = {
 			frame: false,
 			titleBarStyle: "hidden",
 			titleBarOverlay: {
@@ -221,7 +221,7 @@ class Root {
 	): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, i, data) => {
 			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, i, data)
-			let ret = listener(i, data)
+			const ret = listener(i, data)
 			console.log("\u001b[32m[ipc.handle.result]\u001b[0m", ret)
 			return ret
 		})

@@ -34,11 +34,11 @@ export class Dir {
 		if (Location.isHome(location)) {
 			this.dp = 0
 			this.rg = null
-			let st = [_attr(Native.FileType.HomeUser, Dir.HOME, Dir.HOME)]
+			const st = [_attr(Native.FileType.HomeUser, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
 					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-					let ls: Native.Attributes[] = []
+					const ls: Native.Attributes[] = []
 					for (const v of vol) {
 						ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
 					}
@@ -50,7 +50,7 @@ export class Dir {
 		else if (Location.isFile(location)) {
 			this.dp = dp
 			this.rg = rg
-			let st = await Native.getAttribute(location.path)
+			const st = await Native.getAttribute(location.path)
 			Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
 				async (dir: Native.Directory) => {
 					_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
@@ -81,7 +81,7 @@ export class Dir {
 		else if (Location.isArch(location)) {
 			this.dp = 0
 			this.rg = null
-			let st = await Native.getAttribute(location.path)
+			const st = await Native.getAttribute(location.path)
 			Native.getArchive(location.path, location.entry, this.dp).then(
 				async (arc: Native.Archive) => {
 					_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
@@ -137,12 +137,12 @@ const GROUP_DIRECTORIES_FIRST = 1024
 
 function _sort(ls: Native.Attributes[]) {
 	ls.sort((a, b) => {
-		let type = _type(a, b)
+		const type = _type(a, b)
 		if (type === GROUP_DIRECTORIES_FIRST) {
 			return _name(a, b)
 		}
 		if (type === 0) {
-			let ext = _ext(a, b)
+			const ext = _ext(a, b)
 			if (ext === 0) {
 				return _name(a, b)
 			}
@@ -170,15 +170,15 @@ function _type(a: Native.Attributes, b: Native.Attributes): number {
 }
 
 function _ext(a: Native.Attributes, b: Native.Attributes): number {
-	let aa: string = a[0]?.exte.toLocaleLowerCase() ?? ""
-	let bb: string = b[0]?.exte.toLocaleLowerCase() ?? ""
+	const aa: string = a[0]?.exte.toLocaleLowerCase() ?? ""
+	const bb: string = b[0]?.exte.toLocaleLowerCase() ?? ""
 	return aa.localeCompare(bb)
 }
 
 function _name(a: Native.Attributes, b: Native.Attributes): number {
-	let aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
-	let bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
-	let lc = aa.localeCompare(bb, undefined, { numeric: true })
+	const aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
+	const bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
+	const lc = aa.localeCompare(bb, undefined, { numeric: true })
 	return lc === 0
 		? aa.length - bb.length
 		: lc

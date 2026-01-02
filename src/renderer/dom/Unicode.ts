@@ -11,7 +11,7 @@ export function highlight(str: string | null | undefined, err: boolean = false):
 		return undefined
 	}
 
-	let ret: vue.VNodeArrayChildren = []
+	const ret: vue.VNodeArrayChildren = []
 	for (const s1 of str.split(REG)) {
 		if (s1 === "") {
 			continue

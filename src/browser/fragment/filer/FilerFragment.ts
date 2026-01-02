@@ -236,7 +236,7 @@ export class FilerFragment extends AbstractFragment {
 				}
 				const path = active.location.path
 				return new Promise(async (resolve, _reject) => {
-					let find = await root.find({ type: "find", title: path, rg: "^.+$", dp: "0" })
+					const find = await root.find({ type: "find", title: path, rg: "^.+$", dp: "0" })
 					if (find === null) {
 						resolve()
 						return
@@ -312,8 +312,8 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
-					let attr = Util.first(active.data.ls[active.data.cursor])
-					let trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -532,8 +532,8 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetselect", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = Util.first(active.data.ls[active.data.cursor])
-					let trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -574,7 +574,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0) {
 					return Promise.reject("stop chain")
 				}
-				let attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
 					return Promise.reject("stop chain")
 				}
@@ -585,7 +585,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0) {
 					return Promise.reject("stop chain")
 				}
-				let attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
 					return Promise.reject("stop chain")
 				}
@@ -604,7 +604,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				for (let i = active.data.cursor - 1; 0 <= i; i--) {
-					let trgt = Util.last(active.data.ls[i])
+					const trgt = Util.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}
@@ -629,7 +629,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				for (let i = active.data.cursor + 1; i < active.data.ls.length; i++) {
-					let trgt = Util.last(active.data.ls[i])
+					const trgt = Util.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}
