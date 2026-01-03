@@ -2,8 +2,7 @@
 
 declare function log(...args: any[]): void
 
-declare type Attributes = Type.Attributes
-declare type Directory = Type.Directory
+declare type Attributes = [Type.Attribute]
 declare type Item = Type.Item
 
 declare type Extension = {
@@ -26,7 +25,6 @@ declare type Extension = {
 		mkslink: (full_link: string, full_trgt: string) => Promise<void>
 		copy: (full_src: string, full_dst: string) => Promise<void>
 		move: (full_src: string, full_dst: string) => Promise<void>
-		find: (full: string, base: string) => Promise<Directory>
 	}
 	dialog: {
 		open: (option: AlertOption | PromptOption) => Promise<{ text: string } | null>

@@ -3,7 +3,7 @@ import { join } from "node:path/posix"
 const title = "mkfile"
 
 module.exports = async (ex: Extension): Promise<void> => {
-	if (ex.active == null) {
+	if (ex.active === null) {
 		return
 	}
 
@@ -16,7 +16,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		start: 0,
 		end: text.length,
 	})
-	if (prompt == null || prompt.text == "") {
+	if (prompt === null || prompt.text === "") {
 		return
 	}
 

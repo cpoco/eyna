@@ -295,10 +295,6 @@ class Root {
 						sbox.log("filer.move", { src: full_src, dst: full_dst })
 						return Native.move(full_src, full_dst)
 					},
-					find: (full: string, base: string): Promise<Native.Directory> => {
-						sbox.log("filer.find", { full })
-						return Native.getDirectory(full, base, Native.Sort.ShallowFirst, 1024, null)
-					},
 				},
 				dialog: {
 					open: (

@@ -3,10 +3,10 @@ import { join } from "node:path/posix"
 const title = "copy"
 
 module.exports = async (ex: Extension): Promise<void> => {
-	if (ex.active == null || ex.target == null || ex.active.cursor == null) {
+	if (ex.active === null || ex.target === null || ex.active.cursor === null) {
 		return
 	}
-	if (ex.active.wd == ex.target.wd) {
+	if (ex.active.wd === ex.target.wd) {
 		await ex.dialog.open({
 			type: "alert",
 			title: title,
@@ -17,7 +17,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 
 	const src_base = ex.active.wd
 	const dst_base = ex.target.wd
-	const ls: Attributes[] = ex.active.select.length == 0
+	const ls: Attributes[] = ex.active.select.length === 0
 		? [ex.active.cursor]
 		: ex.active.select
 
@@ -26,12 +26,12 @@ module.exports = async (ex: Extension): Promise<void> => {
 		title: title,
 		text: `${ls.length} files\n${src_base}\n${dst_base}`,
 	})
-	if (alert == null) {
+	if (alert === null) {
 		return
 	}
 
 	for (const v of ls) {
-		await operation(ex, { type: v[0]!.file_type, rltv: v[0]!.rltv }, src_base, dst_base)
+		await operation(ex, { type: v[0].file_type, rltv: v[0].rltv }, src_base, dst_base)
 	}
 
 	ex.filer.update()
