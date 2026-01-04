@@ -165,4 +165,12 @@ export namespace Location {
 	export function toArch(path: string, entry: string): FRN {
 		return [Type.Arch, path, entry].join("\0")
 	}
+
+	export function toFileUrl(path: string): string {
+		return `eyna://blob-${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
+	}
+
+	export function toArchUrl(path: string, entry: string): string {
+		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${new Date().getTime()}`
+	}
 }

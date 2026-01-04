@@ -1,14 +1,14 @@
 _scroll_width = 6px
 
 :root
-	--stat-active: rgba(0, 127, 212, 1)
-	--stat-target: rgba(0, 127, 212, 0.5)
-	--stat-none: rgba(255, 255, 255, 0.1)
+	--stat-active: _focus
+	--stat-target: _focus_a50
+	--stat-none: _white_a10
 
-	--cell-cursor: rgba(0, 127, 212, 0.9)
-	--cell-select: rgba(255, 255, 255, 0.1)
+	--cell-cursor: _focus
+	--cell-select: _select
 
-	--scroll-knob: rgba(255, 255, 255, 0.2)
+	--scroll-knob: _white_a20
 
 .c-operator
 	color: _blue
@@ -19,13 +19,13 @@ _scroll_width = 6px
 .c-file
 	color: _white
 .c-link
-	color: _sky_l
+	color: _cyan
 .c-directory
 	color: _sky
 .c-shortcut
-	color: _teal
+	color: _mint
 .c-bookmark
-	color: _teal
+	color: _mint
 .c-special
 	color: _magenta
 .c-maybe
@@ -102,7 +102,7 @@ _scroll_width = 6px
 	&-prog
 		width: 100%
 		height: 100%
-		background-color: rgba(255, 255, 255, 0.5)
+		background-color: _white_a50
 		animation: indeterminate 1s infinite linear
 		transform-origin: left center
 
@@ -147,10 +147,10 @@ _scroll_width = 6px
 			height: calc(var(--dynamic-line-height) - 4px)
 			border-radius: 50%
 			margin: 2px
-			border-top:    2px solid rgba(255, 255, 255, 0.2)
-			border-right:  2px solid rgba(255, 255, 255, 0.2)
-			border-bottom: 2px solid rgba(255, 255, 255, 0.2)
-			border-left:   2px solid #ffffff
+			border-top:    2px solid _white_a20
+			border-right:  2px solid _white_a20
+			border-bottom: 2px solid _white_a20
+			border-left:   2px solid _white
 			animation: rotate 1s infinite linear
 
 		// attr component

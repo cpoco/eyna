@@ -22,18 +22,18 @@ static void get_icon_type_async(uv_work_t* req)
 
 		SHFILEINFOW file = {};
 		if (work->exte.size() == 0) {
-			if (SHGetFileInfoW(L"file", FILE_ATTRIBUTE_NORMAL, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
+			if (SHGetFileInfoW(L"file", FILE_ATTRIBUTE_NORMAL, &file, sizeof(file), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
 				return;
 			}
 		}
-		else if (work->exte.size() == 1 && work->exte[0] == V('/')) {
-			if (SHGetFileInfoW(L"folder", FILE_ATTRIBUTE_DIRECTORY, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
+		else if (work->exte.size() == 1 && work->exte[0] == L'/') {
+			if (SHGetFileInfoW(L"folder", FILE_ATTRIBUTE_DIRECTORY, &file, sizeof(file), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
 				return;
 			}
 		}
 		else {
 			work->exte.insert(0, L".");
-			if (SHGetFileInfoW(work->exte.c_str(), FILE_ATTRIBUTE_NORMAL, &file, sizeof(SHFILEINFOW), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
+			if (SHGetFileInfoW(work->exte.c_str(), FILE_ATTRIBUTE_NORMAL, &file, sizeof(file), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES) == 0) {
 				return;
 			}
 		}
@@ -109,6 +109,8 @@ static void get_icon_type_async(uv_work_t* req)
 
 		memcpy(work->data, [png bytes], png.length);
 
+		[dst release];
+
 	#endif
 }
 
@@ -118,9 +120,14 @@ static void get_icon_type_complete(uv_work_t* req, int status)
 
 	get_icon_type_work* work = static_cast<get_icon_type_work*>(req->data);
 
-	work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
+	if (work->data == nullptr) {
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
+	}
+	else {
+		work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
+		delete[] work->data;
+	}
 
-	delete[] work->data;
 	delete work;
 }
 

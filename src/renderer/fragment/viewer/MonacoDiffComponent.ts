@@ -8,12 +8,19 @@ declare const require: {
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
-import * as url from "@/renderer/util/url"
 
 const EDIT = "edit"
 
 export const V = vue.defineComponent({
 	props: {
+		original_href: {
+			required: true,
+			type: String,
+		},
+		modified_href: {
+			required: true,
+			type: String,
+		},
 		original: {
 			required: true,
 			type: String,
@@ -99,11 +106,11 @@ export const V = vue.defineComponent({
 
 			prog.value = true
 			Promise.all([
-				fetch(url.fileUrl(props.original))
+				fetch(props.original_href)
 					.then((res) => {
 						return res.text()
 					}),
-				fetch(url.fileUrl(props.modified))
+				fetch(props.modified_href)
 					.then((res) => {
 						return res.text()
 					}),

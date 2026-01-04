@@ -8,12 +8,15 @@ declare const require: {
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
-import * as url from "@/renderer/util/url"
 
 const EDIT = "edit"
 
 export const V = vue.defineComponent({
 	props: {
+		href: {
+			required: true,
+			type: String,
+		},
 		path: {
 			required: true,
 			type: String,
@@ -80,7 +83,7 @@ export const V = vue.defineComponent({
 			editor.setModel(model)
 
 			prog.value = true
-			fetch(url.fileUrl(props.path))
+			fetch(props.href)
 				.then((res) => {
 					return res.arrayBuffer()
 				})

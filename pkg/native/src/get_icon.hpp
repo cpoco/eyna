@@ -23,7 +23,7 @@ static void get_icon_async(uv_work_t* req)
 		std::replace(work->abst.begin(), work->abst.end(), L'/', L'\\');
 
 		SHFILEINFOW file = {};
-		if (SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(SHFILEINFOW), SHGFI_ICON) == 0) {
+		if (SHGetFileInfoW(work->abst.c_str(), 0, &file, sizeof(file), SHGFI_ICON) == 0) {
 			return;
 		}
 
@@ -89,6 +89,8 @@ static void get_icon_async(uv_work_t* req)
 
 		memcpy(work->data, [png bytes], png.length);
 
+		[dst release];
+
 	#endif
 }
 
@@ -98,9 +100,14 @@ static void get_icon_complete(uv_work_t* req, int status)
 
 	get_icon_work* work = static_cast<get_icon_work*>(req->data);
 
-	work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
+	if (work->data == nullptr) {
+		work->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
+	}
+	else {
+		work->promise.Get(ISOLATE)->Resolve(CONTEXT, node::Buffer::Copy(ISOLATE, work->data, work->size).ToLocalChecked());
+		delete[] work->data;
+	}
 
-	delete[] work->data;
 	delete work;
 }
 

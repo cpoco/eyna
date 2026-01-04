@@ -125,7 +125,10 @@ export class FilerFragment extends AbstractFragment {
 		this
 			.on2("list.up", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (active.data.cursor === 0) {
+					return Promise.reject("stop chain")
 				}
 				active.cursorUp()
 				active.scroll()
@@ -134,7 +137,10 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.pageup", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (active.data.cursor === 0) {
+					return Promise.reject("stop chain")
 				}
 				active.cursorUp(active.mv)
 				active.scroll()
@@ -143,7 +149,10 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.down", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (active.data.cursor === active.data.ls.length - 1) {
+					return Promise.reject("stop chain")
 				}
 				active.cursorDown()
 				active.scroll()
@@ -152,7 +161,10 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.pagedown", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (active.data.cursor === active.data.ls.length - 1) {
+					return Promise.reject("stop chain")
 				}
 				active.cursorDown(active.mv)
 				active.scroll()
@@ -187,7 +199,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.update", (active, _target) => {
 				if (active.data.search) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, _reject) => {
 					await active.update(false)
@@ -196,7 +208,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.mark", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0 || !Location.isFile(active.location)) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				active.markToggle()
 				active.sendMark(active.data.cursor, active.data.cursor + 1)
@@ -204,7 +216,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.markall", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0 || !Location.isFile(active.location)) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				active.markAll(true)
 				active.sendMarkAll()
@@ -212,7 +224,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.markclear", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0 || !Location.isFile(active.location)) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				active.markAll(false)
 				active.sendMarkAll()
@@ -220,11 +232,11 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.find", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0 || !Location.isFile(active.location)) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				const path = active.location.path
 				return new Promise(async (resolve, _reject) => {
-					let find = await root.find({ type: "find", title: path, rg: "^.+$", dp: "0" })
+					const find = await root.find({ type: "find", title: path, rg: "^.+$", dp: "0" })
 					if (find === null) {
 						resolve()
 						return
@@ -247,7 +259,10 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.diff", (active, target) => {
 				if (active.data.search || active.data.ls.length === 0 || target.data.search || target.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (!Location.isFile(active.location) || Location.isFile(target.location)) {
+					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
 					let lattr: Native.Attribute | null = null
@@ -282,6 +297,7 @@ export class FilerFragment extends AbstractFragment {
 					root.viewer({
 						type: Bridge.Viewer.Type.Diff,
 						mime: [],
+						href: [Location.toFileUrl(ltrgt.full), Location.toFileUrl(rtrgt.full)],
 						path: [ltrgt.full, rtrgt.full],
 						size: [ltrgt.size, rtrgt.size],
 					})
@@ -290,11 +306,14 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.hex", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (!Location.isFile(active.location)) {
+					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
-					let attr = Util.first(active.data.ls[active.data.cursor])
-					let trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -307,6 +326,7 @@ export class FilerFragment extends AbstractFragment {
 						root.viewer({
 							type: Bridge.Viewer.Type.Hex,
 							mime: [],
+							href: [Location.toFileUrl(trgt.full)],
 							path: [trgt.full],
 							size: [trgt.size],
 						})
@@ -316,7 +336,7 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.select", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
 					const attr = Util.first(active.data.ls[active.data.cursor])
@@ -373,7 +393,6 @@ export class FilerFragment extends AbstractFragment {
 						trgt.file_type === Native.FileType.File
 					) {
 						if (Location.isFile(active.location)) {
-							// WIP shortcut,bookmark,symbolic,junction
 							if (Conf.ARCHIVE_EXTE.test(attr.exte)) {
 								if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
 									active.scroll()
@@ -386,6 +405,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Image,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -394,6 +414,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Audio,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -402,6 +423,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Video,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -410,6 +432,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Embed,
 									mime: ["application/pdf"],
+									href: [Location.toFileUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -422,6 +445,58 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Text,
 									mime: [],
+									href: [Location.toFileUrl(trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+						}
+						else if (Location.isArch(active.location)) {
+							if (Conf.VIEWER_IMAGE_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Image,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_AUDIO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Audio,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_VIDEO_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Video,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
+								root.viewer({
+									type: Bridge.Viewer.Type.Embed,
+									mime: ["application/pdf"],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
+									path: [trgt.full],
+									size: [trgt.size],
+								})
+							}
+							else {
+								if (Conf.VIEWER_SIZE_LIMIT < trgt.size) {
+									reject("file too large")
+									return
+								}
+								root.viewer({
+									type: Bridge.Viewer.Type.Text,
+									mime: [],
+									href: [Location.toArchUrl(active.location.path, trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -432,6 +507,9 @@ export class FilerFragment extends AbstractFragment {
 				})
 			})
 			.on2("list.updir", (active, _target) => {
+				if (Location.isHome(active.location)) {
+					return Promise.reject("stop chain")
+				}
 				return new Promise(async (resolve, _reject) => {
 					const next = Location.updir(active.location.frn)
 					if (await active.sendChange(next.frn, 0, null, next.anchor ?? null, false)) {
@@ -454,8 +532,8 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetselect", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					let attr = Util.first(active.data.ls[active.data.cursor])
-					let trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -494,22 +572,22 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.shellopen", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
-				let attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				electron.shell.openPath(Path.preferred(attr.full))
 				return Promise.resolve()
 			})
 			.on2("list.shellproperty", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
-				let attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Util.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
 				Native.openProperties(attr.full)
 				return Promise.resolve()
@@ -520,10 +598,13 @@ export class FilerFragment extends AbstractFragment {
 		this
 			.on2("list.mediaup", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
+				}
+				if (active.data.cursor === 0) {
+					return Promise.reject("stop chain")
 				}
 				for (let i = active.data.cursor - 1; 0 <= i; i--) {
-					let trgt = Util.last(active.data.ls[i])
+					const trgt = Util.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}
@@ -536,17 +617,19 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					break
+					return Promise.resolve()
 				}
-				return Promise.resolve()
+				return Promise.reject("stop chain")
 			})
 			.on2("list.mediadown", (active, _target) => {
 				if (active.data.search || active.data.ls.length === 0) {
-					return Promise.resolve()
+					return Promise.reject("stop chain")
 				}
-
+				if (active.data.cursor === active.data.ls.length - 1) {
+					return Promise.reject("stop chain")
+				}
 				for (let i = active.data.cursor + 1; i < active.data.ls.length; i++) {
-					let trgt = Util.last(active.data.ls[i])
+					const trgt = Util.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}
@@ -559,9 +642,9 @@ export class FilerFragment extends AbstractFragment {
 					active.data.cursor = i
 					active.scroll()
 					active.sendCursor()
-					break
+					return Promise.resolve()
 				}
-				return Promise.resolve()
+				return Promise.reject("stop chain")
 			})
 	}
 }

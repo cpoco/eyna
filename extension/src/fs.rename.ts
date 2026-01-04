@@ -3,13 +3,13 @@ import { dirname, join } from "node:path/posix"
 const title = "rename"
 
 module.exports = async (ex: Extension): Promise<void> => {
-	if (ex.active == null || ex.active.cursor == null) {
+	if (ex.active === null || ex.active.cursor === null) {
 		return
 	}
 
 	const src_base = ex.active.wd
 	const dst_base = ex.active.wd
-	const src_item = ex.active.cursor[0]!.rltv
+	const src_item = ex.active.cursor[0].rltv
 
 	const prompt = await ex.dialog.open({
 		type: "prompt",
@@ -18,17 +18,17 @@ module.exports = async (ex: Extension): Promise<void> => {
 		start: 0,
 		end: src_item.length,
 	})
-	if (prompt == null || prompt.text == "") {
+	if (prompt === null || prompt.text === "") {
 		return
 	}
 
 	const src = join(src_base, src_item)
 	const dst = join(dst_base, prompt.text)
 
-	if (src == dst || dirname(src) != dirname(dst)) {
+	if (src === dst || dirname(src) !== dirname(dst)) {
 		return
 	}
-	if (src_item.toLowerCase() != prompt.text.toLowerCase() && await ex.filer.exists(dst)) {
+	if (src_item.toLowerCase() !== prompt.text.toLowerCase() && await ex.filer.exists(dst)) {
 		return
 	}
 

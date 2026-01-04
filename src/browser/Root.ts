@@ -67,7 +67,7 @@ class Root {
 	}
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
-		let op: Electron.BrowserWindowConstructorOptions = {
+		const op: Electron.BrowserWindowConstructorOptions = {
 			frame: false,
 			titleBarStyle: "hidden",
 			titleBarOverlay: {
@@ -143,6 +143,9 @@ class Root {
 				await f.emit(c, ...kb.prm)
 			}
 			catch (err) {
+				if (err === "stop chain") {
+					break
+				}
 				console.error("\u001b[33m[cmd]\u001b[0m", c, err)
 				break
 			}
@@ -218,7 +221,7 @@ class Root {
 	): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, i, data) => {
 			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, i, data)
-			let ret = listener(i, data)
+			const ret = listener(i, data)
 			console.log("\u001b[32m[ipc.handle.result]\u001b[0m", ret)
 			return ret
 		})
@@ -291,10 +294,6 @@ class Root {
 					move: (full_src: string, full_dst: string): Promise<void> => {
 						sbox.log("filer.move", { src: full_src, dst: full_dst })
 						return Native.move(full_src, full_dst)
-					},
-					find: (full: string, base: string): Promise<Native.Directory> => {
-						sbox.log("filer.find", { full })
-						return Native.getDirectory(full, base, Native.Sort.ShallowFirst, 1024, null)
 					},
 				},
 				dialog: {

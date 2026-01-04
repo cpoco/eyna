@@ -13,6 +13,7 @@ import root from "@/renderer/Root"
 type Reactive = {
 	type: Bridge.Viewer.Type | null
 	mime: string[]
+	href: string[]
 	path: string[]
 	size: bigint[]
 }
@@ -32,6 +33,7 @@ export const V = vue.defineComponent({
 		const reactive = vue.reactive<Reactive>({
 			type: null,
 			mime: [],
+			href: [],
 			path: [],
 			size: [],
 		})
@@ -43,6 +45,7 @@ export const V = vue.defineComponent({
 					if (data.type !== null) {
 						reactive.type = data.type
 						reactive.mime = data.mime
+						reactive.href = data.href
 						reactive.path = data.path
 						reactive.size = data.size
 					}
@@ -51,6 +54,7 @@ export const V = vue.defineComponent({
 					root.send(Bridge.Viewer.Event.CH, -1, "closed")
 					reactive.type = null
 					reactive.mime = []
+					reactive.href = []
 					reactive.path = []
 					reactive.size = []
 				})
@@ -78,6 +82,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoComponent.V, {
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -91,6 +96,8 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(MonacoDiffComponent.V, {
 					ref: DIFF,
+					original_href: this.reactive.href[0] ?? "",
+					modified_href: this.reactive.href[1] ?? "",
 					original: this.reactive.path[0] ?? "",
 					modified: this.reactive.path[1] ?? "",
 					original_size: this.reactive.size[0] ?? 0n,
@@ -105,6 +112,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(MonacoHexComponent.V, {
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -117,6 +125,7 @@ export const V = vue.defineComponent({
 				},
 			}, [
 				vue.h(ImageComponent.V, {
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -130,6 +139,7 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(AudioComponent.V, {
 					ref: AUDIO,
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -143,6 +153,7 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(VideoComponent.V, {
 					ref: VIDEO,
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),
@@ -156,6 +167,7 @@ export const V = vue.defineComponent({
 			}, [
 				vue.h(EmbedComponent.V, {
 					mime: this.reactive.mime[0] ?? "",
+					href: this.reactive.href[0] ?? "",
 					path: this.reactive.path[0] ?? "",
 					size: this.reactive.size[0] ?? 0n,
 				}, undefined),

@@ -128,11 +128,11 @@ export class FilerManager {
 	}
 
 	scroll() {
-		let contPos = this.sc.contentsSize * this.data.cursor
-		let drawPos = contPos - this.sc.contentsPosition
-		let margin = Math.min(this.sc.contentsSize, (this.sc.screenSize - this.sc.contentsSize) / 2) // スクロール時に選択位置が端でない限りマージンを設ける
-		let min = margin
-		let max = this.sc.screenSize - this.sc.contentsSize - margin
+		const contPos = this.sc.contentsSize * this.data.cursor
+		const drawPos = contPos - this.sc.contentsPosition
+		const margin = Math.min(this.sc.contentsSize, (this.sc.screenSize - this.sc.contentsSize) / 2) // スクロール時に選択位置が端でない限りマージンを設ける
+		const min = margin
+		const max = this.sc.screenSize - this.sc.contentsSize - margin
 
 		// 移動後の選択位置がスクロール外になる場合はスクロールして位置調整
 		if (drawPos < min) {
@@ -168,42 +168,50 @@ export class FilerManager {
 		return 0
 	}
 
-	private sendTitle(forceLocation: boolean = false) {
+	private sendTitle(next: Location.Data | null = null) {
 		if (this.data.status !== Bridge.Status.Active) {
 			return
 		}
 
-		const selected = forceLocation
-			? null
-			: this.data.ls[this.data.cursor]?.[0]?.full ?? null
+		const data = next ?? this.location
 
-		if (selected !== null) {
+		if (Location.isHome(data)) {
 			root.send(
 				Bridge.List.Title.CH,
 				this.id,
 				{
-					title: selected,
+					title: this.data.search || this.data.length === 0
+						? this.location.type
+						: this.data.ls[this.data.cursor]?.[0]?.full ?? "",
 					err: false,
 				},
 			)
 		}
-		else if (Location.isHome(this.location)) {
+		else if (Location.isFile(data)) {
 			root.send(
 				Bridge.List.Title.CH,
 				this.id,
 				{
-					title: this.location.type,
-					err: false,
+					title: this.data.search || this.data.length === 0
+						? data.path
+						: this.data.ls[this.data.cursor]?.[0]?.full ?? "",
+					err: this.data.search
+						? false
+						: this.data.st[0]?.file_type === Native.FileType.None,
 				},
 			)
 		}
-		else if (Location.isFile(this.location)) {
+		else if (Location.isArch(data)) {
 			root.send(
 				Bridge.List.Title.CH,
 				this.id,
 				{
-					title: this.location.path,
-					err: this.data.st[0]?.file_type === Native.FileType.None,
+					title: this.data.search || this.data.length === 0
+						? data.path
+						: data.path + `/${this.data.ls[this.data.cursor]?.[0]?.full ?? ""}`,
+					err: this.data.search
+						? false
+						: this.data.st[0]?.file_type === Native.FileType.None,
 				},
 			)
 		}
@@ -238,7 +246,7 @@ export class FilerManager {
 			})
 		}
 
-		this.sendTitle(true)
+		this.sendTitle(next)
 		root.send(
 			Bridge.List.Change.CH,
 			this.id,

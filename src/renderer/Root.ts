@@ -61,7 +61,6 @@ const V = vue.defineComponent({
 class Root {
 	create() {
 		window.onload = () => {
-			document.documentElement.style.setProperty(Conf.STYLE_NAVBAR_HEIGHT, `${Conf.NAVBAR_HEIGHT}px`)
 			vue.createApp(V).mount("body")
 		}
 

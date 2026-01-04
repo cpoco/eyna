@@ -1,17 +1,27 @@
 import * as electron from "electron"
+import * as fs from "node:fs"
 import * as timers from "node:timers/promises"
 
 import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
-const schema = "eyna"
+const SCHEMA = "eyna"
+
+const ICON_PATH = `${SCHEMA}://icon-path/`
+const ICON_TYPE = `${SCHEMA}://icon-type/`
+const BLOB_FILE = `${SCHEMA}://blob-file/`
+const BLOB_ARCH = `${SCHEMA}://blob-arch/`
+const METRICS = `${SCHEMA}://metrics/`
+const VERSIONS = `${SCHEMA}://versions/`
 
 export class Protocol {
 	static register() {
 		electron.protocol.registerSchemesAsPrivileged([
 			{
-				scheme: schema,
+				scheme: SCHEMA,
 				privileges: {
+					standard: true,
+					secure: true,
 					supportFetchAPI: true,
 				},
 			},
@@ -19,16 +29,27 @@ export class Protocol {
 	}
 
 	static handle() {
-		electron.protocol.handle(schema, async (req: Request): Promise<Response> => {
-			const url = new URL(req.url)
-
-			if (url.host === "icon-path" || url.host === "icon-type") {
-				return IconWorker.push(url)
+		process.on("uncaughtException", (err: Error) => {
+			if (err.name === "TypeError" && err.message.includes("ReadableStream is already closed")) {
+				console.error(`\u001b[33m[error]\u001b[0m`, err.message)
+				return
 			}
-			else if (url.host === "metrics") {
+			throw err
+		})
+		electron.protocol.handle(SCHEMA, async (req: Request): Promise<Response> => {
+			if (req.url.startsWith(ICON_PATH) || req.url.startsWith(ICON_TYPE)) {
+				return IconWorker.push(req)
+			}
+			else if (req.url.startsWith(BLOB_FILE)) {
+				return blobFile(req)
+			}
+			else if (req.url.startsWith(BLOB_ARCH)) {
+				return blobArch(req)
+			}
+			else if (req.url.startsWith(METRICS)) {
 				return metrics()
 			}
-			else if (url.host === "versions") {
+			else if (req.url.startsWith(VERSIONS)) {
 				return versions()
 			}
 			return new Response(null, { status: 500 })
@@ -46,14 +67,11 @@ type Task = {
 class IconWorker {
 	private static queue: Task[] = []
 
-	private static verify(ary: string[]): ary is [string, string] {
-		return ary.length === 2
-	}
+	static async push(req: Request): Promise<Response> {
+		const url = new URL(req.url)
+		const parts = url.pathname.split("/")
 
-	static async push(url: URL): Promise<Response> {
-		const path = url.pathname.split("/")
-
-		if (!this.verify(path)) {
+		if (!isTuple2(parts)) {
 			return new Response(null, { status: 400 })
 		}
 		if (url.host !== "icon-path" && url.host !== "icon-type") {
@@ -63,7 +81,7 @@ class IconWorker {
 		const deferred = new Util.DeferredPromise<Response>()
 		this.queue.push({
 			type: url.host,
-			data: decodeURIComponent(path[1]),
+			data: decodeURIComponent(parts[1]),
 			deferred: deferred,
 		})
 
@@ -116,6 +134,62 @@ class IconWorker {
 	}
 }
 
+const blobFile = async (req: Request): Promise<Response> => {
+	const url = new URL(req.url)
+	const parts = url.pathname.split("/")
+	const range = req.headers.get("range")?.match(/bytes=(\d+)-(\d+)?/) ?? null
+
+	if (!isTuple2(parts)) {
+		return new Response(null, { status: 400 })
+	}
+
+	const path = decodeURIComponent(parts[1])
+	const start = range ? BigInt(range[1] ?? 0) : 0n
+
+	const size = Util.last(await Native.getAttribute(path))?.size ?? 0n
+	const reader = fs.createReadStream(path, { start: Number(start) })
+
+	return new Response(reader as unknown as BodyInit, {
+		status: 206,
+		headers: {
+			"content-type": "application/octet-stream",
+			"content-length": `${size - start}`,
+			"content-range": `bytes ${start}-${size - 1n}/${size}`,
+			"cache-control": "no-store",
+		},
+	})
+}
+
+const blobArch = async (req: Request): Promise<Response> => {
+	const url = new URL(req.url)
+	const parts = url.pathname.split("/")
+	const range = req.headers.get("range")?.match(/bytes=(\d+)-(\d+)?/) ?? null
+
+	if (!isTuple3(parts)) {
+		return new Response(null, { status: 400 })
+	}
+
+	const path = decodeURIComponent(parts[1])
+	const entry = decodeURIComponent(parts[2])
+	const start = range ? BigInt(range[1] ?? 0) : 0n
+
+	const { size, reader } = await Native.getArchiveEntry(
+		path,
+		entry,
+		start,
+	)
+
+	return new Response(reader as unknown as BodyInit, {
+		status: 206,
+		headers: {
+			"content-type": "application/octet-stream",
+			"content-length": `${size - start}`,
+			"content-range": `bytes ${start}-${size - 1n}/${size}`,
+			"cache-control": "no-store",
+		},
+	})
+}
+
 const metrics = (): Response => {
 	return new Response(
 		JSON.stringify({ metrics: electron.app.getAppMetrics() }),
@@ -149,4 +223,12 @@ const versions = (): Response => {
 			},
 		},
 	)
+}
+
+const isTuple2 = <T>(ary: T[]): ary is [T, T] => {
+	return ary.length === 2
+}
+
+const isTuple3 = <T>(ary: T[]): ary is [T, T, T] => {
+	return ary.length === 3
 }

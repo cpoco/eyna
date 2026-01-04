@@ -22,7 +22,7 @@ export class Scroll {
 			Math.min(this.contentsPosition, (this.contentsSize * this.contentsCount) - this.screenSize),
 		)
 
-		let r = Math.min(1, (this.screenSize - Scroll.KnobMinSize) / (this.contentsSize * this.contentsCount))
+		const r = Math.min(1, (this.screenSize - Scroll.KnobMinSize) / (this.contentsSize * this.contentsCount))
 		this.knobPosition = this.contentsPosition * r
 		this.knobSize = Math.min(this.screenSize, this.screenSize * r + Scroll.KnobMinSize)
 	}

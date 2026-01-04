@@ -33,8 +33,12 @@ export function getArchive(abstract: string, base: string, depth: number = 0): P
 	return native.getArchive(abstract, base, depth)
 }
 
-export function getArchiveEntry(abstract: string, path: string): NodeJS.ReadableStream {
-	return native.getArchiveEntry(Readable, abstract, path)
+export function getArchiveEntry(
+	abstract: string,
+	path: string,
+	seek: bigint = 0n,
+): Promise<Type.ArchiveReader> {
+	return native.getArchiveEntry(Readable, abstract, path, seek)
 }
 
 export function getAttribute(abstract: string, base: string = ""): Promise<Type.Attributes> {

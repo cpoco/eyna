@@ -22,7 +22,7 @@ export const V = vue.defineComponent({
 			})
 
 		const _mounted = () => {
-			let r: DOMRect = sf.value!.getBoundingClientRect()
+			const r: DOMRect = sf.value!.getBoundingClientRect()
 			root
 				.invoke(
 					Bridge.System.Dom.CH,

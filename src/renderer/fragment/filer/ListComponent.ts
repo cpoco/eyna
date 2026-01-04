@@ -89,7 +89,7 @@ export const V = vue.defineComponent({
 		const el = vue.useTemplateRef<HTMLElement>(DATA)
 
 		const _mounted = () => {
-			let d: DOMRect = el.value!.getBoundingClientRect()
+			const d: DOMRect = el.value!.getBoundingClientRect()
 			root.send(
 				Bridge.List.Dom.CH,
 				props.i,
@@ -104,7 +104,7 @@ export const V = vue.defineComponent({
 		}
 
 		const _resized = () => {
-			let d: DOMRect = el.value!.getBoundingClientRect()
+			const d: DOMRect = el.value!.getBoundingClientRect()
 			root.send(
 				Bridge.List.Dom.CH,
 				props.i,

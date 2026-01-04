@@ -3,10 +3,10 @@ import { join } from "node:path/posix"
 const title = "mkslink"
 
 module.exports = async (ex: Extension): Promise<void> => {
-	if (ex.active == null || ex.active.cursor == null) {
+	if (ex.active === null || ex.active.cursor === null) {
 		return
 	}
-	const full = ex.active.cursor[0]!.full
+	const full = ex.active.cursor[0].full
 
 	const text = "new link"
 
@@ -17,7 +17,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		start: 0,
 		end: text.length,
 	})
-	if (prompt == null || prompt.text == "") {
+	if (prompt === null || prompt.text === "") {
 		return
 	}
 
