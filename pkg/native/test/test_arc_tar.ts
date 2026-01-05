@@ -6,9 +6,9 @@ import path from "node:path/posix"
 import { ERROR } from "./_util.ts"
 
 const main = async () => {
-	const ZIP = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.zip")
+	const TAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tar")
 
-	const arc = await native.getArchive(ZIP, "", 10)
+	const arc = await native.getArchive(TAR, "", 10)
 
 	assert.strictEqual(arc.s, 35n)
 	assert.strictEqual(arc.d, 5)
@@ -91,18 +91,18 @@ const main = async () => {
 
 	for (const error_path of ["", ".", "./", "..", "../"]) {
 		await assert.rejects(
-			async () => await native.getArchive(error_path, "", 0),
+			async () => await native.getArchive(error_path, ""),
 			(err) => err === ERROR.INVALID_PATH,
 		)
 	}
 
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
-			async () => await native.getArchive(ZIP, error_path, 0),
+			async () => await native.getArchive(TAR, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
-		assert.rejects(
-			async () => native.getArchiveEntry(ZIP, error_path),
+		await assert.rejects(
+			async () => await native.getArchiveEntry(TAR, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 	}
@@ -111,7 +111,7 @@ const main = async () => {
 try {
 	main().then(() => {
 		console.log("")
-		console.log("done (test_zip)")
+		console.log("done (test_arc_tar)")
 	})
 }
 catch (err) {
