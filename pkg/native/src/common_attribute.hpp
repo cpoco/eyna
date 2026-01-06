@@ -305,4 +305,89 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 	}
 }
 
+std::vector<_string_t> multi_exte = {
+	V(".tar.gz")
+};
+
+/*
+tar.gz      → stem: "tar"      exte: ".gz"
+.tar.gz     → stem: ".tar.gz"  exte: ""
+file.tar.gz → stem: "file"     exte: ".tar.gz"
+FILE.TAR.GZ → stem: "FILE",    exte: ".TAR.GZ"
+*/
+
+inline bool indexof(int* index, const _string_t& str, const _string_t& suf)
+{
+	size_t str_len = str.length();
+	size_t suf_len = suf.length();
+
+	if (str_len < suf_len) {
+		return false;
+	}
+
+	size_t sub = str_len - suf_len;
+
+	for (size_t i = 0; i < suf_len; i++) {
+		_char_t c1 = str[sub + i];
+		_char_t c2 = suf[i];
+		if (V('A') <= c1 && c1 <= V('Z')) {
+			c1 += 32;
+		}
+		if (V('A') <= c2 && c2 <= V('Z')) {
+			c2 += 32;
+		}
+		if (c1 != c2) {
+			return false;
+		}
+	}
+	*index = (int)sub;
+	return true;
+}
+
+_string_t to_stem(const std::filesystem::path& path)
+{
+	_string_t stem = path.stem().c_str();
+	_string_t exte = path.extension().c_str();
+
+	if (stem.empty() || exte.empty()) {
+		return stem;
+	}
+
+	_string_t name = path.filename().c_str();
+
+	for (const _string_t& ext : multi_exte) {
+		int index = 0;
+		if (indexof(&index, name, ext)) {
+			return 0 < index
+				? name.substr(0, index)
+				: name; // conforms to std::filesystem::path::stem
+		}
+	}
+
+	return stem;
+}
+
+_string_t to_exte(const std::filesystem::path& path)
+{
+	_string_t stem = path.stem().c_str();
+	_string_t exte = path.extension().c_str();
+
+	if (stem.empty() || exte.empty()) {
+		return exte;
+	}
+
+	_string_t name = path.filename().c_str();
+
+	for (const _string_t& ext : multi_exte) {
+		int index = 0;
+		if (indexof(&index, name, ext)) {
+			return 0 < index
+				? name.substr(index)
+				: _string_t(); // conforms to std::filesystem::path::extension
+		}
+	}
+
+	return exte;
+}
+
 #endif // include guard

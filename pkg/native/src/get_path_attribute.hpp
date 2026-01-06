@@ -61,8 +61,8 @@ static void get_path_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("rltv")), to_string(a.full));
 
 		obj->Set(CONTEXT, to_string(V("name")), to_string(a.full.filename()));
-		obj->Set(CONTEXT, to_string(V("stem")), to_string(a.full.stem()));
-		obj->Set(CONTEXT, to_string(V("exte")), to_string(a.full.extension()));
+		obj->Set(CONTEXT, to_string(V("stem")), to_string(to_stem(a.full)));
+		obj->Set(CONTEXT, to_string(V("exte")), to_string(to_exte(a.full)));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, a.link_type));
 		if (a.link_type == LINK_TYPE::LINK_TYPE_NONE) {
