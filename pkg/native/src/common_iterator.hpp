@@ -36,8 +36,11 @@ int archive_iterator(const std::filesystem::path& path, const archive_iterator_c
 	archive_read_set_options(a.get(), "!mac-ext");
 	archive_read_set_options(a.get(), "hdrcharset=UTF-8");
 
-	std::u8string p = path.u8string();
-	int open = archive_read_open_filename(a.get(), reinterpret_cast<const char*>(p.c_str()), BLOCK_SIZE);
+	#if OS_WIN64
+	int open = archive_read_open_filename_w(a.get(), reinterpret_cast<const _char_t*>(path.c_str()), BLOCK_SIZE);
+	#elif OS_MAC64
+	int open = archive_read_open_filename(a.get(), reinterpret_cast<const _char_t*>(path.c_str()), BLOCK_SIZE);
+	#endif
 
 	if (open != ARCHIVE_OK) {
 		return IT_OPEN_FAILURE;
