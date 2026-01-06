@@ -13,7 +13,7 @@ export const MULTI_EXTE = [
 	".tar.gz",
 ]
 
-export const ARCHIVE_EXTE = /^\.(7z|rar|zip)$/i
+export const ARCHIVE_EXTE = /^\.(7z|tar|tar.gz|tgz|rar|zip)$/i
 
 export const VIEWER_SIZE_LIMIT = 100_000_000n
 export const VIEWER_MEDIA_EXTE = /^\.(gif|jpe?g|png|webp|mp3|m4a|ogg|wave?|mp4|webm)$/i
