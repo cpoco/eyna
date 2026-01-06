@@ -305,9 +305,7 @@ void attribute(const std::filesystem::path& path, std::vector<_attribute>& vecto
 	}
 }
 
-std::vector<_string_t> multi_exte = {
-	V(".tar.gz")
-};
+std::vector<_string_t> multi_exte = {};
 
 /*
 tar.gz      → stem: "tar"      exte: ".gz"

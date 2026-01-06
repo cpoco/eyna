@@ -87,6 +87,10 @@ export function openProperties(abstract: string): boolean {
 	return native.openProperties(abstract)
 }
 
+export function setExte(extensions: string[]): void {
+	return native.setExte(extensions)
+}
+
 export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean {
 	return native.watch(id, abstract, callback)
 }

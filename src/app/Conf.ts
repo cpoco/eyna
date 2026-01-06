@@ -9,6 +9,10 @@ export const STYLE_LINE_HEIGHT = "--dynamic-line-height"
 export const COLOR_FOREGROUND = "hsla(0,0%,80%,1.00)" // _1_settings.styl#_foreground
 export const COLOR_BACKGROUND = "hsla(0,0%,10%,1.00)" // _1_settings.styl#_background
 
+export const MULTI_EXTE = [
+	".tar.gz",
+]
+
 export const ARCHIVE_EXTE = /^\.(7z|rar|zip)$/i
 
 export const VIEWER_SIZE_LIMIT = 100_000_000n
