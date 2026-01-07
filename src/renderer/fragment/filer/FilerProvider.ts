@@ -180,10 +180,8 @@ function _create(count: number) {
 	}
 }
 
-export function create(count: number): ReturnType<typeof _create> {
-	const v = _create(count)
-	vue.provide(KEY, v)
-	return v
+export function create(app: vue.App<Element>, count: number): void {
+	app.provide(KEY, _create(count))
 }
 
 export function inject(): ReturnType<typeof _create> {

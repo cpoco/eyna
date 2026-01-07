@@ -39,8 +39,7 @@ declare global {
 
 const V = vue.defineComponent({
 	setup() {
-		const sys = SystemProvider.create()
-		FilerProvider.create(Conf.LIST_COUNT)
+		const sys = SystemProvider.inject()
 
 		return {
 			sys: sys.reactive,
@@ -61,7 +60,10 @@ const V = vue.defineComponent({
 class Root {
 	create() {
 		window.onload = () => {
-			vue.createApp(V).mount("body")
+			const app: vue.App<Element> = vue.createApp(V)
+			SystemProvider.create(app)
+			FilerProvider.create(app, Conf.LIST_COUNT)
+			app.mount("body")
 		}
 
 		window.addEventListener("cut", async (_: ClipboardEvent) => {
