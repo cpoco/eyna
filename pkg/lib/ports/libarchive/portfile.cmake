@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO            libarchive/libarchive
-    REF             v3.8.4
-    SHA512          c6336e27fdd32250c456a8f66cbcce2055dea942244d8487b0e39a5da00524ee178d964c9ec3514dd5d6954064a02ee137f82b7736b05bf2a1817b0eeea0e2f3
+    REF             v3.8.5
+    SHA512          fda8b181e58e612fb1a85d4ab2dee20925deb6e7adb944517414504b7e2b363889a644fcf90e22a3ae25f341724ff3ce72db06ee2a6d48f9d34f62cf04ba9958
 )
 
 vcpkg_cmake_configure(

@@ -1,6 +1,6 @@
 {
 	"name": "libarchive",
-	"version-string": "3.8.4",
+	"version-string": "3.8.5",
 	"dependencies": [
 		{
 			"name": "vcpkg-cmake",
