@@ -40,5 +40,7 @@ jobs:
           npx tsx pkg/native/test/test_link.ts
           npx tsx pkg/native/test/test_operation.ts
           npx tsx pkg/native/test/test_os.ts
-          npx tsx pkg/native/test/test_zip.ts
+          npx tsx pkg/native/test/test_arc_tar.ts
+          npx tsx pkg/native/test/test_arc_tgz.ts
+          npx tsx pkg/native/test/test_arc_zip.ts
           npx tsx pkg/native/test/test_watch.ts

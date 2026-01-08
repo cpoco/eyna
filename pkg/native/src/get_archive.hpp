@@ -98,8 +98,8 @@ static void get_archive_complete(uv_work_t* req, int status)
 		);
 
 		obj->Set(CONTEXT, to_string(V("name")), to_string(ent.full.filename()));
-		obj->Set(CONTEXT, to_string(V("stem")), to_string(ent.full.stem()));
-		obj->Set(CONTEXT, to_string(V("exte")), to_string(ent.full.extension()));
+		obj->Set(CONTEXT, to_string(V("stem")), to_string(to_stem(ent.full)));
+		obj->Set(CONTEXT, to_string(V("exte")), to_string(to_exte(ent.full)));
 
 		obj->Set(CONTEXT, to_string(V("link_type")), v8::Number::New(ISOLATE, ent.link_type));
 		if (ent.link_type == LINK_TYPE::LINK_TYPE_NONE) {

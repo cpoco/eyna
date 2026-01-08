@@ -16,6 +16,7 @@ type Reactive = {
 		lineHeight: number
 	}
 }
+
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("SystemProvider")
 
 function _create() {
@@ -64,10 +65,8 @@ function _create() {
 	}
 }
 
-export function create(): ReturnType<typeof _create> {
-	const v = _create()
-	vue.provide(KEY, v)
-	return v
+export function create(app: vue.App<Element>): void {
+	app.provide(KEY, _create())
 }
 
 export function inject(): ReturnType<typeof _create> {

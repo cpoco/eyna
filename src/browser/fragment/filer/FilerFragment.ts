@@ -261,7 +261,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0 || target.data.search || target.data.ls.length === 0) {
 					return Promise.reject("stop chain")
 				}
-				if (!Location.isFile(active.location) || Location.isFile(target.location)) {
+				if (!Location.isFile(active.location) || !Location.isFile(target.location)) {
 					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
