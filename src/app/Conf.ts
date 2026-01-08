@@ -11,9 +11,10 @@ export const COLOR_BACKGROUND = "hsla(0,0%,10%,1.00)" // _1_settings.styl#_backg
 
 export const MULTI_EXTE = [
 	".tar.gz",
+	".tar.xz",
 ]
 
-export const ARCHIVE_EXTE = /^\.(7z|tar|tar.gz|tgz|rar|zip)$/i
+export const ARCHIVE_EXTE = /^\.(7z|rar|tar|tar.gz|tgz|tar.xz|txz|zip)$/i
 
 export const VIEWER_SIZE_LIMIT = 100_000_000n
 export const VIEWER_MEDIA_EXTE = /^\.(gif|jpe?g|png|webp|mp3|m4a|ogg|wave?|mp4|webm)$/i
