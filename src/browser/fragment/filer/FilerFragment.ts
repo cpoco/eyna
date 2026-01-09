@@ -432,7 +432,7 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Embed,
 									mime: ["application/pdf"],
-									href: [Location.toFileUrl(trgt.full)],
+									href: [Location.toUrl(trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
 								})
@@ -474,15 +474,6 @@ export class FilerFragment extends AbstractFragment {
 								root.viewer({
 									type: Bridge.Viewer.Type.Video,
 									mime: [],
-									href: [Location.toArchUrl(active.location.path, trgt.full)],
-									path: [trgt.full],
-									size: [trgt.size],
-								})
-							}
-							else if (Conf.VIEWER_PDF_EXTE.test(trgt.exte)) {
-								root.viewer({
-									type: Bridge.Viewer.Type.Embed,
-									mime: ["application/pdf"],
 									href: [Location.toArchUrl(active.location.path, trgt.full)],
 									path: [trgt.full],
 									size: [trgt.size],
