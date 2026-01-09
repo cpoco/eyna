@@ -127,8 +127,17 @@ _scroll_width = 6px
 		position: absolute
 		top: _vue_reactive
 		width: 100%
-		min-width: 300px
+		min-width: 200px
 		height: var(--dynamic-line-height)
+
+		container-type: inline-size
+		@container (width < 300px)
+			&-attr
+				&-size
+					margin-right: _scroll_width
+				&-date
+				&-time
+					display: none
 
 		// back component
 		&-back
