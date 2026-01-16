@@ -167,7 +167,8 @@ export namespace Location {
 	}
 
 	export function toUrl(path: string): string {
-		return `file://${path
+		return `file://${
+			path
 				.replace(/#/g, "%23")
 				.replace(/%/g, "%25")
 				.replace(/\?/g, "%3F")
