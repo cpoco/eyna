@@ -14,7 +14,7 @@
 		"@eyna/util": "workspace:*",
 		"@vue/runtime-dom": "3.5.26",
 		"codemirror": "6.0.2",
-		"electron": "39.2.7",
+		"electron": "40.0.0",
 		"electron-builder": "26.4.0",
 		"esbuild": "0.27.2",
 		"monaco-editor": "0.55.1",
