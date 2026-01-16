@@ -257,6 +257,32 @@ export class FilerFragment extends AbstractFragment {
 					resolve()
 				})
 			})
+			.on2("list.arch", (active, _target) => {
+				if (active.data.search || active.data.ls.length === 0) {
+					return Promise.reject("stop chain")
+				}
+				return new Promise(async (resolve, _reject) => {
+					const attr = Util.first(active.data.ls[active.data.cursor])
+					const trgt = Util.last(active.data.ls[active.data.cursor])
+					if (attr === null || trgt === null) {
+						resolve()
+						return
+					}
+					// file
+					// file(shortcut or bookmark) -> file
+					// link(symbolic or junction) -> file
+					if (trgt.file_type === Native.FileType.File) {
+						if (Location.isFile(active.location)) {
+							if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
+								active.scroll()
+								active.sendScan()
+								active.sendAttrAll()
+							}
+						}
+					}
+					resolve()
+				})
+			})
 			.on2("list.diff", (active, target) => {
 				if (active.data.search || active.data.ls.length === 0 || target.data.search || target.data.ls.length === 0) {
 					return Promise.reject("stop chain")
@@ -393,8 +419,8 @@ export class FilerFragment extends AbstractFragment {
 						trgt.file_type === Native.FileType.File
 					) {
 						if (Location.isFile(active.location)) {
-							if (Conf.ARCHIVE_EXTE.test(attr.exte)) {
-								if (await active.sendChange(Location.toArch(attr.full, ""), 0, null, null, false)) {
+							if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
+								if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
 									active.scroll()
 									active.sendScan()
 									active.sendAttrAll()
