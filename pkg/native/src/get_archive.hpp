@@ -33,7 +33,10 @@ static void get_archive_async(uv_work_t* req)
 			_entry ent = {};
 			populate_entry(ent, entry);
 
-			if (compare_path(work->min_depth, work->base, ent.full)) {
+			if (ent.full.empty()) {
+				work->e++;
+			}
+			else if (compare_path(work->min_depth, work->base, ent.full)) {
 				for (int i = work->min_depth; i <= work->max_depth; i++) {
 					std::filesystem::path p = range_path(ent.full, 0, i); // without trailing slash
 					if (p.empty()) {
