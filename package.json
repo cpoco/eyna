@@ -35,6 +35,6 @@
 		"postinstall": "node scripts/postinstall.mts",
 		"b": "tsx scripts/build.ts",
 		"p": "tsx scripts/package.ts",
-		"s": "tsx scripts/start.ts"
+		"s": "node scripts/start.mts"
 	}
 }

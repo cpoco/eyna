@@ -4,7 +4,7 @@ import path from "node:path"
 
 import electron from "electron"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 
 async function start(): Promise<void> {
 	var proc: child_process.ChildProcess | null = null
@@ -54,11 +54,10 @@ async function start(): Promise<void> {
 	})
 }
 
-Promise.resolve()
-	.then(() => {
-		return start()
-	})
-	.catch((err) => {
-		console.error(err)
-		process.exit(1)
-	})
+try {
+	await start()
+}
+catch (err) {
+	console.error(err)
+	process.exit(1)
+}
