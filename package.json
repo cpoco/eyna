@@ -2,6 +2,7 @@
 	"name": "eyna",
 	"version": "0.0.59",
 	"private": true,
+	"type": "module",
 	"main": "app/browser.cjs",
 	"workspaces": [
 		"pkg/lib",

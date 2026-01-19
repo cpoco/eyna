@@ -1,6 +1,7 @@
 {
 	"name": "@eyna/util",
 	"private": true,
+	"type": "module",
 	"devDependencies": {
 		"tsx": "4.21.0"
 	}
