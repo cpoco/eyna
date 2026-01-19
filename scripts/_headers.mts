@@ -4,7 +4,7 @@ import stream from "node:stream/promises"
 import zlib from "node:zlib"
 import * as tar from "tar"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __cache = path.join(__top, "cache")
 
 const runtimeBase: Record<string, string> = {

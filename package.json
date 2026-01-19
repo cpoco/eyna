@@ -32,7 +32,7 @@
 		"tar": "7.5.3"
 	},
 	"scripts": {
-		"postinstall": "tsx scripts/postinstall.ts",
+		"postinstall": "node scripts/postinstall.mts",
 		"b": "tsx scripts/build.ts",
 		"p": "tsx scripts/package.ts",
 		"s": "tsx scripts/start.ts"
