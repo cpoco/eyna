@@ -1,7 +1,7 @@
 import module from "node:module"
 import path from "node:path"
 
-import { install } from "@eyna/lib/scripts/_vcpkg.ts"
+import { install } from "@eyna/lib/scripts/_vcpkg.mts"
 import { headers } from "./_headers.ts"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")

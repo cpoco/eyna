@@ -2,7 +2,7 @@ import child_process, { type IOType } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __cache_vcpkg_archives = path.join(__top, "..", "..", "cache", "vcpkg", "archives")
 const __cache_vcpkg_downloads = path.join(__top, "..", "..", "cache", "vcpkg", "downloads")
 
