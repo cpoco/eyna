@@ -2,10 +2,10 @@ import child_process, { type IOType } from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
-export { setVsCmdEnv } from "./_vcvarsall.ts"
+export { setVsCmdEnv } from "./_vcvarsall.mts"
 
 export async function configure(name: "node" | "electron", version: string, stdout: IOType = "ignore"): Promise<void> {
 	fs.rmSync(__build, { recursive: true, force: true })

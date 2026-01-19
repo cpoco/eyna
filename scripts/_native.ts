@@ -3,7 +3,7 @@ import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
-import { build, configure, setVsCmdEnv } from "@eyna/native/scripts/_cmake.ts"
+import { build, configure, setVsCmdEnv } from "@eyna/native/scripts/_cmake.mts"
 
 const __top = path.join(import.meta.dirname ?? __dirname, "..")
 const __build = path.join(__top, "build")

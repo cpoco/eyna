@@ -31,7 +31,7 @@ jobs:
       - run: |
           npm ci --omit=optional
       - run: |
-          npx tsx pkg/native/scripts/cmake_node.ts
+          node pkg/native/scripts/cmake_node.mts
       - run: |
           npx tsx scripts/test.ts
           npx tsx pkg/native/test/test_compare.cts
