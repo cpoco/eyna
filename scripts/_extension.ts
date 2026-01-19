@@ -1,5 +1,4 @@
 import esbuild from "esbuild"
-import fs from "node:fs/promises"
 import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 import ts from "typescript"
@@ -43,17 +42,17 @@ export async function Build() {
 	let _time = perf_hooks.performance.now()
 	return esbuild.build({
 		entryPoints: [
-			path.join(base, "src/fs.copy.ts"),
-			path.join(base, "src/fs.duplicate.ts"),
-			path.join(base, "src/fs.mkdir.ts"),
-			path.join(base, "src/fs.mkfile.ts"),
-			path.join(base, "src/fs.mkslink.ts"),
-			path.join(base, "src/fs.move.ts"),
-			path.join(base, "src/fs.rename.ts"),
-			path.join(base, "src/fs.trash.ts"),
-			path.join(base, "src/list.code.ts"),
-			path.join(base, "src/list.fork.ts"),
-			path.join(base, "src/list.terminal.ts"),
+			path.join(base, "src/fs.copy.cts"),
+			path.join(base, "src/fs.duplicate.cts"),
+			path.join(base, "src/fs.mkdir.cts"),
+			path.join(base, "src/fs.mkfile.cts"),
+			path.join(base, "src/fs.mkslink.cts"),
+			path.join(base, "src/fs.move.cts"),
+			path.join(base, "src/fs.rename.cts"),
+			path.join(base, "src/fs.trash.cts"),
+			path.join(base, "src/list.code.cts"),
+			path.join(base, "src/list.fork.cts"),
+			path.join(base, "src/list.terminal.cts"),
 		],
 		packages: "bundle",
 		bundle: true,

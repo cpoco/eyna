@@ -1,6 +1,6 @@
-import { join } from "node:path/posix"
+const join = require("node:path/posix").join
 
-const title = "move"
+const title = "copy"
 
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active === null || ex.target === null || ex.active.cursor === null) {
@@ -45,5 +45,5 @@ async function operation(ex: Extension, item: Item, src_base: string, dst_base: 
 		return
 	}
 
-	await ex.filer.move(src, dst)
+	await ex.filer.copy(src, dst)
 }

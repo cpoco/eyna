@@ -1,4 +1,4 @@
-import { join } from "node:path/posix"
+const join = require("node:path/posix").join
 
 const title = "mkslink"
 

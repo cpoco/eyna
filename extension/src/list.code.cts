@@ -1,5 +1,5 @@
-import { spawn } from "node:child_process"
-import { platform } from "node:process"
+const spawn = require("node:child_process").spawn
+const platform = require("node:process").platform
 
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active === null || ex.active.cursor === null) {

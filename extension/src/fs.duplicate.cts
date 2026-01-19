@@ -1,6 +1,7 @@
-import { dirname, join } from "node:path/posix"
+const dirname = require("node:path/posix").dirname
+const join = require("node:path/posix").join
 
-const title = "rename"
+const title = "duplicate"
 
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active === null || ex.active.cursor === null) {
@@ -25,14 +26,15 @@ module.exports = async (ex: Extension): Promise<void> => {
 	const src = join(src_base, src_item)
 	const dst = join(dst_base, prompt.text)
 
-	if (src === dst || dirname(src) !== dirname(dst)) {
-		return
-	}
-	if (src_item.toLowerCase() !== prompt.text.toLowerCase() && await ex.filer.exists(dst)) {
+	if (
+		src === dst
+		|| dirname(src) !== dirname(dst)
+		|| await ex.filer.exists(dst)
+	) {
 		return
 	}
 
-	await ex.filer.move(src, dst)
+	await ex.filer.copy(src, dst)
 
 	ex.filer.update()
 }

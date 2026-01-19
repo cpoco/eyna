@@ -1,13 +1,13 @@
-import { join } from "node:path/posix"
+const join = require("node:path/posix").join
 
-const title = "mkfile"
+const title = "mkdir"
 
 module.exports = async (ex: Extension): Promise<void> => {
 	if (ex.active === null) {
 		return
 	}
 
-	const text = "new file"
+	const text = "new directory"
 
 	const prompt = await ex.dialog.open({
 		type: "prompt",
@@ -31,7 +31,7 @@ module.exports = async (ex: Extension): Promise<void> => {
 		return
 	}
 
-	await ex.filer.mkfile(full)
+	await ex.filer.mkdir(full)
 
 	ex.filer.update()
 }
