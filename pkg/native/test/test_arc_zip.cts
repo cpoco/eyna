@@ -3,12 +3,12 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR } from "./_util.ts"
+import { ERROR } from "./_util.cts"
 
 const main = async () => {
-	const TGZ = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tgz")
+	const ZIP = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.zip")
 
-	const arc = await native.getArchive(TGZ, "", 10)
+	const arc = await native.getArchive(ZIP, "", 10)
 
 	assert.strictEqual(arc.s, 35n)
 	assert.strictEqual(arc.d, 5)
@@ -98,11 +98,11 @@ const main = async () => {
 
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
-			async () => await native.getArchive(TGZ, error_path),
+			async () => await native.getArchive(ZIP, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 		await assert.rejects(
-			async () => await native.getArchiveEntry(TGZ, error_path),
+			async () => await native.getArchiveEntry(ZIP, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 	}
@@ -111,7 +111,7 @@ const main = async () => {
 try {
 	main().then(() => {
 		console.log("")
-		console.log("done (test_arc_tgz)")
+		console.log("done (test_arc_zip)")
 	})
 }
 catch (err) {

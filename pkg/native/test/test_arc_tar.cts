@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR } from "./_util.ts"
+import { ERROR } from "./_util.cts"
 
 const main = async () => {
 	const TAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tar")

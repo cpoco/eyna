@@ -2,7 +2,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 
 import assert from "node:assert"
 
-import { ERROR, TEST } from "./_util.ts"
+import { ERROR, TEST } from "./_util.cts"
 
 const main = async () => {
 	const path_dir = await native.getIcon(TEST)

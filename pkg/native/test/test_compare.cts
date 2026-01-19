@@ -4,7 +4,7 @@ import assert from "node:assert"
 import fs from "node:fs/promises"
 import path from "node:path/posix"
 
-import { TEST } from "./_util.ts"
+import { TEST } from "./_util.cts"
 
 const main = async () => {
 	const DIR = path.join(TEST, "compare")

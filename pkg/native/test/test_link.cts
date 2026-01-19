@@ -2,7 +2,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 
 import assert from "node:assert"
 
-import { TEST } from "./_util.ts"
+import { TEST } from "./_util.cts"
 
 const main = async () => {
 	{

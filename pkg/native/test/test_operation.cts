@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR, TEST } from "./_util.ts"
+import { ERROR, TEST } from "./_util.cts"
 
 const main = async () => {
 	const DIR = path.join(TEST, "exists")
