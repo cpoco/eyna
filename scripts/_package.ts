@@ -2,7 +2,7 @@ import { type Configuration } from "app-builder-lib"
 import * as electron_builder from "electron-builder"
 import path from "node:path"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 export async function Package() {

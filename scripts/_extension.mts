@@ -3,7 +3,7 @@ import * as path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 import ts from "typescript"
 
-const __top = path.join(import.meta.dirname ?? __dirname, "..")
+const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "extension")
