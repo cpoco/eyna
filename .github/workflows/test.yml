@@ -44,3 +44,7 @@ jobs:
           npx tsx pkg/native/test/test_arc_tgz.cts
           npx tsx pkg/native/test/test_arc_zip.cts
           npx tsx pkg/native/test/test_watch.cts
+      - run: |
+          npm run b
+      - run: |
+          npm run p
