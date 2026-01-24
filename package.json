@@ -21,7 +21,7 @@
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.3",
 		"stylus": "0.64.0",
-		"tar": "7.5.3",
+		"tar": "7.5.6",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	},
@@ -29,7 +29,7 @@
 		"dompurify": "3",
 		"glob": "13",
 		"rimraf": "6",
-		"tar": "7.5.3"
+		"tar": "7.5.6"
 	},
 	"scripts": {
 		"postinstall": "node scripts/postinstall.mts",
