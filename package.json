@@ -5,6 +5,7 @@
 	"type": "module",
 	"main": "app/browser.cjs",
 	"workspaces": [
+		"pkg/fixture",
 		"pkg/lib",
 		"pkg/native",
 		"pkg/util"

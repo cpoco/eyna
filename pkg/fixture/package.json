@@ -1,0 +1,6 @@
+{
+	"name": "@eyna/fixture",
+	"private": true,
+	"type": "module",
+	"bin": "index.mts"
+}

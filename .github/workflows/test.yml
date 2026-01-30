@@ -33,7 +33,7 @@ jobs:
       - run: |
           node pkg/native/scripts/cmake_node.mts
       - run: |
-          node scripts/test.mts
+          npx fixture
           npx tsx pkg/native/test/test_compare.cts
           npx tsx pkg/native/test/test_get.cts
           npx tsx pkg/native/test/test_icon.cts
