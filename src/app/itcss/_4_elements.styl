@@ -8,11 +8,10 @@ root
 	color: var(--foreground)
 	background-color: var(--background)
 
-	border-left: 1px solid _black
-	border-right: 1px solid _black
+	border: 1px solid transparent
 
 	display: grid
 	grid-template: \
-		"navbar" env(titlebar-area-height) \
-		"client" 1fr                       \
+		"navbar" calc(env(titlebar-area-height) - 1px) \
+		"client" 1fr                                   \
 		/ 1fr

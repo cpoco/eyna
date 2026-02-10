@@ -166,6 +166,15 @@ export namespace Location {
 		return [Type.Arch, path, entry].join("\0")
 	}
 
+	export function toUrl(path: string): string {
+		return `file://${
+			path
+				.replace(/#/g, "%23")
+				.replace(/%/g, "%25")
+				.replace(/\?/g, "%3F")
+		}?${new Date().getTime()}`
+	}
+
 	export function toFileUrl(path: string): string {
 		return `eyna://blob-${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
 	}

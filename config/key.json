@@ -33,6 +33,7 @@
 		{ "when": "filer",  "key": "r",                 "cmd": "list.extension", "prm": "fs.rename"    },
 
 		{ "when": "filer",  "key": "f",                 "cmd": "list.find" },
+		{ "when": "filer",  "key": "z",                 "cmd": "list.arch" },
 		{ "when": "filer",  "key": "v",                 "cmd": "list.diff" },
 		{ "when": "filer",  "key": "b",                 "cmd": "list.hex"  },
 		{ "when": "filer",  "key": "e",                 "cmd": "list.extension", "prm": "list.code"     },

@@ -38,7 +38,7 @@ export abstract class Abstract<T> {
 
 	private _load(path: string) {
 		try {
-			console.log(`\u001b[34m[write]\u001b[0m`, `"${path}"`)
+			console.log(`\u001b[34m[read]\u001b[0m`, `"${path}"`)
 			const data = JSON.parse(fs.readFileSync(path, "utf8"))
 			Util.merge(this._data, data)
 		}
