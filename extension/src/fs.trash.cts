@@ -11,10 +11,11 @@ module.exports = async (ex: Extension): Promise<void> => {
 			title: title,
 			text: ex.active.cursor[0].full,
 		})
-
-		if (alert !== null) {
-			await ex.filer.trash(ex.active.cursor[0].full)
+		if (alert === null) {
+			return
 		}
+
+		await ex.filer.trash(ex.active.cursor[0].full)
 	}
 	else {
 		const alert = await ex.dialog.open({
@@ -22,11 +23,12 @@ module.exports = async (ex: Extension): Promise<void> => {
 			title: title,
 			text: `${ex.active.select.length} files`,
 		})
+		if (alert === null) {
+			return
+		}
 
-		if (alert !== null) {
-			for (const v of ex.active.select) {
-				await ex.filer.trash(v[0].full)
-			}
+		for (const v of ex.active.select) {
+			await ex.filer.trash(v[0].full)
 		}
 	}
 
