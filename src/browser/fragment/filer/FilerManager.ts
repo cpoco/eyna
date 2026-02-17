@@ -58,6 +58,7 @@ export class FilerManager {
 
 	exit() {
 		this.watch_run = false
+		_log("unwatch", this.id)
 		Native.unwatch(this.id)
 	}
 
@@ -116,6 +117,7 @@ export class FilerManager {
 	}
 
 	update(forceMarkClear: boolean): Promise<void> {
+		_log("update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
 		return new Promise(async (resolve, _reject) => {
 			if (await this.sendChange(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
 				this.scroll()
@@ -234,9 +236,12 @@ export class FilerManager {
 		this.data.elapse = 0
 		this.data.search = true
 
+		_log("unwatch", this.id)
 		Native.unwatch(this.id)
 		if (Location.isFile(next)) {
+			_log("watch", this.id, { path: next.path })
 			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
+				_log("watch_callback", this.id, { depth, abstract: _abstract })
 				if (create !== this.data.create || dp < depth) {
 					return
 				}
@@ -387,4 +392,8 @@ export class FilerManager {
 			},
 		)
 	}
+}
+
+function _log(...args: any) {
+	console.log(`\u001b[36m[filer]\u001b[0m`, ...args)
 }
