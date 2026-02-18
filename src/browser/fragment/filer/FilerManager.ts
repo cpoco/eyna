@@ -51,15 +51,14 @@ export class FilerManager {
 			}
 			else {
 				this.data.watch = 1
-				root.send(Bridge.List.Watch.CH, this.id, { watch: this.data.watch })
+				this.sendWatch()
 			}
 		}
 	}
 
 	exit() {
 		this.watch_run = false
-		_log("unwatch", this.id)
-		Native.unwatch(this.id)
+		this.unwatch()
 	}
 
 	mounted(screenSize: number, contentsSize: number): Promise<void> {
@@ -73,7 +72,7 @@ export class FilerManager {
 	resized(h: number) {
 		if (this.sc.screenSize !== h) {
 			this.sc.screenSize = h
-			this.scroll()
+			this.adjustScroll()
 			this.sendCursor()
 		}
 	}
@@ -120,7 +119,7 @@ export class FilerManager {
 		_log("update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
 		return new Promise(async (resolve, _reject) => {
 			if (await this.sendChange(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
-				this.scroll()
+				this.adjustScroll()
 				this.sendScan()
 				this.sendAttrAll()
 				this.sendMarkAll()
@@ -129,7 +128,7 @@ export class FilerManager {
 		})
 	}
 
-	scroll() {
+	adjustScroll() {
 		const contPos = this.sc.contentsSize * this.data.cursor
 		const drawPos = contPos - this.sc.contentsPosition
 		const margin = Math.min(this.sc.contentsSize, (this.sc.screenSize - this.sc.contentsSize) / 2) // スクロール時に選択位置が端でない限りマージンを設ける
@@ -168,6 +167,26 @@ export class FilerManager {
 		}
 
 		return 0
+	}
+
+	private unwatch() {
+		_log("unwatch", this.id)
+		Native.unwatch(this.id)
+	}
+
+	private watch(next: Location.Data, create: number, dp: number) {
+		if (Location.isFile(next)) {
+			_log("watch", this.id, { path: next.path })
+			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
+				_log("watch_callback", this.id, { depth, abstract: _abstract })
+				if (create !== this.data.create || dp < depth) {
+					return
+				}
+				if (this.watch_queue.length === 0 || this.watch_queue.at(-1) !== next.frn) {
+					this.watch_queue.push(next.frn)
+				}
+			})
+		}
 	}
 
 	private sendTitle(next: Location.Data | null = null) {
@@ -236,20 +255,8 @@ export class FilerManager {
 		this.data.elapse = 0
 		this.data.search = true
 
-		_log("unwatch", this.id)
-		Native.unwatch(this.id)
-		if (Location.isFile(next)) {
-			_log("watch", this.id, { path: next.path })
-			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
-				_log("watch_callback", this.id, { depth, abstract: _abstract })
-				if (create !== this.data.create || dp < depth) {
-					return
-				}
-				if (this.watch_queue.length === 0 || this.watch_queue[this.watch_queue.length - 1] !== next.frn) {
-					this.watch_queue.push(next.frn)
-				}
-			})
-		}
+		this.unwatch()
+		this.watch(next, create, dp)
 
 		this.sendTitle(next)
 		root.send(
@@ -389,6 +396,16 @@ export class FilerManager {
 				_slice: Util.dict<boolean>(start, end, (i) => {
 					return this.data.mk[i]
 				}),
+			},
+		)
+	}
+
+	sendWatch() {
+		root.send(
+			Bridge.List.Watch.CH,
+			this.id,
+			{
+				watch: this.data.watch,
 			},
 		)
 	}
