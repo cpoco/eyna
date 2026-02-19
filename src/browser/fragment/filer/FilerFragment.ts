@@ -253,6 +253,7 @@ export class FilerFragment extends AbstractFragment {
 						active.adjustScroll()
 						active.sendScan()
 						active.sendAttrAll()
+						active.sendMarkAll()
 					}
 					resolve()
 				})
