@@ -17,18 +17,19 @@
 		"@vue/runtime-dom": "3.5.28",
 		"codemirror": "6.0.2",
 		"electron": "40.4.1",
-		"electron-builder": "26.8.0",
+		"electron-builder": "26.8.1",
 		"esbuild": "0.27.3",
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.3",
 		"stylus": "0.64.0",
-		"tar": "7.5.7",
+		"tar": "7.5.9",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3"
 	},
 	"overrides": {
 		"dompurify": "3",
 		"glob": "13",
+		"minimatch": "10",
 		"rimraf": "6"
 	},
 	"scripts": {
