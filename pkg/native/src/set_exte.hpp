@@ -13,6 +13,10 @@ void set_exte(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	v8::Local<v8::Array> array = info[0].As<v8::Array>();
+	if (100 < array->Length()) {
+		ISOLATE->ThrowException(to_string(ERROR_INVALID_ARGUMENT));
+		return;
+	}
 
 	multi_exte.clear();
 

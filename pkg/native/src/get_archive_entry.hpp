@@ -204,6 +204,11 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	async->seek = info[3].As<v8::BigInt>()->Int64Value();
+	if (async->seek < 0) {
+		ISOLATE->ThrowException(to_string(ERROR_INVALID_ARGUMENT));
+		delete async;
+		return;
+	}
 
 	v8::Local<v8::Object> readable = info[0].As<v8::Object>();
 
