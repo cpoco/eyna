@@ -3,8 +3,8 @@ import * as perf_hooks from "node:perf_hooks"
 import * as Native from "@eyna/native/lib/browser"
 import * as Util from "@eyna/util"
 
+import { SysConfig } from "@/browser/conf/SysConfig"
 import { Location } from "@/browser/core/Location"
-import { Path } from "@/browser/core/Path"
 
 export class Dir {
 	static readonly HOME: string = "home"
@@ -34,7 +34,7 @@ export class Dir {
 		if (Location.isHome(location)) {
 			this.dp = 0
 			this.rg = null
-			const st = [_attr(Native.FileType.HomeUser, Dir.HOME, Dir.HOME)]
+			const st = [_attr(Native.FileType.Favorite, Dir.HOME, Dir.HOME)]
 			Native.getVolume().then(
 				(vol: Native.Volume[]) => {
 					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
@@ -42,7 +42,9 @@ export class Dir {
 					for (const v of vol) {
 						ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
 					}
-					ls.push([_attr(Native.FileType.HomeUser, Path.home(), "user")])
+					for (const f of SysConfig.data.favorites) {
+						ls.push([_attr(Native.FileType.Favorite, f.path, f.name)])
+					}
 					cb(location.frn, st, ls, 0)
 				},
 			)
