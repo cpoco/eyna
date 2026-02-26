@@ -112,13 +112,13 @@ void attribute(_attribute& attribute)
 
 				HANDLE handle = CreateFileW(attribute.full.c_str(), 0, 0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
 
-				if (handle != NULL) {
+				if (handle != INVALID_HANDLE_VALUE) {
 
 					int8_t buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
 					REPARSE_DATA_BUFFER* reparse_data = (REPARSE_DATA_BUFFER*)buffer;
 					DWORD bytes;
 
-					if (handle != INVALID_HANDLE_VALUE && DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, NULL, 0, buffer, sizeof(buffer), &bytes, NULL)) {
+					if (DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, NULL, 0, buffer, sizeof(buffer), &bytes, NULL)) {
 						// シンボリック
 						if (reparse_data->ReparseTag == IO_REPARSE_TAG_SYMLINK) {
 							_string_t str(
