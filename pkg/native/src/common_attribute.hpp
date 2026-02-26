@@ -242,13 +242,11 @@ void attribute(_attribute& attribute)
 			}
 
 			if (attribute.file_type == FILE_TYPE::FILE_TYPE_LINK) {
-				if ([[dic objectForKey:NSURLIsAliasFileKey] boolValue]) {
-					attribute.link_type = LINK_TYPE::LINK_TYPE_SYMBOLIC;
+				attribute.link_type = LINK_TYPE::LINK_TYPE_SYMBOLIC;
 
-					_char_t link[PATH_MAX] = {};
-					if (-1 != readlink(attribute.full.c_str(), link, PATH_MAX)) {
-						attribute.link = std::filesystem::path(_string_t(link));
-					}
+				_char_t link[PATH_MAX] = {};
+				if (-1 != readlink(attribute.full.c_str(), link, PATH_MAX)) {
+					attribute.link = std::filesystem::path(_string_t(link));
 				}
 			}
 			else if (attribute.file_type == FILE_TYPE::FILE_TYPE_FILE) {
