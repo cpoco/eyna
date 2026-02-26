@@ -29,7 +29,7 @@ export function exists(abstract: string): Promise<boolean> {
 	return native.exists(abstract)
 }
 
-export function getArchive(abstract: string, base: string, depth: number = 0): Promise<Type.Archive> {
+export function getArchive(abstract: string, base: string = "", depth: number = 0): Promise<Type.Archive> {
 	return native.getArchive(abstract, base, depth)
 }
 
