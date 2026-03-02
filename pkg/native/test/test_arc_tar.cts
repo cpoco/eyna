@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR } from "./_util.cts"
+import { ERROR, readStream } from "./_util.cts"
 
 const main = async () => {
 	const TAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tar")
@@ -94,6 +94,33 @@ const main = async () => {
 			async () => await native.getArchive(error_path, ""),
 			(err) => err === ERROR.INVALID_PATH,
 		)
+	}
+
+	{
+		const entry1 = await native.getArchiveEntry(TAR, "file.txt")
+		assert.strictEqual(entry1.size, 8n)
+		const buf1 = await readStream(entry1.reader)
+		assert.strictEqual(buf1.toString(), "file.txt")
+
+		const entry2 = await native.getArchiveEntry(TAR, "dir/file.txt")
+		assert.strictEqual(entry2.size, 12n)
+		const buf2 = await readStream(entry2.reader)
+		assert.strictEqual(buf2.toString(), "dir/file.txt")
+
+		const entry3 = await native.getArchiveEntry(TAR, "🍋")
+		assert.strictEqual(entry3.size, 4n)
+		const buf3 = await readStream(entry3.reader)
+		assert.strictEqual(buf3.toString(), "🍋")
+
+		const entry4 = await native.getArchiveEntry(TAR, "🍋‍🟩")
+		assert.strictEqual(entry4.size, 11n)
+		const buf4 = await readStream(entry4.reader)
+		assert.strictEqual(buf4.toString(), "🍋‍🟩")
+
+		const entry5 = await native.getArchiveEntry(TAR, "🍋‍🟩", 7n)
+		assert.strictEqual(entry5.size, 11n)
+		const buf5 = await readStream(entry5.reader)
+		assert.strictEqual(buf5.toString(), "🟩")
 	}
 
 	for (const error_path of [".", "./", "..", "../"]) {
