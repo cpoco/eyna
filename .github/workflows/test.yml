@@ -40,6 +40,7 @@ jobs:
           npx tsx pkg/native/test/test_link.cts
           npx tsx pkg/native/test/test_operation.cts
           npx tsx pkg/native/test/test_os.cts
+          npx tsx pkg/native/test/test_arc.cts
           npx tsx pkg/native/test/test_arc_tar.cts
           npx tsx pkg/native/test/test_arc_tgz.cts
           npx tsx pkg/native/test/test_arc_zip.cts
