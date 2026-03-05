@@ -86,7 +86,7 @@ void attribute(_attribute& attribute)
 				time -= 116444736000000000;
 			}
 			attribute.time = time / 10000000;
-			attribute.nsec = time % 10000000;
+			attribute.nsec = (time % 10000000) * 100;
 
 			attribute.win_attribute = info.dwFileAttributes;
 
