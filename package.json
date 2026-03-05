@@ -24,7 +24,7 @@
 		"stylus": "0.64.0",
 		"tar": "7.5.10",
 		"tsx": "4.21.0",
-		"typescript": "5.9.3"
+		"typescript": "6.0.0-beta"
 	},
 	"overrides": {
 		"dompurify": "3",
