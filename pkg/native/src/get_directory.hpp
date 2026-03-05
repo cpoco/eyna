@@ -162,6 +162,11 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	}
 
 	work->dp = info[3]->Int32Value(CONTEXT).ToChecked();
+	if (work->dp < 0 || 100 < work->dp) {
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
+		delete work;
+		return;
+	}
 
 	if (info[4]->IsNull()) {
 		work->pt = V("");

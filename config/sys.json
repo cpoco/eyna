@@ -3,5 +3,11 @@
 	"ver": "0.1",
 	"styleFontFamily": "Consolas, Menlo, monospace",
 	"styleFontSize": 14,
-	"styleLineHeight": 18
+	"styleLineHeight": 18,
+	"favorites": [
+		{
+			"name": "home",
+			"path": "~"
+		}
+	]
 }

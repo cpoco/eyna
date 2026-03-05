@@ -1,7 +1,7 @@
 import module from "node:module"
 import path from "node:path"
 
-import { install } from "@eyna/lib/scripts/_vcpkg.mts"
+import { install, status } from "@eyna/lib/scripts/_vcpkg.mts"
 import { headers } from "./_headers.mts"
 
 const __top = path.join(import.meta.dirname, "..")
@@ -17,6 +17,13 @@ try {
 
 	console.log(`\x1b[34mpostinstall vcpkg-install\x1b[0m`)
 	await install("inherit")
+
+	console.log("")
+	const packages = await status()
+	for (const [name, version] of Object.entries(packages)) {
+		console.log(`\x1b[36m${name}: ${version}\x1b[0m`)
+	}
+	console.log("")
 
 	console.log(`\x1b[34mpostinstall complete\x1b[0m`)
 }

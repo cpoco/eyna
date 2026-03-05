@@ -153,8 +153,8 @@ const attr = vue.defineComponent({
 			else if (attr.value.one?.file_type === Native.FileType.Drive) {
 				return "c-drive"
 			}
-			else if (attr.value.one?.file_type === Native.FileType.HomeUser) {
-				return "c-homeuser"
+			else if (attr.value.one?.file_type === Native.FileType.Favorite) {
+				return "c-favorite"
 			}
 			else if (attr.value.one?.file_type === Native.FileType.Special) {
 				return "c-special"
@@ -214,7 +214,7 @@ const attr = vue.defineComponent({
 
 		const date = vue.computed((): { date: string; time: string } | undefined => {
 			if (
-				attr.value.one?.file_type === Native.FileType.Drive || attr.value.one?.file_type === Native.FileType.HomeUser
+				attr.value.one?.file_type === Native.FileType.Drive || attr.value.one?.file_type === Native.FileType.Favorite
 			) {
 				return undefined
 			}

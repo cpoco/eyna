@@ -131,7 +131,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				active.cursorUp()
-				active.scroll()
+				active.adjustScroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
@@ -143,7 +143,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				active.cursorUp(active.mv)
-				active.scroll()
+				active.adjustScroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
@@ -155,7 +155,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				active.cursorDown()
-				active.scroll()
+				active.adjustScroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
@@ -167,7 +167,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				active.cursorDown(active.mv)
-				active.scroll()
+				active.adjustScroll()
 				active.sendCursor()
 				return Promise.resolve()
 			})
@@ -250,9 +250,10 @@ export class FilerFragment extends AbstractFragment {
 							false,
 						)
 					) {
-						active.scroll()
+						active.adjustScroll()
 						active.sendScan()
 						active.sendAttrAll()
+						active.sendMarkAll()
 					}
 					resolve()
 				})
@@ -274,7 +275,7 @@ export class FilerFragment extends AbstractFragment {
 					if (trgt.file_type === Native.FileType.File) {
 						if (Location.isFile(active.location)) {
 							if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
-								active.scroll()
+								active.adjustScroll()
 								active.sendScan()
 								active.sendAttrAll()
 							}
@@ -372,26 +373,26 @@ export class FilerFragment extends AbstractFragment {
 						return
 					}
 					// drive
-					// homeuser
+					// favorite
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
 						attr.file_type === Native.FileType.Drive
-						|| attr.file_type === Native.FileType.HomeUser
+						|| attr.file_type === Native.FileType.Favorite
 						|| attr.file_type === Native.FileType.Directory
 						|| attr.file_type === Native.FileType.Link
 							&& trgt.file_type === Native.FileType.Directory
 					) {
 						if (Location.isHome(active.location) || Location.isFile(active.location)) {
 							if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
-								active.scroll()
+								active.adjustScroll()
 								active.sendScan()
 								active.sendAttrAll()
 							}
 						}
 						else if (Location.isArch(active.location)) {
 							if (await active.sendChange(Location.toArch(active.location.path, attr.full), 0, null, null, false)) {
-								active.scroll()
+								active.adjustScroll()
 								active.sendScan()
 								active.sendAttrAll()
 							}
@@ -405,7 +406,7 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						if (Location.isFile(active.location)) {
 							if (await active.sendChange(Location.toFile(trgt.full), 0, null, null, false)) {
-								active.scroll()
+								active.adjustScroll()
 								active.sendScan()
 								active.sendAttrAll()
 							}
@@ -421,7 +422,7 @@ export class FilerFragment extends AbstractFragment {
 						if (Location.isFile(active.location)) {
 							if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
 								if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
-									active.scroll()
+									active.adjustScroll()
 									active.sendScan()
 									active.sendAttrAll()
 								}
@@ -530,7 +531,7 @@ export class FilerFragment extends AbstractFragment {
 				return new Promise(async (resolve, _reject) => {
 					const next = Location.updir(active.location.frn)
 					if (await active.sendChange(next.frn, 0, null, next.anchor ?? null, false)) {
-						active.scroll()
+						active.adjustScroll()
 						active.sendScan()
 						active.sendAttrAll()
 					}
@@ -540,7 +541,7 @@ export class FilerFragment extends AbstractFragment {
 			.on2("list.targetequal", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
 					if (await target.sendChange(active.location.frn, 0, null, null, false)) {
-						target.scroll()
+						target.adjustScroll()
 						target.sendScan()
 						target.sendAttrAll()
 					}
@@ -556,18 +557,18 @@ export class FilerFragment extends AbstractFragment {
 						return
 					}
 					// drive
-					// homeuser
+					// favorite
 					// directory
 					// link(symbolic or junction) -> directory
 					if (
 						attr.file_type === Native.FileType.Drive
-						|| attr.file_type === Native.FileType.HomeUser
+						|| attr.file_type === Native.FileType.Favorite
 						|| attr.file_type === Native.FileType.Directory
 						|| attr.file_type === Native.FileType.Link
 							&& trgt.file_type === Native.FileType.Directory
 					) {
 						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
-							target.scroll()
+							target.adjustScroll()
 							target.sendScan()
 							target.sendAttrAll()
 						}
@@ -579,7 +580,7 @@ export class FilerFragment extends AbstractFragment {
 						&& trgt.file_type === Native.FileType.Directory
 					) {
 						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
-							target.scroll()
+							target.adjustScroll()
 							target.sendScan()
 							target.sendAttrAll()
 						}
@@ -632,7 +633,7 @@ export class FilerFragment extends AbstractFragment {
 						continue
 					}
 					active.data.cursor = i
-					active.scroll()
+					active.adjustScroll()
 					active.sendCursor()
 					return Promise.resolve()
 				}
@@ -657,7 +658,7 @@ export class FilerFragment extends AbstractFragment {
 						continue
 					}
 					active.data.cursor = i
-					active.scroll()
+					active.adjustScroll()
 					active.sendCursor()
 					return Promise.resolve()
 				}

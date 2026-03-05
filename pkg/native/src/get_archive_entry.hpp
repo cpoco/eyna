@@ -180,7 +180,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 		|| !info[2]->IsString()
 		|| !info[3]->IsBigInt())
 	{
-		ISOLATE->ThrowException(to_string(ERROR_INVALID_ARGUMENT));
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		return;
 	}
 
@@ -192,18 +192,23 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	async->abst = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(async->abst) || is_traversal(async->abst)) {
-		ISOLATE->ThrowException(to_string(ERROR_INVALID_PATH));
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete async;
 		return;
 	}
 	async->path = generic_path(to_string(info[2].As<v8::String>()));
 	if (is_traversal(async->path)) {
-		ISOLATE->ThrowException(to_string(ERROR_INVALID_T_PATH));
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_T_PATH));
 		delete async;
 		return;
 	}
 
 	async->seek = info[3].As<v8::BigInt>()->Int64Value();
+	if (async->seek < 0) {
+		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
+		delete async;
+		return;
+	}
 
 	v8::Local<v8::Object> readable = info[0].As<v8::Object>();
 

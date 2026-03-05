@@ -14,6 +14,9 @@
 				"./src/*",
 			],
 		},
+		"types": [
+			"@types/node",
+		],
 
 		// Type Checking
 		"alwaysStrict": true,

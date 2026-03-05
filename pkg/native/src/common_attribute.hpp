@@ -86,7 +86,7 @@ void attribute(_attribute& attribute)
 				time -= 116444736000000000;
 			}
 			attribute.time = time / 10000000;
-			attribute.nsec = time % 10000000;
+			attribute.nsec = (time % 10000000) * 100;
 
 			attribute.win_attribute = info.dwFileAttributes;
 
@@ -112,13 +112,13 @@ void attribute(_attribute& attribute)
 
 				HANDLE handle = CreateFileW(attribute.full.c_str(), 0, 0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
 
-				if (handle != NULL) {
+				if (handle != INVALID_HANDLE_VALUE) {
 
 					int8_t buffer[MAXIMUM_REPARSE_DATA_BUFFER_SIZE];
 					REPARSE_DATA_BUFFER* reparse_data = (REPARSE_DATA_BUFFER*)buffer;
 					DWORD bytes;
 
-					if (handle != INVALID_HANDLE_VALUE && DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, NULL, 0, buffer, sizeof(buffer), &bytes, NULL)) {
+					if (DeviceIoControl(handle, FSCTL_GET_REPARSE_POINT, NULL, 0, buffer, sizeof(buffer), &bytes, NULL)) {
 						// シンボリック
 						if (reparse_data->ReparseTag == IO_REPARSE_TAG_SYMLINK) {
 							_string_t str(
@@ -242,13 +242,11 @@ void attribute(_attribute& attribute)
 			}
 
 			if (attribute.file_type == FILE_TYPE::FILE_TYPE_LINK) {
-				if ([[dic objectForKey:NSURLIsAliasFileKey] boolValue]) {
-					attribute.link_type = LINK_TYPE::LINK_TYPE_SYMBOLIC;
+				attribute.link_type = LINK_TYPE::LINK_TYPE_SYMBOLIC;
 
-					_char_t link[PATH_MAX] = {};
-					if (-1 != readlink(attribute.full.c_str(), link, PATH_MAX)) {
-						attribute.link = std::filesystem::path(_string_t(link));
-					}
+				_char_t link[PATH_MAX] = {};
+				if (-1 != readlink(attribute.full.c_str(), link, PATH_MAX)) {
+					attribute.link = std::filesystem::path(_string_t(link));
 				}
 			}
 			else if (attribute.file_type == FILE_TYPE::FILE_TYPE_FILE) {

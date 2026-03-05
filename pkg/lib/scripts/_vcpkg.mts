@@ -47,3 +47,38 @@ export async function install(stdout: IOType = "ignore") {
 			})
 	})
 }
+
+export async function status(): Promise<Record<string, string>> {
+	const file = path.join(__top, "vcpkg_installed", "vcpkg", "status")
+	const data = await fs.promises.readFile(file, "utf-8")
+
+	const status: Record<string, string> = {}
+	const items = data.split("\n\n")
+
+	for (const item of items) {
+		const lines = item.split("\n")
+
+		let pkg: string | null = null
+		let ver: string | null = null
+
+		for (const line of lines) {
+			if (line.indexOf("Package: ") === 0) {
+				pkg = line.slice("Package: ".length).trim()
+			}
+			else if (line.indexOf("Version: ") === 0) {
+				ver = line.slice("Version: ".length).trim()
+			}
+		}
+
+		if (pkg && ver) {
+			status[pkg] = ver
+		}
+	}
+
+	const sorted: Record<string, string> = {}
+	for (const key of Object.keys(status).sort()) {
+		sorted[key] = status[key]
+	}
+
+	return sorted
+}

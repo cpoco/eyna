@@ -19,7 +19,6 @@ import { SystemFragment } from "@/browser/fragment/system/SystemFragment"
 import { ViewerFragment } from "@/browser/fragment/viewer/ViewerFragment"
 import { Protocol } from "@/browser/Protocol"
 
-// @ts-ignore
 import drugBase64 from "@/app/asset/drug.png"
 const drug = electron.nativeImage.createFromDataURL(`data:image/png;base64,${drugBase64}`)
 

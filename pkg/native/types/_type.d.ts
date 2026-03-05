@@ -4,7 +4,7 @@ declare namespace Type {
 		ShallowFirst = 1,
 	}
 	enum FileType {
-		HomeUser = -2,
+		Favorite = -2,
 		Drive = -1,
 		None = 0,
 		Directory = 1,
