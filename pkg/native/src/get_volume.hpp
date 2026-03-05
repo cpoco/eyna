@@ -34,18 +34,21 @@ static void get_volume_async(uv_work_t *req)
 			}
 		}
 	#elif OS_MAC64
-		NSArray* array = [[NSFileManager defaultManager] mountedVolumeURLsIncludingResourceValuesForKeys:nil options:NSVolumeEnumerationSkipHiddenVolumes];
+		NSArray* array = [[NSFileManager defaultManager]
+			mountedVolumeURLsIncludingResourceValuesForKeys:@[NSURLVolumeNameKey]
+			options:NSVolumeEnumerationSkipHiddenVolumes];
 
 		for (NSURL* url in array) {
-			NSError* error = nil;
-			NSDictionary* dic = [url resourceValuesForKeys:@[
-				NSURLVolumeNameKey
-			] error:&error];
+			NSString* name = nil;
+			[url getResourceValue:&name forKey:NSURLVolumeNameKey error:nil];
+			if (name == nil) {
+				name = [[url path] lastPathComponent];
+			}
 
 			work->volumes.push_back(_volume());
 
 			_volume& v = work->volumes.back();
-			v.name = _string_t([[dic objectForKey:NSURLVolumeNameKey] UTF8String]);
+			v.name = _string_t([name UTF8String]);
 			v.full = std::filesystem::path(_string_t([[url path] UTF8String]));
 		}
 	#endif
