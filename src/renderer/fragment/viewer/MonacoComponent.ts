@@ -1,13 +1,9 @@
 /// <reference types="monaco-editor/monaco.d.ts" />
 
-// @types/requirejs
-declare const require: {
-	(modules: string[], ready: Function): void
-}
-
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import * as Monaco from "@/renderer/fragment/viewer/Monaco"
 
 const EDIT = "edit"
 
@@ -52,26 +48,10 @@ export const V = vue.defineComponent({
 			})
 			editor = monaco.editor.create(
 				edit.value!,
-				{
-					readOnly: true,
-					domReadOnly: true,
-
-					automaticLayout: true,
-					contextmenu: false,
-					links: false,
-
-					renderWhitespace: "all",
-					theme: "vs-dark",
+				Monaco.options({
 					fontSize: sys.reactive.style.fontSize,
 					lineHeight: sys.reactive.style.lineHeight,
-					matchBrackets: "never",
-					wordWrap: "off",
-
-					unicodeHighlight: {
-						ambiguousCharacters: false,
-						invisibleCharacters: false,
-					},
-				},
+				}),
 			)
 			editor.addCommand(monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
@@ -89,7 +69,7 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
-			require(["vs/editor/editor.main"], ready)
+			Monaco.load(ready)
 		})
 
 		vue.onBeforeUnmount(() => {
