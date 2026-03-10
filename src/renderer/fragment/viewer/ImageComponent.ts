@@ -25,11 +25,14 @@ export const V = vue.defineComponent({
 		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
 			img.value!.onload = () => {
 				head.value = `${img.value!.naturalWidth.toLocaleString()}`
 					+ ` x ${img.value!.naturalHeight.toLocaleString()}`
 					+ ` | ${props.size.toLocaleString()} byte`
 					+ ` | ${window.devicePixelRatio}`
+				prog.value = false
 			}
 			vue.nextTick(() => {
 				img.value!.src = props.href
@@ -67,11 +70,24 @@ export const V = vue.defineComponent({
 				vue.h("img", {
 					ref: IMG,
 					class: { "viewer-image-img": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
 				}, undefined),
-				vue.h("div", { class: { "viewer-image-line-l": true } }),
-				vue.h("div", { class: { "viewer-image-line-r": true } }),
-				vue.h("div", { class: { "viewer-image-line-t": true } }),
-				vue.h("div", { class: { "viewer-image-line-b": true } }),
+				vue.h("div", {
+					class: { "viewer-image-line-l": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-image-line-r": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-image-line-t": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-image-line-b": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
 			]),
 		])
 	},

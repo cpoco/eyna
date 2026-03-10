@@ -27,8 +27,11 @@ export const V = vue.defineComponent({
 		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
 			aud.value!.onloadeddata = () => {
 				head.value = `${aud.value!.duration} sec | ${props.size.toLocaleString()} byte`
+				prog.value = false
 			}
 			vue.nextTick(() => {
 				src.value!.src = props.href
@@ -98,6 +101,7 @@ export const V = vue.defineComponent({
 				vue.h("audio", {
 					ref: AUD,
 					class: { "viewer-audio-aud": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
 					preload: "none",
 					autoplay: "",
 					controls: "",

@@ -47,8 +47,6 @@ export const V = vue.defineComponent({
 		let editor: monaco.editor.IStandaloneDiffEditor | null = null
 
 		const ready = () => {
-			head.value = `${props.original_size.toLocaleString()} byte`
-				+ ` | ${props.modified_size.toLocaleString()} byte`
 			original = monaco.editor.createModel(
 				"",
 				undefined,
@@ -84,7 +82,6 @@ export const V = vue.defineComponent({
 				modified: modified,
 			})
 
-			prog.value = true
 			Promise.all([
 				fetch(props.original_href)
 					.then((res) => {
@@ -104,6 +101,9 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.original_size.toLocaleString()} byte`
+				+ ` | ${props.modified_size.toLocaleString()} byte`
 			Monaco.load(ready)
 		})
 

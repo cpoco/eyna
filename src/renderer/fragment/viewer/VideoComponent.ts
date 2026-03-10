@@ -27,12 +27,15 @@ export const V = vue.defineComponent({
 		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
 			vid.value!.onloadeddata = () => {
 				head.value = `${vid.value!.videoWidth.toLocaleString()}`
 					+ ` x ${vid.value!.videoHeight.toLocaleString()}`
 					+ ` | ${vid.value!.duration} sec`
 					+ ` | ${props.size.toLocaleString()} byte`
 					+ ` | ${window.devicePixelRatio}`
+				prog.value = false
 			}
 			vue.nextTick(() => {
 				src.value!.src = props.href
@@ -102,6 +105,7 @@ export const V = vue.defineComponent({
 				vue.h("video", {
 					ref: VID,
 					class: { "viewer-video-vid": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
 					preload: "none",
 					autoplay: "",
 					controls: "",
@@ -113,10 +117,22 @@ export const V = vue.defineComponent({
 						ref: SRC,
 					}, undefined),
 				]),
-				vue.h("div", { class: { "viewer-video-line-l": true } }),
-				vue.h("div", { class: { "viewer-video-line-r": true } }),
-				vue.h("div", { class: { "viewer-video-line-t": true } }),
-				vue.h("div", { class: { "viewer-video-line-b": true } }),
+				vue.h("div", {
+					class: { "viewer-video-line-l": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-video-line-r": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-video-line-t": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
+				vue.h("div", {
+					class: { "viewer-video-line-b": true },
+					style: { "visibility": this.prog ? "hidden" : "visible" },
+				}, undefined),
 			]),
 		])
 	},

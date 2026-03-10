@@ -29,8 +29,10 @@ export const V = vue.defineComponent({
 		const prog = vue.ref<boolean>(false)
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
 			embed.value!.onload = () => {
-				head.value = `${props.size.toLocaleString()} byte`
+				prog.value = false
 			}
 			vue.nextTick(() => {
 				embed.value!.type = props.mime

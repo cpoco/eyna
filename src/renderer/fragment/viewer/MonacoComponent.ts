@@ -34,7 +34,6 @@ export const V = vue.defineComponent({
 		let editor: monaco.editor.IStandaloneCodeEditor | null = null
 
 		const ready = () => {
-			head.value = `${props.size.toLocaleString()} byte`
 			model = monaco.editor.createModel(
 				"",
 				undefined,
@@ -56,7 +55,6 @@ export const V = vue.defineComponent({
 			editor.addCommand(monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
 
-			prog.value = true
 			fetch(props.href)
 				.then((res) => {
 					return res.text()
@@ -69,6 +67,8 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
 			Monaco.load(ready)
 		})
 
