@@ -48,6 +48,7 @@ export const V = vue.defineComponent({
 			},
 			(v) => {
 				vue.nextTick(() => {
+					prog.value = true
 					src.value!.src = v
 					vid.value!.load()
 				})

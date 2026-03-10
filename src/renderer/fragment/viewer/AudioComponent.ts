@@ -30,7 +30,8 @@ export const V = vue.defineComponent({
 			prog.value = true
 			head.value = `${props.size.toLocaleString()} byte`
 			aud.value!.onloadeddata = () => {
-				head.value = `${aud.value!.duration} sec | ${props.size.toLocaleString()} byte`
+				head.value = `${aud.value!.duration} sec`
+					+ ` | ${props.size.toLocaleString()} byte`
 				prog.value = false
 			}
 			vue.nextTick(() => {
@@ -44,6 +45,7 @@ export const V = vue.defineComponent({
 			},
 			(v) => {
 				vue.nextTick(() => {
+					prog.value = true
 					src.value!.src = v
 					aud.value!.load()
 				})
