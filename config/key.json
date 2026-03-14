@@ -60,9 +60,9 @@
 		{ "when": "viewer", "key": "backspace",         "cmd": "viewer.close" },
 		{ "when": "viewer", "key": "esc",               "cmd": "viewer.close" },
 
-		{ "when": "always", "key": ["ctrl", "x"],       "cmd": "system.cut"   },
-		{ "when": "always", "key": ["ctrl", "c"],       "cmd": "system.copy"  },
-		{ "when": "always", "key": ["ctrl", "v"],       "cmd": "system.paste" },
+		{ "when": "always", "key": ["ctrl", "x"],       "cmd": "system.cut",   "prm": "prevent" },
+		{ "when": "always", "key": ["ctrl", "c"],       "cmd": "system.copy",  "prm": "prevent" },
+		{ "when": "always", "key": ["ctrl", "v"],       "cmd": "system.paste", "prm": "prevent" },
 
 		{ "when": "always", "key": ["ctrl", "q"],       "cmd": "system.exit" },
 		{ "when": "always", "key": ["alt", "f4"],       "cmd": "system.exit" },
