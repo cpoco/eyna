@@ -99,9 +99,16 @@ class Root {
 			AppConfig.data.wd = this.fragment[Index.Filer].exit()
 			AppConfig.save()
 		})
-		this.browser.webContents.on("before-input-event", async (_event: electron.Event, input: electron.Input) => {
+		this.browser.webContents.on("before-input-event", async (event: electron.Event, input: electron.Input) => {
 			if (input.type === "keyDown") {
-				await this.command(KeyConfig.get(input))
+				const kb = KeyConfig.get(input)
+				if (kb === null) {
+					return
+				}
+				if (kb.prm.includes("prevent")) {
+					event.preventDefault()
+				}
+				await this.command(kb)
 			}
 		})
 
@@ -116,10 +123,7 @@ class Root {
 		this.quit()
 	}
 
-	async command(kb: Command.KeyBind | null): Promise<void> {
-		if (kb === null) {
-			return
-		}
+	async command(kb: Command.KeyBind): Promise<void> {
 		let f: AbstractFragment | null = null
 		switch (kb.when) {
 			case Command.When.Always:

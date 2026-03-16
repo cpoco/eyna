@@ -1,13 +1,9 @@
 /// <reference types="monaco-editor/monaco.d.ts" />
 
-// @types/requirejs
-declare const require: {
-	(modules: string[], ready: Function): void
-}
-
 import * as vue from "@vue/runtime-dom"
 
 import * as SystemProvider from "@/renderer/fragment/system/SystemProvider"
+import * as Monaco from "@/renderer/fragment/viewer/Monaco"
 
 const EDIT = "edit"
 
@@ -38,7 +34,6 @@ export const V = vue.defineComponent({
 		let editor: monaco.editor.IStandaloneCodeEditor | null = null
 
 		const ready = () => {
-			head.value = `${props.size.toLocaleString()} byte`
 			model = monaco.editor.createModel(
 				"",
 				undefined,
@@ -52,31 +47,14 @@ export const V = vue.defineComponent({
 			})
 			editor = monaco.editor.create(
 				edit.value!,
-				{
-					readOnly: true,
-					domReadOnly: true,
-
-					automaticLayout: true,
-					contextmenu: false,
-					links: false,
-
-					renderWhitespace: "all",
-					theme: "vs-dark",
+				Monaco.options({
 					fontSize: sys.reactive.style.fontSize,
 					lineHeight: sys.reactive.style.lineHeight,
-					matchBrackets: "never",
-					wordWrap: "off",
-
-					unicodeHighlight: {
-						ambiguousCharacters: false,
-						invisibleCharacters: false,
-					},
-				},
+				}),
 			)
 			editor.addCommand(monaco.KeyCode.F1, () => {})
 			editor.setModel(model)
 
-			prog.value = true
 			fetch(props.href)
 				.then((res) => {
 					return res.text()
@@ -89,7 +67,9 @@ export const V = vue.defineComponent({
 		}
 
 		vue.onMounted(() => {
-			require(["vs/editor/editor.main"], ready)
+			prog.value = true
+			head.value = `${props.size.toLocaleString()} byte`
+			Monaco.load(ready)
 		})
 
 		vue.onBeforeUnmount(() => {

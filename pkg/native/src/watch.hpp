@@ -23,6 +23,7 @@ public:
 	~_watch_map()
 	{
 		for (auto& [key, data] : map) {
+			data->callback.Reset();
 			uv_close((uv_handle_t*)data->event, &_watch_map::release);
 		}
 	}
@@ -61,6 +62,7 @@ public:
 
 		uv_fs_event_stop(data->event);
 
+		data->callback.Reset();
 		uv_close((uv_handle_t*)data->event, &_watch_map::release);
 	}
 
