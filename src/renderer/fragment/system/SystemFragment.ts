@@ -15,7 +15,8 @@ export const V = vue.defineComponent({
 
 		root
 			.on(Bridge.System.Active.CH, (_i, data) => {
-				sys.reactive.app.active = data
+				sys.reactive.app.active = data.active
+				sys.reactive.app.background = data.background
 			})
 			.on(Bridge.System.Version.CH, (_i, data) => {
 				sys.reactive.overlay.version = data

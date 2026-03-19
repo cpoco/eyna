@@ -18,7 +18,7 @@ export const V = vue.defineComponent({
 	},
 
 	render() {
-		return vue.h(TAG, { class: { "navbar-fragment": true, "navbar-fragment-inactive": !this.app.active } }, [
+		return vue.h(TAG, { class: { "navbar-fragment": true }, style: { background: this.app.background } }, [
 			vue.h("div", { class: { "navbar-title": true } }, Unicode.highlight(this.title.wd, this.title.err)),
 		])
 	},

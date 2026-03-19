@@ -47,7 +47,9 @@ class Root {
 	private path: string = ""
 	private fragment!: [SystemFragment, NavbarFragment, FilerFragment, ModalFragment, ViewerFragment]
 	private browser!: electron.BrowserWindow
+
 	private active: boolean = false
+	private background: string = Conf.NAVBAR_INACTIVE.BACKGROUND
 
 	create(path: string) {
 		this.path = path
@@ -66,14 +68,20 @@ class Root {
 	}
 
 	private _ready = (_event: electron.Event, _launchInfo: (Record<string, any>) | (electron.NotificationResponse)) => {
+		const active: Electron.TitleBarOverlay = {
+			color: Conf.NAVBAR_ACTIVE.BACKGROUND,
+			symbolColor: Conf.NAVBAR_ACTIVE.SYMBOL,
+			height: Conf.NAVBAR_HEIGHT,
+		}
+		const inactive: Electron.TitleBarOverlay = {
+			color: Conf.NAVBAR_INACTIVE.BACKGROUND,
+			symbolColor: Conf.NAVBAR_INACTIVE.SYMBOL,
+			height: Conf.NAVBAR_HEIGHT,
+		}
 		const op: Electron.BrowserWindowConstructorOptions = {
 			frame: false,
 			titleBarStyle: "hidden",
-			titleBarOverlay: {
-				color: Conf.COLOR_BACKGROUND,
-				symbolColor: Conf.COLOR_FOREGROUND,
-				height: Conf.NAVBAR_HEIGHT,
-			},
+			titleBarOverlay: active,
 			minWidth: 400,
 			minHeight: 200,
 			webPreferences: {
@@ -81,18 +89,28 @@ class Root {
 				sandbox: true,
 				spellcheck: false,
 			},
-			backgroundColor: Conf.COLOR_BACKGROUND,
+			backgroundColor: Conf.NAVBAR_ACTIVE.BACKGROUND,
 		}
 		Util.merge(op, AppConfig.data.window)
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {
 			this.active = true
-			this.send(Bridge.System.Active.CH, -1, this.active)
+			this.background = Conf.NAVBAR_ACTIVE.BACKGROUND
+			this.browser.setTitleBarOverlay(active)
+			this.send(Bridge.System.Active.CH, -1, {
+				active: this.active,
+				background: this.background,
+			})
 		})
 		this.browser.on("blur", () => {
 			this.active = false
-			this.send(Bridge.System.Active.CH, -1, this.active)
+			this.background = Conf.NAVBAR_INACTIVE.BACKGROUND
+			this.browser.setTitleBarOverlay(inactive)
+			this.send(Bridge.System.Active.CH, -1, {
+				active: this.active,
+				background: this.background,
+			})
 		})
 		this.browser.on("close", (_event: electron.Event) => {
 			AppConfig.data.window = this.browser.getNormalBounds()
@@ -157,6 +175,10 @@ class Root {
 
 	isActive(): boolean {
 		return this.active
+	}
+
+	getBackground(): string {
+		return this.background
 	}
 
 	cut() {

@@ -1,13 +1,18 @@
 export const LIST_COUNT = 3 // 2 〜 any
 
+export const NAVBAR_ACTIVE = {
+	BACKGROUND: "hsla(0,0%,10%,1.00)", // _1_settings.styl#_background
+	SYMBOL: "hsla(0,0%,80%,1.00)",
+}
+export const NAVBAR_INACTIVE = {
+	BACKGROUND: "hsla(0,0%,15%,1.00)",
+	SYMBOL: "hsla(0,0%,65%,1.00)",
+}
 export const NAVBAR_HEIGHT = 32
 
 export const STYLE_FONT_FAMILY = "--dynamic-font-family"
 export const STYLE_FONT_SIZE = "--dynamic-font-size"
 export const STYLE_LINE_HEIGHT = "--dynamic-line-height"
-
-export const COLOR_FOREGROUND = "hsla(0,0%,80%,1.00)" // _1_settings.styl#_foreground
-export const COLOR_BACKGROUND = "hsla(0,0%,10%,1.00)" // _1_settings.styl#_background
 
 export const MULTI_EXTE = [
 	".tar.gz",
