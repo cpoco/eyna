@@ -11,6 +11,7 @@ import { AppConfig } from "@/browser/conf/AppConfig"
 import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
 import { SysConfig } from "@/browser/conf/SysConfig"
 import { Path } from "@/browser/core/Path"
+import { Platform } from "@/browser/core/Platform"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import { FilerFragment } from "@/browser/fragment/filer/FilerFragment"
 import { ModalFragment } from "@/browser/fragment/modal/ModalFragment"
@@ -97,7 +98,9 @@ class Root {
 		this.browser.on("focus", () => {
 			this.active = true
 			this.background = Conf.NAVBAR_ACTIVE.BACKGROUND
-			this.browser.setTitleBarOverlay(active)
+			if (Platform.win) {
+				this.browser.setTitleBarOverlay(active)
+			}
 			this.send(Bridge.System.Active.CH, -1, {
 				active: this.active,
 				background: this.background,
@@ -106,7 +109,9 @@ class Root {
 		this.browser.on("blur", () => {
 			this.active = false
 			this.background = Conf.NAVBAR_INACTIVE.BACKGROUND
-			this.browser.setTitleBarOverlay(inactive)
+			if (Platform.win) {
+				this.browser.setTitleBarOverlay(inactive)
+			}
 			this.send(Bridge.System.Active.CH, -1, {
 				active: this.active,
 				background: this.background,
