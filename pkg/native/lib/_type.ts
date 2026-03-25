@@ -21,6 +21,11 @@ export enum LinkType {
 	Bookmark = 4,
 }
 
+export enum EntryType {
+	Unencrypted = 1,
+	Encrypted = 2,
+}
+
 export type Archive = {
 	readonly full: string
 	readonly base: string
@@ -61,7 +66,7 @@ export type Attribute = {
 		readonly hidden?: boolean
 		readonly system?: boolean
 		readonly cloud?: boolean
-		readonly entry?: number
+		readonly entry?: EntryType
 	}
 }
 

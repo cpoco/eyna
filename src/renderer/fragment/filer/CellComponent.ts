@@ -140,7 +140,7 @@ const attr = vue.defineComponent({
 				else if (attr.value.one?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
-				else if (attr.value.one?.x?.entry === 2) {
+				else if (attr.value.one?.x?.entry === Native.EntryType.Encrypted) {
 					return "c-encrypted"
 				}
 				else {
@@ -193,7 +193,7 @@ const attr = vue.defineComponent({
 			else if (attr.value.two?.file_type === Native.FileType.Special) {
 				return "c-special"
 			}
-			else if (attr.value.one?.x?.entry) {
+			else if (attr.value.one?.x?.entry !== undefined) {
 				return "c-maybe"
 			}
 			else {
