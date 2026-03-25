@@ -140,6 +140,9 @@ const attr = vue.defineComponent({
 				else if (attr.value.one?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
+				else if (attr.value.one?.x?.entry === 2) {
+					return "c-encrypted"
+				}
 				else {
 					return "c-file"
 				}
