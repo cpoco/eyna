@@ -121,7 +121,7 @@ const attr = vue.defineComponent({
 		})
 
 		const icon_url = vue.computed((): string => {
-			if (attr.value.one?.x?.entry !== true) {
+			if (attr.value.one?.x?.entry === undefined) {
 				return `eyna://icon-path/${encodeURIComponent(attr.value.one?.full ?? "")}`
 			}
 			else if (attr.value.one?.file_type === Native.FileType.Directory) {

@@ -118,7 +118,12 @@ static void get_archive_complete(uv_work_t* req, int status)
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
 		x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
-		x->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, true));
+		if (ent.enc == 0) {
+			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)1));
+		}
+		else {
+			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)2));
+		}
 		obj->Set(CONTEXT, to_string(V("x")), x);
 
 		array->Set(CONTEXT, index++, obj);

@@ -51,7 +51,7 @@ declare namespace Type {
 			readonly hidden?: boolean
 			readonly system?: boolean
 			readonly cloud?: boolean
-			readonly entry?: boolean
+			readonly entry?: number
 		}
 	}
 	type Volume = {

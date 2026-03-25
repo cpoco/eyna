@@ -61,7 +61,7 @@ export type Attribute = {
 		readonly hidden?: boolean
 		readonly system?: boolean
 		readonly cloud?: boolean
-		readonly entry?: boolean
+		readonly entry?: number
 	}
 }
 
