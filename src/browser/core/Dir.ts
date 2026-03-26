@@ -107,7 +107,7 @@ export class Dir {
 
 					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(location.frn, st, ls, arc.e)
+					cb(location.frn, st, ls, arc.e + (arc.henc ? 1 : 0))
 				},
 			)
 		}
