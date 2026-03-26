@@ -7,6 +7,7 @@ constexpr size_t BLOCK_SIZE = 0x10000;
 #define IT_INIT_FAILURE -1
 #define IT_OPEN_FAILURE -2
 #define IT_READ_FAILURE -3
+#define IT_HEADER_ENCRYPTED -4
 #define IT_EXCEPTION -10
 
 #define IT_CB_NEXT 0
@@ -55,6 +56,10 @@ int archive_iterator(const std::filesystem::path& path, const archive_iterator_c
 				return IT_SUCCESS;
 			}
 			else if (next == ARCHIVE_FAILED || next == ARCHIVE_FATAL) {
+				int enc = archive_read_has_encrypted_entries(a.get());
+				if (enc == 1) {
+					return IT_HEADER_ENCRYPTED;
+				}
 				return IT_READ_FAILURE;
 			}
 

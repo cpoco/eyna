@@ -26,6 +26,7 @@ declare namespace Type {
 	type Archive = {
 		readonly full: string
 		readonly base: string
+		readonly henc: boolean
 		readonly list: Attribute[]
 		readonly s: bigint
 		readonly d: number
