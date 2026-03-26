@@ -15,6 +15,7 @@ const main = async () => {
 	assert.strictEqual(arc.f, 4)
 	assert.strictEqual(arc.e, 0)
 
+	assert.strictEqual(arc.henc, false)
 	assert.strictEqual(arc.list.length, 9)
 
 	assert.strictEqual(arc.list[0].file_type, 1)
