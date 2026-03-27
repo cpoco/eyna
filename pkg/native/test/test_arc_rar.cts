@@ -6,9 +6,9 @@ import path from "node:path/posix"
 import { ERROR, readStream } from "./_util.cts"
 
 const main = async () => {
-	const TAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tar")
+	const RAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.rar")
 
-	const arc = await native.getArchive(TAR, "", 10)
+	const arc = await native.getArchive(RAR, "", 10)
 
 	assert.strictEqual(arc.s, 35n)
 	assert.strictEqual(arc.d, 5)
@@ -19,7 +19,7 @@ const main = async () => {
 	assert.strictEqual(arc.list.length, 9)
 
 	assert.strictEqual(arc.list[0].file_type, 1)
-	assert.strictEqual(arc.list[0].full, "dir/")
+	assert.strictEqual(arc.list[0].full, "dir")
 	assert.strictEqual(arc.list[0].link_type, 0)
 	assert.strictEqual(arc.list[0].link, null)
 	assert.strictEqual(arc.list[0].size, 0n)
@@ -32,7 +32,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[1].link_type, 0)
 	assert.strictEqual(arc.list[1].link, null)
 	assert.strictEqual(arc.list[1].size, 0n)
-	assert.strictEqual(arc.list[1].time, 0)
+	assert.strictEqual(arc.list[1].time, 1735689600)
 	assert.strictEqual(arc.list[1].nsec, 0)
 	assert.strictEqual(arc.list[1].x?.entry, 1)
 
@@ -41,7 +41,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[2].link_type, 0)
 	assert.strictEqual(arc.list[2].link, null)
 	assert.strictEqual(arc.list[2].size, 0n)
-	assert.strictEqual(arc.list[2].time, 0)
+	assert.strictEqual(arc.list[2].time, 1735689600)
 	assert.strictEqual(arc.list[2].nsec, 0)
 	assert.strictEqual(arc.list[2].x?.entry, 1)
 
@@ -50,12 +50,12 @@ const main = async () => {
 	assert.strictEqual(arc.list[3].link_type, 0)
 	assert.strictEqual(arc.list[3].link, null)
 	assert.strictEqual(arc.list[3].size, 0n)
-	assert.strictEqual(arc.list[3].time, 0)
+	assert.strictEqual(arc.list[3].time, 1735689600)
 	assert.strictEqual(arc.list[3].nsec, 0)
 	assert.strictEqual(arc.list[3].x?.entry, 1)
 
 	assert.strictEqual(arc.list[4].file_type, 1)
-	assert.strictEqual(arc.list[4].full, "dir/dir/dir/dir/dir/")
+	assert.strictEqual(arc.list[4].full, "dir/dir/dir/dir/dir")
 	assert.strictEqual(arc.list[4].link_type, 0)
 	assert.strictEqual(arc.list[4].link, null)
 	assert.strictEqual(arc.list[4].size, 0n)
@@ -107,27 +107,27 @@ const main = async () => {
 	}
 
 	{
-		const entry1 = await native.getArchiveEntry(TAR, "file.txt")
+		const entry1 = await native.getArchiveEntry(RAR, "file.txt")
 		assert.strictEqual(entry1.size, 8n)
 		const buf1 = await readStream(entry1.reader)
 		assert.strictEqual(buf1.toString(), "file.txt")
 
-		const entry2 = await native.getArchiveEntry(TAR, "dir/file.txt")
+		const entry2 = await native.getArchiveEntry(RAR, "dir/file.txt")
 		assert.strictEqual(entry2.size, 12n)
 		const buf2 = await readStream(entry2.reader)
 		assert.strictEqual(buf2.toString(), "dir/file.txt")
 
-		const entry3 = await native.getArchiveEntry(TAR, "🍋")
+		const entry3 = await native.getArchiveEntry(RAR, "🍋")
 		assert.strictEqual(entry3.size, 4n)
 		const buf3 = await readStream(entry3.reader)
 		assert.strictEqual(buf3.toString(), "🍋")
 
-		const entry4 = await native.getArchiveEntry(TAR, "🍋‍🟩")
+		const entry4 = await native.getArchiveEntry(RAR, "🍋‍🟩")
 		assert.strictEqual(entry4.size, 11n)
 		const buf4 = await readStream(entry4.reader)
 		assert.strictEqual(buf4.toString(), "🍋‍🟩")
 
-		const entry5 = await native.getArchiveEntry(TAR, "🍋‍🟩", 7n)
+		const entry5 = await native.getArchiveEntry(RAR, "🍋‍🟩", 7n)
 		assert.strictEqual(entry5.size, 11n)
 		const buf5 = await readStream(entry5.reader)
 		assert.strictEqual(buf5.toString(), "🟩")
@@ -135,11 +135,11 @@ const main = async () => {
 
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
-			async () => await native.getArchive(TAR, error_path),
+			async () => await native.getArchive(RAR, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 		await assert.rejects(
-			async () => await native.getArchiveEntry(TAR, error_path),
+			async () => await native.getArchiveEntry(RAR, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 	}
@@ -148,7 +148,7 @@ const main = async () => {
 try {
 	main().then(() => {
 		console.log("")
-		console.log("done (test_arc_tar)")
+		console.log("done (test_arc_rar)")
 	})
 }
 catch (err) {

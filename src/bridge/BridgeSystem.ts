@@ -2,7 +2,10 @@ export namespace System {
 	// renderer -> browser
 	export namespace Active {
 		export const CH = "system-active"
-		export type Data = boolean
+		export type Data = {
+			active: boolean
+			background: string
+		}
 	}
 
 	// renderer -> browser
@@ -27,6 +30,7 @@ export namespace System {
 			app: {
 				ready: boolean
 				active: boolean
+				background: string
 			}
 			overlay: {
 				version: boolean

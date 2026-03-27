@@ -368,7 +368,7 @@ export class FilerFragment extends AbstractFragment {
 				return new Promise(async (resolve, reject) => {
 					const attr = Util.first(active.data.ls[active.data.cursor])
 					const trgt = Util.last(active.data.ls[active.data.cursor])
-					if (attr === null || trgt === null) {
+					if (attr === null || trgt === null || attr.x?.entry === Native.EntryType.Encrypted) {
 						resolve()
 						return
 					}

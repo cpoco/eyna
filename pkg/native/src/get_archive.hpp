@@ -14,7 +14,9 @@ struct get_archive_work
 	int min_depth;
 	int max_depth;
 
+	bool henc; // header encrypted
 	std::map<std::filesystem::path, _entry> m;
+
 	int64_t s; // size
 	int32_t d; // directory count
 	int32_t f; // file count
@@ -26,7 +28,7 @@ static void get_archive_async(uv_work_t* req)
 {
 	get_archive_work* work = static_cast<get_archive_work*>(req->data);
 
-	archive_iterator(
+	int it = archive_iterator(
 		work->abst,
 		[&work](struct archive* a, struct archive_entry* entry) -> int
 		{
@@ -74,6 +76,10 @@ static void get_archive_async(uv_work_t* req)
 			return IT_CB_NEXT;
 		}
 	);
+
+	if (it == IT_HEADER_ENCRYPTED) {
+		work->henc = true;
+	}
 }
 
 // uv_after_work_cb
@@ -118,7 +124,12 @@ static void get_archive_complete(uv_work_t* req, int status)
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
 		x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
-		x->Set(CONTEXT, to_string(V("entry")),    v8::Boolean::New(ISOLATE, true));
+		if (ent.enc == 0) {
+			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)1));
+		}
+		else {
+			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)2));
+		}
 		obj->Set(CONTEXT, to_string(V("x")), x);
 
 		array->Set(CONTEXT, index++, obj);
@@ -127,6 +138,7 @@ static void get_archive_complete(uv_work_t* req, int status)
 	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
 	obj->Set(CONTEXT, to_string(V("full")), to_string(work->abst));
 	obj->Set(CONTEXT, to_string(V("base")), to_string(work->base));
+	obj->Set(CONTEXT, to_string(V("henc")), v8::Boolean::New(ISOLATE, work->henc));
 	obj->Set(CONTEXT, to_string(V("list")), array);
 	obj->Set(CONTEXT, to_string(V("s")), v8::BigInt::New(ISOLATE, work->s));
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
@@ -179,6 +191,7 @@ void get_archive(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
+	work->henc = false;
 	work->m.clear();
 
 	work->s = 0;

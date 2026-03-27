@@ -22,6 +22,7 @@ export class SystemFragment extends AbstractFragment {
 					app: {
 						ready: true,
 						active: root.isActive(),
+						background: root.getBackground(),
 					},
 					overlay: this.overlay,
 					style: {

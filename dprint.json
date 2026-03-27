@@ -1,16 +1,10 @@
 {
-	"incremental": true,
 	"useTabs": true,
 	"typescript": {
 		"semiColons": "asi",
 		"useBraces": "always",
 		"nextControlFlowPosition": "nextLine"
 	},
-	"excludes": [
-		"build",
-		"dist",
-		"**/node_modules"
-	],
 	"plugins": [
 		"https://plugins.dprint.dev/typescript-0.95.15.wasm"
 	]

@@ -6,6 +6,7 @@ type Reactive = {
 	app: {
 		ready: boolean
 		active: boolean
+		background: string
 	}
 	overlay: {
 		version: boolean
@@ -24,6 +25,7 @@ function _create() {
 		app: {
 			ready: false,
 			active: false,
+			background: Conf.NAVBAR_INACTIVE.BACKGROUND,
 		},
 		overlay: {
 			version: false,

@@ -12,8 +12,13 @@
 
 	&-dialog
 		grid-area: 2 / 2
-		overflow hidden
+		overflow: hidden
 		place-self: center
+
+		display: flex
+		flex-direction: column
+		flex-wrap: nowrap
+		gap: 4px
 
 		@media (max-width: 600px + 24px - 1px)
 			min-width: 100%
@@ -22,24 +27,18 @@
 			min-width: 600px
 			max-width: 100%
 
-		padding: 8px
+		padding: 12px
 		background-color: _dark
 		border: solid 1px _dark
 		&:focus
 			border: solid 1px var(--focus)
 
 	&-title
-		margin: 4px
-		overflow: hidden
-		white-space: break-spaces
-		word-break: break-all
 		font-weight: bold
 
+	&-title
 	&-alert
-		margin: 4px
+	&-prompt
 		overflow: hidden
 		white-space: break-spaces
 		word-break: break-all
-
-	&-prompt
-		margin: 4px
