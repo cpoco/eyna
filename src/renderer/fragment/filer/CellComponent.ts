@@ -10,8 +10,8 @@ import root from "@/renderer/Root"
 const TAG = "cell"
 
 export type Cell = {
-	style: {
-		top: string
+	data: {
+		top: number
 	}
 	back: {
 		select: boolean
@@ -46,7 +46,7 @@ export const V = vue.defineComponent({
 			TAG,
 			{
 				class: { "filer-cell": true },
-				style: this.cell.style,
+				"data-top": this.cell.data.top,
 			},
 			this.is_empty
 				? [

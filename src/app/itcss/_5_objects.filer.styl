@@ -119,15 +119,15 @@ _scroll_width = 6px
 		overflow: hidden
 	&-knob
 		position: absolute
-		top: _vue_reactive
+		top: attr(data-top px)
 		width: 100%
-		height: _vue_reactive
+		height: attr(data-height px)
 		background-color: var(--scroll-knob)
 	
 	// CellComponent
 	&-cell
 		position: absolute
-		top: _vue_reactive
+		top: attr(data-top px)
 		width: 100%
 		min-width: 200px
 		height: var(--dynamic-line-height)
