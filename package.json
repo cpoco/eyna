@@ -29,9 +29,7 @@
 	"overrides": {
 		"dompurify": "3",
 		"glob": "13",
-		"minimatch": "10",
-		"rimraf": "6",
-		"yauzl": "3"
+		"rimraf": "6"
 	},
 	"scripts": {
 		"postinstall": "node scripts/postinstall.mts",
