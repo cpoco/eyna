@@ -32,7 +32,7 @@
 		"rimraf": "6"
 	},
 	"scripts": {
-		"postinstall": "node scripts/postinstall.mts",
+		"setup-native": "node scripts/setup-native.mts",
 		"b": "node scripts/build.mts",
 		"p": "node scripts/package.mts",
 		"s": "node scripts/start.mts"

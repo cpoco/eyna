@@ -9,13 +9,13 @@ const __top = path.join(import.meta.dirname, "..")
 const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 
 try {
-	console.log(`\x1b[34mpostinstall headers node-${process.versions.node}\x1b[0m`)
+	console.log(`\x1b[34msetup-native headers node-${process.versions.node}\x1b[0m`)
 	await headers("node", process.versions.node)
 
-	console.log(`\x1b[34mpostinstall headers electron-${electron.version}\x1b[0m`)
+	console.log(`\x1b[34msetup-native headers electron-${electron.version}\x1b[0m`)
 	await headers("electron", electron.version)
 
-	console.log(`\x1b[34mpostinstall vcpkg-install\x1b[0m`)
+	console.log(`\x1b[34msetup-native vcpkg-install\x1b[0m`)
 	await install("inherit")
 
 	console.log("")
@@ -25,7 +25,7 @@ try {
 	}
 	console.log("")
 
-	console.log(`\x1b[34mpostinstall complete\x1b[0m`)
+	console.log(`\x1b[34msetup-native complete\x1b[0m`)
 }
 catch (err) {
 	console.error(err)
