@@ -14,7 +14,7 @@
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.31",
+		"@vue/runtime-dom": "3.5.32",
 		"codemirror": "6.0.2",
 		"electron": "41.1.0",
 		"electron-builder": "26.8.2",
