@@ -33,6 +33,7 @@
 	},
 	"scripts": {
 		"setup-native": "node scripts/setup-native.mts",
+		"setup-electron": "node node_modules/electron/install.js",
 		"b": "node scripts/build.mts",
 		"p": "node scripts/package.mts",
 		"s": "node scripts/start.mts"
