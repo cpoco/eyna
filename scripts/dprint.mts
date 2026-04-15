@@ -1,48 +1,46 @@
-import child_process from "node:child_process"
-import fs from "node:fs"
+import { createContext } from "@dprint/formatter"
+import * as typescript from "@dprint/typescript"
+import fs from "node:fs/promises"
 import path from "node:path"
 
 const __top = path.join(import.meta.dirname, "..")
-const __cache = path.join(__top, "cache", "dprint")
 
-async function fmt(cachedir: string): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		child_process.spawn(
-			"dprint",
-			[
-				"fmt",
-			],
-			{
-				stdio: ["ignore", "inherit", "inherit"],
-				cwd: __top,
-				env: {
-					...process.env,
-					DPRINT_CACHE_DIR: cachedir,
-				},
-			},
-		)
-			.on("close", (code, signal) => {
-				if (code === 0) {
-					resolve()
-				}
-				else if (signal) {
-					reject(new Error(`signal ${signal}`))
-				}
-				else {
-					reject(new Error(`exit code ${code}`))
-				}
+const context = createContext({
+	useTabs: true,
+})
+context.addPlugin(await fs.readFile(typescript.getPath()), {
+	semiColons: "asi",
+	useBraces: "always",
+	nextControlFlowPosition: "nextLine",
+})
+
+async function fmt(pattern: string): Promise<void> {
+	for await (const file of fs.glob(pattern)) {
+		const rel = path.relative(__top, file)
+		try {
+			const code = await fs.readFile(file, "utf-8")
+			const out = context.formatText({
+				filePath: rel,
+				fileText: code,
 			})
-			.on("error", (err) => {
-				reject(err)
-			})
-	})
+			if (code !== out) {
+				console.log(`fmt  ${rel}`)
+				await fs.writeFile(file, out)
+			}
+			else {
+				console.log(`skip ${rel}`)
+			}
+		}
+		catch (error: unknown) {
+			console.error(`err  ${rel}`, error)
+		}
+	}
 }
 
 try {
-	await fs.promises.mkdir(__cache, { recursive: true })
-	await fmt(__cache)
+	await fmt(path.join(__top, "{extension,pkg,scripts,src}", "**", "*.{ts,cts,mts}"))
 }
-catch (err) {
+catch (err: unknown) {
 	console.error(err)
 	process.exit(1)
 }

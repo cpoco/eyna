@@ -11,6 +11,8 @@
 		"pkg/util"
 	],
 	"devDependencies": {
+		"@dprint/formatter": "0.5.1",
+		"@dprint/typescript": "0.95.15",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
