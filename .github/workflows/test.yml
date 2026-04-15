@@ -5,6 +5,9 @@ on:
     branches:
       - develop
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -29,7 +32,9 @@ jobs:
           path: |
             cache
       - run: |
-          npm ci --omit=optional
+          npm ci
+      - run: |
+          npm run setup-native
       - run: |
           node pkg/native/scripts/cmake_node.mts
       - run: |

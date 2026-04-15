@@ -15,7 +15,6 @@ const main = async () => {
 
 	assert.strictEqual(arc.henc, true)
 	assert.strictEqual(arc.list.length, 0)
-	
 }
 
 try {

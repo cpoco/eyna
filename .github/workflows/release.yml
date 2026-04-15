@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -29,7 +32,9 @@ jobs:
           path: |
             cache
       - run: |
-          npm ci --omit=optional
+          npm ci
+      - run: |
+          npm run setup-native
       - run: |
           npm run b
       - run: |

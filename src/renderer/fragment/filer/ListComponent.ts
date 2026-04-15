@@ -190,7 +190,8 @@ export const V = vue.defineComponent({
 				this.list.stat.active
 					? vue.h("div", {
 						class: { "filer-knob": true },
-						style: { top: `${this.list.knob.pos}px`, height: `${this.list.knob.size}px` },
+						"data-top": this.list.knob.pos,
+						"data-height": this.list.knob.size,
 					})
 					: undefined,
 			),

@@ -151,8 +151,8 @@ function _create(count: number) {
 				const s = d.mk?.[k] ?? false
 				const c = d.status === Bridge.Status.Active && d.cursor === k
 				return {
-					style: {
-						top: `${t}px`,
+					data: {
+						top: t,
 					},
 					back: {
 						select: s,

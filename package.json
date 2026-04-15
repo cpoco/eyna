@@ -1,6 +1,6 @@
 {
 	"name": "eyna",
-	"version": "0.0.63",
+	"version": "0.0.64",
 	"private": true,
 	"type": "module",
 	"main": "app/browser.cjs",
@@ -11,14 +11,16 @@
 		"pkg/util"
 	],
 	"devDependencies": {
+		"@dprint/formatter": "0.5.1",
+		"@dprint/typescript": "0.95.15",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.31",
+		"@vue/runtime-dom": "3.5.32",
 		"codemirror": "6.0.2",
-		"electron": "41.1.0",
+		"electron": "41.2.0",
 		"electron-builder": "26.8.2",
-		"esbuild": "0.27.4",
+		"esbuild": "0.28.0",
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.4",
 		"stylus": "0.64.0",
@@ -29,12 +31,11 @@
 	"overrides": {
 		"dompurify": "3",
 		"glob": "13",
-		"minimatch": "10",
-		"rimraf": "6",
-		"yauzl": "3"
+		"rimraf": "6"
 	},
 	"scripts": {
-		"postinstall": "node scripts/postinstall.mts",
+		"setup-native": "node scripts/setup-native.mts",
+		"setup-electron": "node node_modules/electron/install.js",
 		"b": "node scripts/build.mts",
 		"p": "node scripts/package.mts",
 		"s": "node scripts/start.mts"
