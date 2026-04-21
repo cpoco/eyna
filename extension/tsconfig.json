@@ -15,7 +15,7 @@
 			],
 		},
 		"types": [
-			"@types/node",
+			"node",
 		],
 
 		// Type Checking
