@@ -19,7 +19,7 @@
 		"@vue/runtime-dom": "3.5.32",
 		"codemirror": "6.0.2",
 		"electron": "41.2.1",
-		"electron-builder": "26.8.2",
+		"electron-builder": "26.9.0",
 		"esbuild": "0.28.0",
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.4",
