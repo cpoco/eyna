@@ -39,7 +39,7 @@ jobs:
           npm run b
       - run: |
           npm run p
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           name: draft
           draft: true
