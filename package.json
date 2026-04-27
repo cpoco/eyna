@@ -11,13 +11,14 @@
 		"pkg/util"
 	],
 	"devDependencies": {
+		"@codemirror/state": "6.6.0",
+		"@codemirror/view": "6.41.1",
 		"@dprint/formatter": "0.5.1",
 		"@dprint/typescript": "0.95.15",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
 		"@vue/runtime-dom": "3.5.32",
-		"codemirror": "6.0.2",
 		"electron": "41.2.1",
 		"electron-builder": "26.9.0",
 		"esbuild": "0.28.0",
@@ -25,7 +26,6 @@
 		"pug": "3.0.4",
 		"stylus": "0.64.0",
 		"tar": "7.5.13",
-		"tsx": "4.21.0",
 		"typescript": "6.0.3"
 	},
 	"overrides": {
