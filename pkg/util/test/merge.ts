@@ -1,7 +1,7 @@
-// npx tsx test/merge.ts
+// node test/merge.ts
 
-import * as Util from "@eyna/util"
 import assert from "node:assert"
+import * as Util from "../index.ts"
 
 function test(target: unknown, source: unknown, check: (target: unknown) => boolean) {
 	Util.merge(target, source)
