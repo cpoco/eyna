@@ -21,6 +21,10 @@
 		{
 			"name": "zlib",
 			"default-features": false
+		},
+		{
+			"name": "zstd",
+			"default-features": false
 		}
 	]
 }

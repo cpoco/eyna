@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"time"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 var timestamp = time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
@@ -68,6 +70,27 @@ func main() {
 
 		tarWrite(w, "dir/dir/dir/dir/dir/", nil)
 	}
+
+	{
+		f, _ := os.Create("test.tar.zst")
+		defer f.Close()
+
+		zst := zstdWriter(f)
+		defer zst.Close()
+
+		w := tarWriter(zst)
+		defer w.Close()
+
+		tarWrite(w, "🍋", []byte("🍋"))
+		tarWrite(w, "🍋‍🟩", []byte("🍋‍🟩"))
+
+		tarWrite(w, "file.txt", []byte("file.txt"))
+
+		tarWrite(w, "dir/", nil)
+		tarWrite(w, "dir/file.txt", []byte("dir/file.txt"))
+
+		tarWrite(w, "dir/dir/dir/dir/dir/", nil)
+	}
 }
 
 func zipWriter(w io.Writer) *zip.Writer {
@@ -100,6 +123,11 @@ func zipWrite(w *zip.Writer, path string, data []byte) {
 
 func gzipWriter(w io.Writer) *gzip.Writer {
 	return gzip.NewWriter(w)
+}
+
+func zstdWriter(w io.Writer) *zstd.Encoder {
+	enc, _ := zstd.NewWriter(w)
+	return enc
 }
 
 func tarWriter(w io.Writer) *tar.Writer {
