@@ -82,6 +82,7 @@ if(WIN32)
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zlib.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zstd.lib
   )
   target_link_libraries(${PROJECT_NAME} PRIVATE
     kernel32.lib
@@ -131,5 +132,6 @@ if(APPLE)
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libiconv.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/liblzma.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libz.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libzstd.a
   )
 endif()

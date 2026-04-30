@@ -1,5 +1,5 @@
-import { isArray } from "./_is_array"
-import { isDict } from "./_is_dict"
+import { isArray } from "./_is_array.ts"
+import { isDict } from "./_is_dict.ts"
 
 export function merge(target: unknown, source: unknown) {
 	if (target === source) {

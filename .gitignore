@@ -1,7 +1,5 @@
-.DS_Store
 /.vscode
 /build
 /cache
-/codeql
 /dist
 /node_modules

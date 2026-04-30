@@ -9,6 +9,9 @@
 		"module": "Preserve",
 		"moduleResolution": "Bundler",
 
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+
 		"paths": {
 			"@/*": [
 				"./src/*",

@@ -1,7 +1,7 @@
-// npx tsx test/split.ts
+// node test/split.ts
 
-import * as Util from "@eyna/util"
 import assert from "node:assert"
+import * as Util from "../index.ts"
 
 {
 	const ret = Util.split([], "")

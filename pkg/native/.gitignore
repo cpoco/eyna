@@ -1,4 +1,3 @@
-.DS_Store
 /bin
 !/bin/native.node.d.ts
 /build

@@ -1,7 +1,7 @@
-// npx tsx test/is.ts
+// node test/is.ts
 
-import * as Util from "@eyna/util"
 import assert from "node:assert"
+import * as Util from "../index.ts"
 
 // isArray
 {
