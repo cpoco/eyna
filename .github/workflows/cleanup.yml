@@ -1,0 +1,23 @@
+name: cleanup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6.4.0
+        with:
+          node-version: "24"
+      - run: |
+          node .github/scripts/cleanup-runs.mts
+      - run: |
+          node .github/scripts/cleanup-caches.mts
