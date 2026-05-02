@@ -30,6 +30,8 @@ jobs:
           path: |
             cache
       - run: |
+          vcpkg version
+      - run: |
           npm ci
       - run: |
           npm run setup-native
