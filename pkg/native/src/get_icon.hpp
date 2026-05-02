@@ -139,7 +139,7 @@ void get_icon(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->size = 0;
 
-	uv_queue_work(uv_default_loop(), &work->handle, get_icon_async, get_icon_complete);
+	icon_queue_work(&work->handle, get_icon_async, get_icon_complete);
 }
 
 #endif // include guard
