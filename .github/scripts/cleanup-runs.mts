@@ -10,7 +10,8 @@ const headers = {
 	"X-GitHub-Api-Version": "2022-11-28",
 }
 
-const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+const days = Number(process.env.CLEANUP_DAYS ?? 1)
+const threshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 const activeStatuses = new Set(["in_progress", "queued", "waiting"])
 
 console.log(`Deleting runs created before: ${threshold.toISOString()}`)
