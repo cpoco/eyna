@@ -81,7 +81,7 @@ if(WIN32)
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/charset.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zlib.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zs.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zstd.lib
   )
   target_link_libraries(${PROJECT_NAME} PRIVATE
