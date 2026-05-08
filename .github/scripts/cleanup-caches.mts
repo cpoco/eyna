@@ -1,8 +1,12 @@
 const token = process.env.GITHUB_TOKEN
 const repo = process.env.GITHUB_REPOSITORY
 
-if (!token) { throw new Error("GITHUB_TOKEN is not set") }
-if (!repo) { throw new Error("GITHUB_REPOSITORY is not set") }
+if (!token) {
+	throw new Error("GITHUB_TOKEN is not set")
+}
+if (!repo) {
+	throw new Error("GITHUB_REPOSITORY is not set")
+}
 
 const headers = {
 	Authorization: `Bearer ${token}`,
@@ -10,8 +14,15 @@ const headers = {
 	"X-GitHub-Api-Version": "2022-11-28",
 }
 
-const days = Number(process.env.CLEANUP_DAYS ?? 1)
-const threshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
+const rawDays = process.argv[2]
+if (!/^\d+$/.test(rawDays)) {
+	throw new Error(`Invalid days value: "${rawDays}". Must be a non-negative integer.`)
+}
+const days = Number(rawDays)
+if (365 < days) {
+	throw new Error(`Invalid days value: ${days}. Must be 365 or less.`)
+}
+const threshold = new Date(Date.now() - days * 24 * 3600 * 1000)
 
 console.log(`Deleting caches created before: ${threshold.toISOString()}`)
 
@@ -30,7 +41,7 @@ const { actions_caches } = (await res.json()) as {
 const targets = actions_caches.filter(
 	(c) => {
 		return new Date(c.created_at) < threshold
-	}
+	},
 )
 
 if (targets.length === 0) {
