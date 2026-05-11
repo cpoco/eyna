@@ -13,9 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2025-vs2026
             arch: x64
-          - os: macos-latest
+          - os: macos-26
             arch: arm64
     steps:
       - uses: actions/checkout@v6

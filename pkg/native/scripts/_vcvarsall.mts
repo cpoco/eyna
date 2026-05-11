@@ -2,7 +2,7 @@ import child_process from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
-const msvc = path.join("C:", "Program Files", "Microsoft Visual Studio", "2022")
+const msvc = path.join("C:", "Program Files", "Microsoft Visual Studio", "18")
 
 const enterprise = path.join(msvc, "Enterprise", "VC", "Auxiliary", "Build", "vcvarsall.bat")
 const professional = path.join(msvc, "Professional", "VC", "Auxiliary", "Build", "vcvarsall.bat")
