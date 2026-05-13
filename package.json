@@ -14,7 +14,7 @@
 		"@codemirror/state": "6.6.0",
 		"@codemirror/view": "6.41.1",
 		"@dprint/formatter": "0.5.1",
-		"@dprint/typescript": "0.95.15",
+		"@dprint/typescript": "0.96.0",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
