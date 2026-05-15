@@ -1,9 +1,9 @@
 import esbuild from "esbuild"
+import child_process from "node:child_process"
 import fs from "node:fs/promises"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
-import ts from "typescript"
 
 const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
@@ -30,25 +30,36 @@ export async function Conf() {
 
 export async function Check() {
 	let _time = perf_hooks.performance.now()
-	return new Promise<void>((resolve, _) => {
-		const { config } = ts.readConfigFile(conf, ts.sys.readFile)
-		const { options, fileNames } = ts.parseJsonConfigFileContent(config, ts.sys, base)
-		const program = ts.createProgram(fileNames, options)
-		const diagnostics = [
-			...program.getSemanticDiagnostics(),
-			...program.getSyntacticDiagnostics(),
-		]
-		for (const d of diagnostics) {
-			if (!d.file || !d.start) {
-				continue
-			}
-			console.log(
-				d.file.fileName,
-				d.file.getLineAndCharacterOfPosition(d.start).line + 1,
-				ts.flattenDiagnosticMessageText(d.messageText, "\n"),
-			)
-		}
-		resolve()
+	const require = module.createRequire(import.meta.url)
+	const tsc = require.resolve("typescript/bin/tsc")
+
+	return new Promise<void>((resolve, reject) => {
+		child_process.spawn(
+			process.execPath,
+			[
+				tsc,
+				"--project",
+				conf,
+			],
+			{
+				stdio: ["ignore", "inherit", "inherit"],
+				cwd: base,
+			},
+		)
+			.on("close", (code, signal) => {
+				if (code === 0) {
+					resolve()
+				}
+				else if (signal) {
+					reject(new Error(`signal ${signal}`))
+				}
+				else {
+					reject(new Error(`exit code ${code}`))
+				}
+			})
+			.on("error", (err) => {
+				reject(err)
+			})
 	})
 		.then(() => {
 			console.log(`app.check ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
