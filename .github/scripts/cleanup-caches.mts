@@ -14,15 +14,15 @@ const headers = {
 	"X-GitHub-Api-Version": "2022-11-28",
 }
 
-const rawDays = process.argv[2]
-if (!/^\d+$/.test(rawDays)) {
-	throw new Error(`Invalid days value: "${rawDays}". Must be a non-negative integer.`)
+const rawHours = process.argv[2]
+if (!/^\d+$/.test(rawHours)) {
+	throw new Error(`Invalid hours value: "${rawHours}". Must be a non-negative integer.`)
 }
-const days = Number(rawDays)
-if (365 < days) {
-	throw new Error(`Invalid days value: ${days}. Must be 365 or less.`)
+const hours = Number(rawHours)
+if (1000 < hours) {
+	throw new Error(`Invalid hours value: ${hours}. Must be 1000 or less.`)
 }
-const threshold = new Date(Date.now() - days * 24 * 3600 * 1000)
+const threshold = new Date(Date.now() - hours * 3600 * 1000)
 
 console.log(`Deleting caches created before: ${threshold.toISOString()}`)
 

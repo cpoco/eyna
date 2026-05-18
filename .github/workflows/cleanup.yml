@@ -3,10 +3,10 @@ name: cleanup
 on:
   workflow_dispatch:
     inputs:
-      days:
-        description: "days to keep"
+      hours:
+        description: "hours to keep"
         required: true
-        default: 1
+        default: 6
         type: number
 
 permissions:
@@ -24,6 +24,6 @@ jobs:
         with:
           node-version: "24"
       - run: |
-          node .github/scripts/cleanup-runs.mts "${{ inputs.days }}"
+          node .github/scripts/cleanup-runs.mts "${{ inputs.hours }}"
       - run: |
-          node .github/scripts/cleanup-caches.mts "${{ inputs.days }}"
+          node .github/scripts/cleanup-caches.mts "${{ inputs.hours }}"
