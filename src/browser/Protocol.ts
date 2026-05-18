@@ -22,6 +22,7 @@ export class Protocol {
 					standard: true,
 					secure: true,
 					supportFetchAPI: true,
+					corsEnabled: true,
 				},
 			},
 		])
