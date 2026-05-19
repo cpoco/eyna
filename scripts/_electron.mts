@@ -7,7 +7,7 @@ const __cache = path.join(__top, "cache")
 
 const base = "https://github.com/electron/electron/releases/download"
 
-export async function download(version: string, fresh: boolean = false): Promise<void> {
+export async function Download(version: string, fresh: boolean = false): Promise<void> {
 	const outDir = path.join(__cache, "dist")
 
 	if (fresh) {
