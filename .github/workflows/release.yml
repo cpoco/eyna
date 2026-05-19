@@ -44,4 +44,4 @@ jobs:
           name: draft
           draft: true
           prerelease: true
-          files: dist/*.7z
+          files: dist/*.tar.gz
