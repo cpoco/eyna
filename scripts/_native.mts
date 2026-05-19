@@ -1,16 +1,15 @@
 import fs from "node:fs/promises"
-import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
 import { build, configure, setVsCmdEnv } from "@eyna/native/scripts/_cmake.mts"
 
+import electron from "../node_modules/electron/package.json" with { type: "json" }
+
 const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
 const outdir = path.join(__build, "bin")
-
-const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
 
 export async function Build() {
 	let _time = perf_hooks.performance.now()

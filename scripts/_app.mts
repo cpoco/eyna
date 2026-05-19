@@ -5,6 +5,8 @@ import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
 
+import package_json from "../package.json" with { type: "json" }
+
 const __top = path.join(import.meta.dirname, "..")
 const __build = path.join(__top, "build")
 
@@ -13,13 +15,12 @@ const conf = path.join(__top, "tsconfig.json")
 const base = __top
 
 export async function Node() {
-	const json = module.createRequire(import.meta.url)(path.join(__top, "package.json"))
 	return fs.writeFile(
 		path.join(__build, "package.json"),
 		JSON.stringify({
-			name: json.name,
-			version: json.version,
-			main: json.main,
+			name: package_json.name,
+			version: package_json.version,
+			main: package_json.main,
 		}),
 	)
 }

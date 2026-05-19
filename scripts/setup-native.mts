@@ -1,12 +1,7 @@
-import module from "node:module"
-import path from "node:path"
-
 import { install, status } from "@eyna/lib/scripts/_vcpkg.mts"
 import { headers } from "./_headers.mts"
 
-const __top = path.join(import.meta.dirname, "..")
-
-const electron = module.createRequire(import.meta.url)(path.join(__top, "node_modules/electron/package.json"))
+import electron from "../node_modules/electron/package.json" with { type: "json" }
 
 try {
 	console.log(`\x1b[34msetup-native headers node-${process.versions.node}\x1b[0m`)
