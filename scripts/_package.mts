@@ -1,11 +1,14 @@
-import * as ep from "@electron/packager"
 import fs from "node:fs"
 import path from "node:path"
+
+import * as ep from "@electron/packager"
 import * as tar from "tar"
 
 import package_json from "../build/package.json" with { type: "json" }
+import electron from "../node_modules/electron/package.json" with { type: "json" }
 
 const __top = path.join(import.meta.dirname, "..")
+const __cache = path.join(__top, "cache")
 const __build = path.join(__top, "build")
 const __dist = path.join(__top, "dist")
 
@@ -25,7 +28,7 @@ export async function Package() {
 		out: __dist,
 		asar: false,
 		icon: processPlatformIcon(),
-		electronZipDir: path.join(__top, "cache", "dist"),
+		electronZipDir: path.join(__cache, `electron-${electron.version}`),
 		afterComplete: ep.serialHooks([
 			async (options) => {
 				if (options.platform === "win32") {

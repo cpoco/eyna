@@ -22,6 +22,7 @@
 		"@vue/runtime-dom": "3.5.34",
 		"electron": "42.0.1",
 		"esbuild": "0.28.0",
+		"extract-zip": "2.0.1",
 		"monaco-editor": "0.55.1",
 		"pug": "3.0.4",
 		"stylus": "0.64.0",
@@ -35,7 +36,7 @@
 	},
 	"scripts": {
 		"setup-native": "node scripts/setup-native.mts",
-		"setup-electron": "node node_modules/electron/install.js",
+		"setup-electron": "node scripts/setup-electron.mts",
 		"b": "node scripts/build.mts",
 		"p": "node scripts/package.mts",
 		"s": "node scripts/start.mts"

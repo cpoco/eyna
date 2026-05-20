@@ -1,7 +1,8 @@
-import { createContext } from "@dprint/formatter"
-import * as typescript from "@dprint/typescript"
 import fs from "node:fs/promises"
 import path from "node:path"
+
+import { createContext } from "@dprint/formatter"
+import * as typescript from "@dprint/typescript"
 
 const __top = path.join(import.meta.dirname, "..")
 

@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import stream from "node:stream/promises"
 import zlib from "node:zlib"
+
 import * as tar from "tar"
 
 const __top = path.join(import.meta.dirname, "..")
@@ -22,7 +23,7 @@ export async function headers(runtime: "node" | "electron", version: string, fre
 	if (fresh) {
 		await fs.promises.rm(outDir, { recursive: true, force: true })
 	}
-	else if (fs.existsSync(outDir)) {
+	else if (fs.existsSync(path.join(outDir, "include"))) {
 		return
 	}
 

@@ -1,9 +1,10 @@
-import esbuild from "esbuild"
 import child_process from "node:child_process"
 import fs from "node:fs/promises"
 import module from "node:module"
 import path from "node:path"
 import * as perf_hooks from "node:perf_hooks"
+
+import esbuild from "esbuild"
 
 import package_json from "../package.json" with { type: "json" }
 

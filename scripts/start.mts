@@ -2,14 +2,18 @@ import child_process from "node:child_process"
 import fs from "node:fs"
 import path from "node:path"
 
-import electron from "electron"
+import * as el from "./_electron.mts"
+
+import electron from "../node_modules/electron/package.json" with { type: "json" }
 
 const __top = path.join(import.meta.dirname, "..")
 
 async function start(): Promise<void> {
 	var proc: child_process.ChildProcess | null = null
 
-	if (typeof electron !== "string" || !fs.existsSync(electron)) {
+	const electronBin = el.ExecPath(electron.version)
+
+	if (!fs.existsSync(electronBin)) {
 		throw new Error("not found electron")
 	}
 
@@ -27,7 +31,7 @@ async function start(): Promise<void> {
 
 	return new Promise((resolve, reject) => {
 		proc = child_process.spawn(
-			electron as unknown as string,
+			electronBin,
 			[
 				path.join(__top, "build"),
 			],
