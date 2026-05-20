@@ -24,9 +24,9 @@ jobs:
           node-version: "24"
       - uses: actions/cache@v5
         with:
-          key: ${{ runner.os }}-${{ matrix.arch }}-cache-${{ github.sha }}
+          key: cache-${{ runner.os }}-${{ matrix.arch }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.arch }}-cache-
+            cache-${{ runner.os }}-${{ matrix.arch }}-
           path: |
             cache
       - run: |
@@ -35,6 +35,8 @@ jobs:
           npm ci
       - run: |
           npm run setup-native
+      - run: |
+          npm run setup-electron
       - run: |
           npm run b
       - run: |
