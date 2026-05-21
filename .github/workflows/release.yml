@@ -1,7 +1,9 @@
 name: release
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "*"
 
 permissions:
   contents: write
@@ -43,7 +45,7 @@ jobs:
           npm run p
       - uses: softprops/action-gh-release@v3
         with:
-          name: draft
+          name: ${{ github.ref_name }}
           draft: true
           prerelease: true
           files: dist/*.tar.gz
