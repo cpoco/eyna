@@ -4,6 +4,6 @@
 	"type": "module",
 	"types": "types/index.d.ts",
 	"devDependencies": {
-		"tsx": "4.21.0"
+		"tsx": "4.22.0"
 	}
 }
