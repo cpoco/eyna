@@ -31,8 +31,7 @@
 	},
 	"overrides": {
 		"dompurify": "3",
-		"glob": "13",
-		"rimraf": "6"
+		"glob": "13"
 	},
 	"scripts": {
 		"setup-native": "node scripts/setup-native.mts",
