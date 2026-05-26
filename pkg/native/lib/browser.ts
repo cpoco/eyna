@@ -2,8 +2,10 @@ export * from "./_type"
 
 import { Readable } from "node:stream"
 
-import * as native from "../bin/native.node"
+import { requireNative } from "./_require"
 import * as Type from "./_type"
+
+const native = requireNative()
 
 export function compare(abstract_file1: string, abstract_file2: string): Promise<boolean> {
 	return native.compare(abstract_file1, abstract_file2)

@@ -3,12 +3,12 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR, readStream } from "./_util.cts"
+import { ERROR, readStream } from "./_util.mts"
 
 const main = async () => {
-	const ZIP = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.zip")
+	const TGZ = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tgz")
 
-	const arc = await native.getArchive(ZIP, "", 10)
+	const arc = await native.getArchive(TGZ, "", 10)
 
 	assert.strictEqual(arc.s, 35n)
 	assert.strictEqual(arc.d, 5)
@@ -107,27 +107,27 @@ const main = async () => {
 	}
 
 	{
-		const entry1 = await native.getArchiveEntry(ZIP, "file.txt")
+		const entry1 = await native.getArchiveEntry(TGZ, "file.txt")
 		assert.strictEqual(entry1.size, 8n)
 		const buf1 = await readStream(entry1.reader)
 		assert.strictEqual(buf1.toString(), "file.txt")
 
-		const entry2 = await native.getArchiveEntry(ZIP, "dir/file.txt")
+		const entry2 = await native.getArchiveEntry(TGZ, "dir/file.txt")
 		assert.strictEqual(entry2.size, 12n)
 		const buf2 = await readStream(entry2.reader)
 		assert.strictEqual(buf2.toString(), "dir/file.txt")
 
-		const entry3 = await native.getArchiveEntry(ZIP, "🍋")
+		const entry3 = await native.getArchiveEntry(TGZ, "🍋")
 		assert.strictEqual(entry3.size, 4n)
 		const buf3 = await readStream(entry3.reader)
 		assert.strictEqual(buf3.toString(), "🍋")
 
-		const entry4 = await native.getArchiveEntry(ZIP, "🍋‍🟩")
+		const entry4 = await native.getArchiveEntry(TGZ, "🍋‍🟩")
 		assert.strictEqual(entry4.size, 11n)
 		const buf4 = await readStream(entry4.reader)
 		assert.strictEqual(buf4.toString(), "🍋‍🟩")
 
-		const entry5 = await native.getArchiveEntry(ZIP, "🍋‍🟩", 7n)
+		const entry5 = await native.getArchiveEntry(TGZ, "🍋‍🟩", 7n)
 		assert.strictEqual(entry5.size, 11n)
 		const buf5 = await readStream(entry5.reader)
 		assert.strictEqual(buf5.toString(), "🟩")
@@ -135,11 +135,11 @@ const main = async () => {
 
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
-			async () => await native.getArchive(ZIP, error_path),
+			async () => await native.getArchive(TGZ, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 		await assert.rejects(
-			async () => await native.getArchiveEntry(ZIP, error_path),
+			async () => await native.getArchiveEntry(TGZ, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 	}
@@ -148,7 +148,7 @@ const main = async () => {
 try {
 	main().then(() => {
 		console.log("")
-		console.log("done (test_arc_zip)")
+		console.log("done (test_arc_tgz)")
 	})
 }
 catch (err) {

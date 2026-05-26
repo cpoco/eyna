@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import path from "node:path/posix"
 import timers from "node:timers/promises"
 
-import { TEST } from "./_util.cts"
+import { TEST } from "./_util.mts"
 
 const main = async () => {
 	const ID = 1

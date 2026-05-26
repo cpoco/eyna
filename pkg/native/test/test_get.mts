@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR, ROOT, TEST } from "./_util.cts"
+import { ERROR, ROOT, TEST } from "./_util.mts"
 
 const main = async () => {
 	{

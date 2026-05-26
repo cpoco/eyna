@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR, readStream } from "./_util.cts"
+import { ERROR, readStream } from "./_util.mts"
 
 const main = async () => {
 	const RAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.rar")
