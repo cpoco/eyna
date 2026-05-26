@@ -1,5 +1,6 @@
 import * as electron from "electron"
 import * as fs from "node:fs"
+import * as module from "node:module"
 import * as vm from "node:vm"
 
 import * as Native from "@eyna/native/lib/browser"
@@ -284,7 +285,7 @@ class Root {
 			const code = fs.readFileSync(Path.app("extension", `${file}.cjs`), "utf8")
 			const sbox = {
 				module: {},
-				require: require,
+				require: module.createRequire(import.meta.url),
 				log: (...args: any[]) => {
 					console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
 				},

@@ -3,7 +3,7 @@
 	"version": "0.0.67",
 	"private": true,
 	"type": "module",
-	"main": "app/browser.cjs",
+	"main": "app/browser.mjs",
 	"workspaces": [
 		"pkg/fixture",
 		"pkg/lib",

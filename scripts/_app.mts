@@ -21,6 +21,7 @@ export async function Node() {
 		JSON.stringify({
 			name: package_json.name,
 			version: package_json.version,
+			type: package_json.type,
 			main: package_json.main,
 		}),
 	)
@@ -82,7 +83,7 @@ export async function Build() {
 		{ recursive: true },
 	)
 
-	let common: esbuild.BuildOptions = {
+	const common: esbuild.BuildOptions = {
 		// define: {
 		// 	"process.env.NODE_ENV": JSON.stringify("production"),
 		// 	"process.env.NODE_ENV": JSON.stringify("development"),
@@ -102,10 +103,9 @@ export async function Build() {
 		outdir: outdir,
 	}
 
-	let browser = esbuild.build(Object.assign(common, {
+	const preload = esbuild.build(Object.assign(common, {
 		entryPoints: {
 			preload: path.join(__top, "src/browser/Preload.ts"),
-			browser: path.join(__top, "src/browser/Main.ts"),
 		},
 		format: "cjs",
 		platform: "node",
@@ -114,7 +114,18 @@ export async function Build() {
 		},
 	}))
 
-	let renderer = esbuild.build(Object.assign(common, {
+	const browser = esbuild.build(Object.assign(common, {
+		entryPoints: {
+			browser: path.join(__top, "src/browser/Main.ts"),
+		},
+		format: "esm",
+		platform: "node",
+		outExtension: {
+			".js": ".mjs",
+		},
+	}))
+
+	const renderer = esbuild.build(Object.assign(common, {
 		define: {
 			"__VUE_OPTIONS_API__": JSON.stringify(false),
 			"__VUE_PROD_DEVTOOLS__": JSON.stringify(false),
@@ -130,7 +141,7 @@ export async function Build() {
 		},
 	}))
 
-	return Promise.all([browser, renderer])
+	return Promise.all([preload, browser, renderer])
 		.then(() => {
 			console.log(`app.build ${(perf_hooks.performance.now() - _time).toFixed(0)}ms`)
 			return Promise.resolve()
