@@ -18,11 +18,6 @@
 #include <mutex>
 #include <queue>
 
-#if OS_WIN64 && defined(ELECTRON_BUILD)
-	#include <intrin.h>
-	#define __builtin_frame_address(x) (_AddressOfReturnAddress())
-#endif
-
 #include <node.h>
 #include <node_buffer.h>
 #include <uv.h>
