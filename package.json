@@ -19,7 +19,7 @@
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.35",
+		"@vue/runtime-dom": "3.5.36",
 		"electron": "42.4.0",
 		"esbuild": "0.28.0",
 		"extract-zip": "2.0.1",
