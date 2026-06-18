@@ -2,7 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import stream from "node:stream/promises"
 
-import extractZip from "extract-zip"
+import extractZip from "@electron-internal/extract-zip"
 
 const __top = path.join(import.meta.dirname, "..")
 const __cache = path.join(__top, "cache")
