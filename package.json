@@ -15,7 +15,7 @@
 		"@codemirror/view": "6.43.1",
 		"@dprint/formatter": "0.5.1",
 		"@dprint/typescript": "0.96.1",
-		"@electron-internal/extract-zip": "1.0.3",
+		"@electron-internal/extract-zip": "1.0.4",
 		"@electron/packager": "20.0.1",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
