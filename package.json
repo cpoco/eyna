@@ -12,7 +12,7 @@
 	],
 	"devDependencies": {
 		"@codemirror/state": "6.7.0",
-		"@codemirror/view": "6.43.2",
+		"@codemirror/view": "6.43.3",
 		"@dprint/formatter": "0.5.1",
 		"@dprint/typescript": "0.96.1",
 		"@electron-internal/extract-zip": "1.0.4",
@@ -20,7 +20,7 @@
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.38",
+		"@vue/runtime-dom": "3.5.39",
 		"electron": "42.5.0",
 		"esbuild": "0.28.1",
 		"monaco-editor": "0.55.1",
