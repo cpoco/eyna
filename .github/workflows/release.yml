@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v7.0.0
       - uses: actions/setup-node@v6.4.0
         with:
-          node-version: "24.16"
+          node-version: "24.18"
       - uses: actions/cache@v6.1.0
         with:
           key: cache-${{ runner.os }}-${{ matrix.arch }}-${{ github.sha }}
