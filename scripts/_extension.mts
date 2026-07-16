@@ -14,7 +14,7 @@ const base = path.join(__top, "extension")
 export async function Check() {
 	let _time = perf_hooks.performance.now()
 	const require = module.createRequire(import.meta.url)
-	const tsc = require.resolve("typescript/bin/tsc")
+	const tsc = path.join(path.dirname(require.resolve("typescript/package.json")), "bin", "tsc")
 
 	return new Promise<void>((resolve, reject) => {
 		child_process.spawn(
