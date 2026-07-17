@@ -7,6 +7,7 @@ struct get_archive_entry_async
 {
 	uv_async_t handle;
 	uv_work_t work;
+	int ref;
 
 	v8::Global<v8::Promise::Resolver> promise;
 
@@ -29,7 +30,10 @@ struct get_archive_entry_async
 void get_archive_entry_close(uv_handle_t* handle)
 {
 	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
-	delete async;
+
+	if (--async->ref == 0) {
+		delete async;
+	}
 }
 
 // uv_async_cb
@@ -165,6 +169,10 @@ static void get_archive_entry_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("reader")), async->reader.Get(ISOLATE));
 
 	async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
+
+	if (--async->ref == 0) {
+		delete async;
+	}
 }
 
 void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
@@ -187,6 +195,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	get_archive_entry_async* async = new get_archive_entry_async();
 	async->handle.data = async;
 	async->work.data = async;
+	async->ref = 2;
 
 	async->promise.Reset(ISOLATE, promise);
 
