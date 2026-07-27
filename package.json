@@ -16,7 +16,7 @@
 		"@dprint/formatter": "0.5.1",
 		"@dprint/typescript": "0.96.1",
 		"@electron-internal/extract-zip": "1.0.4",
-		"@electron/packager": "20.0.2",
+		"@electron/packager": "20.0.3",
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
