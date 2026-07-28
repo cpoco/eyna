@@ -1,4 +1,5 @@
-/// <reference types="monaco-editor/monaco.d.ts" />
+declare const monaco: typeof import("monaco-editor")
+import type { editor } from "monaco-editor"
 
 // @types/requirejs
 declare const require: {
@@ -62,7 +63,7 @@ type Options = {
 
 export const options = (
 	options: Options,
-): monaco.editor.IStandaloneEditorConstructionOptions & monaco.editor.IDiffEditorConstructionOptions => {
+): editor.IStandaloneEditorConstructionOptions & editor.IDiffEditorConstructionOptions => {
 	return {
 		readOnly: true,
 		domReadOnly: true,

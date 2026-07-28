@@ -1,4 +1,5 @@
-/// <reference types="monaco-editor/monaco.d.ts" />
+declare const monaco: typeof import("monaco-editor")
+import type { editor } from "monaco-editor"
 
 import * as vue from "@vue/runtime-dom"
 
@@ -42,9 +43,9 @@ export const V = vue.defineComponent({
 		const head = vue.ref<string>("")
 		const prog = vue.ref<boolean>(false)
 
-		let original: monaco.editor.ITextModel | null = null
-		let modified: monaco.editor.ITextModel | null = null
-		let editor: monaco.editor.IStandaloneDiffEditor | null = null
+		let original: editor.ITextModel | null = null
+		let modified: editor.ITextModel | null = null
+		let editor: editor.IStandaloneDiffEditor | null = null
 
 		const ready = () => {
 			original = monaco.editor.createModel(
