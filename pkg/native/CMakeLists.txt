@@ -92,6 +92,7 @@ if(WIN32)
     shell32.lib
     ole32.lib
     delayimp.lib
+    bcrypt.lib
   )
 endif()
 
