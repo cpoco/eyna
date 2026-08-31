@@ -60,6 +60,7 @@ export async function status(): Promise<Record<string, string>> {
 
 		let pkg: string | null = null
 		let ver: string | null = null
+		let prt: string | null = null
 
 		for (const line of lines) {
 			if (line.indexOf("Package: ") === 0) {
@@ -68,9 +69,15 @@ export async function status(): Promise<Record<string, string>> {
 			else if (line.indexOf("Version: ") === 0) {
 				ver = line.slice("Version: ".length).trim()
 			}
+			else if (line.indexOf("Port-Version: ") === 0) {
+				prt = line.slice("Port-Version: ".length).trim()
+			}
 		}
 
-		if (pkg && ver) {
+		if (pkg && ver && prt) {
+			status[pkg] = [ver, prt].join("#")
+		}
+		else if (pkg && ver) {
 			status[pkg] = ver
 		}
 	}
