@@ -5,6 +5,10 @@
 		{
 			"name": "libarchive",
 			"default-features": false
+		},
+		{
+			"name": "libgit2",
+			"default-features": false
 		}
 	]
 }
