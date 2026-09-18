@@ -25,6 +25,8 @@
 #include <archive.h>
 #include <archive_entry.h>
 
+#include <git2.h>
+
 #if OS_WIN64
 	#include <windows.h>
 	#include <shlobj.h>
