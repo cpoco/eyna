@@ -79,6 +79,7 @@ if(WIN32)
     ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/win-x64/node.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/archive.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/charset.lib
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/git2.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zs.lib
@@ -130,6 +131,7 @@ if(APPLE)
     "-framework AppKit"
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libarchive.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libcharset.a
+    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libgit2.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libiconv.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/liblzma.a
     ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libz.a
