@@ -90,6 +90,7 @@ if(WIN32)
     user32.lib
     gdi32.lib
     advapi32.lib
+    secur32.lib
     shell32.lib
     ole32.lib
     delayimp.lib
