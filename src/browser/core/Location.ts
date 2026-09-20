@@ -172,14 +172,14 @@ export namespace Location {
 				.replace(/%/g, "%25")
 				.replace(/#/g, "%23")
 				.replace(/\?/g, "%3F")
-		}?${new Date().getTime()}`
+		}?${Temporal.Now.instant().epochMilliseconds}`
 	}
 
 	export function toFileUrl(path: string): string {
-		return `eyna://blob-${Type.File}/${encodeURIComponent(path)}?${new Date().getTime()}`
+		return `eyna://blob-${Type.File}/${encodeURIComponent(path)}?${Temporal.Now.instant().epochMilliseconds}`
 	}
 
 	export function toArchUrl(path: string, entry: string): string {
-		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${new Date().getTime()}`
+		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${Temporal.Now.instant().epochMilliseconds}`
 	}
 }
