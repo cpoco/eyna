@@ -25,11 +25,15 @@ void cleanup(void* arg)
 	#if OS_WIN64 && !defined(ELECTRON_BUILD)
 		CoUninitialize();
 	#endif
+
+	git_libgit2_shutdown();
 }
 
 void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* context)
 {
 	node::AddEnvironmentCleanupHook(ISOLATE, cleanup, NULL);
+
+	git_libgit2_init();
 
 	#if OS_WIN64 && !defined(ELECTRON_BUILD)
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
