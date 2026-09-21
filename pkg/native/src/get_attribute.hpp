@@ -60,8 +60,10 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		}
 
 		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, a.size));
-		obj->Set(CONTEXT, to_string(V("time")), v8::Number::New(ISOLATE, (double)a.time));
-		obj->Set(CONTEXT, to_string(V("nsec")), v8::Number::New(ISOLATE, (double)a.nsec));
+		obj->Set(CONTEXT, to_string(V("ctime")), v8::Number::New(ISOLATE, (double)a.ctime));
+		obj->Set(CONTEXT, to_string(V("cnsec")), v8::Number::New(ISOLATE, (double)a.cnsec));
+		obj->Set(CONTEXT, to_string(V("mtime")), v8::Number::New(ISOLATE, (double)a.mtime));
+		obj->Set(CONTEXT, to_string(V("mnsec")), v8::Number::New(ISOLATE, (double)a.mnsec));
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
 		if (a.readonly) {

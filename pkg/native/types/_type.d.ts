@@ -49,8 +49,10 @@ declare namespace Type {
 		readonly link_type: LinkType
 		readonly link: string | null
 		readonly size: bigint
-		readonly time: number
-		readonly nsec: number
+		readonly ctime: number
+		readonly cnsec: number
+		readonly mtime: number
+		readonly mnsec: number
 		readonly x?: {
 			readonly readonly?: boolean
 			readonly hidden?: boolean

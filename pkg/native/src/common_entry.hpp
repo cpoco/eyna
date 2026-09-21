@@ -10,8 +10,10 @@ struct _entry
 	std::filesystem::path link; // raw data
 
 	int64_t size = 0;
-	int64_t time = 0;
-	int64_t nsec = 0;
+	int64_t ctime = 0;
+	int64_t cnsec = 0;
+	int64_t mtime = 0;
+	int64_t mnsec = 0;
 	int enc = 0;
 
 	int depth = 0;
@@ -47,8 +49,10 @@ void populate_entry(_entry& out, struct archive_entry* entry)
 	}
 
 	out.size = archive_entry_size(entry);
-	out.time = archive_entry_mtime(entry);
-	out.nsec = archive_entry_mtime_nsec(entry);
+	out.ctime = archive_entry_ctime(entry);
+	out.cnsec = archive_entry_ctime_nsec(entry);
+	out.mtime = archive_entry_mtime(entry);
+	out.mnsec = archive_entry_mtime_nsec(entry);
 	out.enc = archive_entry_is_encrypted(entry);
 }
 
