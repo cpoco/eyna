@@ -5,7 +5,9 @@
 
 #if OS_MAC64
 	#include <fcntl.h>
+	#include <sys/attr.h>
 	#include <sys/stat.h>
+	#include <unistd.h>
 #endif
 
 struct set_time_work
@@ -61,6 +63,19 @@ static void set_time_async(uv_work_t* req)
 		CloseHandle(handle);
 
 	#elif OS_MAC64
+
+		struct attrlist attr_list = {};
+		attr_list.bitmapcount = ATTR_BIT_MAP_COUNT;
+		attr_list.commonattr = ATTR_CMN_CRTIME | ATTR_CMN_MODTIME;
+
+		struct timespec times[2] = {
+			{ (time_t)(work->ctime / 1000000000), (long)(work->ctime % 1000000000) },
+			{ (time_t)(work->mtime / 1000000000), (long)(work->mtime % 1000000000) },
+		};
+
+		if (setattrlist(work->abst.c_str(), &attr_list, times, sizeof(times), FSOPT_NOFOLLOW) != 0) {
+			work->error = true;
+		}
 
 	#endif
 }
