@@ -221,7 +221,7 @@ const attr = vue.defineComponent({
 			) {
 				return undefined
 			}
-			return Util.DateTime(attr.value.one?.mtime ?? 0)
+			return Util.DateTime(attr.value.one?.mtime ?? 0n)
 		})
 
 		const dragstart = (event: DragEvent) => {

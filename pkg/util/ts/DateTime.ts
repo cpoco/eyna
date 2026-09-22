@@ -1,5 +1,5 @@
-export function DateTime(sec: number): { date: string; time: string } {
-	if (sec === 0) {
+export function DateTime(nano: bigint): { date: string; time: string } {
+	if (nano === 0n) {
 		return {
 			date: "----/--/--",
 			time: "--:--:--",
@@ -7,7 +7,7 @@ export function DateTime(sec: number): { date: string; time: string } {
 	}
 
 	const d = Temporal.Instant
-		.fromEpochMilliseconds(sec * 1000)
+		.fromEpochNanoseconds(nano)
 		.toZonedDateTimeISO(Temporal.Now.timeZoneId())
 
 	return {

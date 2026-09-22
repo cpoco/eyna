@@ -59,10 +59,8 @@ export type Attribute = {
 	readonly link: string | null
 
 	readonly size: bigint
-	readonly ctime: number
-	readonly cnsec: number
-	readonly mtime: number
-	readonly mnsec: number
+	readonly ctime: bigint
+	readonly mtime: bigint
 
 	readonly x?: {
 		readonly readonly?: boolean

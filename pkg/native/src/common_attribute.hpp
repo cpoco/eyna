@@ -58,9 +58,7 @@ struct _attribute
 
 	int64_t size = 0;
 	int64_t ctime = 0;
-	int64_t cnsec = 0;
 	int64_t mtime = 0;
-	int64_t mnsec = 0;
 
 	bool readonly = false;
 	bool hidden = false;
@@ -85,17 +83,15 @@ void attribute(_attribute& attribute)
 
 			int64_t ctime = (int64_t)info.ftCreationTime.dwHighDateTime << 32 | info.ftCreationTime.dwLowDateTime;
 			if (ctime != 0) {
-				ctime -= 116444736000000000;
+				ctime -= 116444736000000000; // 1601/01/01 to 1970/01/01 in 100-nanosecond intervals
 			}
-			attribute.ctime = ctime / 10000000;
-			attribute.cnsec = (ctime % 10000000) * 100;
+			attribute.ctime = ctime * 100;
 
 			int64_t mtime = (int64_t)info.ftLastWriteTime.dwHighDateTime << 32 | info.ftLastWriteTime.dwLowDateTime;
 			if (mtime != 0) {
-				mtime -= 116444736000000000;
+				mtime -= 116444736000000000; // 1601/01/01 to 1970/01/01 in 100-nanosecond intervals
 			}
-			attribute.mtime = mtime / 10000000;
-			attribute.mnsec = (mtime % 10000000) * 100;
+			attribute.mtime = mtime * 100;
 
 			attribute.win_attribute = info.dwFileAttributes;
 
@@ -219,10 +215,8 @@ void attribute(_attribute& attribute)
 			}
 
 			attribute.size = st.st_size;
-			attribute.ctime = st.st_ctimespec.tv_sec;
-			attribute.cnsec = st.st_ctimespec.tv_nsec;
-			attribute.mtime = st.st_mtimespec.tv_sec;
-			attribute.mnsec = st.st_mtimespec.tv_nsec;
+			attribute.ctime = st.st_ctimespec.tv_sec * 1000000000 + st.st_ctimespec.tv_nsec;
+			attribute.mtime = st.st_mtimespec.tv_sec * 1000000000 + st.st_mtimespec.tv_nsec;
 
 			NSString* type = [dic objectForKey:NSURLFileResourceTypeKey];
 

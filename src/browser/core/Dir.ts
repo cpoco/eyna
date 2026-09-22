@@ -130,10 +130,8 @@ function _attr(file_type: Native.FileType, full: string, name: string): Native.A
 		link_type: Native.LinkType.None,
 		link: "",
 		size: 0n,
-		ctime: 0,
-		cnsec: 0,
-		mtime: 0,
-		mnsec: 0,
+		ctime: 0n,
+		mtime: 0n,
 	}
 }
 
