@@ -105,8 +105,8 @@ void set_time(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	work->ctime = info[1]->Int64Value(CONTEXT).ToChecked();
-	work->mtime = info[2]->Int64Value(CONTEXT).ToChecked();
+	work->ctime = info[1].As<v8::BigInt>()->Int64Value();
+	work->mtime = info[2].As<v8::BigInt>()->Int64Value();
 
 	work->error = false;
 
