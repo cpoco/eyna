@@ -215,7 +215,7 @@ void attribute(_attribute& attribute)
 			}
 
 			attribute.size = st.st_size;
-			attribute.ctime = st.st_ctimespec.tv_sec * 1000000000 + st.st_ctimespec.tv_nsec;
+			attribute.ctime = st.st_birthtimespec.tv_sec * 1000000000 + st.st_birthtimespec.tv_nsec;
 			attribute.mtime = st.st_mtimespec.tv_sec * 1000000000 + st.st_mtimespec.tv_nsec;
 
 			NSString* type = [dic objectForKey:NSURLFileResourceTypeKey];

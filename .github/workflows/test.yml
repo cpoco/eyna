@@ -50,6 +50,7 @@ jobs:
           npx tsx pkg/native/test/test_link.mts
           npx tsx pkg/native/test/test_operation.mts
           npx tsx pkg/native/test/test_depth.mts
+          npx tsx pkg/native/test/test_time.mts
           npx tsx pkg/native/test/test_os.mts
           npx tsx pkg/native/test/test_arc.mts
           npx tsx pkg/native/test/test_arc_tar.mts

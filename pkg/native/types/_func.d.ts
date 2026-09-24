@@ -33,6 +33,7 @@ declare namespace Native {
 	function moveToTrash(abstract: string): Promise<void>
 	function openProperties(abstract: string): boolean
 	function setExte(extensions: string[]): void
+	function setTime(abstract: string, ctime: bigint, mtime: bigint): Promise<void>
 	function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean
 	function unwatch(id: number): boolean
 }

@@ -32,5 +32,6 @@ export function move(abstract_src: string, abstract_dst: string): Promise<void>
 export function moveToTrash(abstract: string): Promise<void>
 export function openProperties(abstract: string): boolean
 export function setExte(extensions: string[]): void
+export function setTime(abstract: string, ctime: bigint, mtime: bigint): Promise<void>
 export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean
 export function unwatch(id: number): boolean

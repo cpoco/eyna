@@ -93,6 +93,10 @@ export function setExte(extensions: string[]): void {
 	return native.setExte(extensions)
 }
 
+export function setTime(abstract: string, ctime: bigint, mtime: bigint): Promise<void> {
+	return native.setTime(abstract, ctime, mtime)
+}
+
 export function watch(id: number, abstract: string, callback: Type.WatchCallback): boolean {
 	return native.watch(id, abstract, callback)
 }
