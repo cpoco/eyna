@@ -34,8 +34,9 @@ const main = async () => {
 		assert.strictEqual(d.list[0].rltv, path.join(DIR, "alpha.txt"))
 		assert.strictEqual(d.list[1].rltv, path.join(DIR, "beta.txt"))
 		assert.strictEqual(d.list[2].rltv, path.join(DIR, "sub", "delta.txt"))
-		assert.strictEqual(d.d, 1)
-		assert.strictEqual(d.f, 5)
+		assert.strictEqual(d.s, 0n)
+		assert.strictEqual(d.d, 0)
+		assert.strictEqual(d.f, 3)
 		assert.strictEqual(d.e, 0)
 	}
 
@@ -43,13 +44,19 @@ const main = async () => {
 		const d = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 1, /^sub$/)
 		assert.strictEqual(d.list.length, 1)
 		assert.strictEqual(d.list[0].rltv, path.join(DIR, "sub"))
+		assert.strictEqual(d.s, 0n)
+		assert.strictEqual(d.d, 1)
+		assert.strictEqual(d.f, 0)
+		assert.strictEqual(d.e, 0)
 	}
 
 	{
 		const d = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 1, /does-not-exist/)
 		assert.strictEqual(d.list.length, 0)
-		assert.strictEqual(d.d, 1)
-		assert.strictEqual(d.f, 5)
+		assert.strictEqual(d.s, 0n)
+		assert.strictEqual(d.d, 0)
+		assert.strictEqual(d.f, 0)
+		assert.strictEqual(d.e, 0)
 	}
 
 	{
@@ -57,8 +64,10 @@ const main = async () => {
 		assert.strictEqual(d.list.length, 2)
 		assert.strictEqual(d.list[0].rltv, path.join(DIR, "alpha.txt"))
 		assert.strictEqual(d.list[1].rltv, path.join(DIR, "beta.txt"))
-		assert.strictEqual(d.d, 1)
-		assert.strictEqual(d.f, 3)
+		assert.strictEqual(d.s, 0n)
+		assert.strictEqual(d.d, 0)
+		assert.strictEqual(d.f, 2)
+		assert.strictEqual(d.e, 0)
 	}
 
 	{
@@ -68,6 +77,10 @@ const main = async () => {
 		assert.strictEqual(d.list[1].rltv, path.join(DIR, "beta.txt"))
 		assert.strictEqual(d.list[2].rltv, path.join(DIR, "sub", "delta.txt"))
 		assert.strictEqual(d.list[3].rltv, path.join(DIR, "sub"))
+		assert.strictEqual(d.s, 0n)
+		assert.strictEqual(d.d, 1)
+		assert.strictEqual(d.f, 3)
+		assert.strictEqual(d.e, 0)
 	}
 }
 

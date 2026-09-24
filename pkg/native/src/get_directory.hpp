@@ -56,14 +56,9 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				}
 
 				if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
-					work->d++;
 					if (dp < work->dp) {
 						get_directory(work, attr.full, dp + 1);
 					}
-				}
-				else {
-					work->s += attr.size;
-					work->f++;
 				}
 
 				if (work->st == SORT_SHALLOW_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
@@ -82,6 +77,16 @@ static void get_directory_async(uv_work_t* req)
 	get_directory_work* work = static_cast<get_directory_work*>(req->data);
 
 	get_directory(work, work->abst, 0);
+
+	for (_attribute& attr : work->v) {
+		if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
+			work->d++;
+		}
+		else {
+			work->s += attr.size;
+			work->f++;
+		}
+	}
 }
 
 static void get_directory_complete(uv_work_t* req, int status)
