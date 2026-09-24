@@ -115,7 +115,15 @@ void attribute(_attribute& attribute)
 
 			if (attribute.file_type == FILE_TYPE::FILE_TYPE_LINK) {
 
-				HANDLE handle = CreateFileW(attribute.full.c_str(), 0, 0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
+				HANDLE handle = CreateFileW(
+					attribute.full.c_str(),
+					0,
+					0,
+					NULL,
+					OPEN_EXISTING,
+					FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS,
+					NULL
+				);
 
 				if (handle != INVALID_HANDLE_VALUE) {
 

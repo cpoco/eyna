@@ -127,8 +127,8 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	if (info.Length() != 5
 			|| !info[0]->IsString()
 			|| !info[1]->IsString()
-			|| !info[2]->IsNumber()
-			|| !info[3]->IsNumber()
+			|| !info[2]->IsInt32()
+			|| !info[3]->IsInt32()
 			|| !(info[4]->IsNull() || info[4]->IsRegExp()))
 	{
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
@@ -154,14 +154,14 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	work->st = info[2]->Int32Value(CONTEXT).ToChecked();
+	work->st = info[2].As<v8::Int32>()->Value();
 	if (work->st != SORT_DEPTH_FIRST && work->st != SORT_SHALLOW_FIRST) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		delete work;
 		return;
 	}
 
-	work->dp = info[3]->Int32Value(CONTEXT).ToChecked();
+	work->dp = info[3].As<v8::Int32>()->Value();
 	if (work->dp < 0 || 100 < work->dp) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		delete work;
@@ -172,7 +172,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		work->pt = V("");
 	}
 	else if (info[4]->IsRegExp()) {
-		work->pt = to_string(v8::Local<v8::RegExp>::Cast(info[4])->GetSource());
+		work->pt = to_string(info[4].As<v8::RegExp>()->GetSource());
 	}
 
 	work->v.clear();

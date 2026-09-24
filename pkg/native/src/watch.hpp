@@ -109,7 +109,7 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::HandleScope _(ISOLATE);
 
 	if (info.Length() != 3
-			|| !info[0]->IsNumber()
+			|| !info[0]->IsInt32()
 			|| !info[1]->IsString()
 			|| !info[2]->IsFunction())
 	{
@@ -117,7 +117,7 @@ void watch(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
+	int32_t id = info[0].As<v8::Int32>()->Value();
 
 	std::filesystem::path abst = generic_path(to_string(info[1].As<v8::String>()));
 	if (is_relative(abst) || is_traversal(abst)) {
@@ -134,12 +134,12 @@ void unwatch(const v8::FunctionCallbackInfo<v8::Value>& info)
 {
 	v8::HandleScope _(ISOLATE);
 
-	if (info.Length() != 1 || !info[0]->IsNumber()) {
+	if (info.Length() != 1 || !info[0]->IsInt32()) {
 		info.GetReturnValue().Set(v8::Boolean::New(ISOLATE, false));
 		return;
 	}
 
-	int32_t id = info[0]->Int32Value(CONTEXT).ToChecked();
+	int32_t id = info[0].As<v8::Int32>()->Value();
 
 	watch_map.remove(id);
 

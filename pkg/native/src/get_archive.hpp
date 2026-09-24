@@ -160,7 +160,7 @@ void get_archive(const v8::FunctionCallbackInfo<v8::Value>& info)
 	if (info.Length() != 3
 			|| !info[0]->IsString()
 			|| !info[1]->IsString()
-			|| !info[2]->IsNumber())
+			|| !info[2]->IsInt32())
 	{
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		return;
@@ -184,7 +184,7 @@ void get_archive(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 	work->min_depth = std::ranges::distance(work->base);
-	work->max_depth = work->min_depth + info[2]->Int32Value(CONTEXT).ToChecked();
+	work->max_depth = work->min_depth + info[2].As<v8::Int32>()->Value();
 	if (work->max_depth < work->min_depth || 100 < work->max_depth) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		delete work;
