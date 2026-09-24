@@ -46,11 +46,11 @@ jobs:
           npx fixture
           npx tsx pkg/native/test/test_compare.mts
           npx tsx pkg/native/test/test_get.mts
+          npx tsx pkg/native/test/test_get_depth.mts
+          npx tsx pkg/native/test/test_get_regexp.mts
           npx tsx pkg/native/test/test_icon.mts
           npx tsx pkg/native/test/test_link.mts
           npx tsx pkg/native/test/test_operation.mts
-          npx tsx pkg/native/test/test_depth.mts
-          npx tsx pkg/native/test/test_regexp.mts
           npx tsx pkg/native/test/test_time.mts
           npx tsx pkg/native/test/test_os.mts
           npx tsx pkg/native/test/test_arc.mts

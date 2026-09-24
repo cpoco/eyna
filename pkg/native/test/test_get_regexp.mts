@@ -22,7 +22,7 @@ const main = async () => {
 
 	{
 		const d = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 1, null)
-		assert.strictEqual(d.list.length, d.d + d.f)
+		assert.strictEqual(d.list.length, 6)
 		assert.strictEqual(d.d, 1)
 		assert.strictEqual(d.f, 5)
 		assert.strictEqual(d.e, 0)

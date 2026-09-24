@@ -37,7 +37,7 @@ const main = async () => {
 
 	{
 		const d1 = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 0)
-		const d2 = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 0)
+		const d2 = await native.getDirectory(DIR + "/", "", native.Sort.DepthFirst, 0)
 		assert.deepEqual(d1.list.length, 3)
 		assert.deepEqual(d1.s, 0n)
 		assert.deepEqual(d1.d, 1)
@@ -48,7 +48,7 @@ const main = async () => {
 
 	{
 		const d1 = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 1)
-		const d2 = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 1)
+		const d2 = await native.getDirectory(DIR + "/", "", native.Sort.DepthFirst, 1)
 		assert.deepEqual(d1.list.length, 6)
 		assert.deepEqual(d1.s, 0n)
 		assert.deepEqual(d1.d, 2)
