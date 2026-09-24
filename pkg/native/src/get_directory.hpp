@@ -94,7 +94,7 @@ static void get_directory_async(uv_work_t* req)
 	{
 		git_repository* repo = nullptr;
 		git_reference* head = nullptr;
-		if (!git_repository_open_ext(&repo, (const char*)work->abst.u8string().c_str(), 0, nullptr)) {
+		if (!git_repository_open_ext(&repo, reinterpret_cast<const char*>(work->abst.u8string().c_str()), 0, nullptr)) {
 			const char* workdir = git_repository_workdir(repo);
 			if (workdir) {
 				work->git_workdir = std::basic_string<char>(workdir);
