@@ -20,7 +20,7 @@ struct get_directory_work
 	int32_t f; // file count
 	int32_t e; // error count
 
-	std::basic_string<char> git_workdir;
+	std::filesystem::path git_workdir; // generic_path
 	std::basic_string<char> git_branch;
 };
 
@@ -97,7 +97,7 @@ static void get_directory_async(uv_work_t* req)
 		if (!git_repository_open_ext(&repo, reinterpret_cast<const char*>(work->abst.u8string().c_str()), 0, nullptr)) {
 			const char* workdir = git_repository_workdir(repo);
 			if (workdir) {
-				work->git_workdir = std::basic_string<char>(workdir);
+				work->git_workdir = generic_path(workdir);
 			}
 			if (!git_repository_head(&head, repo)) {
 				const char* branch = git_reference_shorthand(head);
@@ -140,7 +140,7 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
 	v8::Local<v8::Object> git = v8::Object::New(ISOLATE);
-	git->Set(CONTEXT, to_string(V("wdir")), c_string(work->git_workdir));
+	git->Set(CONTEXT, to_string(V("wdir")), to_string(work->git_workdir));
 	git->Set(CONTEXT, to_string(V("brch")), c_string(work->git_branch));
 	obj->Set(CONTEXT, to_string(V("git")), git);
 
