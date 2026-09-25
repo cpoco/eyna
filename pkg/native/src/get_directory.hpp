@@ -139,10 +139,16 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
 
-	v8::Local<v8::Object> git = v8::Object::New(ISOLATE);
-	git->Set(CONTEXT, to_string(V("wdir")), to_string(work->git_workdir));
-	git->Set(CONTEXT, to_string(V("brch")), c_string(work->git_branch));
-	obj->Set(CONTEXT, to_string(V("git")), git);
+	v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
+	if (!work->git_workdir.empty()) {
+		x->Set(CONTEXT, to_string(V("git_wdir")), to_string(work->git_workdir));
+	}
+	if (!work->git_branch.empty()) {
+		x->Set(CONTEXT, to_string(V("git_brch")), c_string(work->git_branch));
+	}
+	if (0 < x->GetOwnPropertyNames(CONTEXT).ToLocalChecked()->Length()) {
+		obj->Set(CONTEXT, to_string(V("x")), x);
+	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
 
