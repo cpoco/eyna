@@ -144,7 +144,7 @@ static void get_directory_complete(uv_work_t* req, int status)
 		x->Set(CONTEXT, to_string(V("git_wdir")), to_string(work->git_workdir));
 	}
 	if (!work->git_branch.empty()) {
-		x->Set(CONTEXT, to_string(V("git_brch")), c_string(work->git_branch));
+		x->Set(CONTEXT, to_string(V("git_brch")), to_string(work->git_branch));
 	}
 	if (0 < x->GetOwnPropertyNames(CONTEXT).ToLocalChecked()->Length()) {
 		obj->Set(CONTEXT, to_string(V("x")), x);
@@ -178,14 +178,14 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = generic_path(to_string(info[0].As<v8::String>()));
+	work->abst = generic_path(to_string<_char_t>(info[0].As<v8::String>()));
 	if (is_relative(work->abst) || is_traversal(work->abst)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
 
-	work->base = generic_path(to_string(info[1].As<v8::String>()));
+	work->base = generic_path(to_string<_char_t>(info[1].As<v8::String>()));
 	if (!work->base.empty() && (is_relative(work->base) || is_traversal(work->base))) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
@@ -210,7 +210,7 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		work->pt = V("");
 	}
 	else if (info[4]->IsRegExp()) {
-		work->pt = to_string(info[4].As<v8::RegExp>()->GetSource());
+		work->pt = to_string<_char_t>(info[4].As<v8::RegExp>()->GetSource());
 	}
 
 	work->v.clear();

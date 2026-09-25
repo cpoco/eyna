@@ -171,13 +171,13 @@ void get_archive(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->abst = generic_path(to_string(info[0].As<v8::String>()));
+	work->abst = generic_path(to_string<_char_t>(info[0].As<v8::String>()));
 	if (is_relative(work->abst) || is_traversal(work->abst)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
 	}
-	work->base = generic_path(to_string(info[1].As<v8::String>()));
+	work->base = generic_path(to_string<_char_t>(info[1].As<v8::String>()));
 	if (is_traversal(work->base)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_T_PATH));
 		delete work;

@@ -24,7 +24,7 @@ void set_exte(const v8::FunctionCallbackInfo<v8::Value>& info)
 	for (int i = 0; i < length; i++) {
 		v8::Local<v8::Value> value = array->Get(CONTEXT, i).ToLocalChecked();
 		if (value->IsString()) {
-			multi_exte.push_back(to_string(value.As<v8::String>()));
+			multi_exte.push_back(to_string<_char_t>(value.As<v8::String>()));
 		}
 	}
 }

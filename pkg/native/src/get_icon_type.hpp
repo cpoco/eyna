@@ -148,7 +148,7 @@ void get_icon_type(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	work->promise.Reset(ISOLATE, promise);
 
-	work->exte = to_string(info[0].As<v8::String>());
+	work->exte = to_string<_char_t>(info[0].As<v8::String>());
 
 	work->data = nullptr;
 

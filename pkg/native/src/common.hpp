@@ -62,37 +62,39 @@
 #define ERROR_INVALID_T_PATH   V("traversal paths not allowed")
 #define ERROR_FAILED           V("failed")
 
-_string_t to_string(const v8::Local<v8::String>& str)
+template<typename C>
+std::basic_string<C> to_string(const v8::Local<v8::String>& str);
+
+template<>
+std::basic_string<wchar_t> to_string<wchar_t>(const v8::Local<v8::String>& str)
 {
-	#if OS_WIN64
-		size_t size = str->Length();
-		if (size == 0) {
-			return _string_t();
-		}
-		_string_t buff(size, '\0');
-		str->WriteV2(ISOLATE, 0, buff.size(), (uint16_t*)&buff[0]);
-		return buff;
-	#elif OS_MAC64
-		size_t size = str->Utf8LengthV2(ISOLATE);
-		if (size == 0) {
-			return _string_t();
-		}
-		_string_t buff(size, '\0');
-		str->WriteUtf8V2(ISOLATE, &buff[0], buff.size());
-		return buff;
-	#endif
+	size_t size = str->Length();
+	if (size == 0) {
+		return std::basic_string<wchar_t>();
+	}
+	std::basic_string<wchar_t> buff(size, '\0');
+	str->WriteV2(ISOLATE, 0, buff.size(), reinterpret_cast<uint16_t*>(&buff[0]));
+	return buff;
 }
 
-v8::Local<v8::String> to_string(const _string_t& str)
+template<>
+std::basic_string<char> to_string<char>(const v8::Local<v8::String>& str)
 {
-	#if OS_WIN64
-		return v8::String::NewFromTwoByte(ISOLATE, (uint16_t*)str.c_str()).ToLocalChecked();
-	#elif OS_MAC64
-		return v8::String::NewFromUtf8(ISOLATE, str.c_str()).ToLocalChecked();
-	#endif
+	size_t size = str->Utf8LengthV2(ISOLATE);
+	if (size == 0) {
+		return std::basic_string<char>();
+	}
+	std::basic_string<char> buff(size, '\0');
+	str->WriteUtf8V2(ISOLATE, &buff[0], buff.size());
+	return buff;
 }
 
-v8::Local<v8::String> c_string(const std::basic_string<char>& str)
+v8::Local<v8::String> to_string(const std::basic_string<wchar_t>& str)
+{
+	return v8::String::NewFromTwoByte(ISOLATE, reinterpret_cast<const uint16_t*>(str.c_str())).ToLocalChecked();
+}
+
+v8::Local<v8::String> to_string(const std::basic_string<char>& str)
 {
 	return v8::String::NewFromUtf8(ISOLATE, str.c_str()).ToLocalChecked();
 }

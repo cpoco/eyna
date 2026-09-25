@@ -199,13 +199,13 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	async->promise.Reset(ISOLATE, promise);
 
-	async->abst = generic_path(to_string(info[1].As<v8::String>()));
+	async->abst = generic_path(to_string<_char_t>(info[1].As<v8::String>()));
 	if (is_relative(async->abst) || is_traversal(async->abst)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete async;
 		return;
 	}
-	async->path = generic_path(to_string(info[2].As<v8::String>()));
+	async->path = generic_path(to_string<_char_t>(info[2].As<v8::String>()));
 	if (is_traversal(async->path)) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_T_PATH));
 		delete async;
@@ -227,16 +227,16 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 		CONTEXT,
 		[](const v8::FunctionCallbackInfo<v8::Value>&) {}
 	).ToLocalChecked();
-	options->Set(CONTEXT, c_string("read"), read);
+	options->Set(CONTEXT, to_string("read"), read);
 
 	// const reader: stream.Readable = new stream.Readable(options)
 	constexpr int argc = 1;
 	v8::Local<v8::Value> argv[argc] = {options};
 	v8::Local<v8::Object> reader = readable->CallAsConstructor(CONTEXT, argc, argv).ToLocalChecked().As<v8::Object>();
-	v8::Local<v8::Function> push = reader->Get(CONTEXT, c_string("push")).ToLocalChecked().As<v8::Function>();
+	v8::Local<v8::Function> push = reader->Get(CONTEXT, to_string("push")).ToLocalChecked().As<v8::Function>();
 
 	// reader.pause()
-	v8::Local<v8::Function> pause = reader->Get(CONTEXT, c_string("pause")).ToLocalChecked().As<v8::Function>();
+	v8::Local<v8::Function> pause = reader->Get(CONTEXT, to_string("pause")).ToLocalChecked().As<v8::Function>();
 	pause->Call(CONTEXT, reader, 0, nullptr);
 
 	async->size = 0;
