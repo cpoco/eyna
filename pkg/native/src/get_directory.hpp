@@ -19,6 +19,9 @@ struct get_directory_work
 	int32_t d; // directory count
 	int32_t f; // file count
 	int32_t e; // error count
+
+	std::filesystem::path git_workdir; // generic_path
+	std::basic_string<char> git_branch;
 };
 
 static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp)
@@ -87,6 +90,25 @@ static void get_directory_async(uv_work_t* req)
 			work->f++;
 		}
 	}
+
+	{
+		git_repository* repo = nullptr;
+		git_reference* head = nullptr;
+		if (!git_repository_open_ext(&repo, reinterpret_cast<const char*>(work->abst.u8string().c_str()), 0, nullptr)) {
+			const char* workdir = git_repository_workdir(repo);
+			if (workdir) {
+				work->git_workdir = generic_path(workdir);
+			}
+			if (!git_repository_head(&head, repo)) {
+				const char* branch = git_reference_shorthand(head);
+				if (branch) {
+					work->git_branch = std::basic_string<char>(branch);
+				}
+			}
+		}
+		git_reference_free(head);
+		git_repository_free(repo);
+	}
 }
 
 static void get_directory_complete(uv_work_t* req, int status)
@@ -116,6 +138,17 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
+
+	v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
+	if (!work->git_workdir.empty()) {
+		x->Set(CONTEXT, to_string(V("git_wdir")), to_string(work->git_workdir));
+	}
+	if (!work->git_branch.empty()) {
+		x->Set(CONTEXT, to_string(V("git_brch")), c_string(work->git_branch));
+	}
+	if (0 < x->GetOwnPropertyNames(CONTEXT).ToLocalChecked()->Length()) {
+		obj->Set(CONTEXT, to_string(V("x")), x);
+	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
 
@@ -186,6 +219,9 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->d = 0;
 	work->f = 0;
 	work->e = 0;
+
+	work->git_workdir.clear();
+	work->git_branch.clear();
 
 	uv_queue_work(uv_default_loop(), &work->handle, get_directory_async, get_directory_complete);
 }

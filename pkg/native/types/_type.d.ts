@@ -32,6 +32,10 @@ declare namespace Type {
 		readonly d: number
 		readonly f: number
 		readonly e: number
+		readonly x?: {
+			readonly git_wdir?: string
+			readonly git_brch?: string
+		}
 	}
 	type ArchiveReader = {
 		readonly size: bigint
