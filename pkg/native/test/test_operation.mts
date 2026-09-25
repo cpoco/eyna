@@ -94,6 +94,34 @@ const main = async () => {
 		(err) => err === ERROR.FAILED,
 	)
 
+	{
+		if (await native.exists(path.join(TEST, "test-dot-directory"))) {
+			await native.moveToTrash(path.join(TEST, "test-dot-directory"))
+		}
+		await native.createDirectory(path.join(TEST, "test-dot-directory"))
+
+		for (const error_path of [".", "./", "..", "../"]) {
+			await assert.rejects(
+				async () => await native.createFile(TEST + `/test-dot-directory/${error_path}`),
+				(err) => err === ERROR.INVALID_PATH,
+			)
+			await assert.rejects(
+				async () => await native.createDirectory(TEST + `/test-dot-directory/${error_path}`),
+				(err) => err === ERROR.INVALID_PATH,
+			)
+			await assert.rejects(
+				async () => await native.createSymlink(TEST + `/test-dot-directory/${error_path}`, TEST),
+				(err) => err === ERROR.INVALID_PATH,
+			)
+			await assert.rejects(
+				async () => await native.moveToTrash(TEST + `/test-dot-directory/${error_path}`),
+				(err) => err === ERROR.INVALID_PATH,
+			)
+		}
+
+		await native.moveToTrash(path.join(TEST, "test-dot-directory"))
+	}
+
 	for (const error_path of ["", ".", "./", "..", "../"]) {
 		await assert.rejects(
 			async () => await native.createFile(error_path),
