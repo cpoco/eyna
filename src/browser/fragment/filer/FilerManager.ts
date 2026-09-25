@@ -273,6 +273,7 @@ export class FilerManager {
 				st: [],
 				ls: [],
 				mk: [],
+				gitBranch: this.data.gitBranch,
 				drawCount: 0,
 				drawIndex: 0,
 				drawPosition: 0,
@@ -289,7 +290,7 @@ export class FilerManager {
 				this.mk.clear()
 			}
 			this.dir.change(frn)
-			await this.dir.list(dp, rg, async (frn, st, ls, e) => {
+			await this.dir.list(dp, rg, async (frn, st, ls, e, gitBranch) => {
 				if (create !== this.data.create) {
 					resolve(false)
 					return
@@ -306,6 +307,7 @@ export class FilerManager {
 					const attr = Util.first(ls[i])
 					return attr ? this.mk.has(attr.rltv) : false
 				})
+				this.data.gitBranch = gitBranch,
 				this.data.watch = 0
 				this.data.error = e
 
@@ -330,6 +332,7 @@ export class FilerManager {
 				st: this.data.st,
 				ls: [],
 				mk: [],
+				gitBranch: this.data.gitBranch,
 				drawCount: Math.min(this.sc.drawCount(), this.data.length),
 				drawIndex: this.sc.drawIndex(0),
 				drawPosition: this.sc.drawPosition(0),

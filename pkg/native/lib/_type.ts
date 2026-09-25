@@ -84,6 +84,10 @@ export type Directory = {
 	readonly d: number
 	readonly f: number
 	readonly e: number
+	readonly x?: {
+		readonly git_wdir?: string
+		readonly git_brch?: string
+	}
 }
 
 export type Item = {

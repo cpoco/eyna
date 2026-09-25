@@ -133,6 +133,7 @@ function _create(count: number) {
 		r.list.stat.target = d.status === Bridge.Status.Target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
+		r.list.git.branch = d.gitBranch
 
 		const size = d.ls.reduce((max, attr) => {
 			if (attr[0]?.file_type === Native.FileType.File) {

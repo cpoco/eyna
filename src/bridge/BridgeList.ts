@@ -14,6 +14,7 @@ export namespace List {
 		st: Native.Attributes
 		ls: Native.Attributes[]
 		mk: boolean[]
+		gitBranch: string
 		drawCount: number
 		drawIndex: number
 		drawPosition: number
@@ -35,6 +36,7 @@ export namespace List {
 			st: [],
 			ls: [],
 			mk: [],
+			gitBranch: "",
 			drawCount: 0,
 			drawIndex: 0,
 			drawPosition: 0,

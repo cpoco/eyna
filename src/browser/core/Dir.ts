@@ -24,7 +24,7 @@ export class Dir {
 	async list(
 		dp: number,
 		rg: RegExp | null,
-		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number) => void,
+		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number, gitBranch: string) => void,
 	) {
 		const location = this.lc
 
@@ -45,7 +45,7 @@ export class Dir {
 					for (const f of SysConfig.data.favorites) {
 						ls.push([_attr(Native.FileType.Favorite, f.path, f.name)])
 					}
-					cb(location.frn, st, ls, 0)
+					cb(location.frn, st, ls, 0, "")
 				},
 			)
 		}
@@ -76,7 +76,7 @@ export class Dir {
 
 					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(location.frn, st, ls, dir.e)
+					cb(location.frn, st, ls, dir.e, dir.x?.git_brch ?? "")
 				},
 			)
 		}
@@ -107,7 +107,7 @@ export class Dir {
 
 					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(location.frn, st, ls, arc.e + (arc.henc ? 1 : 0))
+					cb(location.frn, st, ls, arc.e + (arc.henc ? 1 : 0), "")
 				},
 			)
 		}

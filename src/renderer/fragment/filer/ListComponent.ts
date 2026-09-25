@@ -37,6 +37,9 @@ export type List = {
 		pos: number
 		size: number
 	}
+	git: {
+		branch: string
+	}
 }
 export function InitList(): List {
 	return {
@@ -59,6 +62,9 @@ export function InitList(): List {
 		knob: {
 			pos: 0,
 			size: 0,
+		},
+		git: {
+			branch: "",
 		},
 	}
 }
@@ -159,6 +165,13 @@ export const V = vue.defineComponent({
 							? [
 								vue.h("span", { class: { "filer-info-icon": true } }, Font.Icon.CircleSlash),
 								vue.h("span", { class: { "filer-info-text": true } }, this.list.info.error),
+							]
+							: []),
+						...(0 < this.list.git.branch.length
+							? [
+								vue.h("span", { class: { "filer-info-grow": true } }, ""),
+								vue.h("span", { class: { "filer-info-icon": true } }, Font.Icon.GitBranch),
+								vue.h("span", { class: { "filer-info-text": true } }, this.list.git.branch),
 							]
 							: []),
 					]
