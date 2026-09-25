@@ -61,6 +61,33 @@ for (const f of ff) {
 }
 
 {
+	const dot = path.join(wd, "DOT")
+	const ary = [
+		" .",
+		". ",
+		" . ",
+		" ..",
+		".. ",
+		" .. ",
+		"...",
+		" ...",
+		"... ",
+		" ... ",
+		"....",
+		" ....",
+		".... ",
+		" .... ",
+	]
+	await fs.mkdir(dot)
+	for (const v1 of ary) {
+		await fs.mkdir(path.join(dot, v1))
+		for (const v2 of ary) {
+			await fs.writeFile(path.join(dot, v1, v2), path.join(dot, v1, v2))
+		}
+	}
+}
+
+{
 	const emoji = path.join(wd, "EMOJI")
 	await fs.mkdir(emoji)
 	await fs.mkdir(path.join(emoji, "⭐"))
