@@ -43,21 +43,30 @@ for (const f of ff) {
 
 {
 	const sort = path.join(wd, "SORT")
-	await fs.mkdir(sort)
+	const ary = [
+		"０",
+		"１",
+		"２",
+		"００",
+		"０１",
+		"０２",
+	]
 	for (let i = 0; i < 10; i++) {
-		await fs.writeFile(path.join(sort, "" + i), path.join(sort, "" + i))
-		await fs.writeFile(path.join(sort, "0" + i), path.join(sort, "0" + i))
-		await fs.writeFile(path.join(sort, "1" + i), path.join(sort, "1" + i))
-		await fs.writeFile(path.join(sort, "2" + i), path.join(sort, "2" + i))
-		await fs.writeFile(path.join(sort, "00" + i), path.join(sort, "00" + i))
-		await fs.writeFile(path.join(sort, "01" + i), path.join(sort, "01" + i))
+		ary.push("" + i)
+		ary.push("0" + i)
+		ary.push("1" + i)
+		ary.push("2" + i)
+		ary.push("00" + i)
+		ary.push("01" + i)
+		ary.push("02" + i)
 	}
-	await fs.writeFile(path.join(sort, "０"), path.join(sort, "０"))
-	await fs.writeFile(path.join(sort, "１"), path.join(sort, "１"))
-	await fs.writeFile(path.join(sort, "２"), path.join(sort, "２"))
-	await fs.writeFile(path.join(sort, "００"), path.join(sort, "００"))
-	await fs.writeFile(path.join(sort, "０１"), path.join(sort, "０１"))
-	await fs.writeFile(path.join(sort, "０２"), path.join(sort, "０２"))
+	await fs.mkdir(sort)
+	for (const v1 of ary) {
+		await fs.mkdir(path.join(sort, v1))
+		for (const v2 of ary) {
+			await fs.writeFile(path.join(sort, v1, v2), path.join(sort, v1, v2))
+		}
+	}
 }
 
 {
@@ -89,25 +98,41 @@ for (const f of ff) {
 
 {
 	const emoji = path.join(wd, "EMOJI")
+	const ary = [
+		"⭐",
+		"🌈",
+		"🏳️",
+		"🧪",
+	]
 	await fs.mkdir(emoji)
-	await fs.mkdir(path.join(emoji, "⭐"))
-	await fs.mkdir(path.join(emoji, "🌈"))
-	await fs.mkdir(path.join(emoji, "🏳️"))
-	await fs.mkdir(path.join(emoji, "🧪"))
+	for (const v1 of ary) {
+		await fs.mkdir(path.join(emoji, v1))
+		for (const v2 of ary) {
+			await fs.writeFile(path.join(emoji, v1, v2), path.join(emoji, v1, v2))
+		}
+	}
 }
 
 {
 	const emoji = path.join(wd, "EMOJI-ZWJ")
+	const ary = [
+		"🍋‍🟩",
+		"🏳️‍🌈",
+		"👁️‍🗨️",
+		"🐦‍🔥",
+		"😮‍💨",
+		"😵‍💫",
+		"😶‍🌫️",
+		"🙂‍↔️",
+		"🙂‍↕️",
+	]
 	await fs.mkdir(emoji)
-	await fs.mkdir(path.join(emoji, "🍋‍🟩"))
-	await fs.mkdir(path.join(emoji, "🏳️‍🌈"))
-	await fs.mkdir(path.join(emoji, "👁️‍🗨️"))
-	await fs.mkdir(path.join(emoji, "🐦‍🔥"))
-	await fs.mkdir(path.join(emoji, "😮‍💨"))
-	await fs.mkdir(path.join(emoji, "😵‍💫"))
-	await fs.mkdir(path.join(emoji, "😶‍🌫️"))
-	await fs.mkdir(path.join(emoji, "🙂‍↔️"))
-	await fs.mkdir(path.join(emoji, "🙂‍↕️"))
+	for (const v1 of ary) {
+		await fs.mkdir(path.join(emoji, v1))
+		for (const v2 of ary) {
+			await fs.writeFile(path.join(emoji, v1, v2), path.join(emoji, v1, v2))
+		}
+	}
 }
 
 {
