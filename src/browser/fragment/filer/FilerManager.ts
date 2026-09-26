@@ -307,7 +307,7 @@ export class FilerManager {
 					const attr = Util.first(ls[i])
 					return attr ? this.mk.has(attr.rltv) : false
 				})
-				this.data.gitBranch = gitBranch,
+				this.data.gitBranch = gitBranch
 				this.data.watch = 0
 				this.data.error = e
 

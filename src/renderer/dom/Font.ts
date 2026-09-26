@@ -7,5 +7,5 @@ export enum Icon {
 	CircleSlash = "\u{eabd}",
 	History = "\u{ea82}",
 	ArrowRight = "\u{ea9c}",
-	GitBranch = "\u{ec6f}"
+	GitBranch = "\u{ec6f}",
 }

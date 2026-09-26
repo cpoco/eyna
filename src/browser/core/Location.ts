@@ -180,6 +180,8 @@ export namespace Location {
 	}
 
 	export function toArchUrl(path: string, entry: string): string {
-		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${encodeURIComponent(entry)}?${Temporal.Now.instant().epochMilliseconds}`
+		return `eyna://blob-${Type.Arch}/${encodeURIComponent(path)}/${
+			encodeURIComponent(entry)
+		}?${Temporal.Now.instant().epochMilliseconds}`
 	}
 }
