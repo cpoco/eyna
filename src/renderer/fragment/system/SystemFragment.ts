@@ -74,9 +74,9 @@ const overlay = vue.defineComponent({
 		vue.onMounted(() => {
 			fetch("eyna://versions/")
 				.then((res) => {
-					return res.json()
+					return res.json() as Promise<Versions>
 				})
-				.then((json: Versions) => {
+				.then((json) => {
 					ver.value = [
 						` version: ${json.app.version}`,
 						`electron: ${json.system.electron}`,
@@ -89,9 +89,9 @@ const overlay = vue.defineComponent({
 			id = setInterval(() => {
 				fetch("eyna://metrics/")
 					.then((res) => {
-						return res.json()
+						return res.json() as Promise<Metrics>
 					})
-					.then((json: Metrics) => {
+					.then((json) => {
 						const line: string[] = []
 						for (const m of json.metrics) {
 							line.push(`${m.type.padStart(7, " ")}:${m.memory.workingSetSize.toLocaleString().padStart(10, " ")} KB`)

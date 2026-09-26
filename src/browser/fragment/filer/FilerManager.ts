@@ -290,29 +290,28 @@ export class FilerManager {
 				this.mk.clear()
 			}
 			this.dir.change(frn)
-			await this.dir.list(dp, rg, async (frn, st, ls, e, gitBranch) => {
-				if (create !== this.data.create) {
-					resolve(false)
-					return
-				}
+			const data = await this.dir.list(dp, rg)
+			if (create !== this.data.create) {
+				resolve(false)
+				return
+			}
 
-				this.data.elapse = perf_hooks.performance.now() - this.data.create
-				this.data.search = false
-				this.data.cursor = this.resolveCursor(frn, ls, cursor)
-				this.data.length = ls.length
-				this.data.frn = frn
-				this.data.st = st
-				this.data.ls = ls
-				this.data.mk = Util.array(0, ls.length, (i) => {
-					const attr = Util.first(ls[i])
-					return attr ? this.mk.has(attr.rltv) : false
-				})
-				this.data.gitBranch = gitBranch
-				this.data.watch = 0
-				this.data.error = e
-
-				resolve(true)
+			this.data.elapse = perf_hooks.performance.now() - this.data.create
+			this.data.search = false
+			this.data.cursor = this.resolveCursor(frn, data.ls, cursor)
+			this.data.length = data.ls.length
+			this.data.frn = data.frn
+			this.data.st = data.st
+			this.data.ls = data.ls
+			this.data.mk = Util.array(0, data.ls.length, (i) => {
+				const attr = Util.first(data.ls[i])
+				return attr ? this.mk.has(attr.rltv) : false
 			})
+			this.data.gitBranch = data.git
+			this.data.watch = 0
+			this.data.error = data.e
+
+			resolve(true)
 		})
 	}
 

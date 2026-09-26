@@ -6,6 +6,14 @@ import * as Util from "@eyna/util"
 import { SysConfig } from "@/browser/conf/SysConfig"
 import { Location } from "@/browser/core/Location"
 
+type ListResolve = {
+	frn: string
+	git: string
+	st: Native.Attributes
+	ls: Native.Attributes[]
+	e: number
+}
+
 export class Dir {
 	static readonly HOME: string = "home"
 
@@ -24,8 +32,9 @@ export class Dir {
 	async list(
 		dp: number,
 		rg: RegExp | null,
-		cb: (frn: string, st: Native.Attributes, ls: Native.Attributes[], e: number, gitBranch: string) => void,
-	) {
+	): Promise<ListResolve> {
+		const deferred = new Util.DeferredPromise<ListResolve>()
+
 		const location = this.lc
 
 		_log(location.frn.split("\0"), { dp: dp, rg: rg })
@@ -35,82 +44,94 @@ export class Dir {
 			this.dp = 0
 			this.rg = null
 			const st = [_attr(Native.FileType.Favorite, Dir.HOME, Dir.HOME)]
-			Native.getVolume().then(
-				(vol: Native.Volume[]) => {
-					_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-					const ls: Native.Attributes[] = []
-					for (const v of vol) {
-						ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
-					}
-					for (const f of SysConfig.data.favorites) {
-						ls.push([_attr(Native.FileType.Favorite, f.path, f.name)])
-					}
-					cb(location.frn, st, ls, 0, "")
-				},
-			)
+			const vol = await Native.getVolume()
+			_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			const ls: Native.Attributes[] = []
+			for (const v of vol) {
+				ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
+			}
+			for (const f of SysConfig.data.favorites) {
+				ls.push([_attr(Native.FileType.Favorite, f.path, f.name)])
+			}
+
+			deferred.resolve({
+				frn: location.frn,
+				git: "",
+				st: st,
+				ls: ls,
+				e: 0,
+			})
 		}
 		else if (Location.isFile(location)) {
 			this.dp = dp
 			this.rg = rg
 			const st = await Native.getAttribute(location.path)
-			Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg).then(
-				async (dir: Native.Directory) => {
-					_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
-						s: dir.s,
-						d: dir.d,
-						f: dir.f,
-						e: dir.e,
-						len: dir.list.length,
-					})
-					_time = perf_hooks.performance.now()
+			const dir = await Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg)
+			_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+				s: dir.s,
+				d: dir.d,
+				f: dir.f,
+				e: dir.e,
+				len: dir.list.length,
+			})
+			_time = perf_hooks.performance.now()
 
-					const ls: Native.Attributes[] = []
-					for (const attr of dir.list) {
-						ls.push(await Native.getAttribute(attr.rltv, dir.full))
-					}
+			const ls: Native.Attributes[] = []
+			for (const attr of dir.list) {
+				ls.push(await Native.getAttribute(attr.rltv, dir.full))
+			}
 
-					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-					_time = perf_hooks.performance.now()
+			_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			_time = perf_hooks.performance.now()
 
-					_sort(ls)
+			_sort(ls)
 
-					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(location.frn, st, ls, dir.e, dir.x?.git_brch ?? "")
-				},
-			)
+			deferred.resolve({
+				frn: location.frn,
+				git: dir.x?.git_brch ?? "",
+				st: st,
+				ls: ls,
+				e: dir.e,
+			})
 		}
 		else if (Location.isArch(location)) {
 			this.dp = 0
 			this.rg = null
 			const st = await Native.getAttribute(location.path)
-			Native.getArchive(location.path, location.entry, this.dp).then(
-				async (arc: Native.Archive) => {
-					_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
-						s: arc.s,
-						d: arc.d,
-						f: arc.f,
-						e: arc.e,
-						len: arc.list.length,
-					})
-					_time = perf_hooks.performance.now()
+			const arc = await Native.getArchive(location.path, location.entry, this.dp)
+			_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
+				s: arc.s,
+				d: arc.d,
+				f: arc.f,
+				e: arc.e,
+				len: arc.list.length,
+			})
+			_time = perf_hooks.performance.now()
 
-					const ls: Native.Attributes[] = []
-					for (const attr of arc.list) {
-						ls.push([attr])
-					}
+			const ls: Native.Attributes[] = []
+			for (const attr of arc.list) {
+				ls.push([attr])
+			}
 
-					_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
-					_time = perf_hooks.performance.now()
+			_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			_time = perf_hooks.performance.now()
 
-					_sort(ls)
+			_sort(ls)
 
-					_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-					cb(location.frn, st, ls, arc.e + (arc.henc ? 1 : 0), "")
-				},
-			)
+			deferred.resolve({
+				frn: location.frn,
+				git: "",
+				st: st,
+				ls: ls,
+				e: arc.e + (arc.henc ? 1 : 0),
+			})
 		}
+
+		return deferred.promise
 	}
 }
 
