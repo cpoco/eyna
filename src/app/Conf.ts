@@ -20,7 +20,7 @@ export const MULTI_EXTE = [
 	".tar.zst",
 ]
 
-export const ARCHIVE_EXTE = /^\.(7z|rar|tar|tar.gz|tgz|tar.xz|txz|tar.zst|zip)$/i
+export const ARCHIVE_EXTE = /^\.(7z|rar|tar|tar.gz|tgz|tar.xz|txz|tzst|tar.zst|zip)$/i
 
 export const VIEWER_SIZE_LIMIT = 100_000_000n
 export const VIEWER_MEDIA_EXTE = /^\.(gif|jpe?g|png|webp|mp3|m4a|ogg|wave?|mp4|webm)$/i

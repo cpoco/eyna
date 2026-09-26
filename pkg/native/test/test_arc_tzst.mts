@@ -6,7 +6,7 @@ import path from "node:path/posix"
 import { ERROR, readStream } from "./_util.mts"
 
 const main = async () => {
-	const TGZ = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tar.zst")
+	const TGZ = path.join(import.meta.dirname ?? __dirname, "fixtures", "test.tzst")
 
 	const arc = await native.getArchive(TGZ, "", 10)
 

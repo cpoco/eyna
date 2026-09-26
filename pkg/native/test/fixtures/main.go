@@ -72,7 +72,7 @@ func main() {
 	}
 
 	{
-		f, _ := os.Create("test.tar.zst")
+		f, _ := os.Create("test.tzst")
 		defer f.Close()
 
 		zst := zstdWriter(f)
