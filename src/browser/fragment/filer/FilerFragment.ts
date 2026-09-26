@@ -391,7 +391,9 @@ export class FilerFragment extends AbstractFragment {
 							}
 						}
 						else if (Location.isArch(active.location)) {
-							if (await active.sendListLoading(Location.toArch(active.location.path, attr.full), 0, null, null, false)) {
+							if (
+								await active.sendListLoading(Location.toArch(active.location.path, attr.full), 0, null, null, false)
+							) {
 								active.adjustScroll()
 								active.sendListSummary()
 								active.sendAttrAll()
