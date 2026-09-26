@@ -11,10 +11,10 @@ export namespace List {
 		cursor: number
 		length: number
 		frn: string
+		git: string
 		st: Native.Attributes
 		ls: Native.Attributes[]
 		mk: boolean[]
-		gitBranch: string
 		drawCount: number
 		drawIndex: number
 		drawPosition: number
@@ -33,10 +33,10 @@ export namespace List {
 			cursor: 0,
 			length: 0,
 			frn: "",
+			git: "",
 			st: [],
 			ls: [],
 			mk: [],
-			gitBranch: "",
 			drawCount: 0,
 			drawIndex: 0,
 			drawPosition: 0,
@@ -78,14 +78,14 @@ export namespace List {
 	}
 
 	// browser -> renderer
-	export namespace Change {
-		export const CH = "filer-change"
+	export namespace Loading {
+		export const CH = "filer-loading"
 		export type Data = List.Data
 	}
 
 	// browser -> renderer
-	export namespace Scan {
-		export const CH = "filer-scan"
+	export namespace Summary {
+		export const CH = "filer-summary"
 		export type Data = List.Data
 	}
 

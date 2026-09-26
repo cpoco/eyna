@@ -17,7 +17,8 @@ const TAG_DATA = "data"
 const TAG_SCROLL = "scroll"
 
 export type List = {
-	wd: string
+	frn: string
+	git: string
 	st: Native.Attributes
 	search: boolean
 	info: {
@@ -37,13 +38,11 @@ export type List = {
 		pos: number
 		size: number
 	}
-	git: {
-		branch: string
-	}
 }
 export function InitList(): List {
 	return {
-		wd: "",
+		frn: "",
+		git: "",
 		st: [],
 		search: false,
 		info: {
@@ -62,9 +61,6 @@ export function InitList(): List {
 		knob: {
 			pos: 0,
 			size: 0,
-		},
-		git: {
-			branch: "",
 		},
 	}
 }
@@ -144,7 +140,7 @@ export const V = vue.defineComponent({
 			vue.h(
 				TAG_PATH,
 				{ class: { "filer-path": true } },
-				Unicode.highlight(this.list.wd, err),
+				Unicode.highlight(this.list.frn, err),
 			),
 			vue.h(
 				TAG_INFO,
@@ -167,11 +163,11 @@ export const V = vue.defineComponent({
 								vue.h("span", { class: { "filer-info-text": true } }, this.list.info.error),
 							]
 							: []),
-						...(0 < this.list.git.branch.length
+						...(0 < this.list.git.length
 							? [
 								vue.h("span", { class: { "filer-info-grow": true } }, ""),
 								vue.h("span", { class: { "filer-info-icon": true } }, Font.Icon.GitBranch),
-								vue.h("span", { class: { "filer-info-text": true } }, this.list.git.branch),
+								vue.h("span", { class: { "filer-info-text": true } }, this.list.git),
 							]
 							: []),
 					]

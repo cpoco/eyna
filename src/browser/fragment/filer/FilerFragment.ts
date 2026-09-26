@@ -180,7 +180,7 @@ export class FilerFragment extends AbstractFragment {
 						: this.index.target === i
 						? Bridge.Status.Target
 						: Bridge.Status.None
-					fm.sendActive()
+					fm.sendActiveStatus()
 				}
 				return Promise.resolve()
 			})
@@ -193,7 +193,7 @@ export class FilerFragment extends AbstractFragment {
 						: this.index.target === i
 						? Bridge.Status.Target
 						: Bridge.Status.None
-					fm.sendActive()
+					fm.sendActiveStatus()
 				}
 				return Promise.resolve()
 			})
@@ -242,7 +242,7 @@ export class FilerFragment extends AbstractFragment {
 						return
 					}
 					if (
-						await active.sendChange(
+						await active.sendListLoading(
 							active.location.frn,
 							Number(find.dp),
 							find.rg === "" ? null : new RegExp(find.rg),
@@ -251,7 +251,7 @@ export class FilerFragment extends AbstractFragment {
 						)
 					) {
 						active.adjustScroll()
-						active.sendScan()
+						active.sendListSummary()
 						active.sendAttrAll()
 						active.sendMarkAll()
 					}
@@ -274,9 +274,9 @@ export class FilerFragment extends AbstractFragment {
 					// link(symbolic or junction) -> file
 					if (trgt.file_type === Native.FileType.File) {
 						if (Location.isFile(active.location)) {
-							if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
+							if (await active.sendListLoading(Location.toArch(trgt.full, ""), 0, null, null, false)) {
 								active.adjustScroll()
-								active.sendScan()
+								active.sendListSummary()
 								active.sendAttrAll()
 							}
 						}
@@ -384,16 +384,16 @@ export class FilerFragment extends AbstractFragment {
 							&& trgt.file_type === Native.FileType.Directory
 					) {
 						if (Location.isHome(active.location) || Location.isFile(active.location)) {
-							if (await active.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
+							if (await active.sendListLoading(Location.toFile(attr.full), 0, null, null, false)) {
 								active.adjustScroll()
-								active.sendScan()
+								active.sendListSummary()
 								active.sendAttrAll()
 							}
 						}
 						else if (Location.isArch(active.location)) {
-							if (await active.sendChange(Location.toArch(active.location.path, attr.full), 0, null, null, false)) {
+							if (await active.sendListLoading(Location.toArch(active.location.path, attr.full), 0, null, null, false)) {
 								active.adjustScroll()
-								active.sendScan()
+								active.sendListSummary()
 								active.sendAttrAll()
 							}
 						}
@@ -405,9 +405,9 @@ export class FilerFragment extends AbstractFragment {
 						&& trgt.file_type === Native.FileType.Directory
 					) {
 						if (Location.isFile(active.location)) {
-							if (await active.sendChange(Location.toFile(trgt.full), 0, null, null, false)) {
+							if (await active.sendListLoading(Location.toFile(trgt.full), 0, null, null, false)) {
 								active.adjustScroll()
-								active.sendScan()
+								active.sendListSummary()
 								active.sendAttrAll()
 							}
 						}
@@ -421,9 +421,9 @@ export class FilerFragment extends AbstractFragment {
 					) {
 						if (Location.isFile(active.location)) {
 							if (Conf.ARCHIVE_EXTE.test(trgt.exte)) {
-								if (await active.sendChange(Location.toArch(trgt.full, ""), 0, null, null, false)) {
+								if (await active.sendListLoading(Location.toArch(trgt.full, ""), 0, null, null, false)) {
 									active.adjustScroll()
-									active.sendScan()
+									active.sendListSummary()
 									active.sendAttrAll()
 								}
 								resolve()
@@ -530,9 +530,9 @@ export class FilerFragment extends AbstractFragment {
 				}
 				return new Promise(async (resolve, _reject) => {
 					const next = Location.updir(active.location.frn)
-					if (await active.sendChange(next.frn, 0, null, next.anchor ?? null, false)) {
+					if (await active.sendListLoading(next.frn, 0, null, next.anchor ?? null, false)) {
 						active.adjustScroll()
-						active.sendScan()
+						active.sendListSummary()
 						active.sendAttrAll()
 					}
 					resolve()
@@ -540,9 +540,9 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetequal", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					if (await target.sendChange(active.location.frn, 0, null, null, false)) {
+					if (await target.sendListLoading(active.location.frn, 0, null, null, false)) {
 						target.adjustScroll()
-						target.sendScan()
+						target.sendListSummary()
 						target.sendAttrAll()
 					}
 					resolve()
@@ -567,9 +567,9 @@ export class FilerFragment extends AbstractFragment {
 						|| attr.file_type === Native.FileType.Link
 							&& trgt.file_type === Native.FileType.Directory
 					) {
-						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
+						if (await target.sendListLoading(Location.toFile(attr.full), 0, null, null, false)) {
 							target.adjustScroll()
-							target.sendScan()
+							target.sendListSummary()
 							target.sendAttrAll()
 						}
 						resolve()
@@ -579,9 +579,9 @@ export class FilerFragment extends AbstractFragment {
 						attr.file_type === Native.FileType.File
 						&& trgt.file_type === Native.FileType.Directory
 					) {
-						if (await target.sendChange(Location.toFile(attr.full), 0, null, null, false)) {
+						if (await target.sendListLoading(Location.toFile(attr.full), 0, null, null, false)) {
 							target.adjustScroll()
-							target.sendScan()
+							target.sendListSummary()
 							target.sendAttrAll()
 						}
 						resolve()

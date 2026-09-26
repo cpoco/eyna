@@ -53,7 +53,7 @@ function _create(count: number) {
 		reactive.title.err = data.err
 	}
 
-	const updateChange = (i: number, data: Bridge.List.Change.Data) => {
+	const updateListLoading = (i: number, data: Bridge.List.Loading.Data) => {
 		_data[i]! = vue.markRaw(data)
 
 		clearTimeout(_time[i])
@@ -62,7 +62,7 @@ function _create(count: number) {
 		}, 50)
 	}
 
-	const updateScan = (i: number, data: Bridge.List.Scan.Data) => {
+	const updateListSummary = (i: number, data: Bridge.List.Summary.Data) => {
 		_data[i]! = vue.markRaw(data)
 
 		clearTimeout(_time[i])
@@ -71,7 +71,7 @@ function _create(count: number) {
 		}, 50)
 	}
 
-	const updateActive = (i: number, data: Bridge.List.Active.Data) => {
+	const updateActiveStatus = (i: number, data: Bridge.List.Active.Data) => {
 		_data[i]!.status = data.status
 
 		clearTimeout(_time[i])
@@ -109,7 +109,7 @@ function _create(count: number) {
 		_update(i)
 	}
 
-	const updateWatch = (i: number, data: Bridge.List.Watch.Data) => {
+	const updateWatchStatus = (i: number, data: Bridge.List.Watch.Data) => {
 		_data[i]!.watch = data.watch
 
 		reactive.list[i]!.list.info.sync = _data[i]!.watch === 0
@@ -119,7 +119,8 @@ function _create(count: number) {
 		const d = _data[i]!
 		const r = reactive.list[i]!
 
-		r.list.wd = d.frn
+		r.list.frn = d.frn
+		r.list.git = d.git
 		r.list.st = d.st
 		r.list.search = d.search
 		r.list.info.show = !d.search && d.frn !== "home"
@@ -133,7 +134,6 @@ function _create(count: number) {
 		r.list.stat.target = d.status === Bridge.Status.Target
 		r.list.knob.pos = d.knobPosition
 		r.list.knob.size = d.knobSize
-		r.list.git.branch = d.gitBranch
 
 		const size = d.ls.reduce((max, attr) => {
 			if (attr[0]?.file_type === Native.FileType.File) {
@@ -171,13 +171,13 @@ function _create(count: number) {
 	return {
 		reactive,
 		updateTitle,
-		updateChange,
-		updateScan,
-		updateActive,
+		updateListLoading,
+		updateListSummary,
+		updateActiveStatus,
 		updateCursor,
 		updateAttribute,
 		updateMark,
-		updateWatch,
+		updateWatchStatus,
 	}
 }
 

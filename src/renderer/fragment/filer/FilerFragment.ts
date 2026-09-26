@@ -25,14 +25,14 @@ export const V = vue.defineComponent({
 			.on(Bridge.List.Title.CH, (_, data) => {
 				filer.updateTitle(data)
 			})
-			.on(Bridge.List.Change.CH, (i, data) => {
-				filer.updateChange(i, data)
+			.on(Bridge.List.Loading.CH, (i, data) => {
+				filer.updateListLoading(i, data)
 			})
-			.on(Bridge.List.Scan.CH, (i, data) => {
-				filer.updateScan(i, data)
+			.on(Bridge.List.Summary.CH, (i, data) => {
+				filer.updateListSummary(i, data)
 			})
 			.on(Bridge.List.Active.CH, (i, data) => {
-				filer.updateActive(i, data)
+				filer.updateActiveStatus(i, data)
 			})
 			.on(Bridge.List.Cursor.CH, (i, data) => {
 				filer.updateCursor(i, data)
@@ -44,7 +44,7 @@ export const V = vue.defineComponent({
 				filer.updateMark(i, data)
 			})
 			.on(Bridge.List.Watch.CH, (i, data) => {
-				filer.updateWatch(i, data)
+				filer.updateWatchStatus(i, data)
 			})
 
 		return {

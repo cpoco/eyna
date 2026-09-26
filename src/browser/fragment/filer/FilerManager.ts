@@ -51,7 +51,7 @@ export class FilerManager {
 			}
 			else {
 				this.data.watch = 1
-				this.sendWatch()
+				this.sendWatchStatus()
 			}
 		}
 	}
@@ -118,9 +118,9 @@ export class FilerManager {
 	update(forceMarkClear: boolean): Promise<void> {
 		_log("update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendChange(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
+			if (await this.sendListLoading(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
 				this.adjustScroll()
-				this.sendScan()
+				this.sendListSummary()
 				this.sendAttrAll()
 				this.sendMarkAll()
 			}
@@ -238,7 +238,7 @@ export class FilerManager {
 		}
 	}
 
-	sendChange(
+	sendListLoading(
 		frn: string,
 		dp: number,
 		rg: RegExp | null,
@@ -260,7 +260,7 @@ export class FilerManager {
 
 		this.sendTitle(next)
 		root.send(
-			Bridge.List.Change.CH,
+			Bridge.List.Loading.CH,
 			this.id,
 			{
 				create: this.data.create,
@@ -270,10 +270,10 @@ export class FilerManager {
 				cursor: 0,
 				length: 0,
 				frn: next.frn,
+				git: "",
 				st: [],
 				ls: [],
 				mk: [],
-				gitBranch: this.data.gitBranch,
 				drawCount: 0,
 				drawIndex: 0,
 				drawPosition: 0,
@@ -301,13 +301,13 @@ export class FilerManager {
 			this.data.cursor = this.resolveCursor(frn, data.ls, cursor)
 			this.data.length = data.ls.length
 			this.data.frn = data.frn
+			this.data.git = data.git
 			this.data.st = data.st
 			this.data.ls = data.ls
 			this.data.mk = Util.array(0, data.ls.length, (i) => {
 				const attr = Util.first(data.ls[i])
 				return attr ? this.mk.has(attr.rltv) : false
 			})
-			this.data.gitBranch = data.git
 			this.data.watch = 0
 			this.data.error = data.e
 
@@ -315,10 +315,10 @@ export class FilerManager {
 		})
 	}
 
-	sendScan() {
+	sendListSummary() {
 		this.sendTitle()
 		root.send(
-			Bridge.List.Scan.CH,
+			Bridge.List.Summary.CH,
 			this.id,
 			{
 				create: this.data.create,
@@ -328,10 +328,10 @@ export class FilerManager {
 				cursor: this.data.cursor,
 				length: this.data.length,
 				frn: this.data.frn,
+				git: this.data.git,
 				st: this.data.st,
 				ls: [],
 				mk: [],
-				gitBranch: this.data.gitBranch,
 				drawCount: Math.min(this.sc.drawCount(), this.data.length),
 				drawIndex: this.sc.drawIndex(0),
 				drawPosition: this.sc.drawPosition(0),
@@ -344,7 +344,7 @@ export class FilerManager {
 		)
 	}
 
-	sendActive() {
+	sendActiveStatus() {
 		this.sendTitle()
 		root.send(Bridge.List.Active.CH, this.id, { status: this.data.status })
 	}
@@ -368,11 +368,11 @@ export class FilerManager {
 
 	sendAttrAll() {
 		for (let i = 0; i < this.data.length; i += 1000) {
-			this.sendAttr(i, Math.min(i + 1000, this.data.length))
+			this.sendAttributes(i, Math.min(i + 1000, this.data.length))
 		}
 	}
 
-	sendAttr(start: number = 0, end: number = this.data.length) {
+	sendAttributes(start: number = 0, end: number = this.data.length) {
 		root.send(
 			Bridge.List.Attribute.CH,
 			this.id,
@@ -402,7 +402,7 @@ export class FilerManager {
 		)
 	}
 
-	sendWatch() {
+	sendWatchStatus() {
 		root.send(
 			Bridge.List.Watch.CH,
 			this.id,
