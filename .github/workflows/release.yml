@@ -33,6 +33,7 @@ jobs:
             cache
       - run: |
           vcpkg version
+          git -C "${VCPKG_INSTALLATION_ROOT}" rev-parse HEAD
       - run: |
           npm ci
       - run: |
