@@ -33,6 +33,4 @@ module.exports = async (ex: Extension): Promise<void> => {
 	}
 
 	await ex.filer.mkslink(link, full)
-
-	ex.filer.update()
 }

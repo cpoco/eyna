@@ -17,7 +17,6 @@ declare type Extension = {
 		select: Attributes[]
 	} | null
 	filer: {
-		update: () => void
 		exists: (full: string) => Promise<boolean>
 		trash: (full: string) => Promise<void>
 		mkdir: (full: string) => Promise<void>

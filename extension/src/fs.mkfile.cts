@@ -32,6 +32,4 @@ module.exports = async (ex: Extension): Promise<void> => {
 	}
 
 	await ex.filer.mkfile(full)
-
-	ex.filer.update()
 }

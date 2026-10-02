@@ -294,10 +294,6 @@ class Root {
 				active: option.active,
 				target: option.target,
 				filer: {
-					update: () => {
-						sbox.log("filer.update")
-						this.fragment[Index.Filer].update()
-					},
 					exists: (full: string): Promise<boolean> => {
 						sbox.log("filer.exists", { full })
 						return Native.exists(full)

@@ -33,8 +33,6 @@ module.exports = async (ex: Extension): Promise<void> => {
 	for (const v of ls) {
 		await operation(ex, { type: v[0].file_type, rltv: v[0].rltv }, src_base, dst_base)
 	}
-
-	ex.filer.update()
 }
 
 async function operation(ex: Extension, item: Item, src_base: string, dst_base: string): Promise<void> {

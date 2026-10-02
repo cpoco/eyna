@@ -34,6 +34,4 @@ module.exports = async (ex: Extension): Promise<void> => {
 	}
 
 	await ex.filer.move(src, dst)
-
-	ex.filer.update()
 }
