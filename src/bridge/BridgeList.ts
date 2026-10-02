@@ -11,6 +11,8 @@ export namespace List {
 		cursor: number
 		length: number
 		frn: string
+		dp: number
+		rg: RegExp | null
 		git: string
 		st: Native.Attributes
 		ls: Native.Attributes[]
@@ -33,6 +35,8 @@ export namespace List {
 			cursor: 0,
 			length: 0,
 			frn: "",
+			dp: 0,
+			rg: null,
 			git: "",
 			st: [],
 			ls: [],

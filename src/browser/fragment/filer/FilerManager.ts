@@ -17,8 +17,8 @@ export class FilerManager {
 	private readonly mk: Set<string> = new Set()
 	private readonly history: Map<string, string> = new Map()
 
-	private watch_run: boolean = false
-	private readonly watch_queue: string[] = []
+	private auto_update: boolean = false
+	private readonly auto_update_queue: string[] = []
 
 	// 画面高さに対してのカーソル移動数
 	get mv() {
@@ -36,28 +36,31 @@ export class FilerManager {
 	}
 
 	async run(): Promise<void> {
-		this.watch_run = true
-		while (this.watch_run) {
-			if (this.watch_queue.length === 0) {
+		this.auto_update = true
+		while (this.auto_update) {
+			if (this.auto_update_queue.length === 0 || this.data.search) {
 				await timers.setTimeout(100)
 				continue
 			}
-			if (this.data.frn !== this.watch_queue.shift()) {
+			if (this.data.frn !== this.auto_update_queue.shift()) {
 				continue
 			}
-
-			if (this.data.elapse <= 100 && this.data.ls.length <= 100) {
-				await this.update(false)
-			}
-			else {
+			if (100 < this.data.elapse || 100 < this.data.ls.length) {
 				this.data.watch = 1
 				this.sendWatchStatus()
+				continue
 			}
+			if (this.data.dp !== 0 || this.data.rg !== null) {
+				this.data.watch = 1
+				this.sendWatchStatus()
+				continue
+			}
+			await this.update(false)
 		}
 	}
 
 	exit() {
-		this.watch_run = false
+		this.auto_update = false
 		this.unwatch()
 	}
 
@@ -182,8 +185,8 @@ export class FilerManager {
 				if (create !== this.data.create || dp < depth) {
 					return
 				}
-				if (this.watch_queue.length === 0 || this.watch_queue.at(-1) !== next.frn) {
-					this.watch_queue.push(next.frn)
+				if (this.auto_update_queue.length === 0 || this.auto_update_queue.at(-1) !== next.frn) {
+					this.auto_update_queue.push(next.frn)
 				}
 			})
 		}
@@ -270,6 +273,8 @@ export class FilerManager {
 				cursor: 0,
 				length: 0,
 				frn: next.frn,
+				dp: dp,
+				rg: rg,
 				git: "",
 				st: [],
 				ls: [],
@@ -301,6 +306,8 @@ export class FilerManager {
 			this.data.cursor = this.resolveCursor(frn, data.ls, cursor)
 			this.data.length = data.ls.length
 			this.data.frn = data.frn
+			this.data.dp = data.dp
+			this.data.rg = data.rg
 			this.data.git = data.git
 			this.data.st = data.st
 			this.data.ls = data.ls
@@ -328,6 +335,8 @@ export class FilerManager {
 				cursor: this.data.cursor,
 				length: this.data.length,
 				frn: this.data.frn,
+				dp: this.data.dp,
+				rg: this.data.rg,
 				git: this.data.git,
 				st: this.data.st,
 				ls: [],

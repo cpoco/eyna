@@ -8,6 +8,8 @@ import { Location } from "@/browser/core/Location"
 
 type ListResolve = {
 	frn: string
+	dp: number
+	rg: RegExp | null
 	git: string
 	st: Native.Attributes
 	ls: Native.Attributes[]
@@ -18,8 +20,6 @@ export class Dir {
 	static readonly HOME: string = "home"
 
 	private lc: Location.Data = Location.Default
-	private dp: number = 0
-	private rg: RegExp | null = null
 
 	get location(): Location.Data {
 		return this.lc
@@ -41,8 +41,6 @@ export class Dir {
 		let _time = perf_hooks.performance.now()
 
 		if (Location.isHome(location)) {
-			this.dp = 0
-			this.rg = null
 			const st = [_attr(Native.FileType.Favorite, Dir.HOME, Dir.HOME)]
 			const vol = await Native.getVolume()
 			_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
@@ -56,6 +54,8 @@ export class Dir {
 
 			deferred.resolve({
 				frn: location.frn,
+				dp: dp,
+				rg: rg,
 				git: "",
 				st: st,
 				ls: ls,
@@ -63,10 +63,8 @@ export class Dir {
 			})
 		}
 		else if (Location.isFile(location)) {
-			this.dp = dp
-			this.rg = rg
 			const st = await Native.getAttribute(location.path)
-			const dir = await Native.getDirectory(location.path, "", Native.Sort.DepthFirst, this.dp, this.rg)
+			const dir = await Native.getDirectory(location.path, "", Native.Sort.DepthFirst, dp, rg)
 			_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 				s: dir.s,
 				d: dir.d,
@@ -90,6 +88,8 @@ export class Dir {
 
 			deferred.resolve({
 				frn: location.frn,
+				dp: dp,
+				rg: rg,
 				git: dir.x?.git_brch ?? "",
 				st: st,
 				ls: ls,
@@ -97,10 +97,8 @@ export class Dir {
 			})
 		}
 		else if (Location.isArch(location)) {
-			this.dp = 0
-			this.rg = null
 			const st = await Native.getAttribute(location.path)
-			const arc = await Native.getArchive(location.path, location.entry, this.dp)
+			const arc = await Native.getArchive(location.path, location.entry, dp)
 			_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
 				s: arc.s,
 				d: arc.d,
@@ -124,6 +122,8 @@ export class Dir {
 
 			deferred.resolve({
 				frn: location.frn,
+				dp: dp,
+				rg: rg,
 				git: "",
 				st: st,
 				ls: ls,
