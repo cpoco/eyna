@@ -159,37 +159,52 @@ function _attr(file_type: Native.FileType, full: string, name: string): Native.A
 const GROUP_DIRECTORIES_FIRST = 1024
 
 function _sort(ls: Native.Attributes[]) {
-	ls.sort((a, b) => {
-		const type = _type(a, b)
+	ls.sort(_compare)
+}
+
+function _compare(a: Native.Attributes, b: Native.Attributes): number {
+	const aa: string[] = (a[0]?.rltv ?? "").split("/")
+	const bb: string[] = (b[0]?.rltv ?? "").split("/")
+	const len = Math.min(aa.length, bb.length)
+
+	for (let i = 0; i < len; i++) {
+		const an = aa[i] ?? ""
+		const bn = bb[i] ?? ""
+		if (an === bn) {
+			continue
+		}
+
+		const type = _type(
+			i === aa.length - 1 ? _kind(a) : Native.FileType.Directory,
+			i === bb.length - 1 ? _kind(b) : Native.FileType.Directory,
+		)
 		if (type === GROUP_DIRECTORIES_FIRST) {
-			return _name(a, b)
+			return _name(an, bn)
 		}
 		if (type === 0) {
 			const ext = _ext(a, b)
 			if (ext === 0) {
-				return _name(a, b)
+				return _name(an, bn)
 			}
 			return ext
 		}
 		return type
-	})
+	}
+
+	return aa.length - bb.length
 }
 
-function _type(a: Native.Attributes, b: Native.Attributes): number {
-	let aa = Util.last(a)?.file_type ?? Native.FileType.None
-	let bb = Util.last(b)?.file_type ?? Native.FileType.None
+function _kind(a: Native.Attributes): Native.FileType {
+	const type = Util.last(a)?.file_type ?? Native.FileType.None
+	return type === Native.FileType.None
+		? Native.FileType.File
+		: type
+}
 
-	if (aa === Native.FileType.None) {
-		aa = Native.FileType.File
-	}
-	if (bb === Native.FileType.None) {
-		bb = Native.FileType.File
-	}
-	if (aa === Native.FileType.Directory && bb === Native.FileType.Directory) {
-		return GROUP_DIRECTORIES_FIRST
-	}
-
-	return aa - bb
+function _type(a: Native.FileType, b: Native.FileType): number {
+	return a === Native.FileType.Directory && b === Native.FileType.Directory
+		? GROUP_DIRECTORIES_FIRST
+		: a - b
 }
 
 function _ext(a: Native.Attributes, b: Native.Attributes): number {
@@ -198,9 +213,9 @@ function _ext(a: Native.Attributes, b: Native.Attributes): number {
 	return aa.localeCompare(bb)
 }
 
-function _name(a: Native.Attributes, b: Native.Attributes): number {
-	const aa: string = a[0]?.rltv.toLocaleLowerCase() ?? ""
-	const bb: string = b[0]?.rltv.toLocaleLowerCase() ?? ""
+function _name(a: string, b: string): number {
+	const aa: string = a.toLocaleLowerCase()
+	const bb: string = b.toLocaleLowerCase()
 	const lc = aa.localeCompare(bb, undefined, { numeric: true })
 	return lc === 0
 		? aa.length - bb.length
