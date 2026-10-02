@@ -50,11 +50,6 @@ export class FilerManager {
 				this.sendWatchStatus()
 				continue
 			}
-			if (this.data.dp !== 0 || this.data.rg !== null) {
-				this.data.watch = 1
-				this.sendWatchStatus()
-				continue
-			}
 			await this.update(false)
 		}
 	}
@@ -121,7 +116,7 @@ export class FilerManager {
 	update(forceMarkClear: boolean): Promise<void> {
 		_log("update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
 		return new Promise(async (resolve, _reject) => {
-			if (await this.sendListLoading(this.location.frn, 0, null, this.data.cursor, forceMarkClear)) {
+			if (await this.sendListLoading(this.location.frn, this.data.dp, this.data.rg, this.data.cursor, forceMarkClear)) {
 				this.adjustScroll()
 				this.sendListSummary()
 				this.sendAttrAll()
