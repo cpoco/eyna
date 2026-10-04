@@ -37,6 +37,6 @@ export interface RendererToBrowser {
 	[Viewer.Event.CH]: [-1, Viewer.Event.Data]
 }
 
-export interface Invokel {
+export interface Invoke {
 	[System.Dom.CH]: [-1, System.Dom.Data, System.Dom.Result]
 }

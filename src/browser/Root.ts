@@ -243,12 +243,12 @@ class Root {
 		return this
 	}
 
-	handle<T extends keyof Bridge.Invokel>(
+	handle<T extends keyof Bridge.Invoke>(
 		ch: T,
 		listener: (
-			i: Bridge.Invokel[T][0],
-			data: Bridge.Invokel[T][1],
-		) => Bridge.Invokel[T][2],
+			i: Bridge.Invoke[T][0],
+			data: Bridge.Invoke[T][1],
+		) => Bridge.Invoke[T][2],
 	): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, i, data) => {
 			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, i, data)

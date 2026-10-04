@@ -28,11 +28,11 @@ declare global {
 				data: Bridge.RendererToBrowser[T][1],
 			): void
 
-			invoke: <T extends keyof Bridge.Invokel>(
+			invoke: <T extends keyof Bridge.Invoke>(
 				channel: T,
-				i: Bridge.Invokel[T][0],
-				data: Bridge.Invokel[T][1],
-			) => Promise<Bridge.Invokel[T][2]>
+				i: Bridge.Invoke[T][0],
+				data: Bridge.Invoke[T][1],
+			) => Promise<Bridge.Invoke[T][2]>
 		}
 	}
 }
@@ -105,11 +105,11 @@ class Root {
 		window.ipc.send<T>(ch, i, data)
 	}
 
-	invoke<T extends keyof Bridge.Invokel>(
+	invoke<T extends keyof Bridge.Invoke>(
 		channel: T,
-		i: Bridge.Invokel[T][0],
-		data: Bridge.Invokel[T][1],
-	): Promise<Bridge.Invokel[T][2]> {
+		i: Bridge.Invoke[T][0],
+		data: Bridge.Invoke[T][1],
+	): Promise<Bridge.Invoke[T][2]> {
 		this.log("ipc.invoke", channel, i, data)
 		return window.ipc.invoke<T>(channel, i, data)
 	}
