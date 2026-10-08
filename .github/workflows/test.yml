@@ -44,25 +44,25 @@ jobs:
       - run: |
           node pkg/native/scripts/cmake_node.mts
       - run: |
-          npx fixture
-          npx tsx pkg/native/test/test_compare.mts
-          npx tsx pkg/native/test/test_get.mts
-          npx tsx pkg/native/test/test_get_depth.mts
-          npx tsx pkg/native/test/test_get_regexp.mts
-          npx tsx pkg/native/test/test_icon.mts
-          npx tsx pkg/native/test/test_link.mts
-          npx tsx pkg/native/test/test_operation.mts
-          npx tsx pkg/native/test/test_time.mts
-          npx tsx pkg/native/test/test_os.mts
-          npx tsx pkg/native/test/test_arc.mts
-          npx tsx pkg/native/test/test_arc_tar.mts
-          npx tsx pkg/native/test/test_arc_tgz.mts
-          npx tsx pkg/native/test/test_arc_tzst.mts
-          npx tsx pkg/native/test/test_arc_zip.mts
-          npx tsx pkg/native/test/test_arc_rar.mts
-          npx tsx pkg/native/test/test_arc_rar_pw1.mts
-          npx tsx pkg/native/test/test_arc_rar_pw2.mts
-          npx tsx pkg/native/test/test_watch.mts
+          node --import tsx pkg/fixture/index.mts
+          node --import tsx pkg/native/test/test_compare.mts
+          node --import tsx pkg/native/test/test_get.mts
+          node --import tsx pkg/native/test/test_get_depth.mts
+          node --import tsx pkg/native/test/test_get_regexp.mts
+          node --import tsx pkg/native/test/test_icon.mts
+          node --import tsx pkg/native/test/test_link.mts
+          node --import tsx pkg/native/test/test_operation.mts
+          node --import tsx pkg/native/test/test_time.mts
+          node --import tsx pkg/native/test/test_os.mts
+          node --import tsx pkg/native/test/test_arc.mts
+          node --import tsx pkg/native/test/test_arc_tar.mts
+          node --import tsx pkg/native/test/test_arc_tgz.mts
+          node --import tsx pkg/native/test/test_arc_tzst.mts
+          node --import tsx pkg/native/test/test_arc_zip.mts
+          node --import tsx pkg/native/test/test_arc_rar.mts
+          node --import tsx pkg/native/test/test_arc_rar_pw1.mts
+          node --import tsx pkg/native/test/test_arc_rar_pw2.mts
+          node --import tsx pkg/native/test/test_watch.mts
       - run: |
           npm run b
       - run: |
