@@ -183,7 +183,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	info.GetReturnValue().Set(promise->GetPromise());
 
 	if (info.Length() != 4
-		|| !info[0]->IsObject()
+		|| !info[0]->IsFunction()
 		|| !info[1]->IsString()
 		|| !info[2]->IsString()
 		|| !info[3]->IsBigInt())
@@ -219,7 +219,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	v8::Local<v8::Object> readable = info[0].As<v8::Object>();
+	v8::Local<v8::Function> readable = info[0].As<v8::Function>();
 
 	// const options: stream.ReadableOptions = { read: () => {} }
 	v8::Local<v8::Object> options = v8::Object::New(ISOLATE);
@@ -232,7 +232,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	// const reader: stream.Readable = new stream.Readable(options)
 	constexpr int argc = 1;
 	v8::Local<v8::Value> argv[argc] = {options};
-	v8::Local<v8::Object> reader = readable->CallAsConstructor(CONTEXT, argc, argv).ToLocalChecked().As<v8::Object>();
+	v8::Local<v8::Object> reader = readable->NewInstance(CONTEXT, argc, argv).ToLocalChecked();
 	v8::Local<v8::Function> push = reader->Get(CONTEXT, to_string("push")).ToLocalChecked().As<v8::Function>();
 
 	// reader.pause()
