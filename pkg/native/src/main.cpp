@@ -46,12 +46,16 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 		setlocale(LC_CTYPE, "C.UTF-8");
 	#endif
 
+	// check
 	NODE_SET_METHOD(exports, "compare", compare);
-	NODE_SET_METHOD(exports, "copy", copy);
+	NODE_SET_METHOD(exports, "exists", exists);
+
+	// create
 	NODE_SET_METHOD(exports, "createDirectory", create_directory);
 	NODE_SET_METHOD(exports, "createFile", create_file);
 	NODE_SET_METHOD(exports, "createSymlink", create_symlink);
-	NODE_SET_METHOD(exports, "exists", exists);
+
+	// get
 	NODE_SET_METHOD(exports, "getArchive", get_archive);
 	NODE_SET_METHOD(exports, "getArchiveEntry", get_archive_entry);
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
@@ -60,14 +64,23 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 	NODE_SET_METHOD(exports, "getIconType", get_icon_type);
 	NODE_SET_METHOD(exports, "getPathAttribute", get_path_attribute);
 	NODE_SET_METHOD(exports, "getVolume", get_volume);
-	NODE_SET_METHOD(exports, "isElevated", is_elevated);
+
+	// operation
+	NODE_SET_METHOD(exports, "copy", copy);
 	NODE_SET_METHOD(exports, "move", move);
 	NODE_SET_METHOD(exports, "moveToTrash", move_to_trash);
-	NODE_SET_METHOD(exports, "openProperties", open_properties);
-	NODE_SET_METHOD(exports, "setExte", set_exte);
 	NODE_SET_METHOD(exports, "setTime", set_time);
+
+	// watch
 	NODE_SET_METHOD(exports, "watch", watch);
 	NODE_SET_METHOD(exports, "unwatch", unwatch);
+
+	// os
+	NODE_SET_METHOD(exports, "isElevated", is_elevated);
+	NODE_SET_METHOD(exports, "openProperties", open_properties);
+
+	// config
+	NODE_SET_METHOD(exports, "setExte", set_exte);
 }
 
 NODE_MODULE(native, init)
