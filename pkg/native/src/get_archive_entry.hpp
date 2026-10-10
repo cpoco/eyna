@@ -225,13 +225,15 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	v8::Local<v8::Function> readable = info[0].As<v8::Function>();
 
-	// const options: stream.ReadableOptions = { read: () => {} }
-	v8::Local<v8::Object> options = v8::Object::New(ISOLATE);
-	v8::Local<v8::Function> read = v8::Function::New(
+	// () => {}
+	v8::Local<v8::Function> func = v8::Function::New(
 		CONTEXT,
 		[](const v8::FunctionCallbackInfo<v8::Value>&) {}
 	).ToLocalChecked();
-	options->Set(CONTEXT, to_string("read"), read);
+
+	// const options: stream.ReadableOptions = { read: () => {} }
+	v8::Local<v8::Object> options = v8::Object::New(ISOLATE);
+	options->Set(CONTEXT, to_string("read"), func);
 
 	// const reader: stream.Readable = new stream.Readable(options)
 	constexpr int argc = 1;
@@ -242,6 +244,11 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	// reader.pause()
 	v8::Local<v8::Function> pause = reader->Get(CONTEXT, to_string("pause")).ToLocalChecked().As<v8::Function>();
 	pause->Call(CONTEXT, reader, 0, nullptr);
+
+	// reader.on("error", () => {})
+	v8::Local<v8::Function> on = reader->Get(CONTEXT, to_string("on")).ToLocalChecked().As<v8::Function>();
+	v8::Local<v8::Value> on_argv[2] = {to_string("error"), func};
+	on->Call(CONTEXT, reader, 2, on_argv);
 
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
