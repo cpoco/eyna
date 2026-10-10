@@ -6,14 +6,12 @@
 struct get_archive_entry_async
 {
 	uv_async_t handle;
-	uv_work_t work;
-	int ref;
+	std::atomic<int> ref;
 
 	v8::Global<v8::Promise::Resolver> promise;
-
-	int64_t size;
 	v8::Global<v8::Object> reader; // readable
 	v8::Global<v8::Function> push; // readable.push
+	bool resolved;
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path path; // generic_path
@@ -21,15 +19,20 @@ struct get_archive_entry_async
 
 	std::mutex mtx;
 	std::deque<std::vector<uint8_t>> queue;
-	
-	int64_t prog;
-	bool done;
+	int64_t size;
+	bool ready;
+	bool error;
+	bool finished;
 };
 
 // uv_close_cb
 void get_archive_entry_close(uv_handle_t* handle)
 {
 	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
+
+	async->promise.Reset();
+	async->reader.Reset();
+	async->push.Reset();
 
 	if (--async->ref == 0) {
 		delete async;
@@ -47,9 +50,27 @@ void get_archive_entry_callback(uv_async_t* handle)
 	v8::Local<v8::Function> push = async->push.Get(ISOLATE);
 
 	std::deque<std::vector<uint8_t>> local;
+	int64_t size;
+	bool ready;
+	bool error;
+	bool finished;
 	{
 		std::lock_guard<std::mutex> lock(async->mtx);
 		local.swap(async->queue);
+		size = async->size;
+		ready = async->ready;
+		error = async->error;
+		finished = async->finished;
+	}
+
+	if (ready && !async->resolved) {
+		async->resolved = true;
+
+		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
+		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, size));
+		obj->Set(CONTEXT, to_string(V("reader")), stream);
+
+		async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
 	}
 
 	for (std::vector<uint8_t>& block : local) {
@@ -62,26 +83,38 @@ void get_archive_entry_callback(uv_async_t* handle)
 		// push(chunk)
 		v8::Local<v8::Value> argv[1] = {chunk};
 		push->Call(CONTEXT, stream, 1, argv);
-
-		async->prog += (int64_t)(block.size());
 	}
 
-	if (async->done && async->size <= async->prog) {
+	if (!finished) {
+		return;
+	}
+
+	if (!error) {
 		// push(null)
 		v8::Local<v8::Value> argv[1] = {v8::Null(ISOLATE)};
 		push->Call(CONTEXT, stream, 1, argv);
-
-		uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
 	}
+	else if (!async->resolved) {
+		async->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
+	}
+	else {
+		// reader.destroy(ERROR_FAILED)
+		v8::Local<v8::Function> destroy = stream->Get(CONTEXT, to_string("destroy")).ToLocalChecked().As<v8::Function>();
+		v8::Local<v8::Value> argv[1] = {to_string(ERROR_FAILED)};
+		destroy->Call(CONTEXT, stream, 1, argv);
+	}
+
+	uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
 }
 
-void get_archive_entry_thread(uv_async_t* handle)
+static void get_archive_entry_thread(get_archive_entry_async* async)
 {
-	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(handle->data);
+	bool found = false;
+	bool error = false;
 
-	archive_iterator(
+	int it = archive_iterator(
 		async->abst,
-		[&async](struct archive* a, struct archive_entry* entry) -> int
+		[&](struct archive* a, struct archive_entry* entry) -> int
 		{
 			_entry ent = {};
 			populate_entry(ent, entry);
@@ -90,6 +123,14 @@ void get_archive_entry_thread(uv_async_t* handle)
 				archive_read_data_skip(a);
 				return IT_CB_NEXT;
 			}
+
+			found = true;
+			{
+				std::lock_guard<std::mutex> lock(async->mtx);
+				async->size = ent.size;
+				async->ready = true;
+			}
+			uv_async_send(&async->handle);
 
 			size_t seek = static_cast<size_t>(async->seek);
 
@@ -104,6 +145,7 @@ void get_archive_entry_thread(uv_async_t* handle)
 					break;
 				}
 				else if (r == ARCHIVE_FAILED || r == ARCHIVE_FATAL) {
+					error = true;
 					break;
 				}
 
@@ -126,49 +168,12 @@ void get_archive_entry_thread(uv_async_t* handle)
 		}
 	);
 
-	async->done = true;
-	uv_async_send(&async->handle);
-}
-
-// uv_work_cb
-static void get_archive_entry_worker(uv_work_t* req)
-{
-	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(req->data);
-
-	archive_iterator(
-		async->abst,
-		[&async](struct archive* a, struct archive_entry* entry) -> int
-		{
-			_entry ent = {};
-			populate_entry(ent, entry);
-
-			if (ent.full != async->path || ent.file_type != FILE_TYPE::FILE_TYPE_FILE) {
-				archive_read_data_skip(a);
-				return IT_CB_NEXT;
-			}
-
-			async->size = ent.size;
-
-			return IT_CB_STOP;
-		}
-	);
-
-	std::thread(get_archive_entry_thread, &async->handle).detach();
-}
-
-// uv_after_work_cb
-static void get_archive_entry_complete(uv_work_t* req, int status)
-{
-	v8::HandleScope _(ISOLATE);
-
-	get_archive_entry_async* async = static_cast<get_archive_entry_async*>(req->data);
-
-	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-	
-	obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, async->size));
-	obj->Set(CONTEXT, to_string(V("reader")), async->reader.Get(ISOLATE));
-
-	async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
+	{
+		std::lock_guard<std::mutex> lock(async->mtx);
+		async->error = it != IT_SUCCESS || !found || error;
+		async->finished = true;
+		uv_async_send(&async->handle);
+	}
 
 	if (--async->ref == 0) {
 		delete async;
@@ -194,7 +199,6 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 
 	get_archive_entry_async* async = new get_archive_entry_async();
 	async->handle.data = async;
-	async->work.data = async;
 	async->ref = 2;
 
 	async->promise.Reset(ISOLATE, promise);
@@ -239,15 +243,18 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::Local<v8::Function> pause = reader->Get(CONTEXT, to_string("pause")).ToLocalChecked().As<v8::Function>();
 	pause->Call(CONTEXT, reader, 0, nullptr);
 
-	async->size = 0;
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
 
-	async->prog = async->seek;
-	async->done = false;
+	async->resolved = false;
+
+	async->size = 0;
+	async->ready = false;
+	async->error = false;
+	async->finished = false;
 
 	uv_async_init(uv_default_loop(), &async->handle, get_archive_entry_callback);
-	uv_queue_work(uv_default_loop(), &async->work, get_archive_entry_worker, get_archive_entry_complete);
+	std::thread(get_archive_entry_thread, async).detach();
 }
 
 #endif // include guard

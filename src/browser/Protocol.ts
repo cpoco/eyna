@@ -128,11 +128,11 @@ const blobArch = async (req: Request): Promise<Response> => {
 	const entry = decodeURIComponent(parts[2])
 	const start = range ? BigInt(range[1] ?? 0) : 0n
 
-	const { size, reader } = await Native.getArchiveEntry(
-		path,
-		entry,
-		start,
-	)
+	const arc = await Native.getArchiveEntry(path, entry, start).catch(() => null)
+	if (arc === null) {
+		return new Response(null, { status: 400 })
+	}
+	const { size, reader } = arc
 
 	return new Response(
 		reader as unknown as BodyInit,

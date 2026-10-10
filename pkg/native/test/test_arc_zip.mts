@@ -133,6 +133,15 @@ const main = async () => {
 		assert.strictEqual(buf5.toString(), "🟩")
 	}
 
+	await assert.rejects(
+		async () => await native.getArchiveEntry(ZIP, "not-found.txt"),
+		(err) => err === ERROR.FAILED,
+	)
+	await assert.rejects(
+		async () => await native.getArchiveEntry(ZIP + ".not-found", "file.txt"),
+		(err) => err === ERROR.FAILED,
+	)
+
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
 			async () => await native.getArchive(ZIP, error_path),
