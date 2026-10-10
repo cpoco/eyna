@@ -99,13 +99,6 @@ const main = async () => {
 	assert.strictEqual(arc.list[8].mtime, 1735689600_000000000n)
 	assert.strictEqual(arc.list[8].x?.entry, 1)
 
-	for (const error_path of ["", ".", "./", "..", "../"]) {
-		await assert.rejects(
-			async () => await native.getArchive(error_path, ""),
-			(err) => err === ERROR.INVALID_PATH,
-		)
-	}
-
 	{
 		const entry1 = await native.getArchiveEntry(TGZ, "file.txt")
 		assert.strictEqual(entry1.size, 8n)
@@ -141,6 +134,13 @@ const main = async () => {
 		async () => await native.getArchiveEntry(TGZ + ".not-found", "file.txt"),
 		(err) => err === ERROR.FAILED,
 	)
+
+	for (const error_path of ["", ".", "./", "..", "../"]) {
+		await assert.rejects(
+			async () => await native.getArchive(error_path, ""),
+			(err) => err === ERROR.INVALID_PATH,
+		)
+	}
 
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(

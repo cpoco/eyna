@@ -3,7 +3,7 @@ import * as native from "@eyna/native/lib/browser.ts"
 import assert from "node:assert"
 import path from "node:path/posix"
 
-import { ERROR } from "./_util.mts"
+import { ERROR, readStream } from "./_util.mts"
 
 const main = async () => {
 	const RAR = path.join(import.meta.dirname ?? __dirname, "fixtures", "test_pw1.rar")
@@ -99,6 +99,24 @@ const main = async () => {
 	assert.strictEqual(arc.list[8].mtime, 1735689600_000000000n)
 	assert.strictEqual(arc.list[8].x?.entry, 2)
 
+	for (const ent of arc.list.filter((e) => e.file_type === 3)) {
+		const entry = await native.getArchiveEntry(RAR, ent.full)
+		assert.strictEqual(entry.size, ent.size)
+		await assert.rejects(
+			async () => await readStream(entry.reader),
+			(err) => err === ERROR.FAILED,
+		)
+	}
+
+	await assert.rejects(
+		async () => await native.getArchiveEntry(RAR, "not-found.txt"),
+		(err) => err === ERROR.FAILED,
+	)
+	await assert.rejects(
+		async () => await native.getArchiveEntry(RAR + ".not-found", "file.txt"),
+		(err) => err === ERROR.FAILED,
+	)
+
 	for (const error_path of ["", ".", "./", "..", "../"]) {
 		await assert.rejects(
 			async () => await native.getArchive(error_path, ""),
@@ -109,6 +127,10 @@ const main = async () => {
 	for (const error_path of [".", "./", "..", "../"]) {
 		await assert.rejects(
 			async () => await native.getArchive(RAR, error_path),
+			(err) => err === ERROR.INVALID_T_PATH,
+		)
+		await assert.rejects(
+			async () => await native.getArchiveEntry(RAR, error_path),
 			(err) => err === ERROR.INVALID_T_PATH,
 		)
 	}
