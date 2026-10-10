@@ -9,9 +9,9 @@ struct get_archive_entry_async
 	std::atomic<int> ref;
 
 	v8::Global<v8::Promise::Resolver> promise;
-	v8::Global<v8::Object> reader; // readable
-	v8::Global<v8::Function> push; // readable.push
 	bool resolved;
+	v8::Global<v8::Object> reader; // stream.Readable
+	v8::Global<v8::Function> push; // reader.push
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path path; // generic_path
@@ -20,9 +20,8 @@ struct get_archive_entry_async
 	std::mutex mtx;
 	std::deque<std::vector<uint8_t>> queue;
 	int64_t size;
-	bool ready;
+	bool done;
 	bool error;
-	bool finished;
 };
 
 // uv_close_cb
@@ -51,26 +50,32 @@ void get_archive_entry_callback(uv_async_t* handle)
 
 	std::deque<std::vector<uint8_t>> local;
 	int64_t size;
-	bool ready;
+	bool done;
 	bool error;
-	bool finished;
 	{
 		std::lock_guard<std::mutex> lock(async->mtx);
 		local.swap(async->queue);
 		size = async->size;
-		ready = async->ready;
+		done = async->done;
 		error = async->error;
-		finished = async->finished;
 	}
 
-	if (ready && !async->resolved) {
-		async->resolved = true;
+	if (!async->resolved) {
+		if (0 <= size) {
+			async->resolved = true;
 
-		v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
-		obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, size));
-		obj->Set(CONTEXT, to_string(V("reader")), stream);
+			v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
+			obj->Set(CONTEXT, to_string(V("size")), v8::BigInt::New(ISOLATE, size));
+			obj->Set(CONTEXT, to_string(V("reader")), stream);
 
-		async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
+			async->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
+		}
+		else if (done) {
+			async->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
+
+			uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
+			return;
+		}
 	}
 
 	for (std::vector<uint8_t>& block : local) {
@@ -80,31 +85,26 @@ void get_archive_entry_callback(uv_async_t* handle)
 			block.size()
 		).ToLocalChecked();
 
-		// push(chunk)
+		// reader.push(chunk)
 		v8::Local<v8::Value> argv[1] = {chunk};
 		push->Call(CONTEXT, stream, 1, argv);
 	}
 
-	if (!finished) {
-		return;
-	}
+	if (done) {
+		if (!error) {
+			// reader.push(null)
+			v8::Local<v8::Value> argv[1] = {v8::Null(ISOLATE)};
+			push->Call(CONTEXT, stream, 1, argv);
+		}
+		else {
+			// reader.destroy("failed")
+			v8::Local<v8::Function> destroy = stream->Get(CONTEXT, to_string("destroy")).ToLocalChecked().As<v8::Function>();
+			v8::Local<v8::Value> argv[1] = {to_string(ERROR_FAILED)};
+			destroy->Call(CONTEXT, stream, 1, argv);
+		}
 
-	if (!error) {
-		// push(null)
-		v8::Local<v8::Value> argv[1] = {v8::Null(ISOLATE)};
-		push->Call(CONTEXT, stream, 1, argv);
+		uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
 	}
-	else if (!async->resolved) {
-		async->promise.Get(ISOLATE)->Reject(CONTEXT, to_string(ERROR_FAILED));
-	}
-	else {
-		// reader.destroy(ERROR_FAILED)
-		v8::Local<v8::Function> destroy = stream->Get(CONTEXT, to_string("destroy")).ToLocalChecked().As<v8::Function>();
-		v8::Local<v8::Value> argv[1] = {to_string(ERROR_FAILED)};
-		destroy->Call(CONTEXT, stream, 1, argv);
-	}
-
-	uv_close((uv_handle_t*)&async->handle, get_archive_entry_close);
 }
 
 static void get_archive_entry_thread(get_archive_entry_async* async)
@@ -128,7 +128,6 @@ static void get_archive_entry_thread(get_archive_entry_async* async)
 			{
 				std::lock_guard<std::mutex> lock(async->mtx);
 				async->size = ent.size;
-				async->ready = true;
 			}
 			uv_async_send(&async->handle);
 
@@ -170,8 +169,8 @@ static void get_archive_entry_thread(get_archive_entry_async* async)
 
 	{
 		std::lock_guard<std::mutex> lock(async->mtx);
+		async->done = true;
 		async->error = it != IT_SUCCESS || !found || error;
-		async->finished = true;
 		uv_async_send(&async->handle);
 	}
 
@@ -202,6 +201,7 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	async->ref = 2;
 
 	async->promise.Reset(ISOLATE, promise);
+	async->resolved = false;
 
 	async->abst = generic_path(to_string<_char_t>(info[1].As<v8::String>()));
 	if (is_relative(async->abst) || is_traversal(async->abst)) {
@@ -239,6 +239,8 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	constexpr int argc = 1;
 	v8::Local<v8::Value> argv[argc] = {options};
 	v8::Local<v8::Object> reader = readable->NewInstance(CONTEXT, argc, argv).ToLocalChecked();
+
+	// const push = reader.push
 	v8::Local<v8::Function> push = reader->Get(CONTEXT, to_string("push")).ToLocalChecked().As<v8::Function>();
 
 	// reader.pause()
@@ -253,12 +255,9 @@ void get_archive_entry(const v8::FunctionCallbackInfo<v8::Value>& info)
 	async->reader.Reset(ISOLATE, reader);
 	async->push.Reset(ISOLATE, push);
 
-	async->resolved = false;
-
-	async->size = 0;
-	async->ready = false;
+	async->size = -1;
+	async->done = false;
 	async->error = false;
-	async->finished = false;
 
 	uv_async_init(uv_default_loop(), &async->handle, get_archive_entry_callback);
 	std::thread(get_archive_entry_thread, async).detach();
