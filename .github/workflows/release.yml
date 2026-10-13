@@ -31,6 +31,7 @@ jobs:
           key: cache-electron-${{ runner.os }}-${{ matrix.arch }}-${{ env.ELECTRON_VERSION }}
           path: |
             cache/electron-${{ env.ELECTRON_VERSION }}
+            !cache/electron-${{ env.ELECTRON_VERSION }}/bin
       - uses: actions/cache@v6.1.0
         with:
           key: cache-node-${{ runner.os }}-${{ matrix.arch }}-${{ env.NODE_VERSION }}
