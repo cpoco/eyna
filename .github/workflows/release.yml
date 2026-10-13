@@ -24,13 +24,25 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: "24.21"
+      - run: |
+          node .github/scripts/set-versions.mts
       - uses: actions/cache@v6.1.0
         with:
-          key: cache-${{ runner.os }}-${{ matrix.arch }}-${{ github.sha }}
-          restore-keys: |
-            cache-${{ runner.os }}-${{ matrix.arch }}-
+          key: cache-electron-${{ runner.os }}-${{ matrix.arch }}-${{ env.ELECTRON_VERSION }}
           path: |
-            cache
+            cache/electron-${{ env.ELECTRON_VERSION }}
+      - uses: actions/cache@v6.1.0
+        with:
+          key: cache-node-${{ runner.os }}-${{ matrix.arch }}-${{ env.NODE_VERSION }}
+          path: |
+            cache/node-${{ env.NODE_VERSION }}
+      - uses: actions/cache@v6.1.0
+        with:
+          key: cache-vcpkg-${{ runner.os }}-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: |
+            cache-vcpkg-${{ runner.os }}-${{ matrix.arch }}-
+          path: |
+            cache/vcpkg
       - run: |
           vcpkg version
           git -C "${VCPKG_INSTALLATION_ROOT}" rev-parse HEAD
