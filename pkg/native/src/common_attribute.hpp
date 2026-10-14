@@ -64,6 +64,8 @@ struct _attribute
 	bool hidden = false;
 	bool system = false;
 	bool cloud = false;
+	bool gittrk = false;
+	bool gitign = false;
 
 	// https://docs.microsoft.com/ja-jp/windows/desktop/FileIO/file-attribute-constants
 	unsigned long win_attribute = 0;

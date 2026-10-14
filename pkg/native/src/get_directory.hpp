@@ -94,18 +94,47 @@ static void get_directory_async(uv_work_t* req)
 	{
 		git_repository* repo = nullptr;
 		git_reference* head = nullptr;
+		git_index* index = nullptr;
+
 		if (!git_repository_open_ext(&repo, reinterpret_cast<const char*>(work->abst.u8string().c_str()), 0, nullptr)) {
 			const char* workdir = git_repository_workdir(repo);
 			if (workdir) {
 				work->git_workdir = generic_path(workdir);
 			}
-			if (!git_repository_head(&head, repo)) {
+
+			if (workdir && !git_repository_head(&head, repo)) {
 				const char* branch = git_reference_shorthand(head);
 				if (branch) {
 					work->git_branch = std::basic_string<char>(branch);
 				}
 			}
+
+			if (workdir && !git_repository_index(&index, repo)) {
+				for (_attribute& attr : work->v) {
+					const std::filesystem::path rltv = generic_path(attr.full.lexically_relative(work->git_workdir));
+
+					std::basic_string<char> path(reinterpret_cast<const char*>(rltv.u8string().c_str()));
+					if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
+						path += "/";
+					}
+
+					if (compare_path(1, rltv, ".git")) {
+						continue;
+					}
+
+					if (attr.file_type != FILE_TYPE::FILE_TYPE_DIRECTORY && git_index_get_bypath(index, path.c_str(), 0)) {
+						attr.gittrk = true;
+					}
+
+					int ignored;
+					if (git_ignore_path_is_ignored(&ignored, repo, path.c_str()) == 0 && ignored) {
+						attr.gitign = true;
+					}
+				}
+			}
 		}
+
+		git_index_free(index);
 		git_reference_free(head);
 		git_repository_free(repo);
 	}
