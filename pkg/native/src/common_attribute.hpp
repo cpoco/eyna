@@ -66,6 +66,7 @@ struct _attribute
 	bool cloud = false;
 	bool gittrk = false;
 	bool gitign = false;
+	bool gitsub = false;
 
 	// https://docs.microsoft.com/ja-jp/windows/desktop/FileIO/file-attribute-constants
 	unsigned long win_attribute = 0;
@@ -283,6 +284,50 @@ void attribute(_attribute& attribute)
 		}
 
 	#endif
+}
+
+void attribute(_attribute& attr, git_repository* repo, git_index* index)
+{
+	attribute(attr);
+
+	if (!repo || !index) {
+		return;
+	}
+
+	const char* workdir = git_repository_workdir(repo);
+	if (!workdir) {
+		return;
+	}
+
+	const std::filesystem::path rltv = generic_path(attr.full.lexically_relative(generic_path(workdir)));
+	if (compare_path(1, rltv, ".git")) {
+		return;
+	}
+
+	std::basic_string<char> path(reinterpret_cast<const char*>(rltv.u8string().c_str()));
+
+	if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
+		const git_index_entry* entry = git_index_get_bypath(index, path.c_str(), 0);
+		if (entry && entry->mode == GIT_FILEMODE_COMMIT) {
+			attr.gittrk = true;
+			attr.gitsub = true;
+		}
+
+		path += "/";
+
+		size_t pos;
+		if (!attr.gittrk && git_index_find_prefix(&pos, index, path.c_str()) == 0) {
+			attr.gittrk = true;
+		}
+	}
+	else if (git_index_get_bypath(index, path.c_str(), 0)) {
+		attr.gittrk = true;
+	}
+
+	int ignored;
+	if (git_ignore_path_is_ignored(&ignored, repo, path.c_str()) == 0 && ignored) {
+		attr.gitign = true;
+	}
 }
 
 void attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)
