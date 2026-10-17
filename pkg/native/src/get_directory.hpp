@@ -60,7 +60,8 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 
 				if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
 					if (dp < work->dp) {
-						get_directory(work, attr.full, dp + 1, attr.gitsub ? nullptr : repo, attr.gitsub ? nullptr : index);
+						const bool submodule = attr.git & GIT_FM_SUBMODULE;
+						get_directory(work, attr.full, dp + 1, submodule ? nullptr : repo, submodule ? nullptr : index);
 					}
 				}
 
