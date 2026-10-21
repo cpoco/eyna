@@ -90,7 +90,7 @@ export class Dir {
 				frn: location.frn,
 				dp: dp,
 				rg: rg,
-				git: dir.x?.git_brch ?? "",
+				git: dir.git?.brch ?? "",
 				st: st,
 				ls: ls,
 				e: dir.e,

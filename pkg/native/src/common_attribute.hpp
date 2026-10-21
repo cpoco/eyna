@@ -48,6 +48,27 @@ enum LINK_TYPE {
 	LINK_TYPE_BOOKMARK = 4, // mac alias (FILE_TYPE_FILE)
 };
 
+enum GIT : unsigned int {
+	GIT_CURRENT        = GIT_STATUS_CURRENT,
+	GIT_IX_NEW         = GIT_STATUS_INDEX_NEW,
+	GIT_IX_MODIFIED    = GIT_STATUS_INDEX_MODIFIED,
+	GIT_IX_DELETED     = GIT_STATUS_INDEX_DELETED,
+	// GIT_IX_RENAMED     = GIT_STATUS_INDEX_RENAMED,
+	GIT_IX_TYPECHANGE  = GIT_STATUS_INDEX_TYPECHANGE,
+	GIT_WT_NEW         = GIT_STATUS_WT_NEW,
+	GIT_WT_MODIFIED    = GIT_STATUS_WT_MODIFIED,
+	GIT_WT_DELETED     = GIT_STATUS_WT_DELETED,
+	GIT_WT_TYPECHANGE  = GIT_STATUS_WT_TYPECHANGE,
+	// GIT_WT_RENAMED     = GIT_STATUS_WT_RENAMED,
+	GIT_WT_UNREADABLE  = GIT_STATUS_WT_UNREADABLE,
+	GIT_IGNORED        = GIT_STATUS_IGNORED,
+	GIT_CONFLICTED     = GIT_STATUS_CONFLICTED,
+	GIT_INTERNAL       = 1u << 24,
+	GIT_WT_PHANTOM     = 1u << 25,
+	GIT_FM_EXECUTABLE  = 1u << 26,
+	GIT_FM_SUBMODULE   = 1u << 27,
+};
+
 struct _attribute
 {
 	FILE_TYPE file_type = FILE_TYPE::FILE_TYPE_NONE;
@@ -60,17 +81,25 @@ struct _attribute
 	int64_t ctime = 0;
 	int64_t mtime = 0;
 
+	unsigned int git = 0;
+
 	bool readonly = false;
 	bool hidden = false;
 	bool system = false;
 	bool cloud = false;
-	bool gittrk = false;
-	bool gitign = false;
 
 	// https://docs.microsoft.com/ja-jp/windows/desktop/FileIO/file-attribute-constants
 	unsigned long win_attribute = 0;
 	// https://developer.apple.com/documentation/foundation/nsurlfileresourcetype
 	_string_t mac_attribute;
+};
+
+struct _git
+{
+	git_repository* repo = nullptr;
+	git_index* index = nullptr;
+	std::filesystem::path workdir; // generic_path
+	std::unordered_map<std::basic_string<char>, unsigned int> status;
 };
 
 void attribute(_attribute& attribute)
@@ -283,6 +312,125 @@ void attribute(_attribute& attribute)
 		}
 
 	#endif
+}
+
+void git_load_status(_git& git, const std::filesystem::path& abst)
+{
+	git_status_options opts = {};
+	opts.version = GIT_STATUS_OPTIONS_VERSION;
+	opts.show = GIT_STATUS_SHOW_INDEX_AND_WORKDIR;
+	opts.flags = GIT_STATUS_OPT_INCLUDE_UNTRACKED
+	           | GIT_STATUS_OPT_INCLUDE_IGNORED
+	           | GIT_STATUS_OPT_EXCLUDE_SUBMODULES
+	           | GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS
+	           | GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH
+	           // | GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX
+	           // | GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR
+	           | GIT_STATUS_OPT_NO_REFRESH;
+
+	std::basic_string<char> spec;
+	char* specs[] = { nullptr };
+	if (abst != git.workdir) {
+		spec = U8(generic_path(abst.lexically_relative(git.workdir)));
+		specs[0] = spec.data();
+		opts.pathspec.strings = specs;
+		opts.pathspec.count = 1;
+	}
+
+	git_status_list* list = nullptr;
+	if (git_status_list_new(&list, git.repo, &opts) != 0) {
+		return;
+	}
+
+	const size_t count = git_status_list_entrycount(list);
+	git.status.reserve(count);
+	for (size_t i = 0; i < count; i++) {
+		const git_status_entry* entry = git_status_byindex(list, i);
+		const git_diff_delta* delta = entry->index_to_workdir
+			? entry->index_to_workdir
+			: entry->head_to_index;
+		if (!delta) {
+			continue;
+		}
+		std::basic_string<char> path(delta->new_file.path);
+		if (!path.empty() && path.back() == '/') {
+			path.pop_back();
+		}
+		git.status[path] |= entry->status;
+
+		const unsigned int flags = entry->status & ~GIT_STATUS_IGNORED;
+		if (flags) {
+			for (size_t pos = path.find_last_of('/'); pos != std::basic_string<char>::npos; pos = path.find_last_of('/')) {
+				path.erase(pos);
+				git.status[path] |= flags;
+			}
+		}
+	}
+
+	git_status_list_free(list);
+}
+
+void attribute(_attribute& attr, _git* git)
+{
+	attribute(attr);
+
+	if (!git || !git->repo || !git->index) {
+		return;
+	}
+
+	const std::filesystem::path rltv = generic_path(attr.full.lexically_relative(git->workdir));
+	if (compare_path(1, rltv, ".git")) {
+		attr.git |= GIT_INTERNAL;
+		return;
+	}
+
+	std::basic_string<char> path(U8(rltv));
+
+	const auto it = git->status.find(path);
+	const bool listed = it != git->status.end();
+	if (listed) {
+		attr.git |= it->second;
+	}
+
+	const git_index_entry* entry = git_index_get_bypath(git->index, path.c_str(), 0);
+	if (!entry && (attr.git & GIT_CONFLICTED)) {
+		for (int stage : { 2, 3, 1 }) {
+			if ((entry = git_index_get_bypath(git->index, path.c_str(), stage))) {
+				break;
+			}
+		}
+	}
+	bool tracked = entry != nullptr;
+
+	const bool dir = attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY;
+	if (dir) {
+		if (entry && entry->mode == GIT_FILEMODE_COMMIT) {
+			attr.git |= GIT_FM_SUBMODULE;
+		}
+
+		path += "/";
+
+		size_t pos = 0;
+		tracked = listed || tracked || git_index_find_prefix(&pos, git->index, path.c_str()) == 0;
+	}
+	else if (entry && entry->mode == GIT_FILEMODE_BLOB_EXECUTABLE) {
+		attr.git |= GIT_FM_EXECUTABLE;
+	}
+
+	if (listed || tracked) {
+		return;
+	}
+
+	int ignored = 0;
+	if (git_ignore_path_is_ignored(&ignored, git->repo, path.c_str()) == 0 && ignored) {
+		attr.git |= GIT_IGNORED;
+	}
+	else if (dir) {
+		attr.git |= GIT_WT_PHANTOM;
+	}
+	else {
+		attr.git |= GIT_WT_NEW;
+	}
 }
 
 void attribute(const std::filesystem::path& path, std::vector<_attribute>& vector)

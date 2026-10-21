@@ -32,10 +32,6 @@ declare namespace Type {
 		readonly d: number
 		readonly f: number
 		readonly e: number
-		readonly x?: {
-			readonly git_wdir?: string
-			readonly git_brch?: string
-		}
 	}
 	type ArchiveReader = {
 		readonly size: bigint
@@ -75,10 +71,15 @@ declare namespace Type {
 		readonly d: number
 		readonly f: number
 		readonly e: number
+		readonly git?: {
+			readonly wdir: string
+			readonly brch: string
+		}
 	}
 	type Item = {
 		readonly type: FileType
 		readonly rltv: string
+		readonly git?: number
 	}
 	type WatchCallback = (id: number, depth: number, abstract: string) => void
 }

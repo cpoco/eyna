@@ -19,6 +19,7 @@
 #include <set>
 #include <string>
 #include <thread>
+#include <unordered_map>
 
 #include <node.h>
 #include <node_buffer.h>
@@ -58,6 +59,8 @@
 	typedef std::basic_string<_char_t>  _string_t;
 	typedef std::basic_regex<_char_t>   _regex_t;
 #endif
+
+#define U8(p) reinterpret_cast<const char*>((p).u8string().c_str())
 
 #define ERROR_INVALID_ARGUMENT V("invalid argument")
 #define ERROR_INVALID_PATH     V("relative or traversal paths are not allowed")
@@ -173,7 +176,7 @@ std::filesystem::path range_path(const std::filesystem::path& path, const int mi
 		return std::filesystem::path();
 	}
 
-	std::filesystem::path p;
+	_string_t s;
 	std::filesystem::path::iterator it = path.begin();
 	const std::filesystem::path::const_iterator end = path.end();
 
@@ -182,12 +185,15 @@ std::filesystem::path range_path(const std::filesystem::path& path, const int mi
 			break;
 		}
 		if (min <= i) {
-			p /= *it;
+			if (!s.empty()) {
+				s += V('/');
+			}
+			s += it->native();
 		}
 		++it;
 	}
 
-	return std::filesystem::path(p.generic_string<_char_t>());
+	return std::filesystem::path(s);
 }
 
 bool compare_path(int depth, const std::filesystem::path& a, const std::filesystem::path& b)
