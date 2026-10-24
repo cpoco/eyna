@@ -22,9 +22,7 @@ try {
 	await Promise.all([
 		app.Node(),
 		app.Conf(),
-		app.Check(),
 		app.Build(),
-		extension.Check(),
 		extension.Build(),
 		native.Build(),
 		pug.Build(),

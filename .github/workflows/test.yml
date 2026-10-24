@@ -77,6 +77,8 @@ jobs:
           node --import tsx pkg/native/test/test_arc_rar_pw2.mts
           node --import tsx pkg/native/test/test_watch.mts
       - run: |
+          npm run c
+      - run: |
           npm run b
       - run: |
           npm run p

@@ -54,6 +54,8 @@ jobs:
       - run: |
           npm run setup-electron
       - run: |
+          npm run c
+      - run: |
           npm run b
       - run: |
           npm run p
