@@ -1,8 +1,11 @@
+# SHA512
+# curl -L https://github.com/libarchive/libarchive/archive/v3.8.10.tar.gz | shasum -a 512
+
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO            libarchive/libarchive
-    REF             v3.8.9
-    SHA512          c5d85564b70e3af24edc69f34829c70ba3abcaf042ba444e9344e54e594ac88a9cc22dcd21c806e2650f1ffde71e16aeaf70e9748d7ba124207ee832938656da
+    REF             v3.8.10
+    SHA512          27b65bea66974a7f6279a3ceba77a3d0e2967c47a5ff56d91d3e2522326238bf5eca3965aefaabca830d5b1a0f44e1bad625a9f8d140d6cd6da307bf04881a24
 )
 
 vcpkg_cmake_configure(
