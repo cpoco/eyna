@@ -5,6 +5,7 @@ import * as Util from "@eyna/util"
 
 import { SysConfig } from "@/browser/conf/SysConfig"
 import { Location } from "@/browser/core/Location"
+import { Color, log } from "@/browser/core/Log"
 
 type ListResolve = {
 	frn: string
@@ -37,13 +38,19 @@ export class Dir {
 
 		const location = this.lc
 
-		_log(location.frn.split("\0"), { dp: dp, rg: rg })
+		log(Color.cyan, "dir", location.frn.split("\0"), { dp: dp, rg: rg })
 		let _time = perf_hooks.performance.now()
 
 		if (Location.isHome(location)) {
 			const st = [_attr(Native.FileType.Favorite, Dir.HOME, Dir.HOME)]
 			const vol = await Native.getVolume()
-			_log(location.frn.split("\0"), "volume", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			log(
+				Color.cyan,
+				"dir",
+				location.frn.split("\0"),
+				"volume",
+				`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+			)
 			const ls: Native.Attributes[] = []
 			for (const v of vol) {
 				ls.push([_attr(Native.FileType.Drive, v.full, v.name)])
@@ -65,13 +72,20 @@ export class Dir {
 		else if (Location.isFile(location)) {
 			const st = await Native.getAttribute(location.path)
 			const dir = await Native.getDirectory(location.path, "", Native.Sort.DepthFirst, dp, rg)
-			_log(location.frn.split("\0"), "directory", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
-				s: dir.s,
-				d: dir.d,
-				f: dir.f,
-				e: dir.e,
-				len: dir.list.length,
-			})
+			log(
+				Color.cyan,
+				"dir",
+				location.frn.split("\0"),
+				"directory",
+				`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+				{
+					s: dir.s,
+					d: dir.d,
+					f: dir.f,
+					e: dir.e,
+					len: dir.list.length,
+				},
+			)
 			_time = perf_hooks.performance.now()
 
 			const ls: Native.Attributes[] = []
@@ -79,12 +93,24 @@ export class Dir {
 				ls.push(await Native.getAttribute(attr.rltv, dir.full))
 			}
 
-			_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			log(
+				Color.cyan,
+				"dir",
+				location.frn.split("\0"),
+				"attribute",
+				`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+			)
 			_time = perf_hooks.performance.now()
 
 			_sort(ls)
 
-			_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			log(Color.cyan, "dir", location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+
+			if (dir.git?.brch) {
+				for (const v of dir.list) {
+					log(Color.cyan, "git", (v.git ?? 0).toString(2).padStart(28, "0"), v.rltv)
+				}
+			}
 
 			deferred.resolve({
 				frn: location.frn,
@@ -99,13 +125,20 @@ export class Dir {
 		else if (Location.isArch(location)) {
 			const st = await Native.getAttribute(location.path)
 			const arc = await Native.getArchive(location.path, location.entry, dp)
-			_log(location.frn.split("\0"), "archive", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`, {
-				s: arc.s,
-				d: arc.d,
-				f: arc.f,
-				e: arc.e,
-				len: arc.list.length,
-			})
+			log(
+				Color.cyan,
+				"dir",
+				location.frn.split("\0"),
+				"archive",
+				`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+				{
+					s: arc.s,
+					d: arc.d,
+					f: arc.f,
+					e: arc.e,
+					len: arc.list.length,
+				},
+			)
 			_time = perf_hooks.performance.now()
 
 			const ls: Native.Attributes[] = []
@@ -113,12 +146,18 @@ export class Dir {
 				ls.push([attr])
 			}
 
-			_log(location.frn.split("\0"), "attribute", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			log(
+				Color.cyan,
+				"dir",
+				location.frn.split("\0"),
+				"attribute",
+				`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+			)
 			_time = perf_hooks.performance.now()
 
 			_sort(ls)
 
-			_log(location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+			log(Color.cyan, "dir", location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
 			deferred.resolve({
 				frn: location.frn,
@@ -133,10 +172,6 @@ export class Dir {
 
 		return deferred.promise
 	}
-}
-
-function _log(...args: any) {
-	console.log(`\u001b[36m[dir]\u001b[0m`, ...args)
 }
 
 function _attr(file_type: Native.FileType, full: string, name: string): Native.Attribute {
