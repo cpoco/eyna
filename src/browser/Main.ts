@@ -4,10 +4,11 @@ import * as Conf from "@/app/Conf"
 import { AppConfig } from "@/browser/conf/AppConfig"
 import { KeyConfig } from "@/browser/conf/KeyConfig"
 import { SysConfig } from "@/browser/conf/SysConfig"
+import { Color, log } from "@/browser/core/Log"
 import { Path } from "@/browser/core/Path"
 import root from "@/browser/Root"
 
-console.log(`\u001b[34m[versions]\u001b[0m`, process.versions)
+log(Color.blue, "versions", process.versions)
 
 Native.setExte(Conf.MULTI_EXTE)
 

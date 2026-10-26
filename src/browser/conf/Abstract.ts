@@ -2,6 +2,8 @@ import * as fs from "node:fs"
 
 import * as Util from "@eyna/util"
 
+import { Color, log } from "@/browser/core/Log"
+
 export abstract class Abstract<T> {
 	private path1: string | null = null
 	private path2: string | null = null
@@ -38,7 +40,7 @@ export abstract class Abstract<T> {
 
 	private _load(path: string) {
 		try {
-			console.log(`\u001b[34m[read]\u001b[0m`, `"${path}"`)
+			log(Color.blue, "read", `"${path}"`)
 			const data = JSON.parse(fs.readFileSync(path, "utf8"))
 			Util.merge(this._data, data)
 		}
@@ -49,7 +51,7 @@ export abstract class Abstract<T> {
 
 	private _save(path: string) {
 		try {
-			console.log(`\u001b[34m[write]\u001b[0m`, `"${path}"`)
+			log(Color.blue, "write", `"${path}"`)
 			fs.writeFileSync(path, JSON.stringify(this.data, null, "\t"), "utf8")
 		}
 		catch (err) {

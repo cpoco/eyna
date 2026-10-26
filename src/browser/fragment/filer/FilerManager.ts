@@ -4,6 +4,7 @@ import * as timers from "node:timers/promises"
 import * as Bridge from "@/bridge/Bridge"
 import { Dir } from "@/browser/core/Dir"
 import { Location } from "@/browser/core/Location"
+import { Color, log } from "@/browser/core/Log"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
 import * as Native from "@eyna/native/lib/browser"
@@ -114,7 +115,7 @@ export class FilerManager {
 	}
 
 	update(forceMarkClear: boolean): Promise<void> {
-		_log("update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
+		log(Color.cyan, "filer", "update", this.id, { frn: this.location.frn.split("\0"), forceMarkClear })
 		return new Promise(async (resolve, _reject) => {
 			if (await this.sendListLoading(this.location.frn, this.data.dp, this.data.rg, this.data.cursor, forceMarkClear)) {
 				this.adjustScroll()
@@ -168,15 +169,15 @@ export class FilerManager {
 	}
 
 	private unwatch() {
-		_log("unwatch", this.id)
+		log(Color.cyan, "filer", "unwatch", this.id)
 		Native.unwatch(this.id)
 	}
 
 	private watch(next: Location.Data, create: number, dp: number) {
 		if (Location.isFile(next)) {
-			_log("watch", this.id, { path: next.path })
+			log(Color.cyan, "filer", "watch", this.id, { path: next.path })
 			Native.watch(this.id, next.path, (_id, depth, _abstract) => {
-				_log("watch_callback", this.id, { depth, abstract: _abstract })
+				log(Color.cyan, "filer", "watch_callback", this.id, { depth, abstract: _abstract })
 				if (create !== this.data.create || dp < depth) {
 					return
 				}
@@ -415,8 +416,4 @@ export class FilerManager {
 			},
 		)
 	}
-}
-
-function _log(...args: any) {
-	console.log(`\u001b[36m[filer]\u001b[0m`, ...args)
 }

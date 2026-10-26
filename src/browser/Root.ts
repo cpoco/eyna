@@ -11,6 +11,7 @@ import * as Bridge from "@/bridge/Bridge"
 import { AppConfig } from "@/browser/conf/AppConfig"
 import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
 import { SysConfig } from "@/browser/conf/SysConfig"
+import { Color, log } from "@/browser/core/Log"
 import { Path } from "@/browser/core/Path"
 import { Platform } from "@/browser/core/Platform"
 import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
@@ -237,7 +238,7 @@ class Root {
 			i: Bridge.RendererToBrowser[T][0],
 			data: Bridge.RendererToBrowser[T][1],
 		) => {
-			console.log("\u001b[32m[ipc.on]\u001b[0m", ch, i, data)
+			log(Color.green, "ipc.on", ch, i, data)
 			listener(i, data)
 		})
 		return this
@@ -251,9 +252,9 @@ class Root {
 		) => Bridge.Invoke[T][2],
 	): Root {
 		electron.ipcMain.handle(ch, (_event: electron.IpcMainInvokeEvent, i, data) => {
-			console.log("\u001b[32m[ipc.handle]\u001b[0m", ch, i, data)
+			log(Color.green, "ipc.handle", ch, i, data)
 			const ret = listener(i, data)
-			console.log("\u001b[32m[ipc.handle.result]\u001b[0m", ret)
+			log(Color.green, "ipc.handle.result", ret)
 			return ret
 		})
 		return this
@@ -264,7 +265,7 @@ class Root {
 		i: Bridge.BrowserToRenderer[T][0],
 		data: Bridge.BrowserToRenderer[T][1],
 	) {
-		console.log("\u001b[32m[ipc.send]\u001b[0m", ch, i /*, data*/)
+		log(Color.green, "ipc.send", ch, i /*, data*/)
 		this.browser.webContents.send(ch, i, data)
 	}
 
@@ -287,7 +288,7 @@ class Root {
 				module: {},
 				require: module.createRequire(import.meta.url),
 				log: (...args: any[]) => {
-					console.log(`\u001b[35m[${file}]\u001b[0m`, ...args)
+					log(Color.magenta, file, ...args)
 				},
 			}
 			const args = {
