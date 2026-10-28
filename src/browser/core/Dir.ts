@@ -90,7 +90,7 @@ export class Dir {
 
 			const ls: Native.Attributes[] = []
 			for (const attr of dir.list) {
-				ls.push(await Native.getAttribute(attr.rltv, dir.full))
+				ls.push(await Native.getAttribute(attr.rltv, dir.full, attr.git ?? null))
 			}
 
 			log(
