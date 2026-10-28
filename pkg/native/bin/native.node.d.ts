@@ -15,7 +15,7 @@ export function getArchiveEntry(
 	path: string,
 	seek: bigint,
 ): Promise<Type.ArchiveReader>
-export function getAttribute(abstract: string, base: string): Promise<Type.Attributes>
+export function getAttribute(abstract: string, base: string, git: number | null): Promise<Type.Attributes>
 export function getDirectory(
 	abstract: string,
 	base: string,

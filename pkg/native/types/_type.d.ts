@@ -52,6 +52,7 @@ declare namespace Type {
 		readonly ctime: bigint
 		readonly mtime: bigint
 		readonly x?: {
+			readonly git?: number
 			readonly readonly?: boolean
 			readonly hidden?: boolean
 			readonly system?: boolean

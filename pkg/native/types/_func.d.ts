@@ -20,7 +20,7 @@ declare namespace Native {
 		path: string,
 		seek: bigint,
 	): Promise<Type.ArchiveReader>
-	function getAttribute(abstract: string, base?: string): Promise<Type.Attributes>
+	function getAttribute(abstract: string, base?: string, git?: number | null): Promise<Type.Attributes>
 	function getDirectory(
 		abstract: string,
 		base?: string,

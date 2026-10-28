@@ -43,8 +43,8 @@ export function getArchiveEntry(
 	return native.getArchiveEntry(Readable, abstract, path, seek)
 }
 
-export function getAttribute(abstract: string, base: string = ""): Promise<Type.Attributes> {
-	return native.getAttribute(abstract, base)
+export function getAttribute(abstract: string, base: string = "", git: number | null = null): Promise<Type.Attributes> {
+	return native.getAttribute(abstract, base, git)
 }
 
 export function getDirectory(

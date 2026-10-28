@@ -11,6 +11,7 @@ struct get_attribute_work
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
+	unsigned int git;
 	std::vector<_attribute> v;
 };
 
@@ -64,6 +65,9 @@ static void get_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("mtime")), v8::BigInt::New(ISOLATE, a.mtime));
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
+		if (array->Length() == 0 && work->git != UINT32_MAX) {
+			x->Set(CONTEXT, to_string(V("git")), v8::Number::New(ISOLATE, (double)work->git));
+		}
 		if (a.readonly) {
 			x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
 		}
@@ -95,7 +99,10 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 	v8::Local<v8::Promise::Resolver> promise = v8::Promise::Resolver::New(CONTEXT).ToLocalChecked();
 	info.GetReturnValue().Set(promise->GetPromise());
 
-	if (info.Length() != 2 || !info[0]->IsString() || !info[1]->IsString()) {
+	if (info.Length() != 3
+			|| !info[0]->IsString()
+			|| !info[1]->IsString()
+			|| !(info[2]->IsNull() || info[2]->IsUint32())) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		return;
 	}
@@ -117,6 +124,13 @@ void get_attribute(const v8::FunctionCallbackInfo<v8::Value>& info)
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_PATH));
 		delete work;
 		return;
+	}
+
+	if (info[2]->IsNull()) {
+		work->git = UINT32_MAX;
+	}
+	else {
+		work->git = info[2].As<v8::Uint32>()->Value();
 	}
 
 	work->v.clear();
