@@ -12,7 +12,8 @@ struct _entry
 	int64_t size = 0;
 	int64_t ctime = 0;
 	int64_t mtime = 0;
-	int enc = 0;
+
+	unsigned int opt = 0;
 
 	int depth = 0;
 };
@@ -49,7 +50,11 @@ void populate_entry(_entry& out, struct archive_entry* entry)
 	out.size = archive_entry_size(entry);
 	out.ctime = archive_entry_ctime(entry) * 1000000000 + archive_entry_ctime_nsec(entry);
 	out.mtime = archive_entry_mtime(entry) * 1000000000 + archive_entry_mtime_nsec(entry);
-	out.enc = archive_entry_is_encrypted(entry);
+
+	out.opt = OPT_READONLY | OPT_ENTRY;
+	if (archive_entry_is_encrypted(entry) != 0) {
+		out.opt |= OPT_ENCRYPTED;
+	}
 }
 
 #endif // include guard

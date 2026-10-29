@@ -25,7 +25,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[0].size, 0n)
 	assert.strictEqual(arc.list[0].ctime, 0n)
 	assert.strictEqual(arc.list[0].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[0].x?.entry, 1)
+	assert.strictEqual(arc.list[0].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	assert.strictEqual(arc.list[1].file_type, 1)
 	assert.strictEqual(arc.list[1].full, "dir/dir")
@@ -34,7 +34,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[1].size, 0n)
 	assert.strictEqual(arc.list[1].ctime, 0n)
 	assert.strictEqual(arc.list[1].mtime, 0n)
-	assert.strictEqual(arc.list[1].x?.entry, 1)
+	assert.strictEqual(arc.list[1].x?.opt, native.Opt.READONLY | native.Opt.ENTRY | native.Opt.IMPLICIT)
 
 	assert.strictEqual(arc.list[2].file_type, 1)
 	assert.strictEqual(arc.list[2].full, "dir/dir/dir")
@@ -43,7 +43,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[2].size, 0n)
 	assert.strictEqual(arc.list[2].ctime, 0n)
 	assert.strictEqual(arc.list[2].mtime, 0n)
-	assert.strictEqual(arc.list[2].x?.entry, 1)
+	assert.strictEqual(arc.list[2].x?.opt, native.Opt.READONLY | native.Opt.ENTRY | native.Opt.IMPLICIT)
 
 	assert.strictEqual(arc.list[3].file_type, 1)
 	assert.strictEqual(arc.list[3].full, "dir/dir/dir/dir")
@@ -52,7 +52,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[3].size, 0n)
 	assert.strictEqual(arc.list[3].ctime, 0n)
 	assert.strictEqual(arc.list[3].mtime, 0n)
-	assert.strictEqual(arc.list[3].x?.entry, 1)
+	assert.strictEqual(arc.list[3].x?.opt, native.Opt.READONLY | native.Opt.ENTRY | native.Opt.IMPLICIT)
 
 	assert.strictEqual(arc.list[4].file_type, 1)
 	assert.strictEqual(arc.list[4].full, "dir/dir/dir/dir/dir/")
@@ -61,7 +61,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[4].size, 0n)
 	assert.strictEqual(arc.list[4].ctime, 0n)
 	assert.strictEqual(arc.list[4].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[4].x?.entry, 1)
+	assert.strictEqual(arc.list[4].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	assert.strictEqual(arc.list[5].file_type, 3)
 	assert.strictEqual(arc.list[5].full, "dir/file.txt")
@@ -70,7 +70,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[5].size, 12n)
 	assert.strictEqual(arc.list[5].ctime, 0n)
 	assert.strictEqual(arc.list[5].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[5].x?.entry, 1)
+	assert.strictEqual(arc.list[5].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	assert.strictEqual(arc.list[6].file_type, 3)
 	assert.strictEqual(arc.list[6].full, "file.txt")
@@ -79,7 +79,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[6].size, 8n)
 	assert.strictEqual(arc.list[6].ctime, 0n)
 	assert.strictEqual(arc.list[6].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[6].x?.entry, 1)
+	assert.strictEqual(arc.list[6].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	assert.strictEqual(arc.list[7].file_type, 3)
 	assert.strictEqual(arc.list[7].full, "🍋")
@@ -88,7 +88,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[7].size, 4n)
 	assert.strictEqual(arc.list[7].ctime, 0n)
 	assert.strictEqual(arc.list[7].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[7].x?.entry, 1)
+	assert.strictEqual(arc.list[7].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	assert.strictEqual(arc.list[8].file_type, 3)
 	assert.strictEqual(arc.list[8].full, "🍋‍🟩")
@@ -97,7 +97,7 @@ const main = async () => {
 	assert.strictEqual(arc.list[8].size, 11n)
 	assert.strictEqual(arc.list[8].ctime, 0n)
 	assert.strictEqual(arc.list[8].mtime, 1735689600_000000000n)
-	assert.strictEqual(arc.list[8].x?.entry, 1)
+	assert.strictEqual(arc.list[8].x?.opt, native.Opt.READONLY | native.Opt.ENTRY)
 
 	{
 		const entry1 = await native.getArchiveEntry(TGZ, "file.txt")

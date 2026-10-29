@@ -19,9 +19,14 @@ declare namespace Type {
 		Shortcut = 3,
 		Bookmark = 4,
 	}
-	enum EntryType {
-		Unencrypted = 1,
-		Encrypted = 2,
+	enum Opt {
+		READONLY = 1 << 0,
+		HIDDEN = 1 << 1,
+		SYSTEM = 1 << 2,
+		CLOUD = 1 << 3,
+		ENTRY = 1 << 4,
+		IMPLICIT = 1 << 5,
+		ENCRYPTED = 1 << 6,
 	}
 	type Archive = {
 		readonly full: string
@@ -52,12 +57,8 @@ declare namespace Type {
 		readonly ctime: bigint
 		readonly mtime: bigint
 		readonly x?: {
+			readonly opt?: number
 			readonly git?: number
-			readonly readonly?: boolean
-			readonly hidden?: boolean
-			readonly system?: boolean
-			readonly cloud?: boolean
-			readonly entry?: EntryType
 		}
 	}
 	type Volume = {

@@ -48,25 +48,35 @@ enum LINK_TYPE {
 	LINK_TYPE_BOOKMARK = 4, // mac alias (FILE_TYPE_FILE)
 };
 
+enum OPT : unsigned int {
+	OPT_READONLY  = 1u << 0,
+	OPT_HIDDEN    = 1u << 1,
+	OPT_SYSTEM    = 1u << 2,
+	OPT_CLOUD     = 1u << 3,
+	OPT_ENTRY     = 1u << 4,
+	OPT_IMPLICIT  = 1u << 5,
+	OPT_ENCRYPTED = 1u << 6,
+};
+
 enum GIT : unsigned int {
 	GIT_CURRENT        = GIT_STATUS_CURRENT,
 	GIT_IX_NEW         = GIT_STATUS_INDEX_NEW,
 	GIT_IX_MODIFIED    = GIT_STATUS_INDEX_MODIFIED,
 	GIT_IX_DELETED     = GIT_STATUS_INDEX_DELETED,
-	// GIT_IX_RENAMED     = GIT_STATUS_INDEX_RENAMED,
+//	GIT_IX_RENAMED     = GIT_STATUS_INDEX_RENAMED,
 	GIT_IX_TYPECHANGE  = GIT_STATUS_INDEX_TYPECHANGE,
 	GIT_WT_NEW         = GIT_STATUS_WT_NEW,
 	GIT_WT_MODIFIED    = GIT_STATUS_WT_MODIFIED,
 	GIT_WT_DELETED     = GIT_STATUS_WT_DELETED,
 	GIT_WT_TYPECHANGE  = GIT_STATUS_WT_TYPECHANGE,
-	// GIT_WT_RENAMED     = GIT_STATUS_WT_RENAMED,
+//	GIT_WT_RENAMED     = GIT_STATUS_WT_RENAMED,
 	GIT_WT_UNREADABLE  = GIT_STATUS_WT_UNREADABLE,
 	GIT_IGNORED        = GIT_STATUS_IGNORED,
 	GIT_CONFLICTED     = GIT_STATUS_CONFLICTED,
-	GIT_INTERNAL       = 1u << 24,
-	GIT_WT_PHANTOM     = 1u << 25,
-	GIT_FM_EXECUTABLE  = 1u << 26,
-	GIT_FM_SUBMODULE   = 1u << 27,
+	GIT_INTERNAL       = 1u << 20,
+	GIT_WT_PHANTOM     = 1u << 21,
+	GIT_FM_EXECUTABLE  = 1u << 22,
+	GIT_FM_SUBMODULE   = 1u << 23,
 };
 
 struct _attribute
@@ -81,12 +91,8 @@ struct _attribute
 	int64_t ctime = 0;
 	int64_t mtime = 0;
 
+	unsigned int opt = 0;
 	unsigned int git = 0;
-
-	bool readonly = false;
-	bool hidden = false;
-	bool system = false;
-	bool cloud = false;
 
 	// https://docs.microsoft.com/ja-jp/windows/desktop/FileIO/file-attribute-constants
 	unsigned long win_attribute = 0;
@@ -139,10 +145,18 @@ void attribute(_attribute& attribute)
 				attribute.file_type = FILE_TYPE::FILE_TYPE_FILE;
 			}
 
-			attribute.readonly = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_READONLY);
-			attribute.hidden   = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_HIDDEN);
-			attribute.system   = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_SYSTEM);
-			attribute.cloud    = 0 != (attribute.win_attribute & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+			if (0 != (attribute.win_attribute & FILE_ATTRIBUTE_READONLY)) {
+				attribute.opt |= OPT_READONLY;
+			}
+			if (0 != (attribute.win_attribute & FILE_ATTRIBUTE_HIDDEN)) {
+				attribute.opt |= OPT_HIDDEN;
+			}
+			if (0 != (attribute.win_attribute & FILE_ATTRIBUTE_SYSTEM)) {
+				attribute.opt |= OPT_SYSTEM;
+			}
+			if (0 != (attribute.win_attribute & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS)) {
+				attribute.opt |= OPT_CLOUD;
+			}
 
 			if (attribute.file_type == FILE_TYPE::FILE_TYPE_LINK) {
 
@@ -274,14 +288,20 @@ void attribute(_attribute& attribute)
 				attribute.file_type = FILE_TYPE::FILE_TYPE_SPECIAL;
 			}
 
-			attribute.readonly = [[dic objectForKey:NSURLIsUserImmutableKey] boolValue];
-			attribute.hidden = [[dic objectForKey:NSURLIsHiddenKey] boolValue];
-			attribute.system = [[dic objectForKey:NSURLIsSystemImmutableKey] boolValue];
+			if ([[dic objectForKey:NSURLIsUserImmutableKey] boolValue]) {
+				attribute.opt |= OPT_READONLY;
+			}
+			if ([[dic objectForKey:NSURLIsHiddenKey] boolValue]) {
+				attribute.opt |= OPT_HIDDEN;
+			}
+			if ([[dic objectForKey:NSURLIsSystemImmutableKey] boolValue]) {
+				attribute.opt |= OPT_SYSTEM;
+			}
 
 			NSString* cloud;
 			if ([url getResourceValue:&cloud forKey:NSURLUbiquitousItemDownloadingStatusKey error:&error]) {
 				if ([cloud isEqualToString:NSURLUbiquitousItemDownloadingStatusNotDownloaded]) {
-					attribute.cloud = true;
+					attribute.opt |= OPT_CLOUD;
 				}
 			}
 

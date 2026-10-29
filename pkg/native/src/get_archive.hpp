@@ -62,6 +62,7 @@ static void get_archive_async(uv_work_t* req)
 						auto [_, add] = work->m.try_emplace(std::move(p), _entry{
 							.file_type = FILE_TYPE::FILE_TYPE_DIRECTORY,
 							.full      = p,
+							.opt       = OPT_READONLY | OPT_ENTRY | OPT_IMPLICIT,
 							.depth     = i,
 						});
 						if (add) {
@@ -123,13 +124,7 @@ static void get_archive_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("mtime")), v8::BigInt::New(ISOLATE, ent.mtime));
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
-		x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
-		if (ent.enc == 0) {
-			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)1));
-		}
-		else {
-			x->Set(CONTEXT, to_string(V("entry")), v8::Number::New(ISOLATE, (double)2));
-		}
+		x->Set(CONTEXT, to_string(V("opt")), v8::Number::New(ISOLATE, (double)ent.opt));
 		obj->Set(CONTEXT, to_string(V("x")), x);
 
 		array->Set(CONTEXT, index++, obj);

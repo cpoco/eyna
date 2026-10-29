@@ -117,11 +117,11 @@ const attr = vue.defineComponent({
 		})
 
 		const is_cloud = vue.computed((): boolean => {
-			return attr.value.one?.x?.cloud === true
+			return ((attr.value.one?.x?.opt ?? 0) & Native.Opt.CLOUD) != 0
 		})
 
 		const icon_url = vue.computed((): string => {
-			if (attr.value.one?.x?.entry === undefined) {
+			if (((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENTRY) == 0) {
 				return `eyna://icon-path/${encodeURIComponent(attr.value.one?.full ?? "")}`
 			}
 			else if (attr.value.one?.file_type === Native.FileType.Directory) {
@@ -140,7 +140,7 @@ const attr = vue.defineComponent({
 				else if (attr.value.one?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
 				}
-				else if (attr.value.one?.x?.entry === Native.EntryType.Encrypted) {
+				else if ((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENCRYPTED) {
 					return "c-encrypted"
 				}
 				else {
@@ -193,7 +193,7 @@ const attr = vue.defineComponent({
 			else if (attr.value.two?.file_type === Native.FileType.Special) {
 				return "c-special"
 			}
-			else if (attr.value.one?.x?.entry !== undefined) {
+			else if ((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENTRY) {
 				return "c-maybe"
 			}
 			else {

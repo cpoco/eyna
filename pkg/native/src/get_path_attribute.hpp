@@ -77,17 +77,8 @@ static void get_path_attribute_complete(uv_work_t* req, int status)
 		obj->Set(CONTEXT, to_string(V("mtime")), v8::BigInt::New(ISOLATE, a.mtime));
 
 		v8::Local<v8::Object> x = v8::Object::New(ISOLATE);
-		if (a.readonly) {
-			x->Set(CONTEXT, to_string(V("readonly")), v8::Boolean::New(ISOLATE, true));
-		}
-		if (a.hidden) {
-			x->Set(CONTEXT, to_string(V("hidden")), v8::Boolean::New(ISOLATE, true));
-		}
-		if (a.system) {
-			x->Set(CONTEXT, to_string(V("system")), v8::Boolean::New(ISOLATE, true));
-		}
-		if (a.cloud) {
-			x->Set(CONTEXT, to_string(V("cloud")), v8::Boolean::New(ISOLATE, true));
+		if (a.opt != 0) {
+			x->Set(CONTEXT, to_string(V("opt")), v8::Number::New(ISOLATE, (double)a.opt));
 		}
 		if (0 < x->GetOwnPropertyNames(CONTEXT).ToLocalChecked()->Length()) {
 			obj->Set(CONTEXT, to_string(V("x")), x);

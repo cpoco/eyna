@@ -108,7 +108,7 @@ export class Dir {
 
 			if (dir.git?.brch) {
 				for (const v of dir.list) {
-					log(Color.cyan, "git", (v.git ?? 0).toString(2).padStart(28, "0"), v.rltv)
+					log(Color.cyan, "git", (v.git ?? 0).toString(2).padStart(24, "0"), v.rltv)
 				}
 			}
 
