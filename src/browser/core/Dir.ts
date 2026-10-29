@@ -106,10 +106,14 @@ export class Dir {
 
 			log(Color.cyan, "dir", location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
 
-			if (dir.git?.brch) {
-				for (const v of dir.list) {
-					log(Color.cyan, "git", (v.git ?? 0).toString(2).padStart(24, "0"), v.rltv)
-				}
+			for (const v of ls) {
+				log(
+					Color.cyan,
+					"dir",
+					(v[0]?.x?.opt ?? 0).toString(2).padStart(7, "0"),
+					(v[0]?.x?.git ?? 0).toString(2).padStart(24, "0"),
+					v[0]?.rltv,
+				)
 			}
 
 			deferred.resolve({
@@ -158,6 +162,16 @@ export class Dir {
 			_sort(ls)
 
 			log(Color.cyan, "dir", location.frn.split("\0"), "sort", `${(perf_hooks.performance.now() - _time).toFixed(3)}ms`)
+
+			for (const v of ls) {
+				log(
+					Color.cyan,
+					"dir",
+					(v[0]?.x?.opt ?? 0).toString(2).padStart(7, "0"),
+					(v[0]?.x?.git ?? 0).toString(2).padStart(24, "0"),
+					v[0]?.rltv,
+				)
+			}
 
 			deferred.resolve({
 				frn: location.frn,
