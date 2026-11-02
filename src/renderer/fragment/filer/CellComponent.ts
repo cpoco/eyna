@@ -112,16 +112,16 @@ const attr = vue.defineComponent({
 			},
 		)
 
+		const opt = vue.computed((): number => {
+			return attr.value.one?.x?.opt ?? 0
+		})
+
 		const is_link = vue.computed((): boolean => {
 			return attr.value.one?.link_type !== Native.LinkType.None
 		})
 
-		const is_cloud = vue.computed((): boolean => {
-			return ((attr.value.one?.x?.opt ?? 0) & Native.Opt.CLOUD) != 0
-		})
-
 		const icon_url = vue.computed((): string => {
-			if (((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENTRY) == 0) {
+			if ((opt.value & Native.Opt.ENTRY) == 0) {
 				return `eyna://icon-path/${encodeURIComponent(attr.value.one?.full ?? "")}`
 			}
 			else if (attr.value.one?.file_type === Native.FileType.Directory) {
@@ -139,9 +139,6 @@ const attr = vue.defineComponent({
 				}
 				else if (attr.value.one?.link_type === Native.LinkType.Bookmark) {
 					return "c-bookmark"
-				}
-				else if ((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENCRYPTED) {
-					return "c-encrypted"
 				}
 				else {
 					return "c-file"
@@ -193,11 +190,16 @@ const attr = vue.defineComponent({
 			else if (attr.value.two?.file_type === Native.FileType.Special) {
 				return "c-special"
 			}
-			else if ((attr.value.one?.x?.opt ?? 0) & Native.Opt.ENTRY) {
-				return "c-maybe"
-			}
 			else {
 				return "c-miss"
+			}
+		})
+
+		const opt_class = vue.computed((): Record<string, boolean> => {
+			return {
+				"c-cloud": (opt.value & Native.Opt.CLOUD) != 0,
+				"c-implicit": (opt.value & Native.Opt.IMPLICIT) != 0,
+				"c-encrypted": (opt.value & Native.Opt.ENCRYPTED) != 0,
 			}
 		})
 
@@ -232,10 +234,10 @@ const attr = vue.defineComponent({
 		return {
 			attr,
 			is_link,
-			is_cloud,
 			icon_url,
 			name_class,
 			trgt_class,
+			opt_class,
 			exte,
 			size,
 			date,
@@ -287,10 +289,10 @@ const attr = vue.defineComponent({
 							),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-exte": true, "c-cloud": this.is_cloud } }, this.exte),
-				vue.h("span", { class: { "filer-cell-attr-size": true, "c-cloud": this.is_cloud } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true, "c-cloud": this.is_cloud } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true, "c-cloud": this.is_cloud } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-exte": true, ...this.opt_class } }, this.exte),
+				vue.h("span", { class: { "filer-cell-attr-size": true, ...this.opt_class } }, this.size),
+				vue.h("span", { class: { "filer-cell-attr-date": true, ...this.opt_class } }, this.date?.date),
+				vue.h("span", { class: { "filer-cell-attr-time": true, ...this.opt_class } }, this.date?.time),
 			],
 		)
 	},
