@@ -116,6 +116,10 @@ const attr = vue.defineComponent({
 			return attr.value.one?.x?.opt ?? 0
 		})
 
+		const git = vue.computed((): number => {
+			return attr.value.one?.x?.git ?? 0
+		})
+
 		const is_link = vue.computed((): boolean => {
 			return attr.value.one?.link_type !== Native.LinkType.None
 		})
@@ -203,6 +207,21 @@ const attr = vue.defineComponent({
 			}
 		})
 
+		const git_class = vue.computed((): Record<string, boolean> => {
+			if (git.value === 0) {
+				return {}
+			}
+
+			return {
+				"c-git-ignored": (git.value & (Native.Git.IGNORED)) != 0,
+				"c-git-internal": (git.value & (Native.Git.INTERNAL | Native.Git.SUBMODULE)) != 0,
+				"c-git-phantom": (git.value & (Native.Git.PHANTOM)) != 0,
+				"c-git-a": (git.value & (Native.Git.WT_NEW | Native.Git.IX_NEW)) != 0,
+				"c-git-m": (git.value & (Native.Git.WT_MODIFIED | Native.Git.IX_MODIFIED)) != 0,
+				"c-git-d": (git.value & (Native.Git.WT_DELETED | Native.Git.IX_DELETED)) != 0,
+			}
+		})
+
 		const exte = vue.computed((): string | undefined => {
 			if (attr.value.one?.file_type !== Native.FileType.File || attr.value.one?.link_type !== Native.LinkType.None) {
 				return undefined
@@ -238,6 +257,7 @@ const attr = vue.defineComponent({
 			name_class,
 			trgt_class,
 			opt_class,
+			git_class,
 			exte,
 			size,
 			date,
@@ -289,10 +309,18 @@ const attr = vue.defineComponent({
 							),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-exte": true, ...this.opt_class } }, this.exte),
-				vue.h("span", { class: { "filer-cell-attr-size": true, ...this.opt_class } }, this.size),
-				vue.h("span", { class: { "filer-cell-attr-date": true, ...this.opt_class } }, this.date?.date),
-				vue.h("span", { class: { "filer-cell-attr-time": true, ...this.opt_class } }, this.date?.time),
+				vue.h("span", { class: { "filer-cell-attr-exte": true, ...this.opt_class, ...this.git_class } }, this.exte),
+				vue.h("span", { class: { "filer-cell-attr-size": true, ...this.opt_class, ...this.git_class } }, this.size),
+				vue.h(
+					"span",
+					{ class: { "filer-cell-attr-date": true, ...this.opt_class, ...this.git_class } },
+					this.date?.date,
+				),
+				vue.h(
+					"span",
+					{ class: { "filer-cell-attr-time": true, ...this.opt_class, ...this.git_class } },
+					this.date?.time,
+				),
 			],
 		)
 	},

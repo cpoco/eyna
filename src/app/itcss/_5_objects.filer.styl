@@ -49,6 +49,37 @@ _scroll_width = 6px
 .c-encrypted
 	color: _amber
 
+.c-git-ignored
+	color: _gray
+.c-git-internal
+	color: _blue
+.c-git-phantom
+	color: _gray
+
+.c-git-a
+	color: _teal
+.c-git-m
+	color: _amber
+.c-git-d
+	color: _rose
+
+.c-git-a.c-git-m
+	color: transparent
+	background: linear-gradient(_teal 50%, _amber 50%)
+	background-clip: text
+.c-git-a.c-git-d
+	color: transparent
+	background: linear-gradient(_teal 50%, _rose 50%)
+	background-clip: text
+.c-git-m.c-git-d
+	color: transparent
+	background: linear-gradient(_amber 50%, _rose 50%)
+	background-clip: text
+.c-git-a.c-git-m.c-git-d
+	color: transparent
+	background: linear-gradient(_teal 40%, _amber 40% 60%, _rose 60%)
+	background-clip: text
+
 // FilerFragment
 .filer
 	&-fragment

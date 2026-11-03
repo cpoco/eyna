@@ -31,6 +31,20 @@ export enum Opt {
 	ENCRYPTED = 1 << 6,
 }
 
+export enum Git {
+	IX_NEW = 1 << 0,
+	IX_MODIFIED = 1 << 1,
+	IX_DELETED = 1 << 2,
+	WT_NEW = 1 << 7,
+	WT_MODIFIED = 1 << 8,
+	WT_DELETED = 1 << 9,
+	IGNORED = 1 << 14,
+	CONFLICTED = 1 << 15,
+	INTERNAL = 1 << 20,
+	PHANTOM = 1 << 21,
+	SUBMODULE = 1 << 23,
+}
+
 export type Archive = {
 	readonly full: string
 	readonly base: string
