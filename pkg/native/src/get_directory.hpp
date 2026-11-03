@@ -96,16 +96,25 @@ static void get_directory_async(uv_work_t* req)
 		const char* workdir = git_repository_workdir(repo);
 		if (workdir) {
 			work->git_workdir = generic_path(workdir);
-		}
 
-		if (workdir && !git_repository_head(&head, repo)) {
-			const char* branch = git_reference_shorthand(head);
-			if (branch) {
-				work->git_branch = std::basic_string<char>(branch);
+			const int head_result = git_repository_head(&head, repo);
+			if (head_result == 0) {
+				const char* branch = git_reference_name(head);
+				if (branch) {
+					work->git_branch = std::basic_string<char>(branch);
+				}
 			}
-		}
+			else if (head_result == GIT_EUNBORNBRANCH) {
+				git_reference* symbolic = nullptr;
+				if (!git_reference_lookup(&symbolic, repo, "HEAD")) {
+					const char* target = git_reference_symbolic_target(symbolic);
+					if (target) {
+						work->git_branch = std::basic_string<char>(target);
+					}
+				}
+				git_reference_free(symbolic);
+			}
 
-		if (workdir) {
 			git_repository_index(&index, repo);
 		}
 	}
