@@ -9,6 +9,13 @@ import root from "@/renderer/Root"
 
 const TAG = "cell"
 
+const GIT_IGN = Native.Git.IGNORED
+const GIT_INT = Native.Git.INTERNAL | Native.Git.SUBMODULE
+const GIT_PHA = Native.Git.PHANTOM
+const GIT_ADD = Native.Git.IX_NEW | Native.Git.WT_NEW
+const GIT_MOD = Native.Git.IX_MODIFIED | Native.Git.WT_MODIFIED | Native.Git.IX_TYPECHANGE | Native.Git.WT_TYPECHANGE
+const GIT_DEL = Native.Git.IX_DELETED | Native.Git.WT_DELETED
+
 export type Cell = {
 	data: {
 		top: number
@@ -208,17 +215,13 @@ const attr = vue.defineComponent({
 		})
 
 		const git_class = vue.computed((): Record<string, boolean> => {
-			if (git.value === 0) {
-				return {}
-			}
-
 			return {
-				"c-git-ignored": (git.value & (Native.Git.IGNORED)) != 0,
-				"c-git-internal": (git.value & (Native.Git.INTERNAL | Native.Git.SUBMODULE)) != 0,
-				"c-git-phantom": (git.value & (Native.Git.PHANTOM)) != 0,
-				"c-git-a": (git.value & (Native.Git.WT_NEW | Native.Git.IX_NEW)) != 0,
-				"c-git-m": (git.value & (Native.Git.WT_MODIFIED | Native.Git.IX_MODIFIED)) != 0,
-				"c-git-d": (git.value & (Native.Git.WT_DELETED | Native.Git.IX_DELETED)) != 0,
+				"c-git-ign": (git.value & GIT_IGN) != 0,
+				"c-git-int": (git.value & GIT_INT) != 0,
+				"c-git-pha": (git.value & GIT_PHA) != 0,
+				"c-git-add": (git.value & GIT_ADD) != 0,
+				"c-git-mod": (git.value & GIT_MOD) != 0,
+				"c-git-del": (git.value & GIT_DEL) != 0,
 			}
 		})
 
@@ -309,8 +312,16 @@ const attr = vue.defineComponent({
 							),
 						],
 				),
-				vue.h("span", { class: { "filer-cell-attr-exte": true, ...this.opt_class, ...this.git_class } }, this.exte),
-				vue.h("span", { class: { "filer-cell-attr-size": true, ...this.opt_class, ...this.git_class } }, this.size),
+				vue.h(
+					"span",
+					{ class: { "filer-cell-attr-exte": true, ...this.opt_class, ...this.git_class } },
+					this.exte,
+				),
+				vue.h(
+					"span",
+					{ class: { "filer-cell-attr-size": true, ...this.opt_class, ...this.git_class } },
+					this.size,
+				),
 				vue.h(
 					"span",
 					{ class: { "filer-cell-attr-date": true, ...this.opt_class, ...this.git_class } },
