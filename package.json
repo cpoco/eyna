@@ -20,7 +20,7 @@
 		"@eyna/lib": "workspace:*",
 		"@eyna/native": "workspace:*",
 		"@eyna/util": "workspace:*",
-		"@vue/runtime-dom": "3.5.44",
+		"@vue/runtime-dom": "3.5.45",
 		"electron": "45.2.1",
 		"esbuild": "0.28.2",
 		"monaco-editor": "0.57.0",
