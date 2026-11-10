@@ -182,7 +182,7 @@ jobs:
           category: "/language:c-cpp/os:${{ runner.os }}"
 
   codeql_scripts:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: read
       security-events: write
