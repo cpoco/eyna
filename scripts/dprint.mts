@@ -10,7 +10,7 @@ const context = createContext({
 	useTabs: true,
 })
 context.addPlugin(await fs.readFile(typescript.getPath()), {
-	semiColons: "asi",
+	semicolons: "asi",
 	useBraces: "always",
 	nextControlFlowPosition: "nextLine",
 })
