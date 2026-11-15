@@ -1,7 +1,7 @@
 import * as app from "./_app.mts"
 import * as extension from "./_extension.mts"
 
-console.log(`build (${process.arch})\n`)
+console.log(`check (${process.arch})\n`)
 
 try {
 	await Promise.all([
