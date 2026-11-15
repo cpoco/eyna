@@ -62,7 +62,7 @@ export function getGit(
 	base: string = "",
 	depth: number = 0,
 	regexp: RegExp | null = null,
-): Promise<Type.GitStatus | null> {
+): Promise<Type.GitInfo> {
 	return native.getGit(abstract, base, depth, regexp)
 }
 

@@ -64,16 +64,17 @@ const main = async () => {
 
 	{
 		const d = await native.getDirectory(DIR, "", native.Sort.DepthFirst, 0)
-		assert.strictEqual(d.git?.wdir, DIR)
-		assert(d.git?.brch.startsWith("refs/heads/"))
+		assert(!("git" in d))
 		for (const item of d.list) {
 			assert(!("git" in item))
 		}
 	}
 
 	{
-		const g = await native.getGit(DIR)
-		assert(g)
+		const info = await native.getGit(DIR)
+		assert.strictEqual(info.wdir, DIR)
+		assert(info.brch.startsWith("refs/heads/"))
+		const g = info.status
 		assert.strictEqual(g[path.join(DIR, "tracked.txt")], 0)
 		assert.strictEqual(g[path.join(DIR, ".gitignore")], 0)
 		assert.strictEqual(g[path.join(DIR, "sub")], 0)
@@ -90,8 +91,7 @@ const main = async () => {
 	}
 
 	{
-		const g = await native.getGit(DIR, "", 1)
-		assert(g)
+		const g = (await native.getGit(DIR, "", 1)).status
 		assert.strictEqual(g[path.join(DIR, "sub", "inner.txt")], 0)
 		assert(has(g[path.join(DIR, "new_dir", "child.txt")]!, native.Git.WT_NEW))
 		assert(has(g[path.join(DIR, "ignored_dir", "child.txt")]!, native.Git.IGNORED))
@@ -100,8 +100,7 @@ const main = async () => {
 	}
 
 	{
-		const g = await native.getGit(DIR, "", 1, /\.txt$/)
-		assert(g)
+		const g = (await native.getGit(DIR, "", 1, /\.txt$/)).status
 		assert.strictEqual(g[path.join(DIR, "sub", "inner.txt")], 0)
 		assert.strictEqual(g[path.join(DIR, "sub")], undefined)
 		assert.strictEqual(g[path.join(DIR, ".git")], undefined)
@@ -109,34 +108,29 @@ const main = async () => {
 
 	for (const base of ["", DIR]) {
 		const d = await native.getDirectory(DIR, base, native.Sort.DepthFirst, 1)
-		const g = await native.getGit(DIR, base, 1)
-		assert(g)
+		const g = (await native.getGit(DIR, base, 1)).status
 		assert.deepStrictEqual(Object.keys(g).sort(), d.list.map((v) => v.rltv).sort())
 	}
 
 	{
-		const g = await native.getGit(DIR, DIR, 0)
-		assert(g)
+		const g = (await native.getGit(DIR, DIR, 0)).status
 		assert.strictEqual(g["tracked.txt"], 0)
 		assert(has(g["modified.txt"]!, native.Git.WT_MODIFIED))
 	}
 
 	{
-		const g = await native.getGit(path.join(DIR, "sub"), "", 0)
-		assert(g)
+		const g = (await native.getGit(path.join(DIR, "sub"), "", 0)).status
 		assert.deepStrictEqual(Object.keys(g), [path.join(DIR, "sub", "inner.txt")])
 		assert.strictEqual(g[path.join(DIR, "sub", "inner.txt")], 0)
 	}
 
 	{
-		const g = await native.getGit(path.join(DIR, "ignored_dir"), "", 0)
-		assert(g)
+		const g = (await native.getGit(path.join(DIR, "ignored_dir"), "", 0)).status
 		assert(has(g[path.join(DIR, "ignored_dir", "child.txt")]!, native.Git.IGNORED))
 	}
 
 	{
-		const g = await native.getGit(path.join(DIR, ".git"), "", 0)
-		assert(g)
+		const g = (await native.getGit(path.join(DIR, ".git"), "", 0)).status
 		assert(0 < Object.keys(g).length)
 		for (const v of Object.values(g)) {
 			assert.strictEqual(v, native.Git.INTERNAL)
@@ -144,7 +138,10 @@ const main = async () => {
 	}
 
 	{
-		assert.strictEqual(await native.getGit(TEST), null)
+		const info = await native.getGit(TEST)
+		assert.strictEqual(info.wdir, "")
+		assert.strictEqual(info.brch, "")
+		assert.deepStrictEqual(Object.keys(info.status), [])
 	}
 
 	for (const error_path of ["", ".", "./", "..", "../"]) {

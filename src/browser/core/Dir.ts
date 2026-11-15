@@ -88,14 +88,12 @@ export class Dir {
 			)
 			_time = perf_hooks.performance.now()
 
-			const git = dir.git
-				? await Native.getGit(location.path, "", dp, rg)
-				: null
+			const git = await Native.getGit(location.path, "", dp, rg)
 			const ls: Native.Attributes[] = []
 			for (const attr of dir.list) {
 				const attrs = await Native.getAttribute(attr.rltv, dir.full)
 				const first = attrs[0]
-				const g = git?.[attr.rltv]
+				const g = git.status[attr.rltv]
 				if (first && g !== undefined) {
 					ls.push([{ ...first, x: { ...first.x, git: g } }, ...attrs.slice(1)])
 				}
@@ -131,7 +129,7 @@ export class Dir {
 				frn: location.frn,
 				dp: dp,
 				rg: rg,
-				git: dir.git?.brch ?? "",
+				git: git.brch,
 				st: st,
 				ls: ls,
 				e: dir.e,

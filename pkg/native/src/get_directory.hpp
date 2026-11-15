@@ -11,7 +11,7 @@ struct get_directory_work
 
 	std::filesystem::path abst; // generic_path
 	std::filesystem::path base; // generic_path
-	int32_t st; 
+	int32_t sort;
 	int32_t dp;
 	_string_t pt;
 	std::vector<_attribute> v;
@@ -19,9 +19,6 @@ struct get_directory_work
 	int32_t d; // directory count
 	int32_t f; // file count
 	int32_t e; // error count
-
-	std::filesystem::path git_workdir; // generic_path
-	std::basic_string<char> git_branch;
 };
 
 static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp)
@@ -54,7 +51,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 				attr.full = path;
 				attribute(attr);
 
-				if (work->st == SORT_DEPTH_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+				if (work->sort == SORT_DEPTH_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
 					work->v.push_back(attr);
 				}
 
@@ -64,7 +61,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 					}
 				}
 
-				if (work->st == SORT_SHALLOW_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
+				if (work->sort == SORT_SHALLOW_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
 					work->v.push_back(attr);
 				}
 			}
@@ -79,40 +76,7 @@ static void get_directory_async(uv_work_t* req)
 {
 	get_directory_work* work = static_cast<get_directory_work*>(req->data);
 
-	git_repository* repo = nullptr;
-	git_reference* head = nullptr;
-
-	std::error_code ec;
-	const std::filesystem::path canonical = std::filesystem::canonical(work->abst, ec);
-	if (!ec && work->abst == generic_path(canonical) && !git_repository_open_ext(&repo, U8(work->abst), 0, nullptr)) {
-		const char* workdir = git_repository_workdir(repo);
-		if (workdir) {
-			work->git_workdir = generic_path(workdir);
-
-			const int head_result = git_repository_head(&head, repo);
-			if (head_result == 0) {
-				const char* branch = git_reference_name(head);
-				if (branch) {
-					work->git_branch = std::basic_string<char>(branch);
-				}
-			}
-			else if (head_result == GIT_EUNBORNBRANCH) {
-				git_reference* symbolic = nullptr;
-				if (!git_reference_lookup(&symbolic, repo, "HEAD")) {
-					const char* target = git_reference_symbolic_target(symbolic);
-					if (target) {
-						work->git_branch = std::basic_string<char>(target);
-					}
-				}
-				git_reference_free(symbolic);
-			}
-		}
-	}
-
 	get_directory(work, work->abst, 0);
-
-	git_reference_free(head);
-	git_repository_free(repo);
 
 	for (_attribute& attr : work->v) {
 		if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
@@ -130,8 +94,6 @@ static void get_directory_complete(uv_work_t* req, int status)
 	v8::HandleScope _(ISOLATE);
 
 	get_directory_work* work = static_cast<get_directory_work*>(req->data);
-
-	bool git = !work->git_workdir.empty();
 
 	v8::Local<v8::Object> array = v8::Array::New(ISOLATE);
 	uint32_t index = 0;
@@ -154,13 +116,6 @@ static void get_directory_complete(uv_work_t* req, int status)
 	obj->Set(CONTEXT, to_string(V("d")), v8::Number::New(ISOLATE, (double)work->d));
 	obj->Set(CONTEXT, to_string(V("f")), v8::Number::New(ISOLATE, (double)work->f));
 	obj->Set(CONTEXT, to_string(V("e")), v8::Number::New(ISOLATE, (double)work->e));
-
-	if (git) {
-		v8::Local<v8::Object> g = v8::Object::New(ISOLATE);
-		g->Set(CONTEXT, to_string(V("wdir")), to_string(work->git_workdir));
-		g->Set(CONTEXT, to_string(V("brch")), to_string(work->git_branch));
-		obj->Set(CONTEXT, to_string(V("git")), g);
-	}
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
 
@@ -204,8 +159,8 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 		return;
 	}
 
-	work->st = info[2].As<v8::Int32>()->Value();
-	if (work->st != SORT_DEPTH_FIRST && work->st != SORT_SHALLOW_FIRST) {
+	work->sort = info[2].As<v8::Int32>()->Value();
+	if (work->sort != SORT_DEPTH_FIRST && work->sort != SORT_SHALLOW_FIRST) {
 		promise->Reject(CONTEXT, to_string(ERROR_INVALID_ARGUMENT));
 		delete work;
 		return;
@@ -231,9 +186,6 @@ void get_directory(const v8::FunctionCallbackInfo<v8::Value>& info)
 	work->d = 0;
 	work->f = 0;
 	work->e = 0;
-
-	work->git_workdir.clear();
-	work->git_branch.clear();
 
 	uv_queue_work(uv_default_loop(), &work->handle, get_directory_async, get_directory_complete);
 }

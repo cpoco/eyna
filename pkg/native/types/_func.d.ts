@@ -33,7 +33,7 @@ declare namespace Native {
 		base?: string,
 		depth?: number,
 		regexp?: RegExp | null,
-	): Promise<Type.GitStatus | null>
+	): Promise<Type.GitInfo>
 	function getIcon(abstract: string): Promise<Buffer>
 	function getIconType(extension: string): Promise<Buffer>
 	function getPathAttribute(abstract: string): Promise<Type.Attributes>

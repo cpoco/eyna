@@ -13,7 +13,8 @@ struct get_git_work
 	std::filesystem::path base; // generic_path
 	int32_t dp;
 	_string_t pt;
-	bool git; // inside a git working directory
+	std::filesystem::path wdir; // generic_path
+	std::basic_string<char> brch;
 	std::vector<std::pair<std::filesystem::path, unsigned int>> v; // generic_path, git
 };
 
@@ -79,7 +80,27 @@ static void get_git_async(uv_work_t* req)
 	}
 
 	if (repo && index && !workdir.empty()) {
-		work->git = true;
+		work->wdir = workdir;
+
+		git_reference* head = nullptr;
+		const int head_result = git_repository_head(&head, repo);
+		if (head_result == 0) {
+			const char* branch = git_reference_name(head);
+			if (branch) {
+				work->brch = std::basic_string<char>(branch);
+			}
+		}
+		else if (head_result == GIT_EUNBORNBRANCH) {
+			git_reference* symbolic = nullptr;
+			if (!git_reference_lookup(&symbolic, repo, "HEAD")) {
+				const char* target = git_reference_symbolic_target(symbolic);
+				if (target) {
+					work->brch = std::basic_string<char>(target);
+				}
+			}
+			git_reference_free(symbolic);
+		}
+		git_reference_free(head);
 
 		_git git = {};
 		unsigned int inherit = 0;
@@ -106,16 +127,9 @@ static void get_git_complete(uv_work_t* req, int status)
 
 	get_git_work* work = static_cast<get_git_work*>(req->data);
 
-	if (!work->git) {
-		work->promise.Get(ISOLATE)->Resolve(CONTEXT, v8::Null(ISOLATE));
-		delete work;
-		return;
-	}
-
-	// null prototype so that a "__proto__" file name stays an own property
-	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE, v8::Null(ISOLATE), nullptr, nullptr, 0);
+	v8::Local<v8::Object> list = v8::Object::New(ISOLATE, v8::Null(ISOLATE), nullptr, nullptr, 0);
 	for (const auto& [full, git] : work->v) {
-		obj->CreateDataProperty(
+		list->CreateDataProperty(
 			CONTEXT,
 			work->base.empty()
 				? to_string(full)
@@ -123,6 +137,11 @@ static void get_git_complete(uv_work_t* req, int status)
 			v8::Number::New(ISOLATE, (double)git)
 		);
 	}
+
+	v8::Local<v8::Object> obj = v8::Object::New(ISOLATE);
+	obj->Set(CONTEXT, to_string(V("wdir")), to_string(work->wdir));
+	obj->Set(CONTEXT, to_string(V("brch")), to_string(work->brch));
+	obj->Set(CONTEXT, to_string(V("status")), list);
 
 	work->promise.Get(ISOLATE)->Resolve(CONTEXT, obj);
 
@@ -179,7 +198,8 @@ void get_git(const v8::FunctionCallbackInfo<v8::Value>& info)
 		work->pt = to_string<_char_t>(info[3].As<v8::RegExp>()->GetSource());
 	}
 
-	work->git = false;
+	work->wdir.clear();
+	work->brch.clear();
 	work->v.clear();
 
 	uv_queue_work(uv_default_loop(), &work->handle, get_git_async, get_git_complete);

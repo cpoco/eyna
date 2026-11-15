@@ -28,7 +28,7 @@ export function getGit(
 	base: string,
 	depth: number,
 	regexp: RegExp | null,
-): Promise<Type.GitStatus | null>
+): Promise<Type.GitInfo>
 export function getIcon(abstract: string): Promise<Buffer>
 export function getIconType(extension: string): Promise<Buffer>
 export function getPathAttribute(abstract: string): Promise<Type.Attributes>
