@@ -81,7 +81,7 @@ declare namespace Type {
 	type Item = {
 		readonly type: FileType
 		readonly rltv: string
-		readonly git?: number
 	}
+	type GitStatus = Record<string, number>
 	type WatchCallback = (id: number, depth: number, abstract: string) => void
 }

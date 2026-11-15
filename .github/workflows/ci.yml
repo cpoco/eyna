@@ -105,6 +105,7 @@ jobs:
           node --import tsx pkg/native/test/test_get.mts
           node --import tsx pkg/native/test/test_get_depth.mts
           node --import tsx pkg/native/test/test_get_regexp.mts
+          node --import tsx pkg/native/test/test_git.mts
           node --import tsx pkg/native/test/test_icon.mts
           node --import tsx pkg/native/test/test_link.mts
           node --import tsx pkg/native/test/test_operation.mts

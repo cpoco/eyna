@@ -111,7 +111,8 @@ export type Directory = {
 export type Item = {
 	readonly type: FileType
 	readonly rltv: string
-	readonly git?: number
 }
+
+export type GitStatus = Record<string, number>
 
 export type WatchCallback = (id: number, depth: number, abstract: string) => void

@@ -24,7 +24,7 @@ struct get_directory_work
 	std::basic_string<char> git_branch;
 };
 
-static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp, _git* git, unsigned int inherit)
+static void get_directory(get_directory_work* work, const std::filesystem::path& wd, int32_t dp)
 {
 	try {
 		std::vector<std::filesystem::path> sort; // generic_path
@@ -52,13 +52,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 			{
 				_attribute attr = {};
 				attr.full = path;
-				if (inherit) {
-					attribute(attr);
-					attr.git |= inherit;
-				}
-				else {
-					attribute(attr, git);
-				}
+				attribute(attr);
 
 				if (work->st == SORT_DEPTH_FIRST && (work->pt.empty() || std::regex_search(generic_path(attr.full.lexically_relative(work->abst)).c_str(), _regex_t(work->pt)))) {
 					work->v.push_back(attr);
@@ -66,8 +60,7 @@ static void get_directory(get_directory_work* work, const std::filesystem::path&
 
 				if (attr.file_type == FILE_TYPE::FILE_TYPE_DIRECTORY) {
 					if (dp < work->dp) {
-						const bool submodule = attr.git & GIT_FM_SUBMODULE;
-						get_directory(work, attr.full, dp + 1, submodule ? nullptr : git, submodule ? 0 : (attr.git & (GIT_IGNORED | GIT_INTERNAL)));
+						get_directory(work, attr.full, dp + 1);
 					}
 				}
 
@@ -88,7 +81,6 @@ static void get_directory_async(uv_work_t* req)
 
 	git_repository* repo = nullptr;
 	git_reference* head = nullptr;
-	git_index* index = nullptr;
 
 	std::error_code ec;
 	const std::filesystem::path canonical = std::filesystem::canonical(work->abst, ec);
@@ -114,28 +106,11 @@ static void get_directory_async(uv_work_t* req)
 				}
 				git_reference_free(symbolic);
 			}
-
-			git_repository_index(&index, repo);
 		}
 	}
 
-	_git git = {};
-	unsigned int inherit = 0;
-	if (repo && index && !work->git_workdir.empty()) {
-		if (compare_path(1, generic_path(work->abst.lexically_relative(work->git_workdir)), ".git")) {
-			inherit = GIT_INTERNAL;
-		}
-		else {
-			git.repo = repo;
-			git.index = index;
-			git.workdir = work->git_workdir;
-			git_load_status(git, work->abst);
-		}
-	}
+	get_directory(work, work->abst, 0);
 
-	get_directory(work, work->abst, 0, git.repo ? &git : nullptr, inherit);
-
-	git_index_free(index);
 	git_reference_free(head);
 	git_repository_free(repo);
 
@@ -168,9 +143,6 @@ static void get_directory_complete(uv_work_t* req, int status)
 				? to_string(attr.full)
 				: to_string(generic_path(attr.full.lexically_relative(work->base)))
 		);
-		if (git) {
-			obj->Set(CONTEXT, to_string(V("git")), v8::Number::New(ISOLATE, (double)attr.git));
-		}
 		array->Set(CONTEXT, index++, obj);
 	}
 

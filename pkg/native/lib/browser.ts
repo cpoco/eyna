@@ -43,8 +43,8 @@ export function getArchiveEntry(
 	return native.getArchiveEntry(Readable, abstract, path, seek)
 }
 
-export function getAttribute(abstract: string, base: string = "", git: number | null = null): Promise<Type.Attributes> {
-	return native.getAttribute(abstract, base, git)
+export function getAttribute(abstract: string, base: string = ""): Promise<Type.Attributes> {
+	return native.getAttribute(abstract, base)
 }
 
 export function getDirectory(
@@ -55,6 +55,15 @@ export function getDirectory(
 	regexp: RegExp | null = null,
 ): Promise<Type.Directory> {
 	return native.getDirectory(abstract, base, sort, depth, regexp)
+}
+
+export function getGit(
+	abstract: string,
+	base: string = "",
+	depth: number = 0,
+	regexp: RegExp | null = null,
+): Promise<Type.GitStatus | null> {
+	return native.getGit(abstract, base, depth, regexp)
 }
 
 export function getIcon(abstract: string): Promise<Buffer> {

@@ -9,6 +9,7 @@
 #include "get_archive_entry.hpp"
 #include "get_attribute.hpp"
 #include "get_directory.hpp"
+#include "get_git.hpp"
 #include "get_icon.hpp"
 #include "get_icon_type.hpp"
 #include "get_path_attribute.hpp"
@@ -60,6 +61,7 @@ void init(v8::Local<v8::Object> exports, v8::Local<v8::Value> module, void* cont
 	NODE_SET_METHOD(exports, "getArchiveEntry", get_archive_entry);
 	NODE_SET_METHOD(exports, "getAttribute", get_attribute);
 	NODE_SET_METHOD(exports, "getDirectory", get_directory);
+	NODE_SET_METHOD(exports, "getGit", get_git);
 	NODE_SET_METHOD(exports, "getIcon", get_icon);
 	NODE_SET_METHOD(exports, "getIconType", get_icon_type);
 	NODE_SET_METHOD(exports, "getPathAttribute", get_path_attribute);
