@@ -127,6 +127,30 @@ export class FilerManager {
 		})
 	}
 
+	private async updateGit(create: number) {
+		const git = await this.dir.git(this.data.dp, this.data.rg).catch(() => null)
+		if (!git || create !== this.data.create) {
+			return
+		}
+
+		let changed = this.data.git !== git.brch
+		this.data.git = git.brch
+		for (const [i, attrs] of this.data.ls.entries()) {
+			const first = attrs[0]
+			const g = first ? git.status[first.full] : undefined
+			if (first && g !== undefined) {
+				this.data.ls[i] = [{ ...first, x: { ...first.x, git: g } }, ...attrs.slice(1)]
+				changed = true
+			}
+		}
+
+		if (changed) {
+			this.sendListSummary()
+			this.sendAttrAll()
+			this.sendMarkAll()
+		}
+	}
+
 	adjustScroll() {
 		const contPos = this.sc.contentsSize * this.data.cursor
 		const drawPos = contPos - this.sc.contentsPosition
@@ -314,6 +338,8 @@ export class FilerManager {
 			this.data.watch = 0
 			this.data.error = data.e
 
+			// git の結果は呼び出し側が一覧を送った後に届く（呼び出し側は resolve 直後に同期で送信する）
+			this.updateGit(create)
 			resolve(true)
 		})
 	}

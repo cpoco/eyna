@@ -30,6 +30,27 @@ export class Dir {
 		this.lc = Location.parse(frn)
 	}
 
+	async git(
+		dp: number,
+		rg: RegExp | null,
+	): Promise<Native.GitInfo | null> {
+		const location = this.lc
+		if (!Location.isFile(location)) {
+			return null
+		}
+
+		const _time = perf_hooks.performance.now()
+		const git = await Native.getGit(location.path, "", dp, rg)
+		log(
+			Color.cyan,
+			"dir",
+			location.frn.split("\0"),
+			"git",
+			`${(perf_hooks.performance.now() - _time).toFixed(3)}ms`,
+		)
+		return git
+	}
+
 	async list(
 		dp: number,
 		rg: RegExp | null,
@@ -88,18 +109,9 @@ export class Dir {
 			)
 			_time = perf_hooks.performance.now()
 
-			const git = await Native.getGit(location.path, "", dp, rg)
 			const ls: Native.Attributes[] = []
 			for (const attr of dir.list) {
-				const attrs = await Native.getAttribute(attr.rltv, dir.full)
-				const first = attrs[0]
-				const g = git.status[attr.rltv]
-				if (first && g !== undefined) {
-					ls.push([{ ...first, x: { ...first.x, git: g } }, ...attrs.slice(1)])
-				}
-				else {
-					ls.push(attrs)
-				}
+				ls.push(await Native.getAttribute(attr.rltv, dir.full))
 			}
 
 			log(
@@ -129,7 +141,7 @@ export class Dir {
 				frn: location.frn,
 				dp: dp,
 				rg: rg,
-				git: git.brch,
+				git: "",
 				st: st,
 				ls: ls,
 				e: dir.e,
