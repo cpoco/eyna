@@ -5,7 +5,8 @@ import { Status } from "@/bridge/Status"
 export namespace List {
 	export type Data = {
 		create: number
-		elapse: number
+		loadElapsed: number
+		gitElapsed: number
 		status: Status
 		search: boolean
 		cursor: number
@@ -29,7 +30,8 @@ export namespace List {
 	export function InitData(): Data {
 		return {
 			create: 0,
-			elapse: 0,
+			loadElapsed: 0,
+			gitElapsed: 0,
 			status: Status.None,
 			search: false,
 			cursor: 0,

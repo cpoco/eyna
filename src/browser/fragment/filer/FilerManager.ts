@@ -46,7 +46,7 @@ export class FilerManager {
 			if (this.data.frn !== this.auto_update_queue.shift()) {
 				continue
 			}
-			if (100 < this.data.elapse || 100 < this.data.ls.length) {
+			if (100 < this.data.loadElapsed || 100 < this.data.ls.length) {
 				this.data.watch = 1
 				this.sendWatchStatus()
 				continue
@@ -128,6 +128,7 @@ export class FilerManager {
 	}
 
 	private async updateGit(create: number) {
+		const time = perf_hooks.performance.now()
 		const git = await this.dir.git(this.data.dp, this.data.rg).catch(() => null)
 		if (!git || create !== this.data.create) {
 			return
@@ -135,6 +136,7 @@ export class FilerManager {
 
 		let changed = this.data.git !== git.brch
 		this.data.git = git.brch
+		this.data.gitElapsed = perf_hooks.performance.now() - time
 		for (const [i, attrs] of this.data.ls.entries()) {
 			const first = attrs[0]
 			const g = first ? git.status[first.full] : undefined
@@ -275,7 +277,8 @@ export class FilerManager {
 		const create = perf_hooks.performance.now()
 
 		this.data.create = create
-		this.data.elapse = 0
+		this.data.loadElapsed = 0
+		this.data.gitElapsed = 0
 		this.data.search = true
 
 		this.unwatch()
@@ -287,7 +290,8 @@ export class FilerManager {
 			this.id,
 			{
 				create: this.data.create,
-				elapse: this.data.elapse,
+				loadElapsed: this.data.loadElapsed,
+				gitElapsed: this.data.gitElapsed,
 				status: this.data.status,
 				search: this.data.search,
 				cursor: 0,
@@ -321,7 +325,7 @@ export class FilerManager {
 				return
 			}
 
-			this.data.elapse = perf_hooks.performance.now() - this.data.create
+			this.data.loadElapsed = perf_hooks.performance.now() - this.data.create
 			this.data.search = false
 			this.data.cursor = this.resolveCursor(frn, data.ls, cursor)
 			this.data.length = data.ls.length
@@ -351,7 +355,8 @@ export class FilerManager {
 			this.id,
 			{
 				create: this.data.create,
-				elapse: this.data.elapse,
+				loadElapsed: this.data.loadElapsed,
+				gitElapsed: this.data.gitElapsed,
 				status: this.data.status,
 				search: this.data.search,
 				cursor: this.data.cursor,
