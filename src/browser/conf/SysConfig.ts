@@ -36,13 +36,7 @@ class Sys extends Abstract<FileFormat> {
 			if (!Util.isString(f.path) || f.path.length === 0) {
 				throw new Error("favorites.path must be non-empty string")
 			}
-
-			if (f.path === "~") {
-				f.path = Path.home()
-			}
-			else if (f.path.startsWith("~/")) {
-				f.path = Path.home(f.path.slice(2))
-			}
+			f.path = Path.expandHome(f.path)
 		}
 		for (const [name, conf] of Object.entries(this.data)) {
 			if (!name.startsWith("extension.")) {
@@ -65,13 +59,7 @@ class Sys extends Abstract<FileFormat> {
 				if (!Util.isArray(c.args) || !c.args.every((a) => Util.isString(a))) {
 					throw new Error(`${name}.${os}.args must be an array of string`)
 				}
-
-				if (c.command === "~") {
-					c.command = Path.home()
-				}
-				else if (c.command.startsWith("~/")) {
-					c.command = Path.home(c.command.slice(2))
-				}
+				c.command = Path.expandHome(c.command)
 			}
 		}
 	}

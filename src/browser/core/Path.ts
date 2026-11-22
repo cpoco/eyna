@@ -29,6 +29,16 @@ export namespace Path {
 		return generic(path.join(electron.app.getPath("home"), ...paths))
 	}
 
+	export function expandHome(p: string): string {
+		if (p === "~") {
+			return home()
+		}
+		if (p.startsWith("~/")) {
+			return home(p.slice(2))
+		}
+		return p
+	}
+
 	export function toFileURL(path: string): string {
 		return url.pathToFileURL(path).toString()
 	}
