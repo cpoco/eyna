@@ -68,6 +68,10 @@ class Key extends Abstract<FileFormat> {
 		}
 	}
 
+	protected merge(base: FileFormat, layer: unknown) {
+		Util.merge(base, layer)
+	}
+
 	get(input: electron.Input): Command.KeyBind | null {
 		const code = inputToCode(input)
 		return this.codeBind[code]?.[Command.When.Always] ?? this.codeBind[code]?.[this.when] ?? null

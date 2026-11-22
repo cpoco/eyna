@@ -1,40 +1,40 @@
 import * as fs from "node:fs"
 
-import * as Util from "@eyna/util"
-
 import { Color, log } from "@/browser/core/Log"
 
 export abstract class Abstract<T> {
-	private path1: string | null = null
-	private path2: string | null = null
+	private builtinPath: string | null = null
+	private userPath: string | null = null
 	private _data: T | null = null
 
 	get data(): T {
 		return this._data as T
 	}
 
-	load(path1: string | null, path2: string | null) {
-		this.path1 = path1
-		this.path2 = path2
+	load(builtinPath: string | null, userPath: string | null) {
+		this.builtinPath = builtinPath
+		this.userPath = userPath
 		this.reload()
 	}
 
 	abstract postLoad(): void
 
+	protected abstract merge(base: T, layer: unknown): void
+
 	reload() {
 		this._data = {} as T
-		if (this.path1) {
-			this._load(this.path1)
+		if (this.builtinPath) {
+			this._load(this.builtinPath)
 		}
-		if (this.path2) {
-			this._load(this.path2)
+		if (this.userPath) {
+			this._load(this.userPath)
 		}
 		this.postLoad()
 	}
 
 	save() {
-		if (this.path2) {
-			this._save(this.path2)
+		if (this.userPath) {
+			this._save(this.userPath)
 		}
 	}
 
@@ -42,7 +42,7 @@ export abstract class Abstract<T> {
 		try {
 			log(Color.blue, "read", `"${path}"`)
 			const data = JSON.parse(fs.readFileSync(path, "utf8"))
-			Util.merge(this._data, data)
+			this.merge(this._data as T, data)
 		}
 		catch (err) {
 			console.error(err)

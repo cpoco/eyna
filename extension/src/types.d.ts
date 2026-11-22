@@ -30,7 +30,7 @@ declare type Extension = {
 		cancel: () => void
 	}
 	util: {
-		home: (...paths: string[]) => string
+		spawn: (name: string) => void
 	}
 }
 

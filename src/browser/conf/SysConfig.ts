@@ -7,6 +7,12 @@ type FileFormat = {
 	styleFontSize: number
 	styleLineHeight: number
 	favorites: { name: string; path: string }[]
+	[key: `extension.${string}`]: { win?: ExtensionCommand; mac?: ExtensionCommand }
+}
+
+export type ExtensionCommand = {
+	command: string
+	args: string[]
 }
 
 class Sys extends Abstract<FileFormat> {
@@ -37,6 +43,45 @@ class Sys extends Abstract<FileFormat> {
 			else if (f.path.startsWith("~/")) {
 				f.path = Path.home(f.path.slice(2))
 			}
+		}
+		for (const [name, conf] of Object.entries(this.data)) {
+			if (!name.startsWith("extension.")) {
+				continue
+			}
+			if (!Util.isDict(conf)) {
+				throw new Error(`${name} must be an object`)
+			}
+			for (const os of ["win", "mac"] as const) {
+				const c = conf[os]
+				if (c === undefined) {
+					continue
+				}
+				if (!Util.isDict(c)) {
+					throw new Error(`${name}.${os} must be an object`)
+				}
+				if (!Util.isString(c.command) || c.command.length === 0) {
+					throw new Error(`${name}.${os}.command must be non-empty string`)
+				}
+				if (!Util.isArray(c.args) || !c.args.every((a) => Util.isString(a))) {
+					throw new Error(`${name}.${os}.args must be an array of string`)
+				}
+
+				if (c.command === "~") {
+					c.command = Path.home()
+				}
+				else if (c.command.startsWith("~/")) {
+					c.command = Path.home(c.command.slice(2))
+				}
+			}
+		}
+	}
+
+	protected merge(base: FileFormat, layer: unknown) {
+		if (!Util.isDict(layer)) {
+			return
+		}
+		for (const [k, v] of Object.entries(layer)) {
+			;(base as { [k: string]: unknown })[k] = v
 		}
 	}
 }

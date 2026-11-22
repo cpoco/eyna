@@ -9,5 +9,17 @@
 			"name": "home",
 			"path": "~"
 		}
-	]
+	],
+	"extension.list.code": {
+		"win": { "command": "C:/Program Files/Microsoft VS Code/Code.exe", "args": ["-n", "{full}"] },
+		"mac": { "command": "/usr/local/bin/code", "args": ["-n", "{full}"] }
+	},
+	"extension.list.fork": {
+		"win": { "command": "~/AppData/Local/Fork/current/Fork.exe", "args": ["open", "{full}"] },
+		"mac": { "command": "/usr/local/bin/fork", "args": ["open", "{full}"] }
+	},
+	"extension.list.terminal": {
+		"win": { "command": "wt", "args": ["-d", "{wd}"] },
+		"mac": { "command": "open", "args": ["-F", "-a", "Terminal", "{wd}"] }
+	}
 }

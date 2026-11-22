@@ -51,5 +51,41 @@
 				}
 			}
 		}
+	},
+	"patternProperties": {
+		"^extension\\..+$": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"win": {
+					"$ref": "#/$defs/command"
+				},
+				"mac": {
+					"$ref": "#/$defs/command"
+				}
+			}
+		}
+	},
+	"$defs": {
+		"command": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"command",
+				"args"
+			],
+			"properties": {
+				"command": {
+					"type": "string",
+					"minLength": 1
+				},
+				"args": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		}
 	}
 }

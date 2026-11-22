@@ -1,4 +1,5 @@
 import * as electron from "electron"
+import * as child_process from "node:child_process"
 import * as fs from "node:fs"
 import * as module from "node:module"
 import * as vm from "node:vm"
@@ -339,9 +340,46 @@ class Root {
 					},
 				},
 				util: {
-					home: (...paths: string[]): string => {
-						sbox.log("util.home")
-						return Path.home(...paths)
+					spawn: (name: string): void => {
+						sbox.log("util.spawn", { name })
+						const entry = name.startsWith("extension.")
+							? SysConfig.data[name as `extension.${string}`]
+							: undefined
+						const conf = Platform.win ? entry?.win : Platform.mac ? entry?.mac : undefined
+						if (!conf) {
+							sbox.log("util.spawn", "no config")
+							return
+						}
+						const vars: { full: string | undefined; wd: string | undefined } = {
+							full: option.active?.cursor?.[0]?.full,
+							wd: option.active?.wd,
+						}
+						const cmdArgs: string[] = []
+						for (const a of conf.args) {
+							const unknown = (a.match(/\{\w+\}/g) ?? []).find((p) => p !== "{full}" && p !== "{wd}")
+							if (unknown) {
+								sbox.log("util.spawn", "unknown placeholder", unknown)
+								return
+							}
+							let ok = true
+							cmdArgs.push(a.replace(/\{(full|wd)\}/g, (m, k: "full" | "wd") => {
+								const v = vars[k]
+								if (v === undefined) {
+									ok = false
+									return m
+								}
+								return v
+							}))
+							if (!ok) {
+								sbox.log("util.spawn", "unresolved placeholder", a)
+								return
+							}
+						}
+						sbox.log("util.spawn", { command: conf.command, args: cmdArgs })
+						child_process.spawn(conf.command, cmdArgs, { detached: true })
+							.on("error", (err) => {
+								console.error(err)
+							})
 					},
 				},
 			}
