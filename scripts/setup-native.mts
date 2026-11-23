@@ -1,4 +1,4 @@
-import { install, status } from "@eyna/lib/scripts/_vcpkg.mts"
+import { install, status } from "@eyna/vcpkg/scripts/_vcpkg.mts"
 import { headers } from "./_headers.mts"
 
 import electron from "../node_modules/electron/package.json" with { type: "json" }

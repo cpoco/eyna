@@ -5,10 +5,10 @@
 	"type": "module",
 	"main": "app/browser.mjs",
 	"workspaces": [
+		"pkg/common",
 		"pkg/fixture",
-		"pkg/lib",
 		"pkg/native",
-		"pkg/util"
+		"pkg/vcpkg"
 	],
 	"devDependencies": {
 		"@codemirror/state": "6.7.6",
@@ -17,9 +17,9 @@
 		"@dprint/typescript": "0.101.0",
 		"@electron-internal/extract-zip": "1.0.8",
 		"@electron/packager": "20.3.0",
-		"@eyna/lib": "workspace:*",
+		"@eyna/common": "workspace:*",
 		"@eyna/native": "workspace:*",
-		"@eyna/util": "workspace:*",
+		"@eyna/vcpkg": "workspace:*",
 		"@vue/runtime-dom": "3.5.45",
 		"electron": "45.4.1",
 		"esbuild": "0.28.2",

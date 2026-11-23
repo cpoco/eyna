@@ -30,7 +30,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/include/node
-  ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/include
+  ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/include
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -77,13 +77,13 @@ if(WIN32)
 
   target_link_libraries(${PROJECT_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}/../../cache/${NODE_RUNTIME_NAME}-${NODE_RUNTIME_VERSION}/win-x64/node.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/archive.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/charset.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/git2.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zs.lib
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/zstd.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/archive.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/charset.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/git2.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/iconv.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/lzma.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/zs.lib
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/zstd.lib
   )
   target_link_libraries(${PROJECT_NAME} PRIVATE
     kernel32.lib
@@ -130,12 +130,12 @@ if(APPLE)
   target_link_libraries(${PROJECT_NAME} PRIVATE
     "-framework Foundation"
     "-framework AppKit"
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libarchive.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libcharset.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libgit2.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libiconv.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/liblzma.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libz.a
-    ${CMAKE_SOURCE_DIR}/../lib/vcpkg_installed/${VCPKG_TRIPLET}/lib/libzstd.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libarchive.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libcharset.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libgit2.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libiconv.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/liblzma.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libz.a
+    ${CMAKE_SOURCE_DIR}/../vcpkg/vcpkg_installed/${VCPKG_TRIPLET}/lib/libzstd.a
   )
 endif()

@@ -1,10 +1,10 @@
 // node test/merge.ts
 
 import assert from "node:assert"
-import * as Util from "../index.ts"
+import * as Common from "../index.ts"
 
 function test(target: unknown, source: unknown, check: (target: unknown) => boolean) {
-	Util.merge(target, source)
+	Common.merge(target, source)
 	assert(check(target))
 }
 
@@ -42,23 +42,23 @@ test(undefined, [], (t) => {
 
 // 型が違う場合は何もしない
 test([], null, (t) => {
-	return Util.isArray(t) && t.length === 0
+	return Common.isArray(t) && t.length === 0
 })
 test([], undefined, (t) => {
-	return Util.isArray(t) && t.length === 0
+	return Common.isArray(t) && t.length === 0
 })
 test([], {}, (t) => {
-	return Util.isArray(t) && t.length === 0
+	return Common.isArray(t) && t.length === 0
 })
 
 test({}, null, (t) => {
-	return Util.isDict(t) && Object.keys(t).length === 0
+	return Common.isDict(t) && Object.keys(t).length === 0
 })
 test({}, undefined, (t) => {
-	return Util.isDict(t) && Object.keys(t).length === 0
+	return Common.isDict(t) && Object.keys(t).length === 0
 })
 test({}, [], (t) => {
-	return Util.isDict(t) && Object.keys(t).length === 0
+	return Common.isDict(t) && Object.keys(t).length === 0
 })
 
 // 配列
@@ -66,28 +66,28 @@ test(
 	[],
 	[],
 	(t) => {
-		return Util.isArray(t) && t.length === 0
+		return Common.isArray(t) && t.length === 0
 	},
 )
 test(
 	[],
 	[1],
 	(t) => {
-		return Util.isArray(t) && t.length === 1 && t[0] === 1
+		return Common.isArray(t) && t.length === 1 && t[0] === 1
 	},
 )
 test(
 	[1, 2],
 	[],
 	(t) => {
-		return Util.isArray(t) && t.length === 2 && t[0] === 1 && t[1] === 2
+		return Common.isArray(t) && t.length === 2 && t[0] === 1 && t[1] === 2
 	},
 )
 test(
 	[1, 2],
 	[3],
 	(t) => {
-		return Util.isArray(t) && t.length === 2 && t[0] === 3 && t[1] === 2
+		return Common.isArray(t) && t.length === 2 && t[0] === 3 && t[1] === 2
 	},
 )
 
@@ -96,42 +96,42 @@ test(
 	{},
 	{},
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 0
+		return Common.isDict(t) && Object.keys(t).length === 0
 	},
 )
 test(
 	{},
 	{ x: "x1" },
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 1 && t.x === "x1"
+		return Common.isDict(t) && Object.keys(t).length === 1 && t.x === "x1"
 	},
 )
 test(
 	{ x: "x1" },
 	{ y: "y1" },
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 2 && t.x === "x1" && t.y === "y1"
+		return Common.isDict(t) && Object.keys(t).length === 2 && t.x === "x1" && t.y === "y1"
 	},
 )
 test(
 	{ x: "x1" },
 	{ x: "x2", y: "y2" },
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 2 && t.x === "x2" && t.y === "y2"
+		return Common.isDict(t) && Object.keys(t).length === 2 && t.x === "x2" && t.y === "y2"
 	},
 )
 test(
 	{ x: "x1" },
 	{ x: [1, 2] },
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 1 && Util.isArray(t.x) && t.x[0] === 1 && t.x[1] === 2
+		return Common.isDict(t) && Object.keys(t).length === 1 && Common.isArray(t.x) && t.x[0] === 1 && t.x[1] === 2
 	},
 )
 test(
 	{ x: [1, 2] },
 	{ x: [3] },
 	(t) => {
-		return Util.isDict(t) && Object.keys(t).length === 1 && Util.isArray(t.x) && t.x[0] === 3 && t.x[1] === 2
+		return Common.isDict(t) && Object.keys(t).length === 1 && Common.isArray(t.x) && t.x[0] === 3 && t.x[1] === 2
 	},
 )
 
@@ -156,7 +156,7 @@ test(
 		promise: new Promise(() => {}),
 	},
 	(t) => {
-		return Util.isDict(t)
+		return Common.isDict(t)
 			&& Object.keys(t).length === 15
 			&& t.undefined === undefined
 			&& t.null === null
@@ -165,8 +165,8 @@ test(
 			&& t.number === 0
 			&& t.bigint === 0n
 			&& t.string === "string"
-			&& Util.isArray(t.array) && t.array.length === 0
-			&& Util.isDict(t.dict) && Object.keys(t.dict).length === 0
+			&& Common.isArray(t.array) && t.array.length === 0
+			&& Common.isDict(t.dict) && Object.keys(t.dict).length === 0
 			&& t.reg === undefined
 			&& t.symbol === undefined
 			&& t.func === undefined
@@ -196,7 +196,7 @@ test(
 		new Promise(() => {}),
 	],
 	(t) => {
-		return Util.isArray(t)
+		return Common.isArray(t)
 			&& t.length === 15
 			&& t[0] === undefined
 			&& t[1] === null
@@ -205,8 +205,8 @@ test(
 			&& t[4] === 0
 			&& t[5] === 0n
 			&& t[6] === "string"
-			&& Util.isArray(t[7]) && t[7].length === 0
-			&& Util.isDict(t[8]) && Object.keys(t[8]).length === 0
+			&& Common.isArray(t[7]) && t[7].length === 0
+			&& Common.isDict(t[8]) && Object.keys(t[8]).length === 0
 			&& t[9] === undefined
 			&& t[10] === undefined
 			&& t[11] === undefined
