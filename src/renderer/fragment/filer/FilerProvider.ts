@@ -1,5 +1,5 @@
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/renderer"
-import * as Util from "@eyna/util"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
@@ -26,10 +26,10 @@ type Reactive = {
 const KEY: vue.InjectionKey<ReturnType<typeof _create>> = Symbol("FilerProvider")
 
 function _create(count: number) {
-	const _data = Util.array<Bridge.List.Data>(0, count, (_) => {
+	const _data = Common.array<Bridge.List.Data>(0, count, (_) => {
 		return Bridge.List.InitData()
 	})
-	const _time = Util.array<NodeJS.Timeout>(0, count, (_) => {
+	const _time = Common.array<NodeJS.Timeout>(0, count, (_) => {
 		return undefined
 	})
 
@@ -38,7 +38,7 @@ function _create(count: number) {
 			wd: "",
 			err: false,
 		},
-		list: Util.array<List>(0, count, (i) => {
+		list: Common.array<List>(0, count, (i) => {
 			return {
 				i,
 				list: ListComponent.InitList(),
@@ -125,7 +125,7 @@ function _create(count: number) {
 		r.list.search = d.search
 		r.list.info.show = !d.search && d.frn !== "home"
 		r.list.info.sync = d.watch === 0
-		r.list.info.mark = Util.count(d.mk, (mk) => mk)
+		r.list.info.mark = Common.count(d.mk, (mk) => mk)
 		r.list.info.total = d.length
 		r.list.info.error = d.error
 		r.list.info.loadElapsed = d.loadElapsed
@@ -144,7 +144,7 @@ function _create(count: number) {
 		}, 0)
 
 		r.ctop = d.drawIndex
-		r.cell = Util.array<CellComponent.Cell>(
+		r.cell = Common.array<CellComponent.Cell>(
 			0,
 			d.drawCount,
 			(j) => {

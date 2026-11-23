@@ -7,8 +7,8 @@ import { Location } from "@/browser/core/Location"
 import { Color, log } from "@/browser/core/Log"
 import { Scroll } from "@/browser/core/Scroll"
 import root from "@/browser/Root"
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/browser"
-import * as Util from "@eyna/util"
 
 export class FilerManager {
 	readonly data: Bridge.List.Data = Bridge.List.InitData()
@@ -87,7 +87,7 @@ export class FilerManager {
 	markToggle() {
 		this.data.mk[this.data.cursor] = !this.data.mk[this.data.cursor]
 
-		const attr = Util.first(this.data.ls[this.data.cursor])
+		const attr = Common.first(this.data.ls[this.data.cursor])
 		if (attr) {
 			if (this.data.mk[this.data.cursor]) {
 				this.mk.add(attr.rltv)
@@ -103,7 +103,7 @@ export class FilerManager {
 
 		if (mk) {
 			for (const attrs of this.data.ls) {
-				const attr = Util.first(attrs)
+				const attr = Common.first(attrs)
 				if (attr) {
 					this.mk.add(attr.rltv)
 				}
@@ -180,7 +180,7 @@ export class FilerManager {
 	}
 
 	private resolveCursor(frn: string, ls: Native.Attributes[], cursor: number | string | null): number {
-		if (Util.isNumber(cursor)) {
+		if (Common.isNumber(cursor)) {
 			return Math.max(0, Math.min(cursor, Math.max(0, ls.length - 1)))
 		}
 
@@ -335,8 +335,8 @@ export class FilerManager {
 			this.data.git = data.git
 			this.data.st = data.st
 			this.data.ls = data.ls
-			this.data.mk = Util.array(0, data.ls.length, (i) => {
-				const attr = Util.first(data.ls[i])
+			this.data.mk = Common.array(0, data.ls.length, (i) => {
+				const attr = Common.first(data.ls[i])
 				return attr ? this.mk.has(attr.rltv) : false
 			})
 			this.data.watch = 0
@@ -413,7 +413,7 @@ export class FilerManager {
 			Bridge.List.Attribute.CH,
 			this.id,
 			{
-				_slice: Util.dict<Native.Attributes>(start, end, (i) => {
+				_slice: Common.dict<Native.Attributes>(start, end, (i) => {
 					return this.data.ls[i]
 				}),
 			},
@@ -431,7 +431,7 @@ export class FilerManager {
 			Bridge.List.Mark.CH,
 			this.id,
 			{
-				_slice: Util.dict<boolean>(start, end, (i) => {
+				_slice: Common.dict<boolean>(start, end, (i) => {
 					return this.data.mk[i]
 				}),
 			},

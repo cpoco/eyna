@@ -1,7 +1,7 @@
 import * as electron from "electron"
 
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/browser"
-import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
@@ -30,7 +30,7 @@ export class FilerFragment extends AbstractFragment {
 
 		this.index = { active: 0, target: 1 }
 
-		this.core = Util.array(0, Conf.LIST_COUNT, (i) => {
+		this.core = Common.array(0, Conf.LIST_COUNT, (i) => {
 			return new FilerManager(
 				i,
 				(AppConfig.data.wd ?? [])[i] ?? null,
@@ -103,7 +103,7 @@ export class FilerFragment extends AbstractFragment {
 					? {
 						wd: active.location.path,
 						cursor: active.data.ls[active.data.cursor] ?? null,
-						select: Util.array(0, active.data.length, (i) => {
+						select: Common.array(0, active.data.length, (i) => {
 							return active.data.mk[i] ? active.data.ls[i]! : undefined
 						}),
 					}
@@ -112,7 +112,7 @@ export class FilerFragment extends AbstractFragment {
 					? {
 						wd: target.location.path,
 						cursor: target.data.ls[target.data.cursor] ?? null,
-						select: Util.array(0, target.data.length, (i) => {
+						select: Common.array(0, target.data.length, (i) => {
 							return target.data.mk[i] ? target.data.ls[i]! : undefined
 						}),
 					}
@@ -263,8 +263,8 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, _reject) => {
-					const attr = Util.first(active.data.ls[active.data.cursor])
-					const trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Common.first(active.data.ls[active.data.cursor])
+					const trgt = Common.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -297,16 +297,16 @@ export class FilerFragment extends AbstractFragment {
 					let rattr: Native.Attribute | null = null
 					let rtrgt: Native.Attribute | null = null
 					if (this.index.active < this.index.target) {
-						lattr = Util.first(active.data.ls[active.data.cursor])
-						ltrgt = Util.last(active.data.ls[active.data.cursor])
-						rattr = Util.first(target.data.ls[target.data.cursor])
-						rtrgt = Util.last(target.data.ls[target.data.cursor])
+						lattr = Common.first(active.data.ls[active.data.cursor])
+						ltrgt = Common.last(active.data.ls[active.data.cursor])
+						rattr = Common.first(target.data.ls[target.data.cursor])
+						rtrgt = Common.last(target.data.ls[target.data.cursor])
 					}
 					else {
-						lattr = Util.first(target.data.ls[target.data.cursor])
-						ltrgt = Util.last(target.data.ls[target.data.cursor])
-						rattr = Util.first(active.data.ls[active.data.cursor])
-						rtrgt = Util.last(active.data.ls[active.data.cursor])
+						lattr = Common.first(target.data.ls[target.data.cursor])
+						ltrgt = Common.last(target.data.ls[target.data.cursor])
+						rattr = Common.first(active.data.ls[active.data.cursor])
+						rtrgt = Common.last(active.data.ls[active.data.cursor])
 					}
 					if (
 						lattr === null || ltrgt === null || rattr === null || rtrgt === null
@@ -339,8 +339,8 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
-					const attr = Util.first(active.data.ls[active.data.cursor])
-					const trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Common.first(active.data.ls[active.data.cursor])
+					const trgt = Common.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -366,8 +366,8 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				return new Promise(async (resolve, reject) => {
-					const attr = Util.first(active.data.ls[active.data.cursor])
-					const trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Common.first(active.data.ls[active.data.cursor])
+					const trgt = Common.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null || (attr.x?.opt ?? 0) & Native.Opt.ENCRYPTED) {
 						resolve()
 						return
@@ -552,8 +552,8 @@ export class FilerFragment extends AbstractFragment {
 			})
 			.on2("list.targetselect", (active, target) => {
 				return new Promise(async (resolve, _reject) => {
-					const attr = Util.first(active.data.ls[active.data.cursor])
-					const trgt = Util.last(active.data.ls[active.data.cursor])
+					const attr = Common.first(active.data.ls[active.data.cursor])
+					const trgt = Common.last(active.data.ls[active.data.cursor])
 					if (attr === null || trgt === null) {
 						resolve()
 						return
@@ -594,7 +594,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0) {
 					return Promise.reject("stop chain")
 				}
-				const attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Common.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
 					return Promise.reject("stop chain")
 				}
@@ -605,7 +605,7 @@ export class FilerFragment extends AbstractFragment {
 				if (active.data.search || active.data.ls.length === 0) {
 					return Promise.reject("stop chain")
 				}
-				const attr = Util.first(active.data.ls[active.data.cursor])
+				const attr = Common.first(active.data.ls[active.data.cursor])
 				if (attr === null) {
 					return Promise.reject("stop chain")
 				}
@@ -624,7 +624,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				for (let i = active.data.cursor - 1; 0 <= i; i--) {
-					const trgt = Util.last(active.data.ls[i])
+					const trgt = Common.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}
@@ -649,7 +649,7 @@ export class FilerFragment extends AbstractFragment {
 					return Promise.reject("stop chain")
 				}
 				for (let i = active.data.cursor + 1; i < active.data.ls.length; i++) {
-					const trgt = Util.last(active.data.ls[i])
+					const trgt = Common.last(active.data.ls[i])
 					if (trgt === null) {
 						continue
 					}

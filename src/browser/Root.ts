@@ -4,8 +4,8 @@ import * as fs from "node:fs"
 import * as module from "node:module"
 import * as vm from "node:vm"
 
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/browser"
-import * as Util from "@eyna/util"
 
 import * as Conf from "@/app/Conf"
 import * as Bridge from "@/bridge/Bridge"
@@ -95,7 +95,7 @@ class Root {
 			},
 			backgroundColor: Conf.NAVBAR_ACTIVE.BACKGROUND,
 		}
-		Util.merge(op, AppConfig.data.window)
+		Common.merge(op, AppConfig.data.window)
 		this.browser = new electron.BrowserWindow(op)
 		this.browser.loadFile(this.path)
 		this.browser.on("focus", () => {

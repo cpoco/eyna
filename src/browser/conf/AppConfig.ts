@@ -1,7 +1,7 @@
 import * as electron from "electron"
 
 import { Abstract } from "@/browser/conf/Abstract"
-import * as Util from "@eyna/util"
+import * as Common from "@eyna/common"
 
 type FileFormat = {
 	window?: electron.Rectangle
@@ -13,7 +13,7 @@ class App extends Abstract<FileFormat> {
 	}
 
 	protected merge(base: FileFormat, layer: unknown) {
-		Util.merge(base, layer)
+		Common.merge(base, layer)
 	}
 }
 

@@ -2,7 +2,7 @@ import * as electron from "electron"
 
 import { Abstract } from "@/browser/conf/Abstract"
 import { Platform } from "@/browser/core/Platform"
-import * as Util from "@eyna/util"
+import * as Common from "@eyna/common"
 
 export namespace Command {
 	export enum When {
@@ -60,7 +60,7 @@ class Key extends Abstract<FileFormat> {
 						prm: toArray(k.prm),
 					},
 				}
-				Util.merge(this.codeBind, { [code]: wb })
+				Common.merge(this.codeBind, { [code]: wb })
 			}
 			catch (err) {
 				console.error(err)
@@ -69,7 +69,7 @@ class Key extends Abstract<FileFormat> {
 	}
 
 	protected merge(base: FileFormat, layer: unknown) {
-		Util.merge(base, layer)
+		Common.merge(base, layer)
 	}
 
 	get(input: electron.Input): Command.KeyBind | null {
@@ -81,7 +81,7 @@ class Key extends Abstract<FileFormat> {
 export const KeyConfig = new Key()
 
 function toArray(s: string | string[] | undefined): string[] {
-	return Util.isString(s) ? [s] : Util.isArray(s) ? s : []
+	return Common.isString(s) ? [s] : Common.isArray(s) ? s : []
 }
 
 function inputToCode(i: electron.Input): number {

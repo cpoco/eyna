@@ -1,4 +1,4 @@
-import * as Util from "@eyna/util"
+import * as Common from "@eyna/common"
 
 import * as Bridge from "@/bridge/Bridge"
 import { Command, KeyConfig } from "@/browser/conf/KeyConfig"
@@ -6,7 +6,8 @@ import { AbstractFragment } from "@/browser/fragment/AbstractFragment"
 import root from "@/browser/Root"
 
 export class ModalFragment extends AbstractFragment {
-	private deferred: Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null = null
+	private deferred: Common.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel> | null =
+		null
 
 	constructor() {
 		super()
@@ -19,7 +20,7 @@ export class ModalFragment extends AbstractFragment {
 		KeyConfig.whenType = Command.When.Modal
 		root.send(Bridge.Modal.Open.CH, -1, option)
 
-		this.deferred = new Util.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
+		this.deferred = new Common.DeferredPromise<Bridge.Modal.Event.ResultClose | Bridge.Modal.Event.ResultCancel>()
 		return this.deferred.promise
 	}
 

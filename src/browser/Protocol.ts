@@ -1,8 +1,8 @@
 import * as electron from "electron"
 import * as fs from "node:fs"
 
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/browser"
-import * as Util from "@eyna/util"
 
 const SCHEMA = "eyna"
 
@@ -98,7 +98,7 @@ const blobFile = async (req: Request): Promise<Response> => {
 	const path = decodeURIComponent(parts[1])
 	const start = range ? BigInt(range[1] ?? 0) : 0n
 
-	const size = Util.last(await Native.getAttribute(path))?.size ?? 0n
+	const size = Common.last(await Native.getAttribute(path))?.size ?? 0n
 	const reader = fs.createReadStream(path, { start: Number(start) })
 
 	return new Response(

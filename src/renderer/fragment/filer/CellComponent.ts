@@ -1,5 +1,5 @@
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/renderer"
-import * as Util from "@eyna/util"
 import * as vue from "@vue/runtime-dom"
 
 import * as Bridge from "@/bridge/Bridge"
@@ -114,7 +114,7 @@ const attr = vue.defineComponent({
 				return {
 					one: props.attr[0] ?? null,
 					two: props.attr[1] ?? null,
-					end: Util.last(props.attr),
+					end: Common.last(props.attr),
 				}
 			},
 		)
@@ -245,7 +245,7 @@ const attr = vue.defineComponent({
 			) {
 				return undefined
 			}
-			return Util.DateTime(attr.value.one?.mtime ?? 0n)
+			return Common.DateTime(attr.value.one?.mtime ?? 0n)
 		})
 
 		const dragstart = (event: DragEvent) => {

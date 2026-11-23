@@ -1,5 +1,5 @@
 import { Abstract } from "@/browser/conf/Abstract"
-import * as Util from "@eyna/util"
+import * as Common from "@eyna/common"
 import { Path } from "../core/Path"
 
 type FileFormat = {
@@ -17,23 +17,23 @@ export type ExtensionCommand = {
 
 class Sys extends Abstract<FileFormat> {
 	postLoad() {
-		if (!Util.isString(this.data.styleFontFamily) || this.data.styleFontFamily.length === 0) {
+		if (!Common.isString(this.data.styleFontFamily) || this.data.styleFontFamily.length === 0) {
 			throw new Error("styleFontFamily must be non-empty string")
 		}
-		if (!Util.isNumber(this.data.styleFontSize) || this.data.styleFontSize <= 0) {
+		if (!Common.isNumber(this.data.styleFontSize) || this.data.styleFontSize <= 0) {
 			throw new Error("styleFontSize must be positive")
 		}
-		if (!Util.isNumber(this.data.styleLineHeight) || this.data.styleLineHeight <= 0) {
+		if (!Common.isNumber(this.data.styleLineHeight) || this.data.styleLineHeight <= 0) {
 			throw new Error("styleLineHeight must be positive")
 		}
-		if (!Util.isArray(this.data.favorites)) {
+		if (!Common.isArray(this.data.favorites)) {
 			throw new Error("favorites must be an array")
 		}
 		for (const f of this.data.favorites) {
-			if (!Util.isString(f.name) || f.name.length === 0) {
+			if (!Common.isString(f.name) || f.name.length === 0) {
 				throw new Error("favorites.name must be non-empty string")
 			}
-			if (!Util.isString(f.path) || f.path.length === 0) {
+			if (!Common.isString(f.path) || f.path.length === 0) {
 				throw new Error("favorites.path must be non-empty string")
 			}
 			f.path = Path.expandHome(f.path)
@@ -42,7 +42,7 @@ class Sys extends Abstract<FileFormat> {
 			if (!name.startsWith("extension.")) {
 				continue
 			}
-			if (!Util.isDict(conf)) {
+			if (!Common.isDict(conf)) {
 				throw new Error(`${name} must be an object`)
 			}
 			for (const os of ["win", "mac"] as const) {
@@ -50,13 +50,13 @@ class Sys extends Abstract<FileFormat> {
 				if (c === undefined) {
 					continue
 				}
-				if (!Util.isDict(c)) {
+				if (!Common.isDict(c)) {
 					throw new Error(`${name}.${os} must be an object`)
 				}
-				if (!Util.isString(c.command) || c.command.length === 0) {
+				if (!Common.isString(c.command) || c.command.length === 0) {
 					throw new Error(`${name}.${os}.command must be non-empty string`)
 				}
-				if (!Util.isArray(c.args) || !c.args.every((a) => Util.isString(a))) {
+				if (!Common.isArray(c.args) || !c.args.every((a) => Common.isString(a))) {
 					throw new Error(`${name}.${os}.args must be an array of string`)
 				}
 				c.command = Path.expandHome(c.command)
@@ -65,7 +65,7 @@ class Sys extends Abstract<FileFormat> {
 	}
 
 	protected merge(base: FileFormat, layer: unknown) {
-		if (!Util.isDict(layer)) {
+		if (!Common.isDict(layer)) {
 			return
 		}
 		for (const [k, v] of Object.entries(layer)) {

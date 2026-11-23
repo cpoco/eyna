@@ -1,7 +1,7 @@
 import * as perf_hooks from "node:perf_hooks"
 
+import * as Common from "@eyna/common"
 import * as Native from "@eyna/native/lib/browser"
-import * as Util from "@eyna/util"
 
 import { SysConfig } from "@/browser/conf/SysConfig"
 import { Location } from "@/browser/core/Location"
@@ -55,7 +55,7 @@ export class Dir {
 		dp: number,
 		rg: RegExp | null,
 	): Promise<ListResolve> {
-		const deferred = new Util.DeferredPromise<ListResolve>()
+		const deferred = new Common.DeferredPromise<ListResolve>()
 
 		const location = this.lc
 
@@ -265,7 +265,7 @@ function _compare(a: Native.Attributes, b: Native.Attributes): number {
 }
 
 function _kind(a: Native.Attributes): Native.FileType {
-	const type = Util.last(a)?.file_type ?? Native.FileType.None
+	const type = Common.last(a)?.file_type ?? Native.FileType.None
 	return type === Native.FileType.None
 		? Native.FileType.File
 		: type
